@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}
+
+html {
+    font-size: 14px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #e9edf000;
+    border-left: 2px solid #ededed00;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #000000;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    /* <== make the border work */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    border: 0;
+}
+
+.content:hover {
+    overflow-y: auto; /* Muestra la barra de desplazamiento vertical cuando el cursor está sobre el contenedor */
+}
+
+/* Estilo de la barra de desplazamiento (opcional) */
+/* Estos estilos son para navegadores basados en WebKit como Chrome y Safari. 
+Puedes agregar estilos adicionales para otros navegadores según sea necesario. */
+.container::-webkit-scrollbar {
+    width: 8px; /* Ancho de la barra de desplazamiento */
+}
+
+.container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color de fondo de la barra de desplazamiento */
+}
+
+.container::-webkit-scrollbar-thumb {
+    background: #888; /* Color del mango de la barra de desplazamiento */
+}
