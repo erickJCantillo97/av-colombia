@@ -20,8 +20,7 @@ const services = ref([]);
 const servicesFilter = ref([]);
 const getServices = () => {
     axios.get(route('get.services')).then(response => {
-        services.value = response.data.services;
-        servicesFilter.value = services.value;
+        services.value = response.data.services.slice(0, 5);
     });
 }
 const USDollar = new Intl.NumberFormat("en-US", {
@@ -31,27 +30,7 @@ const USDollar = new Intl.NumberFormat("en-US", {
 
 getServices();
 
-const images = ref();
-const getImage = (service) => {
-    var randomNumber = Math.floor(Math.random() * 100) + 1;
-    console.log(randomNumber);
 
-    var url = `https://api.unsplash.com/search/photos?page=${randomNumber}&query=cartagena&per_page=1&client_id=gK52De2Tm_dL5o1IXKa9FROBAJ-LIYqR41xBdlg3X2k`;
-    axios.get(url).then((res) => {
-        console.log(res);
-        let rawImageUrl = res.data.results[0].urls.raw;
-        // Modificar la URL para incluir los parámetros de tamaño
-        let sizedImageUrl = `${rawImageUrl}&w=100&h=100`;
-        images.value = sizedImageUrl;
-    });
-};
-
-getImage();
-const search = ref('')
-const filterElements = () => {
-    servicesFilter.value = []
-    servicesFilter.value = services.value.filter((service) => service.title.toLowerCase().includes(search.value.toLowerCase()))
-}
 
 const value = ref({ name: 'Option 1', value: 1 });
 const options = ref([
@@ -70,12 +49,13 @@ const changeMotor = (motor) => {
 <template>
 
     <GuestLayout>
-        <div class="flex justify-center w-full h-[65vh] py-4">
-            <div class="shadow-2xl flex flex-col items-center rounded-lg p-5 w-[90vw] h-full"
+        <div class="flex justify-center w-full h-[55vh] py-4">
+            <div class="shadow-2xl flex flex-col items-center rounded-lg p-5 w-[90vw] px-28 h-full"
                 style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
                 <!-- <img src="/images/cartagena.webp" class="w-[90vw] h-[70vh] object-cover absolute " alt=""> -->
-                <div class="py-10 space-y-16 mt-4">
-                    <h1 data-aos="zoom-in-down" data-aos-duration="2000" class="text-center text-6xl text-white font-extrabold">
+                <div class="py-10 space-y-16 mt-4 w-full">
+                    <h1 data-aos="zoom-in-down" data-aos-duration="2000"
+                        class="text-center text-6xl text-white font-extrabold">
                         Busca la mejor experiencia para ti
                     </h1>
                     <div data-aos="flip-down" data-aos-duration="1000" class="bg-white p-2 rounded-lg shadow-lg">
@@ -87,6 +67,42 @@ const changeMotor = (motor) => {
                             </div>
                         </div>
                         <Experiencias />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white w-full px-10">
+            <div class="px-4 py-16 sm:px-6 sm:py-24 mx-auto lg:px-1">
+                <h2 class="text-xl font-bold text-gray-900">Destacados del mes</h2>
+
+                <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+                    <div v-for="product in services" :key="product.id">
+                        <div class="relative">
+                            <div class="relative h-72 w-full overflow-hidden rounded-lg">
+                                <img :src="product.images[0].filepath" :alt="product.imageAlt"
+                                    class="h-full w-full object-cover object-center" />
+                            </div>
+                            <div class="relative mt-4">
+                                <h3 class="text-sm font-medium text-gray-900">{{ product.title }}</h3>
+                                <p class="mt-1 text-sm text-gray-500 text-nowrap text-clip overflow-hidden  w-full"
+                                    v-html="product.description">
+                                </p>
+                            </div>
+                            <div
+                                class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
+                                <div aria-hidden="true"
+                                    class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
+                                <p class="relative text-lg font-semibold text-white">{{ USDollar.format(product.price)
+                                    }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <a :href="product.href"
+                                class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 cursor-pointer">Reservar<span
+                                    class="sr-only">, {{ product.name }}</span></a>
+                        </div>
                     </div>
                 </div>
             </div>

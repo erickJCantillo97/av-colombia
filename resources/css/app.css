@@ -7,7 +7,7 @@
 }
 
 html {
-    font-size: 14px;
+    font-size: 15px;
 }
 
 ::-webkit-scrollbar {
@@ -34,20 +34,24 @@ html {
 }
 
 .content:hover {
-    overflow-y: auto; /* Muestra la barra de desplazamiento vertical cuando el cursor está sobre el contenedor */
+    overflow-y: auto;
+    /* Muestra la barra de desplazamiento vertical cuando el cursor está sobre el contenedor */
 }
 
 /* Estilo de la barra de desplazamiento (opcional) */
 /* Estos estilos son para navegadores basados en WebKit como Chrome y Safari. 
 Puedes agregar estilos adicionales para otros navegadores según sea necesario. */
 .container::-webkit-scrollbar {
-    width: 8px; /* Ancho de la barra de desplazamiento */
+    width: 8px;
+    /* Ancho de la barra de desplazamiento */
 }
 
 .container::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Color de fondo de la barra de desplazamiento */
+    background: #f1f1f1;
+    /* Color de fondo de la barra de desplazamiento */
 }
 
 .container::-webkit-scrollbar-thumb {
-    background: #888; /* Color del mango de la barra de desplazamiento */
+    background: #888;
+    /* Color del mango de la barra de desplazamiento */
 }

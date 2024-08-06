@@ -12,7 +12,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
-    // FilePondPluginImagePreview,
+    FilePondPluginImagePreview,
     FilePondPluginPdfPreview
 );
 
@@ -440,8 +440,8 @@ defineEmits(['valueChange'])
                     <InputText size="small" :id :disabled :placeholder :class="invalid ? 'p-invalid' : ''"
                         v-model="input" :type :required :aria-describedby="id + '-help'" class="w-full" />
                 </IconField>
-                <file-pond v-else-if="type == 'file-pond'"  name="test" ref="input" storeAsFile="true" label-idle="Archvios"
-                            :allow-multiple="true"  accepted-file-types="image/*" />
+                <file-pond v-else-if="type == 'file-pond'" name="test" ref="input" storeAsFile="true"
+                    label-idle="Archvios" :allow-multiple="true" accepted-file-types="image/*" />
                 <span v-else class="w-full">
                     <InputText size="small" :id :disabled :placeholder :class="invalid ? 'p-invalid' : ''"
                         @change="$emit('valueChange', $event)" v-model="input" :type :required

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title')->unique();
             $table->string('title_en')->unique()->nullable();
             $table->string('slug')->unique();
+            $table->string('days')->nullable();
             $table->text('description', 4000);
             $table->text('description_en', 4000)->nullable();
             $table->double('price');

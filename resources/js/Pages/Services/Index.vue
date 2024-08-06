@@ -3,8 +3,10 @@
         <div class="h-[99vh]">
             <Datatable :columnas="columns" :data="services" :actions="buttons" title="Servicios">
                 <template #buttonHeader>
-                    <Button title="Add project" @click="addItem()" severity="success" label="New" outlined
-                        icon="fa-solid fa-plus" class="!h-8" />
+                    <Link :href="route('services.create')">
+                    <Button title="Add project" severity="success" label="New" outlined icon="fa-solid fa-plus"
+                        class="!h-8" />
+                    </Link>
                 </template>
             </Datatable>
         </div>
@@ -28,7 +30,7 @@
 
             <div>
                 <label for="">Fotos</label>
-                <Input type="file-pond" v-model:input="files" />
+                <Input type="file-pond" v-model="files" />
             </div>
         </template>
         <template #footer>
@@ -44,7 +46,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Datatable from '@/Components/Customs/Datatable.vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { Link, router, useForm } from '@inertiajs/vue3';
 import ConfirmPopup from 'primevue/confirmpopup';
 import Modal from '@/Components/Customs/Modal.vue';
 import { ref } from 'vue';
@@ -140,6 +142,7 @@ const props = defineProps({
 const submit = () => {
     let data = [];
     if (files.value) {
+        console.log(files.value)
         files.value.getFiles().forEach((file) => data.push(file.file));
     }
     form.images = data;

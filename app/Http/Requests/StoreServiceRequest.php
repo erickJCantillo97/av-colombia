@@ -30,6 +30,10 @@ class StoreServiceRequest extends FormRequest
             'description_en' => 'nullable|string|max:4000',
             'price' => 'required|numeric',
             'custom_price' => 'nullable|numeric',
+            'features' => 'required|array',
+            'features.*name' => 'required',
+            'days' => 'required|array',
+            'days.*' => 'required|numeric',
         ];
     }
 }

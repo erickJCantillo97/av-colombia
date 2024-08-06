@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use App\Models\Feature;
 use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,14 +18,14 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         if ($request->expectsJson()) {
-            $search = '%'. $request->search. '%';
+            $search = '%' . $request->search . '%';
             return response()->json([
                 'services' => Service::whereAny([
                     'title',
                     'title_en',
                     'description',
                     'description_en'
-                ], 'LIKE', $search)->with('images')->latest()->take(5)->get()
+                ], 'LIKE', $search)->with('images', 'features')->latest()->take(5)->get()
             ]);
         }
         return Inertia::render('Services/Index', [
@@ -37,7 +38,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Services/Form');
     }
 
     /**
@@ -46,9 +47,13 @@ class ServiceController extends Controller
     public function store(StoreServiceRequest $request)
     {
         $service = Service::create($request->validated());
-
-        if($request->hasFile('images')) {
-            foreach($request->file('images') as $image) {
+        foreach ($request->features as $feature) {
+            $service->features()->attach(
+                Feature::create($feature)->id
+            );
+        }
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
                 $service->images()->create([
                     'filepath' => $image->store('public/images'),
                     'filename' => $image->getClientOriginalName(),
@@ -91,9 +96,9 @@ class ServiceController extends Controller
      */
     public function destroy(string $uuid)
     {
-        try{
+        try {
             Service::where('id', $uuid)->first()->delete();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return Back()->withErrors(['message' => 'No se puedo Eliminar']);
         }
     }

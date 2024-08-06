@@ -14,6 +14,8 @@ import ToastService from 'primevue/toastservice';
 import AOS from 'aos'
 
 
+// https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
+
 const Noir = definePreset(Aura, {
     semantic: {
         primary: {
@@ -84,7 +86,7 @@ createInertiaApp({
                     button: {
                         root: '!h-8'
                     },
-                   
+
                     dropdown: {
                         root: '!h-8',
                         input: '!py-0 !flex !items-center !text-sm !font-normal',
