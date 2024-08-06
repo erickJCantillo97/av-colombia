@@ -50,7 +50,7 @@ const changeMotor = (motor) => {
 
     <GuestLayout>
         <div class="flex justify-center w-full h-[55vh] py-4">
-            <div class="shadow-2xl flex flex-col items-center rounded-lg p-5 w-[90vw] px-28 h-full"
+            <div class="shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg p-5 w-[90vw] px-28 h-full"
                 style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
                 <!-- <img src="/images/cartagena.webp" class="w-[90vw] h-[70vh] object-cover absolute " alt=""> -->
                 <div class="py-10 space-y-16 mt-4 w-full">
@@ -73,10 +73,16 @@ const changeMotor = (motor) => {
         </div>
 
         <div class="bg-white w-full px-10">
-            <div class="px-4 py-16 sm:px-6 sm:py-24 mx-auto lg:px-1">
-                <h2 class="text-xl font-bold text-gray-900">Destacados del mes</h2>
+            <div class="px-4 py-16 sm:px-6 sm:py-10 mx-auto lg:px-1">
+                <div class="flex justify-between">
+                    <h2 class="text-xl font-bold text-gray-900">Experiecnias destacadas del mes</h2>
+                    <Link class="text-indigo-500 text-md space-x-1 hover:space-x-3 flex items-center">
+                    <div>Ver todas</div>
+                    <di class="fa-solid fa-arrow-right"></di>
+                    </Link>
+                </div>
 
-                <div class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+                <div class="mt-2 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
                     <div v-for="product in services" :key="product.id">
                         <div class="relative">
                             <div class="relative h-72 w-full overflow-hidden rounded-lg">

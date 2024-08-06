@@ -18,9 +18,10 @@ const getServices = () => {
 }
 const isFocused = ref(false);
 
-const USDollar = new Intl.NumberFormat("en-US", {
+const USDollar = new Intl.NumberFormat("es-CO", {
     style: "currency",
-    currency: "USD",
+    currency: "COP",
+    maximumFractionDigits: 0,
 });
 </script>
 
