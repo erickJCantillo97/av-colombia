@@ -32,7 +32,7 @@ class StoreServiceRequest extends FormRequest
             'custom_price' => 'nullable|numeric',
             'features' => 'required|array',
             'features.*name' => 'required',
-            'days' => 'required|array',
+            'days' => 'required|string',
             'days.*' => 'required|numeric',
         ];
     }

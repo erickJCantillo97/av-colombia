@@ -41,6 +41,7 @@ const submit = () => {
         files.value.getFiles().forEach((file) => data.push(file.file));
     }
     form.images = data;
+    form.days = JSON.stringify(form.days);
     form.post(route('services.store'), {
         onSuccess: () => {
             visible.value = false
@@ -88,15 +89,16 @@ const days = [
                 <div>
                     <label for="" class="text-lg font-bold ">Caracteristicas Generales</label>
                     <div class="flex space-x-4 w-full mt-2 overflow-y-auto border-b py-2">
+                        <div @click="toggle"
+                            class="py-1.5 px-3 text-sm font-bold text-white bg-teal-700 rounded-full cursor-pointer">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
                         <div v-for="feature in form.features"
                             class="py-1.5 px-3 text-sm font-bold text-white  rounded-full"
                             :style="`background-color: #${feature.color};`">
                             {{ feature.name }}
                         </div>
-                        <div @click="toggle"
-                            class="py-1.5 px-3 text-sm font-bold text-white bg-teal-700 rounded-full cursor-pointer">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
+                        
                     </div>
                 </div>
                 <div>

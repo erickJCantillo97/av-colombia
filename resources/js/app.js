@@ -12,7 +12,7 @@ import { definePreset } from "@primevue/themes";
 import ConfirmationService from "primevue/confirmationservice";
 import ToastService from 'primevue/toastservice';
 import AOS from 'aos'
-
+import Tooltip from 'primevue/tooltip';
 
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
 
@@ -110,6 +110,7 @@ createInertiaApp({
                     tooltip: 1100       //tooltip
                 }
             })
+            .directive('tooltip', Tooltip)
             .mount(el);
     },
     progress: {

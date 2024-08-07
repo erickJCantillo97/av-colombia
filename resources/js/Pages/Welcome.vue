@@ -8,6 +8,7 @@ import Header from '@/Components/Sections/Header.vue';
 import Banner from '@/Components/Sections/Banner.vue';
 import Experiencias from '@/Components/SearchEngines/Experiencias.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
+import ProductCard from '@/Components/Sections/ProductCard.vue';
 
 
 const toggler = ref(false)
@@ -17,16 +18,12 @@ defineProps({
     }
 });
 const services = ref([]);
-const servicesFilter = ref([]);
 const getServices = () => {
     axios.get(route('get.services')).then(response => {
         services.value = response.data.services.slice(0, 5);
     });
 }
-const USDollar = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-});
+
 
 getServices();
 
@@ -49,33 +46,33 @@ const changeMotor = (motor) => {
 <template>
 
     <GuestLayout>
-        <div class="flex justify-center w-full h-[55vh] py-4">
-            <div class="shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg p-5 w-[90vw] px-28 h-full"
+        <div class="md:flex justify-center w-full h-[55vh] py-4 hidden">
+            <div class=" shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[98vw] md:w-[90vw] md:px-28 h-full"
                 style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
                 <!-- <img src="/images/cartagena.webp" class="w-[90vw] h-[70vh] object-cover absolute " alt=""> -->
-                <div class="py-10 space-y-16 mt-4 w-full">
+                <div class="py-10 space-y-10 mt-4 w-full">
                     <h1 data-aos="zoom-in-down" data-aos-duration="2000"
-                        class="text-center text-6xl text-white font-extrabold">
+                        class="text-center text-3xl lg:text-6xl text-white font-extrabold">
                         Busca la mejor experiencia para ti
                     </h1>
                     <div data-aos="flip-down" data-aos-duration="1000" class="bg-white p-2 rounded-lg shadow-lg">
-                        <div class="w-full bg-gray-200 rounded-md p-2 flex space-x-2">
+                        <div class="w-full bg-gray-200 rounded-md p-2 grid grid-cols-2 divide-y-2 md:flex space-x-2">
                             <div @click="changeMotor(op)" v-for="op in options"
-                                class="w-full rounded-full text-center py-2 text-md  cursor-pointer "
+                                class="w-full rounded-full text-center py-2 text-sm md:text-md  cursor-pointer "
                                 :class="value.value == op.value ? 'bg-white' : 'hover:bg-white/30'">
                                 {{ op.name }}
                             </div>
                         </div>
-                        <Experiencias />
+                        <Experiencias v-if="value.value == 1" />
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="bg-white w-full px-10">
-            <div class="px-4 py-16 sm:px-6 sm:py-10 mx-auto lg:px-1">
+        <Experiencias class="md:hidden fixed w-full" v-if="value.value == 1" />
+        <div class="bg-white w-full px-4 mt-16 md:mt-0 z-30">
+            <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between">
-                    <h2 class="text-xl font-bold text-gray-900">Experiecnias destacadas del mes</h2>
+                    <h2 class="text-xl font-bold text-gray-900">Destacados del mes</h2>
                     <Link class="text-indigo-500 text-md space-x-1 hover:space-x-3 flex items-center">
                     <div>Ver todas</div>
                     <di class="fa-solid fa-arrow-right"></di>
@@ -83,33 +80,8 @@ const changeMotor = (motor) => {
                 </div>
 
                 <div class="mt-2 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-                    <div v-for="product in services" :key="product.id">
-                        <div class="relative">
-                            <div class="relative h-72 w-full overflow-hidden rounded-lg">
-                                <img :src="product.images[0].filepath" :alt="product.imageAlt"
-                                    class="h-full w-full object-cover object-center" />
-                            </div>
-                            <div class="relative mt-4">
-                                <h3 class="text-sm font-medium text-gray-900">{{ product.title }}</h3>
-                                <p class="mt-1 text-sm text-gray-500 text-nowrap text-clip overflow-hidden  w-full"
-                                    v-html="product.description">
-                                </p>
-                            </div>
-                            <div
-                                class="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
-                                <div aria-hidden="true"
-                                    class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
-                                <p class="relative text-lg font-semibold text-white">{{ USDollar.format(product.price)
-                                    }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                            <a :href="product.href"
-                                class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 cursor-pointer">Reservar<span
-                                    class="sr-only">, {{ product.name }}</span></a>
-                        </div>
-                    </div>
+                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
+                    
                 </div>
             </div>
         </div>
