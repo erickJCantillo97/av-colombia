@@ -7,12 +7,14 @@ import MultiSelect from 'primevue/multiselect';
 import { ref } from 'vue';
 
 const op = ref();
+const includes = ref()
+const noIncludes = ref()
 
 const props = defineProps({
     features: Array,
     included: Array
 })
-const addFeature = ref(false);
+
 const feature = ref({
     name: '',
     color: ''
@@ -32,6 +34,18 @@ const newFeature = () => {
         color: ''
     }
 }
+const includeName = ref();
+const noIncludeName = ref();
+const addincludes = () => {
+    if (!includeName.value) return;
+    form.includes.push(includeName.value)
+    includeName.value = null
+}
+const addNoIncludes = () => {
+    if (!noIncludeName.value) return;
+    form.notIncludes.push(noIncludeName.value)
+    noIncludeName.value = null
+}
 
 const form = useForm({
     title: '',
@@ -39,7 +53,10 @@ const form = useForm({
     features: [],
     price: '',
     images: [],
-    days: []
+    days: [],
+    includes: [],
+    notIncludes: []
+
 });
 
 const files = ref([])
@@ -62,6 +79,12 @@ const submit = () => {
 const toggle = (event) => {
     op.value.toggle(event);
 }
+const toggleIncludes = (event) => {
+    includes.value.toggle(event);
+}
+const toggleNoIncludes = (event) => {
+    noIncludes.value.toggle(event);
+}
 const days = [
     { name: 'Domingo', value: 0 },
     { name: 'Lunes', value: 1 },
@@ -74,7 +97,8 @@ const days = [
 </script>
 <template>
     <AppLayout>
-        <div class="p-10 space-y-">
+
+        <div class="p-10 space-y-4 h-full overflow-y-auto">
             <h1 class="text-3xl font-extrabold">Crear nuevo servicio</h1>
             <div class="space-y-5">
                 <div class="grid grid-cols-2 gap-4 my-4">
@@ -109,7 +133,34 @@ const days = [
                             :style="`background-color: #${feature.color};`">
                             {{ feature.name }}
                         </div>
-
+                    </div>
+                </div>
+                <div>
+                    <label for="" class="text-lg font-bold ">Incluidos en El servicio</label>
+                    <div class="flex space-x-4  mt-2 overflow-y-auto border-b py-2 w-full overflow-x-auto">
+                        <div @click="toggleIncludes"
+                            class="py-1.5 px-3 text-sm font-bold text-white bg-black rounded-full cursor-pointer">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div v-for="feature in form.includes"
+                            class="py-1.5 px-3 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border border-emerald-700">
+                            {{ feature }}
+                            <span class="cursor-pointer"><i class="fa-solid fa-circle-xmark text-red-500"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="" class="text-lg font-bold ">No Incluidos en El servicio</label>
+                    <div class="flex space-x-4 w-full mt-2 overflow-y-auto border-b py-2">
+                        <div @click="toggleNoIncludes"
+                            class="py-1.5 px-3 text-sm font-bold text-white bg-red-700 rounded-full cursor-pointer">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div v-for="feature in form.notIncludes"
+                            class="py-1.5 px-3 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border border-emerald-700">
+                            {{ feature }}
+                            <span class="cursor-pointer"><i class="fa-solid fa-circle-xmark text-red-500"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -124,9 +175,6 @@ const days = [
                     icon="fa-solid fa-times" class="!h-8" />
             </div>
         </div>
-
-
-
         <Popover ref="op">
             <!-- {{ features }} -->
             <div class="flex justify-between w-full space-x-6 mb-4">
@@ -144,15 +192,79 @@ const days = [
                     </div>
                 </div>
                 <div class="flex justify-between">
-                    <Button @click="addFeature = false" title="Cancel" severity="danger" label="Cancelar" outlined
-                        icon="fa-solid fa-times" class="!h-8" />
+
                     <Button @click="newFeature" title="Save" severity="success" label="Añadir" outlined
                         icon="fa-solid fa-save" class="!h-8" />
                 </div>
             </div>
             <div v-else>
                 <MultiSelect :options="features.map((x) => { return { name: x.name, color: x.color } })"
-                    option-label="name" label="Nombre" v-model="form.features" class="w-full"></MultiSelect>
+                    option-label="name" label="Nombre" v-model="form.features" class="w-full">
+                    <template #option="slotProps">
+                        <div class="w-full flex space-x-1 items-center">
+                            <div class="size-4 rounded-md" :style="`background-color: #${slotProps.option.color};`" />
+                            <span>{{ slotProps.option.name }}</span>
+                        </div>
+                    </template>
+                </MultiSelect>
+            </div>
+        </Popover>
+
+        <Popover ref="includes">
+            <!-- {{ features }} -->
+            <div class="flex justify-between w-full space-x-6 mb-4">
+                <Button label="Seleccionar" :outlined="!selectFeature" severity="success" @click="selectFeature = true">
+                </Button>
+                <Button label="Nuevo" :outlined="selectFeature" @click="selectFeature = false"></Button>
+            </div>
+            <div class="flex flex-col gap-4 w-[25rem]" v-if="!selectFeature">
+                <div class="space-y-4">
+                    <Input type="text" v-model="includeName" label="Nombre" />
+
+                </div>
+                <div class="flex justify-between">
+                    <Button @click="addincludes" title="Save" severity="success" label="Añadir" outlined
+                        icon="fa-solid fa-save" class="!h-8" />
+                </div>
+            </div>
+            <div v-else>
+                <MultiSelect :options="included" v-model="form.includes" class="w-full">
+                    <template #option="slotProps">
+                        <div class="w-full flex space-x-1 items-center">
+                            <div class="size-4 rounded-md" :style="`background-color: #${slotProps.option.color};`" />
+                            <span>{{ slotProps.option.name }}</span>
+                        </div>
+                    </template>
+                </MultiSelect>
+            </div>
+        </Popover>
+
+        <Popover ref="noIncludes">
+            <!-- {{ features }} -->
+            <div class="flex justify-between w-full space-x-6 mb-4">
+                <Button label="Seleccionar" :outlined="!selectFeature" severity="success" @click="selectFeature = true">
+                </Button>
+                <Button label="Nuevo" :outlined="selectFeature" @click="selectFeature = false"></Button>
+            </div>
+            <div class="flex flex-col gap-4 w-[25rem]" v-if="!selectFeature">
+                <div class="space-y-4">
+                    <Input type="text" v-model="noIncludeName" label="Nombre" />
+                </div>
+                <div class="flex justify-end">
+                    <Button @click="addNoIncludes" title="Save" severity="success" label="Añadir" outlined
+                        icon="fa-solid fa-save" class="!h-8" />
+                </div>
+            </div>
+            <div v-else>
+                <MultiSelect :options="features.map((x) => { return { name: x.name, color: x.color } })"
+                    option-label="name" label="Nombre" v-model="form.features" class="w-full">
+                    <template #option="slotProps">
+                        <div class="w-full flex space-x-1 items-center">
+                            <div class="size-4 rounded-md" :style="`background-color: #${slotProps.option.color};`" />
+                            <span>{{ slotProps.option.name }}</span>
+                        </div>
+                    </template>
+                </MultiSelect>
             </div>
         </Popover>
 

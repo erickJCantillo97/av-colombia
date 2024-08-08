@@ -93,6 +93,14 @@ const visible = ref(false)
 const buttons = [
     {
         action: (data) => {
+            router.visit(route('services.show', data.slug))
+        },
+        severity: 'primary',
+        icon: 'fa-solid fa-eye text-sm',
+        label: 'Ver',
+    },
+    {
+        action: (data) => {
             visible.value = true
             form.title = data.title
             form.description = data.description

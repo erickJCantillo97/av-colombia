@@ -74,7 +74,8 @@ class ServiceController extends Controller
     {
         return Inertia::render('Services/Show', [
             'service' => $service,
-            'gallery' => $service->images
+            'gallery' => $service->images,
+            'features' => $service->features
         ]);
     }
 
