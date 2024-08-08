@@ -65,7 +65,7 @@ const Noir = definePreset(Aura, {
 });
 
 createInertiaApp({
-    title: (title) => `${title} -`,
+    title: (title) => `${title} - AC COLOMBIA`,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,

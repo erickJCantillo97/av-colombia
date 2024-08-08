@@ -38,7 +38,10 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Services/Form');
+        $features = Feature::orderBy('name')->get();
+        return Inertia::render('Services/Form', [
+            'features' => $features
+        ]);
     }
 
     /**
@@ -49,7 +52,7 @@ class ServiceController extends Controller
         $service = Service::create($request->validated());
         foreach ($request->features as $feature) {
             $service->features()->attach(
-                Feature::create($feature)->id
+                Feature::firstOrCreate($feature)->id
             );
         }
         if ($request->hasFile('images')) {

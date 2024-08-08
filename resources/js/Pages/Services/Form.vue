@@ -3,16 +3,26 @@ import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
+import MultiSelect from 'primevue/multiselect';
 import { ref } from 'vue';
 
 const op = ref();
+
+const props = defineProps({
+    features: Array,
+    included: Array
+})
 const addFeature = ref(false);
 const feature = ref({
     name: '',
     color: ''
 });
 
+const selectFeature = ref(true);
+
+
 const newFeature = () => {
+    if (!feature.value.name || !feature.value.color) return;
     form.features.push({
         name: feature.value.name,
         color: feature.value.color
@@ -88,6 +98,7 @@ const days = [
                 </div>
                 <div>
                     <label for="" class="text-lg font-bold ">Caracteristicas Generales</label>
+
                     <div class="flex space-x-4 w-full mt-2 overflow-y-auto border-b py-2">
                         <div @click="toggle"
                             class="py-1.5 px-3 text-sm font-bold text-white bg-teal-700 rounded-full cursor-pointer">
@@ -98,7 +109,7 @@ const days = [
                             :style="`background-color: #${feature.color};`">
                             {{ feature.name }}
                         </div>
-                        
+
                     </div>
                 </div>
                 <div>
@@ -117,7 +128,13 @@ const days = [
 
 
         <Popover ref="op">
-            <div class="flex flex-col gap-4 w-[25rem]">
+            <!-- {{ features }} -->
+            <div class="flex justify-between w-full space-x-6 mb-4">
+                <Button label="Seleccionar" :outlined="!selectFeature" severity="success" @click="selectFeature = true">
+                </Button>
+                <Button label="Nuevo" :outlined="selectFeature" @click="selectFeature = false"></Button>
+            </div>
+            <div class="flex flex-col gap-4 w-[25rem]" v-if="!selectFeature">
                 <div class="space-y-4">
                     <Input type="text" v-model="feature.name" label="Nombre" />
                     <div class="flex flex-col">
@@ -132,6 +149,10 @@ const days = [
                     <Button @click="newFeature" title="Save" severity="success" label="Añadir" outlined
                         icon="fa-solid fa-save" class="!h-8" />
                 </div>
+            </div>
+            <div v-else>
+                <MultiSelect :options="features.map((x) => { return { name: x.name, color: x.color } })"
+                    option-label="name" label="Nombre" v-model="form.features" class="w-full"></MultiSelect>
             </div>
         </Popover>
 
