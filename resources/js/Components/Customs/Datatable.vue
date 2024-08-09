@@ -6,6 +6,7 @@ import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import Modal from '../Modal.vue';
 import Input from './Input.vue';
+import { Link } from '@inertiajs/vue3';
 
 const { byteSizeFormatter, currencyFormat, formatTime, truncateString } = useCommonUtilities()
 
@@ -18,7 +19,7 @@ const props = defineProps({
         type: Array,
         default: []
     },
-    routes: {
+    routecreate: {
         type: Object,
         required: false
     },
@@ -110,35 +111,21 @@ defineEmits(['rowClick', 'buttonRowClick', 'addClick', 'buttonClick'])
 
 const dataLoading = ref(false)
 
-async function getData() {
-    dataLoading.value = true
-    await axios.get(route(props.routes.get, props.parameterData))
-        .then((res) => {
-            dataResponse.value = res.data
-        })
-    dataLoading.value = false
-}
+
 const selectedElement = ref([]);
 
 onMounted(() => {
     rows.value = props.rowsDefault
-    if (props.routes) {
-        getData()
-    }
+
 })
 
 //#region Filtros de tabla y visor columnas
 const rows = ref()
 const filters = ref({});
 const globalFilterFields = ref([])
-const columnasSelect = ref()
 const filterOK = ref(false)
 
-if (props.columnas.length > 7) {
-    columnasSelect.value = props.columnas.slice(0, 7)
-} else {
-    columnasSelect.value = props.columnas
-}
+
 
 const initFilters = async () => {
     globalFilterFields.value = ['id']
@@ -158,33 +145,12 @@ onMounted(() => {
     initFilters()
 })
 
-const getTotalStatus = (field, data) => {
-    if (props.data.length>0) {
-        return props.data.filter(obj => obj[field] == data).length
-    }
-    return dataResponse.value.filter(obj => obj[field] == data).length
-}
+
 
 const clearFilter = () => {
     initFilters();
 };
-//#endregion
 
-//#region exportar
-const exportar = () => {
-    var fileLink = document.createElement('a');
-    fileLink.href = route(props.exportRute);
-    document.body.appendChild(fileLink);
-    fileLink.click();
-    Swal.fire({
-        title: 'Exportando!',
-        text: 'Se esta generando el archivo, se descargara pronto. No actualice la pagina',
-        icon: 'success',
-        showConfirmButton: false,
-        timer: 4000,
-    })
-};
-//#endregion
 
 //#region formato de campo
 const formatDate = (date) => {
@@ -203,85 +169,13 @@ const formatDateTime = (date) => {
         return new Date(date).toLocaleString('es-CO')
     }
 }
-//#endregion
-
-// #region crud
 
 
 
-const modal = ref(false)
-const visibleSidebar = ref(false)
-const item = ref({
-    type: null,
-    data: {}
-})
-function deleteItem(event, data) {
-    confirm.require({
-        target: event.currentTarget,
-        message: '¿Esta seguro de eliminar el registro?',
-        icon: 'pi pi-exclamation-triangle text-danger',
-        rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
-        acceptClass: 'p-button-sm p-button-danger',
-        rejectLabel: 'Cancelar',
-        acceptLabel: 'Eliminar',
-        accept: () => {
-            console.log(data)
-            axios.delete(route(props.routes.delete, data.id == undefined ? data[props.routes.id] : data.id))
-                .then(async (res) => {
-                    toast.add({ severity: 'success', icon: 'fa-solid fa-trash-can', summary: '¡Accion realizada!', detail: 'Se elimino con exito', group: 'customTooltipDataTable', life: 5000 });
-                })
-                .catch((error) => {
-                    console.log(error)
-                    toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar', life: 3000 })
-                })
-        },
-        reject: () => {
-            // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-        }
-    });
-}
-function open(event, data, type) {
-    item.value.data.id = data.id
-    props.columnas.forEach((column) => {
-        item.value.data[column.field] = data[column.field]
-    })
-    item.value.type = type
-    if (type == 'show') {
-        visibleSidebar.value = true
-    } else {
-        modal.value = true
-    }
-}
 
-async function editItem(item) {
-    dataLoading.value = true
-    await axios.post(route(props.routes.update, item.id), item)
-        .then(async () => {
-            await getData()
-            modal.value = false
-            toast.add({ severity: 'success', icon: 'fa-solid fa-floppy-disk', summary: '¡Accion realizada!', detail: 'Se guardaron los cambios', group: 'customTooltipDataTable', life: 5000 });
-        })
-        .catch((error) => {
-            console.log(error)
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Error al guardar', group: 'customTooltipDataTable', life: 3000 })
-        })
-    dataLoading.value = false
-}
 
-async function addItem(item) {
-    dataLoading.value = true
-    await axios.post(route(props.routes.store), item)
-        .then(async () => {
-            await getData()
-            modal.value = false
-            toast.add({ severity: 'success', icon: 'fa-solid fa-floppy-disk', summary: '¡Accion realizada!', detail: 'Se agrego un registro', group: 'customTooltipDataTable', life: 5000 });
-        })
-        .catch((error) => {
-            console.log(error)
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Error al guardar', group: 'customTooltipDataTable', life: 3000 })
-        })
-    dataLoading.value = false
-}
+
+
 // #endregion
 const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de button. Lea mas en la documentacion...Que hare algun dia : v'
 </script>
@@ -296,20 +190,20 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
         stateStorage="session" :stateKey="cacheName ? 'dt-' + cacheName + '-state-session' : null"
         :globalFilterFields="globalFilterFields" @row-click="$emit('rowClick', $event)"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" :pt="{
-        paginator: {
-            paginatorWrapper: '!p-0',
-            current: 'text-sm font-bold cursor-default !h-8 hidden sm:flex item-center',
-            pagebutton: {
-                class: '!font-bold !h-8 !rounded-md !w-6',
+            paginator: {
+                paginatorWrapper: '!p-0',
+                current: 'text-sm font-bold cursor-default !h-8 hidden sm:flex item-center',
+                pagebutton: {
+                    class: '!font-bold !h-8 !rounded-md !w-6',
+                },
+                firstPageButton: '!h-8 !rounded-md',
+                previousPageButton: '!h-8 !rounded-md',
+                nextPageButton: '!h-8 !rounded-md',
+                lastPageButton: '!h-8 !rounded-md'
             },
-            firstPageButton: '!h-8 !rounded-md',
-            previousPageButton: '!h-8 !rounded-md',
-            nextPageButton: '!h-8 !rounded-md',
-            lastPageButton: '!h-8 !rounded-md'
-        },
-        loadingOverlay: '!bg-white'
-    }
-        ">
+            loadingOverlay: '!bg-white'
+        }
+            ">
         <template #header>
             <div class="space-y-1 w-full">
                 <span class="flex justify-between ">
@@ -327,71 +221,21 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                             severity="success" icon="fa-solid fa-plus" label="New" outlined />
                     </span>
                 </span>
-                <div class="flex items-center w-full " :class="filter ? 'justify-between' : 'justify-end'"
-                    v-if="showHeader">
-                    <div class="h-8 flex gap-2 w-full" v-if="filter">
-                        <div class="flex gap-2">
-                            <Button v-tooltip.top="'Clear'" @click="clearFilter()" outlined
-                                icon="fa-solid fa-filter-circle-xmark" text class="w-16 sm:w-8" />
-                            <IconField iconPosition="left">
-                                <InputIcon class="fa-solid fa-magnifying-glass" />
-                                <InputText v-model="filters.global.value" type="search" size="small"
-                                    placeholder="Buscar" />
-                            </IconField>
-                            <slot name="filterSpace" />
-                        </div>
-                        <div class="hidden sm:block">
-                            <ButtonGroup v-if="props.filterButtons && filterOK">
-                                <Button v-for="button in props.filterButtons"
-                                    :label="button.label + ': ' + getTotalStatus(button.field, button.data)"
-                                    :severity=button.severity
-                                    @click="filters[button.field].value == button.data ? filters[button.field].value = null : filters[button.field].value = button.data"
-                                    :outlined="filters[button.field].value != button.data" icon="" />
-                            </ButtonGroup>
-                        </div>
-                    </div>
-                    <span class="space-x-2 hidden sm:flex items-center">
-                        <Button v-if="selectionMode == 'multiple' && selectedElement.length > 0" v-tooltip.left="''"
-                            @click="$emit('selectionAction', $event, selectedElement)" severity="primary"
-                            :label="labelEvenMultiple" />
-
-                        <Button v-if="exportRute != ''" text @click="exportar" icon="fa-solid fa-download" :pt="{
-        root: '!border-0 !ring-0',
-        trigger: '!hidden',
-        labelContainer: '!p-0 ',
-        label: '!p-0 text-center',
-        token: '!p-0', item: ' !p-2',
-        header: '!p-2'
-    }" class="w-8 h-8" />
-                        <MultiSelect v-if="showColumns" v-model="columnasSelect" display="chip"
-                            :options="props.columnas" optionLabel="header" placeholder="Selecciona columnas a mostrar"
-                            class="w-min h-8" :pt="{
-        root: '!border-0 !ring-0',
-        trigger: '!hidden',
-        labelContainer: '!p-0 ',
-        label: '!p-0 text-center',
-        token: '!p-0',
-        item: ' !p-2',
-        header: '!p-2'
-    }
-        ">
-                            <template #value>
-                                <Button v-tooltip.left="'Show Columns'" icon="fa-solid fa-eye" text class="!w-8" />
-                            </template>
-                        </MultiSelect>
-                    </span>
+                <div class="flex gap-2 w-full border border-gray-300 py-1.5 px-2 rounded-xl h-10 items-center">
+                    <Link :href="route(routecreate)">
+                    <Button v-tooltip.top="'Nuevo ' + title" @click="clearFilter()" text
+                        icon="fa-solid fa-plus text-sm" />
+                    </Link>
+                    <Button v-tooltip.top="'Quitar Filteros'" @click="clearFilter()"
+                        icon="fa-solid fa-filter-circle-xmark text-sm" text />
+                    <IconField class="w-full flex items-center">
+                        <InputText v-model="filters.global.value" class="w-full !border-0" type="search" size="small"
+                            placeholder="Buscar" />
+                        <InputIcon class="fa-solid fa-magnifying-glass" />
+                    </IconField>
                 </div>
             </div>
-            <div class="sm:hidden grid grid-cols-4 gap-1 mt-1" v-if="props.filterButtons && filterOK">
-                <Button v-for="button in props.filterButtons" :severity=button.severity
-                    @click="filters[button.field].value == button.data ? filters[button.field].value = null : filters[button.field].value = button.data"
-                    :outlined="filters[button.field].value != button.data">
-                    <div class="flex justify-between w-full">
-                        <p class="w-full truncate">{{ button.label + ': ' }}</p>
-                        <p class="w-5">{{ getTotalStatus(button.field, button.data) }}</p>
-                    </div>
-                </Button>
-            </div>
+
         </template>
 
         <!-- #region ajustes de tabla -->
@@ -405,17 +249,17 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
         </template>
         <template #loading>
             <div class="flex justify-center">
-              Cargando...
+                Cargando...
             </div>
         </template>
         <template #paginatorstart>
             <div class="flex items-center" v-if="changeRows">
                 <Dropdown v-model="rows" :options="[1, 5, 10, 20, 50, 100]" :pt="{
-        root: '!h-8 !border-0 !ring-0',
-        input: '!py-0 !flex !items-center',
-        item: '!p-1 w-full text-center'
-    }
-        " />
+                    root: '!h-8 !border-0 !ring-0',
+                    input: '!py-0 !flex !items-center',
+                    item: '!p-1 w-full text-center'
+                }
+                    " />
             </div>
         </template>
         <template #paginatorfirstpagelinkicon>
@@ -437,14 +281,14 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
 
         <!-- #region Columnas -->
         <Column :selectionMode v-if="selectionMode == 'multiple'" headerStyle="width: 3rem"></Column>
-        <span v-for="col, index  in columnasSelect">
+        <span v-for="col, index in columnas">
             <Column v-if="col.visible == null || col.visible == true" :field="col.field" :filterField="col.field"
                 :class="col.class" :sortable="col.sortable" :show-filter-match-modes="false"
                 :filterMenuStyle="{ width: '16rem' }" :frozen="col.frozen" :pt="{
-        headerContent: { class: '!h-8' },
-        headerCell: { class: '!p-0.5' }
-    }
-        ">
+                    headerContent: { class: '!h-8' },
+                    headerCell: { class: '!p-0.5' }
+                }
+                    ">
                 <template #header>
                     <p class="text-sm text-primary uppercase font-extrabold truncate">{{ col.header }}</p>
                 </template>
@@ -490,14 +334,14 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                     </div>
                     <p v-else-if="col.type == 'currency'" class="text-right">
                         {{
-        currencyFormat(data[col.field], !Array.isArray(data[col.field]) ? 'COP'
-            : data[col.field][1])
-    }}
+                            currencyFormat(data[col.field], !Array.isArray(data[col.field]) ? 'COP'
+                                : data[col.field][1])
+                        }}
                     </p>
                     <p v-else-if="col.type == 'time'" class="text-left">
                         {{
-        formatTime(data[col.field])
-    }}
+                            formatTime(data[col.field])
+                        }}
                     </p>
                     <p v-else-if="col.type == 'customtag'"
                         :class="col.severitys.find((severity) => severity.text == data[col.field]).class"
@@ -508,7 +352,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                         :class="col.severitys.find((severity) => severity.text == data[col.field]).class"
                         :severity="col.severitys.find((severity) => severity.text == data[col.field]).severity"
                         :value="data[col.field]" />
-                
+
                     <span v-else-if="col.type == 'button'" class="w-full">
                         <Button :label="String(data[col.field])" class="w-full truncate" :class="col.rowClass"
                             :icon="col.icon" :outlined="col.outlined" :text="col.text" :severity="col.severity"
@@ -528,10 +372,10 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                     <span v-else-if="col.type == 'boolean'" class="flex items-center justify-center">
                         <InputSwitch v-model="data[col.field]" :disabled="col.disabled" />
                     </span>
-                    <div v-else-if="col.type == 'html'" class="" v-html="truncateString(data[col.field] +' ', 80)">
+                    <div v-else-if="col.type == 'html'" class="" v-html="truncateString(data[col.field] + ' ', 80)">
                     </div>
                     <p v-else class="">
-                        {{ truncateString(data[col.field] +' ', 80) }}
+                        {{ truncateString(data[col.field] + ' ', 80) }}
                         <!-- {{ truncateString(data[col.field], 80) }} -->
                     </p>
                 </template>
@@ -563,78 +407,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
         </Column>
         <!-- #endregion -->
     </DataTable>
-    <ConfirmDialog group="customDeleteDataTable">
-        <template #container="{ message, acceptCallback, rejectCallback }">
-            <div class="flex flex-col items-center p-5 rounded-full">
-                <i :class="message.icon" class="text-5xl p-4 rounded-full -mt-16 shadow-2xl"></i>
-                <span class="font-bold text-3xl block mb-2 mt-4">{{ message.header }}</span>
-                <p class="text-2xl">{{ message.message }}</p>
-                <div class="flex items-center gap-4 mt-4">
-                    <Button :icon="message.rejectIcon" v-tooltip.left="'Rechazar'" :label="message.rejectLabel"
-                        @click="rejectCallback" :class="message.rejectClass" />
-                    <Button :icon="message.acceptIcon" v-tooltip.left="'Aprobar'" :label="message.acceptLabel"
-                        @click="acceptCallback" :class="message.acceptClass" />
-                </div>
-            </div>
-        </template>
-    </ConfirmDialog>
-    <Toast group="customTooltipDataTable">
-        <template #message="{ message }">
-            <div class="flex items-center gap-3" style="flex: 1">
-                <i :class="message.icon" class="text-4xl"></i>
-                <div class="flex flex-col">
-                    <span class="font-bold">{{ message.summary }}</span>
-                    <div class="font-medium text-lg">{{ message.detail }}</div>
-                </div>
-            </div>
-        </template>
-    </Toast>
-    <Modal v-model:visible="modal" icon="fa-solid fa-pencil"
-        :titulo="item.type == 'edit' ? 'Editando registro' : 'Nuevo registro'">
-        <template #body>
-            <span v-if="!$slots.modal">
-             
-                <div class="grid grid-cols-2 sm:grid-cols-4 w-full gap-2">
-                    <span v-for="col in columnas" :class="[col.input == false ? 'hidden' : 'w-full', col.input?.class]">
-                        <Input :disabled="dataLoading" v-if="col.input != false" :label="col.header"
-                            v-model:input="item.data[col.field]" :acceptFile="col.input?.acceptFile"
-                            :type="col.input?.type ?? 'text'" :multiple="col.input?.multiple"
-                            :options="col.input?.options" :mode="col.input?.mode" :suffix="col.input?.suffix" />
-                    </span>
-                </div>
-            </span>
-            <slot name="modal" :item="item" />
-            <slot name="modalAdd" :item="item" />
-           
-        </template>
-        <template #footer>
-            <Button severity="danger" :disabled="dataLoading" label="Cancelar" icon="fa-regular fa-circle-xmark"
-                @click="modal = false" />
-            <Button severity="success" :loading="dataLoading" label="Guardar" icon="fa-solid fa-floppy-disk"
-                @click="item.type == 'edit' ? editItem(item.data) : addItem(item.data)" />
-        </template>
-    </Modal>
-    <Sidebar v-model:visible="visibleSidebar" :showCloseIcon="false" position="right">
-        <div v-if="!$slots.sidebar" class="flex flex-col gap-2">
-            <span v-for="col in columnas" :class="item.data[col.field] ? 'block' : 'hidden'">
-                <span v-if="col.input?.acceptFile?.includes('image')">
-                    <div class="flex flex-col items-center border rounded-md p-2 gap-2">
-                        <p class="font-bold text-center" :for="col.field"> {{ col.header }}</p>
-                        <img :src="item.data[col.field]" alt="ImageShip" onerror="this.src='/svg/cotecmar-logo.svg'"
-                            class="min-w-32 py-0.5  sm:w-16 object-cover" draggable="false" />
-                    </div>
-                </span>
-                <span v-else>
-                    <div class="border grid items-center grid-cols-2 rounded-md p-1">
-                        <p class="font-bold" :for="col.field"> {{ col.header }}</p>
-                        <p>{{item.data[col.field]}} <span>{{ col.input?.suffix }}</span></p>
-                    </div>
-                </span>
-            </span>
-        </div>
-        <div>
-            <slot name="sidebar" :item="item" />
-            <slot name="sidebarAdd" :item="item" />
-        </div>
-    </Sidebar>
+
+
+
 </template>

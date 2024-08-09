@@ -1,13 +1,8 @@
 <template>
     <AppLayout title="Services">
         <div class="h-[99vh]">
-            <Datatable :columnas="columns" :data="services" :actions="buttons" title="Servicios">
-                <template #buttonHeader>
-                    <Link :href="route('services.create')">
-                    <Button title="Add project" severity="success" label="New" outlined icon="fa-solid fa-plus"
-                        class="!h-8" />
-                    </Link>
-                </template>
+            <Datatable :columnas="columns" :data="services" routecreate="services.create" :actions="buttons"
+                title="Servicios">
             </Datatable>
         </div>
     </AppLayout>
@@ -139,9 +134,6 @@ const buttons = [
     // { event: 'deleteClic', severity: 'danger', icon: 'fa-regular fa-trash-can', class: '!h-8', text: true, outlined: false, rounded: false, show: hasPermission('projects delete') },
 ]
 
-const addItem = () => {
-    visible.value = true
-}
 
 const props = defineProps({
     services: Array,

@@ -35,27 +35,11 @@ const product = {
   details: [
     {
       name: 'Incluidos',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
+      items: JSON.parse(props.service.includes),
     },
     {
       name: 'No Incluidos',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
+      items: JSON.parse(props.service.notIncludes),
     },
     // More sections...
   ],
@@ -120,13 +104,12 @@ const product = {
 
             <div class="mt-6">
               <h3 class="sr-only">Description</h3>
-
               <div class="space-y-6 text-base text-gray-700" v-html="product.description" />
             </div>
 
             <form class="mt-6">
               <div class="flex space-x-2">
-                <div v-for="feature in product.features" class="py-1.5 px-3 text-sm font-bold text-white  rounded-xl"
+                <div v-for="feature in product.features" class="py-1 px-2  text-xs font-bold text-white  rounded-xl"
                   :style="`background-color: #${feature.color};`">
                   {{ feature.name }}
                 </div>

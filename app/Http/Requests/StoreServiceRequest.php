@@ -34,6 +34,8 @@ class StoreServiceRequest extends FormRequest
             'features.*name' => 'required',
             'days' => 'required|string',
             'days.*' => 'required|numeric',
+            'includes' => 'nullable|string',
+            'notIncludes' => 'nullable|string',
         ];
     }
 }

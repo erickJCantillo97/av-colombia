@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('description', 4000);
             $table->text('description_en', 4000)->nullable();
             $table->double('price');
+            $table->string('includes')->nullable();
+            $table->string('notIncludes')->nullable();
             $table->double('custom_price')->nullable();
             $table->timestamps();
         });

@@ -69,8 +69,11 @@ const submit = () => {
     }
     form.images = data;
     form.days = JSON.stringify(form.days);
+    form.notIncludes = JSON.stringify(form.notIncludes);
+    form.includes = JSON.stringify(form.includes);
     form.post(route('services.store'), {
         onSuccess: () => {
+            form.reset();
             visible.value = false
         }
     })
@@ -256,8 +259,8 @@ const days = [
                 </div>
             </div>
             <div v-else>
-                <MultiSelect :options="features.map((x) => { return { name: x.name, color: x.color } })"
-                    option-label="name" label="Nombre" v-model="form.features" class="w-full">
+                <MultiSelect :options="included" option-label="name" label="Nombre" v-model="form.notIncludes"
+                    class="w-full">
                     <template #option="slotProps">
                         <div class="w-full flex space-x-1 items-center">
                             <div class="size-4 rounded-md" :style="`background-color: #${slotProps.option.color};`" />

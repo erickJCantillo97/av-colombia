@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Feature;
+use App\Models\Included;
 use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -49,6 +50,11 @@ class ServiceController extends Controller
      */
     public function store(StoreServiceRequest $request)
     {
+        $included = array_merge(json_decode($request->includes), json_decode($request->notIncludes));
+        foreach ($included as $i) {
+            Included::create(['name' => $i]);
+        }
+
         $service = Service::create($request->validated());
         foreach ($request->features as $feature) {
             $service->features()->attach(
