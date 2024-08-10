@@ -68,8 +68,11 @@ const changeMotor = (motor) => {
                 </div>
             </div>
         </div>
-        <Experiencias class="md:hidden fixed w-full" v-if="value.value == 1" />
-        <div class="bg-white w-full px-4 mt-16 md:mt-0 z-30">
+        <div class="md:hidden fixed w-full -mt-2 bg-gray-700 p-4 rounded-b">
+            <h1 class="text-white font-bold text-lg">Buscar Experiencias en Cartagena</h1>
+            <Experiencias  v-if="value.value == 1" />
+        </div>
+        <div class="bg-white w-full mt-36 md:mt-0 z-30">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between">
                     <h2 class="text-xl font-bold text-gray-900">Destacados del mes</h2>
@@ -79,10 +82,16 @@ const changeMotor = (motor) => {
                     </Link>
                 </div>
 
-                <div class="mt-2 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+                <div class="mt-2 grid grid-cols-1 gap-y-2 -mx-4 md:gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
                     <ProductCard v-for="product in services" :key="product.id" :product="product" />
-                    
+                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
+                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
+                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
+                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
+                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
+                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
                 </div>
+                
             </div>
         </div>
     </GuestLayout>
