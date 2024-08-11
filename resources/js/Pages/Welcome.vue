@@ -9,7 +9,8 @@ import Banner from '@/Components/Sections/Banner.vue';
 import Experiencias from '@/Components/SearchEngines/Experiencias.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import ProductCard from '@/Components/Sections/ProductCard.vue';
-
+import ExperienceCard from '@/Components/Items/ExperienceCard.vue';
+import ExperienceMiniCard from '@/Components/Items/ExperienceMiniCard.vue';
 
 const toggler = ref(false)
 defineProps({
@@ -46,6 +47,7 @@ const changeMotor = (motor) => {
 <template>
 
     <GuestLayout>
+        
         <div class="md:flex justify-center w-full h-[55vh] py-4 hidden">
             <div class=" shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[98vw] md:w-[90vw] md:px-28 h-full"
                 style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
@@ -69,31 +71,36 @@ const changeMotor = (motor) => {
             </div>
         </div>
         <div class="md:hidden fixed w-full -mt-2 bg-gray-700 p-4 rounded-b">
-            <h1 class="text-white font-bold text-lg">Buscar Experiencias en Cartagena</h1>
+            <h1 class="text-white font-bold text-xl capitalize">Buscar Experiencias en Cartagena</h1>
             <Experiencias  v-if="value.value == 1" />
         </div>
-        <div class="bg-white w-full mt-36 md:mt-0 z-30">
+        <div class="bg-white w-full px-0 md:px-10 mt-44 md:mt-0 z-30">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between">
-                    <h2 class="text-xl font-bold text-gray-900">Destacados del mes</h2>
-                    <Link class="text-indigo-500 text-md space-x-1 hover:space-x-3 flex items-center">
+                    <h2 class="text-xl font-bold text-gray-900">Vive nuestras Experiencias</h2>
+                    <Link href="#" class="text-indigo-500 text-md space-x-1 hover:space-x-3 flex items-center">
                     <div>Ver todas</div>
-                    <di class="fa-solid fa-arrow-right"></di>
+                    <i class="fa-solid fa-arrow-right"></i>
                     </Link>
                 </div>
-
-                <div class="mt-2 grid grid-cols-1 gap-y-2 -mx-4 md:gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
-                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
-                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
-                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
-                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
-                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
-                    <ProductCard v-for="product in services" :key="product.id" :product="product" />
+                <div class="flex w-full space-x-2 overflow-x-auto py-2 ">
+                    <ExperienceMiniCard :class="'w-1/2 lg:w-1/' + services.length > 6 ? 6:services.length"   v-for="product in services" :key="product.id" :product="product"/>
                 </div>
                 
             </div>
         </div>
+        <!-- <div class="bg-white w-full px-0 md:px-10 border-t md:mt-0 z-30">
+            <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
+                <div class="flex justify-between ">
+                    <h2 class="text-xl font-bold text-gray-900">Todas nuestras experiencias</h2>
+                </div>
+
+                <div class="mt-2 grid grid-cols-1 gap-y-2 -mx-4 md:gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+                    <ExperienceCard v-for="product in services" :key="product.id" :product="product" />
+                </div>
+                
+            </div>
+        </div> -->
     </GuestLayout>
 
 </template>
