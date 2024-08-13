@@ -26,6 +26,8 @@ class Service extends Model
         'description_en',
         'price',
         'custom_price',
+        'includes',
+        'notIncludes'
     ];
 
     public function getRouteKeyName(): string

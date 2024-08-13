@@ -42,33 +42,34 @@ const USDollar = new Intl.NumberFormat("es-CO", {
             <ProgressBar v-if="loading" mode="indeterminate" style="height: 6px"></ProgressBar>
             <Link v-else-if="services.length > 0 && search" :href="route('show.services', service.slug)"
                 v-for="service in services">
-                <div class="p-2 bg-white hidden md:flex justify-between rounded-lg hover:bg-black cursor-pointer hover:text-white">
-                    <div class="flex flex-col w-full">
-                        <p>{{ service.title }}</p>
-                        <div class="flex space-x-2 items-center">
-                            <div v-for="feature in service.features"
-                                class="py-0.5 px-3 text-sm font-bold text-white  rounded-full"
-                                :style="`background-color: #${feature.color};`">
-                                {{ feature.name }}
-                            </div>
-                            <div v-if="JSON.parse(service.days).length == 0">
-                                <div v-tooltip.bottom="service.days" class="bg-gray-400 text-xs rounded-full py-0.5 px-2">
-                                    Todos los dias
-                                </div>
-                            </div>
-                            <div v-tooltip.bottom="day.name" v-for="day in getDays(JSON.parse(service.days))"
-                                class="bg-gray-400 text-xs rounded-full py-0.5 px-2">
-                                {{ day.initials }}
+            <div
+                class="p-2 bg-white hidden md:flex my-1 justify-between rounded-lg hover:bg-black cursor-pointer hover:text-white">
+                <div class="flex flex-col w-full">
+                    <p>{{ service.title }}</p>
+                    <div class="flex space-x-2 items-center">
+                        <div v-for="feature in service.features"
+                            class="py-0.5 px-3 text-sm font-bold text-white  rounded-full"
+                            :style="`background-color: #${feature.color};`">
+                            {{ feature.name }}
+                        </div>
+                        <div v-if="JSON.parse(service.days).length == 0">
+                            <div class="bg-gray-400 text-xs rounded-full py-0.5 px-2">
+                                Todos los dias
                             </div>
                         </div>
-
-
+                        <div v-tooltip.bottom="day.name" v-for="day in getDays(JSON.parse(service.days))"
+                            class="bg-gray-400 text-xs rounded-full py-0.5 px-2">
+                            {{ day.initials }}
+                        </div>
                     </div>
-                    <p>
-                        {{ USDollar.format(service.price) }}
-                    </p>
+
+
                 </div>
-                <ProductCard class="md:hidden block " :product="service" />
+                <p>
+                    {{ USDollar.format(service.price) }}
+                </p>
+            </div>
+            <ProductCard class="md:hidden block " :product="service" />
             </Link>
             <div v-else-if="search" class="text-lg">
                 No encontramos nada relacionado con <strong>{{ search }}</strong> pero te recomendamos

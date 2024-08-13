@@ -1,8 +1,9 @@
 <template>
-    <Head title="Servicios" />
+
+    <Head title="Inicio" />
     <Header />
     <div class="h-[90vh] overflow-y-auto py-1">
-        <Banner class="hidden md:block" />
+        <Banner class=""  />
         <slot />
     </div>
 </template>

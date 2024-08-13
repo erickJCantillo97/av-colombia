@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Feature;
+use App\Models\Included;
 use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -38,7 +39,10 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Services/Form');
+        $features = Feature::orderBy('name')->get();
+        return Inertia::render('Services/Form', [
+            'features' => $features
+        ]);
     }
 
     /**
@@ -46,10 +50,15 @@ class ServiceController extends Controller
      */
     public function store(StoreServiceRequest $request)
     {
+        $included = array_merge(json_decode($request->includes), json_decode($request->notIncludes));
+        foreach ($included as $i) {
+            Included::create(['name' => $i]);
+        }
+
         $service = Service::create($request->validated());
         foreach ($request->features as $feature) {
             $service->features()->attach(
-                Feature::create($feature)->id
+                Feature::firstOrCreate($feature)->id
             );
         }
         if ($request->hasFile('images')) {
@@ -71,7 +80,8 @@ class ServiceController extends Controller
     {
         return Inertia::render('Services/Show', [
             'service' => $service,
-            'gallery' => $service->images
+            'gallery' => $service->images,
+            'features' => $service->features
         ]);
     }
 

@@ -17,45 +17,29 @@ import { StarIcon } from '@heroicons/vue/20/solid'
 import { HeartIcon, MinusIcon, PlusIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
-    service: Object,   
+  service: Object,
 })
 
 const USDollar = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  style: "currency",
+  currency: "USD",
 });
 
 const product = {
   name: props.service.title,
-  price:USDollar.format(props.service.price),
+  price: USDollar.format(props.service.price),
   rating: 4,
   images: props.service.images,
-  
+  features: props.service.features,
   description: props.service.description,
   details: [
     {
       name: 'Incluidos',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
+      items: JSON.parse(props.service.includes),
     },
     {
       name: 'No Incluidos',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
+      items: JSON.parse(props.service.notIncludes),
     },
     // More sections...
   ],
@@ -64,62 +48,74 @@ const product = {
 
 </script>
 <template>
-    <GuestLayout>
-        <div class="mx-4 md:mx-10">
-            <div class="w-full md:p-10">
-              <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
-                <!-- Image gallery -->
-                 <!-- {{ product.images }} -->
-                <TabGroup as="div" class="flex flex-col-reverse">
-                  <!-- Image selector -->
-                  <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
-                    <TabList class="grid grid-cols-4 gap-6">
-                      <Tab v-for="image in product.images" :key="image.id" class="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4" v-slot="{ selected }">
-                        <span class="sr-only">{{ image.name }}</span>
-                        <span class="absolute inset-0 overflow-hidden rounded-md">
-                          <img :src="image.filepath" alt="" class="h-50[vh] w-full object-cover object-center" />
-                        </span>
-                        <span :class="[selected ? 'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']" aria-hidden="true" />
-                      </Tab>
-                    </TabList>
-                  </div>
-        
-                  <TabPanels class="aspect-h-1 aspect-w-1 w-full">
-                    <TabPanel v-for="image in product.images" :key="image.id">
-                      <img :src="image.filepath" :alt="image.alt" class="max-h-[65vh] w-full object-cover object-center sm:rounded-lg" />
-                    </TabPanel>
-                  </TabPanels>
-                </TabGroup>
-        
-                <!-- Product info -->
-                <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-                  <h1 class="text-5xl font-bold tracking-tight text-gray-900">{{ product.name }}</h1>
-        
-                  <div class="mt-3">
-                    <h2 class="sr-only">Product information</h2>
-                    <p class="text-3xl tracking-tight text-gray-900">{{ product.price }}</p>
-                  </div>
-        
-                  <!-- Reviews -->
-                  <div class="mt-3">
-                    <h3 class="sr-only">Reviews</h3>
-                    <div class="flex items-center">
-                      <div class="flex items-center">
-                        <StarIcon v-for="rating in [0, 1, 2, 3, 4]" :key="rating" :class="[product.rating > rating ? 'text-indigo-500' : 'text-gray-300', 'h-5 w-5 flex-shrink-0']" aria-hidden="true" />
-                      </div>
-                      <p class="sr-only">{{ product.rating }} out of 5 stars</p>
-                    </div>
-                  </div>
-        
-                  <div class="mt-6">
-                    <h3 class="sr-only">Description</h3>
-        
-                    <div class="space-y-6 text-base text-gray-700" v-html="product.description" />
-                  </div>
-        
-                  <form class="mt-6">
-                    <!-- Colors -->
-                    <!-- <div>
+  <GuestLayout>
+    <div class="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+    <div class="mx-4 md:mx-10">
+      <div class="w-full md:p-10">
+        <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
+          <!-- Image gallery -->
+          <!-- {{ product.images }} -->
+          <TabGroup as="div" class="flex flex-col-reverse">
+            <!-- Image selector -->
+            <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
+              <TabList class="grid grid-cols-4 gap-6">
+                <Tab v-for="image in product.images" :key="image.id"
+                  class="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
+                  v-slot="{ selected }">
+                  <span class="sr-only">{{ image.name }}</span>
+                  <span class="absolute inset-0 overflow-hidden rounded-md">
+                    <img :src="image.filepath" alt="" class="h-50[vh] w-full object-cover object-center" />
+                  </span>
+                  <span
+                    :class="[selected ? 'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
+                    aria-hidden="true" />
+                </Tab>
+              </TabList>
+            </div>
+
+            <TabPanels class="aspect-h-1 aspect-w-1 w-full">
+              <TabPanel v-for="image in product.images" :key="image.id">
+                <img :src="image.filepath" :alt="image.alt"
+                  class="max-h-[65vh] w-full object-cover object-center sm:rounded-lg" />
+              </TabPanel>
+            </TabPanels>
+          </TabGroup>
+
+          <!-- Product info -->
+          <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
+            <h1 class="text-5xl font-bold tracking-tight text-gray-900">{{ product.name }}</h1>
+
+            <div class="mt-3">
+              <h2 class="sr-only">Product information</h2>
+              <p class="text-3xl tracking-tight text-gray-900">{{ product.price }}</p>
+            </div>
+
+            <!-- Reviews -->
+            <div class="mt-3">
+              <h3 class="sr-only">Reviews</h3>
+              <div class="flex items-center">
+                <div class="flex items-center">
+                  <StarIcon v-for="rating in [0, 1, 2, 3, 4]" :key="rating"
+                    :class="[product.rating > rating ? 'text-indigo-500' : 'text-gray-300', 'h-5 w-5 flex-shrink-0']"
+                    aria-hidden="true" />
+                </div>
+                <p class="sr-only">{{ product.rating }} out of 5 stars</p>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <h3 class="sr-only">Description</h3>
+              <div class="space-y-6 text-base text-gray-700" v-html="product.description" />
+            </div>
+
+            <form class="mt-6">
+              <div class="flex space-x-2">
+                <div v-for="feature in product.features" class="py-1 px-2  text-xs font-bold text-white  rounded-xl"
+                  :style="`background-color: #${feature.color};`">
+                  {{ feature.name }}
+                </div>
+              </div>
+              <!-- <div>
                       <h3 class="text-sm font-medium text-gray-600">Color</h3>
         
                       <fieldset aria-label="Choose a color" class="mt-2">
@@ -132,42 +128,47 @@ const product = {
                         </RadioGroup>
                       </fieldset>
                     </div> -->
-        
-                    <div class="mt-10 flex">
-                      <button type="submit" class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-black px-8 py-3 text-base font-medium text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Reservar</button>
-        
-                      <button type="button" class="ml-4 flex items-center justify-center rounded-md px-3 py-3 text-gray-400 hover:bg-gray-100 hover:text-gray-500">
-                        <HeartIcon class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                        <span class="sr-only">Add to favorites</span>
-                      </button>
-                    </div>
-                  </form>
-        
-                  <section aria-labelledby="details-heading" class="mt-12">
-                    <h2 id="details-heading" class="sr-only">Additional details</h2>
-        
-                    <div class="divide-y divide-gray-200 border-t">
-                      <Disclosure as="div" v-for="detail in product.details" :key="detail.name" v-slot="{ open }">
-                        <h3>
-                          <DisclosureButton class="group relative flex w-full items-center justify-between py-6 text-left">
-                            <span :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{ detail.name }}</span>
-                            <span class="ml-6 flex items-center">
-                              <PlusIcon v-if="!open" class="block h-6 w-6 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
-                              <MinusIcon v-else class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500" aria-hidden="true" />
-                            </span>
-                          </DisclosureButton>
-                        </h3>
-                        <DisclosurePanel as="div" class="prose prose-sm pb-6">
-                          <ul role="list">
-                            <li v-for="item in detail.items" :key="item">{{ item }}</li>
-                          </ul>
-                        </DisclosurePanel>
-                      </Disclosure>
-                    </div>
-                  </section>
-                </div>
+
+              <div class="mt-10 flex">
+                <button type="submit"
+                  class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-black px-8 py-3 text-base font-medium text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Reservar</button>
+
+                <button type="button"
+                  class="ml-4 flex items-center justify-center rounded-md px-3 py-3 text-gray-400 hover:bg-gray-100 hover:text-gray-500">
+                  <HeartIcon class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                  <span class="sr-only">Add to favorites</span>
+                </button>
               </div>
-            </div>
+            </form>
+
+            <section aria-labelledby="details-heading" class="mt-12">
+              <h2 id="details-heading" class="sr-only">Additional details</h2>
+
+              <div class="divide-y divide-gray-200 border-t">
+                <Disclosure as="div" v-for="detail in product.details" :key="detail.name" v-slot="{ open }">
+                  <h3>
+                    <DisclosureButton class="group relative flex w-full items-center justify-between py-6 text-left">
+                      <span :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{ detail.name
+                        }}</span>
+                      <span class="ml-6 flex items-center">
+                        <PlusIcon v-if="!open" class="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                          aria-hidden="true" />
+                        <MinusIcon v-else class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                          aria-hidden="true" />
+                      </span>
+                    </DisclosureButton>
+                  </h3>
+                  <DisclosurePanel as="div" class="prose prose-sm pb-6">
+                    <ul role="list">
+                      <li v-for="item in detail.items" :key="item">{{ item }}</li>
+                    </ul>
+                  </DisclosurePanel>
+                </Disclosure>
+              </div>
+            </section>
           </div>
-    </GuestLayout>
+        </div>
+      </div>
+    </div>
+  </GuestLayout>
 </template>
