@@ -29,7 +29,7 @@ const product = {
   name: props.service.title,
   price: USDollar.format(props.service.price),
   rating: 4,
-  images: props.service.images,
+  images: ['baru-1.webp', 'baru-2.webp', 'baru-3.webp'],
   features: props.service.features,
   description: props.service.description,
   details: [
@@ -64,7 +64,7 @@ const product = {
                   v-slot="{ selected }">
                   <span class="sr-only">{{ image.name }}</span>
                   <span class="absolute inset-0 overflow-hidden rounded-md">
-                    <img :src="image.filepath" alt="" class="h-50[vh] w-full object-cover object-center" />
+                    <img :src="'/images/productos/'+image" alt="" class="h-50[vh] w-full object-cover object-center" />
                   </span>
                   <span
                     :class="[selected ? 'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
@@ -75,7 +75,7 @@ const product = {
 
             <TabPanels class="aspect-h-1 aspect-w-1 w-full">
               <TabPanel v-for="image in product.images" :key="image.id">
-                <img :src="image.filepath" :alt="image.alt"
+                <img :src="'/images/productos/'+image" :alt="image.alt"
                   class="max-h-[65vh] w-full object-cover object-center sm:rounded-lg" />
               </TabPanel>
             </TabPanels>

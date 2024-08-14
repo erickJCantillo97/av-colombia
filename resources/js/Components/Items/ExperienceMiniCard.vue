@@ -3,7 +3,7 @@
     :href="route('show.services', product.slug)"
         class="flex flex-col shadow-slate-400 shadow-lg inset-0 z-10 flex-shrink-0  h-full  rounded-tr-[3rem] rounded-bl-[3rem]  bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] md:scale-90 hover:scale-100">
             <div class="flex flex-col">
-                <img :src="currentImage.filepath" :alt="product.imageAlt"
+                <img :src="'/images/productos/'+currentImage" :alt="product.imageAlt"
                     class="h-48 w-full object-cover object-center z-10 rounded-tr-[3rem] rounded-bl-[3rem] " />
                 <div class="h-32 py-4 px-2">
                     <h1 class=" md:text-lg font-bold capitalize w-full line-clamp-3">
@@ -70,16 +70,19 @@ const USDollar = new Intl.NumberFormat("es-CO", {
     maximumFractionDigits: 0,
 });
 
+const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
 
-const currentImage = ref(props.product.images[0])
+
+const randomIndex = Math.floor(Math.random() * 3);
+const currentImage = ref(images.value[randomIndex]);
+
 const intervalId = ref()
 
 const changeImage = () =>  {
-    var nextImageIndex = (props.product.images.indexOf(currentImage.value) + 1) % props.product.images.length;
+    var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
     // console.error(nextImageIndex);
     
-    currentImage.value = props.product.images[nextImageIndex];
-      console.table({img: currentImage.value, index: nextImageIndex});
+    currentImage.value = images.value[nextImageIndex];
 }
 
 onMounted(() => {
