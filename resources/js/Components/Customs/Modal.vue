@@ -46,7 +46,7 @@ const props = defineProps({
     }
 })
 
-const visible = defineModel('visible')
+const visible = defineModel()
 </script>
 
 <template>
@@ -80,7 +80,7 @@ const visible = defineModel('visible')
         </template> -->
         <template #default>
             <div class="h-full">
-                <slot name="body" />
+                <slot />
             </div>
         </template>
         <template #footer v-if="footer">

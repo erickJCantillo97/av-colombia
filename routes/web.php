@@ -24,7 +24,12 @@ Route::middleware([
     })->name('dashboard');
 
     Route::resource('services', ServiceController::class);
+
+    Route::get('portafolio', function () {
+        return Inertia::render('Portafolio/Index');
+    })->name('portafolio');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
+

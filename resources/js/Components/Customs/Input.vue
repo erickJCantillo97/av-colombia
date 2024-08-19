@@ -392,9 +392,9 @@ defineEmits(['valueChange'])
                         header: '!h-min !py-0.5'
                     }" />
                 <span v-else-if="type == 'checkbox'">
-                    <div class="w-[12vw]">
+                    <div class="w-[12vw] flex items-center">
                         <Checkbox v-model="input" :inputId :name :value :binary />
-                        <label class="p-0 ml-2 -mb-0.5">{{ checkboxLabel }}</label>
+                        <label class="p-0 ml-2 -mb-0.5" :for="inputId">{{ checkboxLabel }}</label>
                     </div>
                 </span>
                 <span v-else-if="type == 'groupcheckbox'">
