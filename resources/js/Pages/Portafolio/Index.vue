@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="h-[99vh] overflow-y-auto py-1">
-        <div class="px-4 md:px-10 pt-14 md:pt-24">
+        <div class="px-4 md:px-10 pt-14 md:pt-16">
             <ol class="flex items-center whitespace-nowrap">
                 <li class="inline-flex items-center">
                     <a class="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500"
@@ -32,7 +32,7 @@
                     Cartagena
                 </li>
             </ol>
-            <div class="w-full flex mt-4 md:mt-12">
+            <div class="w-full flex mt-4 md:mt-8">
                 <div class="w-1/6 p-4 hidden md:block">
                     <div>
                         <h4 class="font-bold text-lg">
@@ -79,17 +79,9 @@
                             <strong>{{services.length}}</strong> Resultados
                         </h3>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[40vh] overflow-x-auto">
-                        <div v-for="service in services"
-                            :style="`background-image: url('/images/productos/${currentImage}');background-position:center;background-size:cover`"
-                            class="h-50 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]" @click="productSelection(service)">
-
-                            <div class="flex flex-col justify-between h-full px-10 ">
-                                <h3 class="text-right text-white text-2xl font-bold p-2">{{ USDollar.format(service.price) }}</h3>
-                                <h4 class="text-white text-3xl font-extrabold mb-2 bg-gray-500/20">{{ service.title }}
-                                </h4>
-                            </div>
-                        </div>
+                    <div class="grid grid-cols-1 snap-y snap-mandatory md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[65vh] overflow-y-auto">
+                        <Card class="h-64 w-full snap-start"  :service v-for="service in services" @click="productSelection(service)" />
+                        
                     </div>
                 </div>
             </div>
@@ -142,6 +134,8 @@
                     </div>
                   </section>
                 <div class="flex flex-col space-y-2">
+                    
+                    <Input label="Fecha de Reserva" class="w-full" type="date"/>
                     <div class="flex flex-col md:flex-row justify-between  md:space-x-4">
                         <Input label="Adultos" class="w-full" v-model="adultos"  type="number"/>
                         <Input label="Niños"  class="w-full" type="number"/>
@@ -164,6 +158,7 @@ import { Head } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
+import Card from './Card.vue';
 
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
 

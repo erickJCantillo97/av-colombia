@@ -1,312 +1,69 @@
 <template>
-    <div class="px-6">
-        <a class="flex-none text-xl font-semibold dark:text-white" href="#" aria-label="Brand">AV COLOMBIA</a>
-    </div>
-    <nav class="hs-accordion-group p-6 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
+
+    <nav class="hs-accordion-group px-2 w-full flex flex-col flex-wrap justify-between h-full" data-hs-accordion-always-open>
+        <div>
+           <div class="p-6">
+            <a class="flex-none text-xl font-semibold dark:text-white" href="#" aria-label="Brand">AV COLOMBIA</a>
+        </div>
         <ul class="space-y-1.5">
             <li>
-                <Link class="flex items-center gap-x-3.5 py-2 px-2.5  text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-700 dark:text-white"
-                    :href="route('dashboard')" :class="route().current() == 'dashboard' ? 'bg-black text-white':'hover:bg-gray-100'">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                        <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
-                    Dashboard
+                <Link
+                    class="flex items-center gap-x-3.5 py-2 px-2.5  text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-700 dark:text-white"
+                    :href="route('dashboard')"
+                    :class="route().current() == 'dashboard' ? 'bg-black text-white' : 'hover:bg-gray-100'">
+                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                Dashboard
                 </Link>
             </li>
 
-            <!-- <li class="hs-accordion" id="users-accordion">
-                <button type="button"
-                    class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300 dark:hs-accordion-active:text-white">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                    Users
-
-                    <svg class="hs-accordion-active:block ms-auto hidden size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m18 15-6-6-6 6" />
-                    </svg>
-
-                    <svg class="hs-accordion-active:hidden ms-auto block size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m6 9 6 6 6-6" />
-                    </svg>
-                </button>
-
-                <div id="users-accordion"
-                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden">
-                    <ul class="hs-accordion-group ps-3 pt-2" data-hs-accordion-always-open>
-                        <li class="hs-accordion" id="users-accordion-sub-1">
-                            <button type="button"
-                                class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300 dark:hs-accordion-active:text-white">
-                                Sub Menu 1
-
-                                <svg class="hs-accordion-active:block ms-auto hidden size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="m18 15-6-6-6 6" />
-                                </svg>
-
-                                <svg class="hs-accordion-active:hidden ms-auto block size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="m6 9 6 6 6-6" />
-                                </svg>
-                            </button>
-
-                            <div id="users-accordion-sub-1"
-                                class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden">
-                                <ul class="pt-2 ps-2">
-                                    <li>
-                                        <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                            href="#">
-                                            Link 1
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                            href="#">
-                                            Link 2
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                            href="#">
-                                            Link 3
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="hs-accordion" id="users-accordion-sub-2">
-                            <button type="button"
-                                class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300 dark:hs-accordion-active:text-white">
-                                Sub Menu 2
-
-                                <svg class="hs-accordion-active:block ms-auto hidden size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="m18 15-6-6-6 6" />
-                                </svg>
-
-                                <svg class="hs-accordion-active:hidden ms-auto block size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="m6 9 6 6 6-6" />
-                                </svg>
-                            </button>
-
-                            <div id="users-accordion-sub-2"
-                                class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden ps-2">
-                                <ul class="pt-2 ps-2">
-                                    <li>
-                                        <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                            href="#">
-                                            Link 1
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                            href="#">
-                                            Link 2
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                            href="#">
-                                            Link 3
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="hs-accordion" id="account-accordion">
-                <button type="button"
-                    class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300 dark:hs-accordion-active:text-white">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="15" r="3" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M10 15H6a4 4 0 0 0-4 4v2" />
-                        <path d="m21.7 16.4-.9-.3" />
-                        <path d="m15.2 13.9-.9-.3" />
-                        <path d="m16.6 18.7.3-.9" />
-                        <path d="m19.1 12.2.3-.9" />
-                        <path d="m19.6 18.7-.4-1" />
-                        <path d="m16.8 12.3-.4-1" />
-                        <path d="m14.3 16.6 1-.4" />
-                        <path d="m20.7 13.8 1-.4" />
-                    </svg>
-                    Account
-
-                    <svg class="hs-accordion-active:block ms-auto hidden size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m18 15-6-6-6 6" />
-                    </svg>
-
-                    <svg class="hs-accordion-active:hidden ms-auto block size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m6 9 6 6 6-6" />
-                    </svg>
-                </button>
-
-                <div id="account-accordion"
-                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden">
-                    <ul class="pt-2 ps-2">
-                        <li>
-                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                href="#">
-                                Link 1
-                            </a>
-                        </li>
-                        <li>
-                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                href="#">
-                                Link 2
-                            </a>
-                        </li>
-                        <li>
-                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                href="#">
-                                Link 3
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="hs-accordion" id="projects-accordion">
-                <button type="button"
-                    class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300 dark:hs-accordion-active:text-white">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z" />
-                        <path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8" />
-                        <path d="M15 2v5h5" />
-                    </svg>
-                    Projects
-
-                    <svg class="hs-accordion-active:block ms-auto hidden size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m18 15-6-6-6 6" />
-                    </svg>
-
-                    <svg class="hs-accordion-active:hidden ms-auto block size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m6 9 6 6 6-6" />
-                    </svg>
-                </button>
-
-                <div id="projects-accordion"
-                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden">
-                    <ul class="pt-2 ps-2">
-                        <li>
-                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                href="#">
-                                Link 1
-                            </a>
-                        </li>
-                        <li>
-                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                href="#">
-                                Link 2
-                            </a>
-                        </li>
-                        <li>
-                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300"
-                                href="#">
-                                Link 3
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li><a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                    href="#">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                        <line x1="16" x2="16" y1="2" y2="6" />
-                        <line x1="8" x2="8" y1="2" y2="6" />
-                        <line x1="3" x2="21" y1="10" y2="10" />
-                        <path d="M8 14h.01" />
-                        <path d="M12 14h.01" />
-                        <path d="M16 14h.01" />
-                        <path d="M8 18h.01" />
-                        <path d="M12 18h.01" />
-                        <path d="M16 18h.01" />
-                    </svg>
-                    Calendar
-                </a></li> -->
             <li>
-                <Link class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                    :href="route('services.index')" :class="route().current() == 'services.index' ? 'bg-black text-white':'hover:bg-gray-100'">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                    </svg>
-                    Servicios
+                <Link
+                    class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
+                    :href="route('services.index')"
+                    :class="route().current() == 'services.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
+                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+                Servicios
                 </Link>
             </li>
-            <div class="flex  justify-end">
-                <div class="justify-end">
-                    <span href="#"
-                        class="text-base text-center  rounded-lg  group transition duration-75 flex items-center p-2 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300">
-                        <div class="space-x-2 items-center">
-                            <h2 class="font-bold text-sm">{{ $page.props.auth.user.name }}</h2>
-                            <h3 class="text-sm">(Cargo)</h3>
-                        </div>
-                    </span>
-                </div>
-                <ul class="space-y-1.5">
-                    <li>
-                        <Link class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm  rounded-lg dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                            :href="route('logout')"
-                            method="post"
-                            as="button">
-                            <svg class="text-black w-4 h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z"/>
-                            </svg>
-                        </Link>
-                    </li>
-                </ul>
+            <li>
+                <Link
+                    class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
+                    :href="route('users.index')"
+                    :class="route().current() == 'users.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
+                   <i class="fa-regular fa-user"></i>
+                Usuarios
+                </Link>
+            </li>
+
+        </ul> 
+        </div>
+        
+        <div class="flex w-full justify-between p-2">
+            <div class="text-xs flex flex-col text-left justify-end">
+                <h2 class="font-bold text-sm truncate text-nowrap w-52">{{ $page.props.auth.user.name }}</h2>
+                <h3 class="text-xs italic text-gray-600 w-52 text-nowrap truncate">
+                    {{ 
+                        $page.props.auth.user.name == 'Brian' ? 'Administrador AV Colombia' : 'Hotel'
+                     }}
+                </h3>
             </div>
-        </ul>
+
+            <Link class="" :href="route('logout')" method="post" v-tooltip.top="'Cerrar sesión'" as="button">
+            <svg class="text-gray-500 w-4 h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="24"
+                height="24" viewBox="0 0 512 512" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z" />
+            </svg>
+            </Link>
+        </div>
     </nav>
 
 </template>

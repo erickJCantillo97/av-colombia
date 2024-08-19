@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::resource('services', ServiceController::class);
+    Route::resource('users', UserController::class);
 
     Route::get('portafolio', function () {
         return Inertia::render('Portafolio/Index');

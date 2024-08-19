@@ -11,9 +11,10 @@ import Aura from "@primevue/themes/aura";
 import { definePreset } from "@primevue/themes";
 import ConfirmationService from "primevue/confirmationservice";
 import ToastService from 'primevue/toastservice';
+import VueDatePicker from '@vuepic/vue-datepicker';
 import AOS from 'aos'
 import Tooltip from 'primevue/tooltip';
-
+import '@vuepic/vue-datepicker/dist/main.css'
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
 
 const Noir = definePreset(Aura, {
@@ -111,6 +112,7 @@ createInertiaApp({
                 }
             })
             .directive('tooltip', Tooltip)
+            .component('VueDatePicker', VueDatePicker)
             .mount(el);
     },
     progress: {
