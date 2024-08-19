@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="h-[99vh] overflow-y-auto py-1">
-        <div class="px-1 md:px-10 pt-14 md:pt-24">
+        <div class="px-4 md:px-10 pt-14 md:pt-24">
             <ol class="flex items-center whitespace-nowrap">
                 <li class="inline-flex items-center">
                     <a class="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500"
@@ -76,7 +76,7 @@
                     </IconField>
                     <div class="w-full flex justify-between my-4">
                         <h3>
-                            <strong>10</strong> Resultados
+                            <strong>{{services.length}}</strong> Resultados
                         </h3>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[40vh] overflow-x-auto">
