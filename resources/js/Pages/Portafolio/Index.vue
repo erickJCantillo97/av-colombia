@@ -11,7 +11,7 @@
             <Button label="Reservas" text="" />
         </div>
         <div>
-            <Button label="Log In" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
+            <Button label="Entrar" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
         </div>
     </div>
     <div class="h-[90vh] overflow-y-auto py-1">
@@ -83,7 +83,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-4">
                         <div v-for="service in services"
                             :style="`background-image: url('/images/productos/${currentImage}');background-position:center;background-size:cover`"
-                            class="h-72 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]" @click="visible = true">
+                            class="h-72 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]" @click="productSelection(service)">
 
                             <div class="flex flex-col justify-between h-full px-10 ">
                                 <h3 class="text-right text-white text-2xl font-bold p-2">{{ USDollar.format(service.price) }}</h3>
@@ -97,7 +97,7 @@
         </div>
     </div>
 
-    <Modal v-model="visible" title="Producto 1" width="95vw">
+    <Modal v-model="visible" title="" width="95vw">
         <div class=" flex flex-col md:flex-row  w-full ">
             <div class="w-1/2">
                 <carousel :items-to-show="1.2" :wrapAround="true" :transition="500">
@@ -111,12 +111,46 @@
                     </template>
                   </carousel>
             </div>
-            <div class="w-1/2 p-4">
-                <h1 class="text-3xl font-bold">Producto 1</h1>
-                <p class="text-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.</p>
-                <div class="flex justify-between items-center">
-                    <h2 class="text-2xl font-bold">Precio: {{ USDollar.format(100000) }}</h2>
-                    <Button label="Reservar" />
+            <div class="w-1/2 p-4 space-y-4">
+                <h1 class="text-3xl font-bold">
+                    {{selectedProduct.title}}
+                </h1>
+               
+                <p class="text-md" v-html="selectedProduct.description"></p>
+                <section aria-labelledby="details-heading" class="mt-12">
+                    <h2 id="details-heading" class="sr-only">Additional details</h2>
+      
+                    <div class="divide-y divide-gray-200 border-t">
+                      <Disclosure as="div" v-for="detail in details" :key="detail.name" v-slot="{ open }">
+                        <h3>
+                          <DisclosureButton class="group relative flex w-full items-center justify-between py-6 text-left">
+                            <span :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{ detail.name
+                              }}</span>
+                            <span class="ml-6 flex items-center">
+                              <PlusIcon v-if="!open" class="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                                aria-hidden="true" />
+                              <MinusIcon v-else class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                                aria-hidden="true" />
+                            </span>
+                          </DisclosureButton>
+                        </h3>
+                        <DisclosurePanel as="div" class="prose prose-sm pb-6">
+                          <ul role="list">
+                            <li v-for="item in detail.items" :key="item">{{ item }}</li>
+                          </ul>
+                        </DisclosurePanel>
+                      </Disclosure>
+                    </div>
+                  </section>
+                <div class="flex flex-col space-y-2">
+                    <div class="flex justify-between space-x-4">
+                        <Input label="Adultos" class="w-full" v-model="adultos"  type="number"/>
+                        <Input label="Niños"  class="w-full" type="number"/>
+                    </div>
+                    <div class="flex w-full justify-end text-xl font-bold">
+                        <span>Precio Total <strong>{{USDollar.format(totalCost)}}</strong></span>
+                    </div>
+                    <Button label="Reservar"  class="w-full"/>
                 </div>
             </div>
         </div>
@@ -128,7 +162,9 @@ import Modal from '@/Components/Customs/Modal.vue';
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 import { Head } from '@inertiajs/vue3';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, computed, ref } from 'vue';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
+import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
 
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
 
@@ -145,7 +181,7 @@ const randomIndex = Math.floor(Math.random() * 3);
 const currentImage = ref(images.value[randomIndex]);
 
 const intervalId = ref(null);
-
+const adultos = ref(1);
 const changeImage = () => {
     var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
     // console.error(nextImageIndex);
@@ -153,6 +189,8 @@ const changeImage = () => {
     currentImage.value = images.value[nextImageIndex];
     console.log(currentImage.value);
 }
+
+
 
 
 getServices();
@@ -180,6 +218,33 @@ const USDollar = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
     maximumFractionDigits: 0,
+});
+
+const selectedProduct = ref(null);
+const details = ref([]);
+const productSelection = (product) => {
+    selectedProduct.value = product;
+    visible.value = true;
+    details.value =  [
+    {
+      name: 'Incluidos',
+      items: JSON.parse(selectedProduct.value.includes),
+    },
+    {
+      name: 'No Incluidos',
+      items: JSON.parse(selectedProduct.value.notIncludes),
+    },
+    // More sections...
+  ]
+}
+
+
+
+const totalCost = computed(() => {
+    if (selectedProduct.value) {
+        return selectedProduct.value.price * adultos.value;
+    }
+    return 0;
 });
 
 </script>
