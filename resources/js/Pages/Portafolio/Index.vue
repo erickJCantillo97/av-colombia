@@ -4,18 +4,17 @@
     <!-- <Header /> -->
     <div class="absolute top-0 w-full h-10  p-6 flex justify-between items-center">
         <div class="flex space-x-6 items-center">
-            <h1 class="font-extrabold">
+            <h1 class="font-extrabold truncate w-32 md:w-64">
                 {{ $page.props.auth.user.name }}.
             </h1>
-            <Button label="Inicio" text="" />
-            <Button label="Reservas" text="" />
+            
         </div>
         <div>
             <Button label="Entrar" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
         </div>
     </div>
-    <div class="h-[90vh] overflow-y-auto py-1">
-        <div class="px-10 py-24">
+    <div class="h-[99vh] overflow-y-auto py-1">
+        <div class="px-1 md:px-10 pt-14 md:pt-24">
             <ol class="flex items-center whitespace-nowrap">
                 <li class="inline-flex items-center">
                     <a class="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500"
@@ -33,8 +32,8 @@
                     Cartagena
                 </li>
             </ol>
-            <div class="w-full flex mt-12">
-                <div class="w-1/6 p-4">
+            <div class="w-full flex mt-4 md:mt-12">
+                <div class="w-1/6 p-4 hidden md:block">
                     <div>
                         <h4 class="font-bold text-lg">
                             Categorias
@@ -80,10 +79,10 @@
                             <strong>10</strong> Resultados
                         </h3>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[40vh] overflow-x-auto">
                         <div v-for="service in services"
                             :style="`background-image: url('/images/productos/${currentImage}');background-position:center;background-size:cover`"
-                            class="h-72 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]" @click="productSelection(service)">
+                            class="h-50 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]" @click="productSelection(service)">
 
                             <div class="flex flex-col justify-between h-full px-10 ">
                                 <h3 class="text-right text-white text-2xl font-bold p-2">{{ USDollar.format(service.price) }}</h3>
@@ -99,7 +98,7 @@
 
     <Modal v-model="visible" title="" width="95vw">
         <div class=" flex flex-col md:flex-row  w-full ">
-            <div class="w-1/2">
+            <div class="">
                 <carousel :items-to-show="1.2" :wrapAround="true" :transition="500">
                     <slide v-for="image in images" :key="image">
                       <img  :src="'/images/productos/'+image" alt="" class="w-full h-full object-cover carousel__item">
@@ -111,7 +110,7 @@
                     </template>
                   </carousel>
             </div>
-            <div class="w-1/2 p-4 space-y-4">
+            <div class=" p-4 space-y-4">
                 <h1 class="text-3xl font-bold">
                     {{selectedProduct.title}}
                 </h1>
@@ -143,7 +142,7 @@
                     </div>
                   </section>
                 <div class="flex flex-col space-y-2">
-                    <div class="flex justify-between space-x-4">
+                    <div class="flex flex-col md:flex-row justify-between  md:space-x-4">
                         <Input label="Adultos" class="w-full" v-model="adultos"  type="number"/>
                         <Input label="Niños"  class="w-full" type="number"/>
                     </div>
