@@ -7,7 +7,7 @@
             <h1 class="font-extrabold truncate w-32 md:w-64">
                 {{ $page.props.auth.user.name }}.
             </h1>
-            
+
         </div>
         <div>
             <Button label="Entrar" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
@@ -76,74 +76,86 @@
                     </IconField>
                     <div class="w-full flex justify-between my-4">
                         <h3>
-                            <strong>{{services.length}}</strong> Resultados
+                            <strong>{{ services.length }}</strong> Resultados
                         </h3>
                     </div>
-                    <div class="grid grid-cols-1 snap-y snap-mandatory md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[65vh] overflow-y-auto">
-                        <Card class="h-64 w-full snap-start"  :service v-for="service in services" @click="productSelection(service)" />
-                        
+                    <div
+                        class="grid grid-cols-1 snap-y snap-mandatory md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[65vh] overflow-y-auto">
+                        <Card class="h-64 w-full snap-start" :service v-for="service in services"
+                            @click="productSelection(service)" />
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <FsLightbox :toggler="toggler" :sources="[
+        '/images/productos/baru-1.webp',
+        '/images/productos/baru-2.webp',
+        '/images/productos/baru-3.webp',
+    ]" />
     <Modal v-model="visible" title="" width="95vw">
         <div class=" flex flex-col md:flex-row  w-full ">
             <div class="">
                 <carousel :items-to-show="1.2" :wrapAround="true" :transition="500">
                     <slide v-for="image in images" :key="image">
-                      <img  :src="'/images/productos/'+image" alt="" class="w-full h-full object-cover carousel__item">
+                        <img :src="'/images/productos/' + image" alt="" @click="toggler = !toggler"
+                            class="w-full h-full object-cover carousel__item">
                     </slide>
-                
+
                     <template #addons>
-                      <navigation />
-                      <pagination />
+                        <navigation />
+                        <pagination />
                     </template>
-                  </carousel>
+                </carousel>
             </div>
             <div class=" p-4 space-y-4">
                 <h1 class="text-3xl font-bold">
-                    {{selectedProduct.title}}
+                    {{ selectedProduct.title }}
                 </h1>
-               
+
                 <p class="text-md" v-html="selectedProduct.description"></p>
                 <section aria-labelledby="details-heading" class="mt-12">
                     <h2 id="details-heading" class="sr-only">Additional details</h2>
-      
+
                     <div class="divide-y divide-gray-200 border-t">
-                      <Disclosure as="div" v-for="detail in details" :key="detail.name" v-slot="{ open }">
-                        <h3>
-                          <DisclosureButton class="group relative flex w-full items-center justify-between py-6 text-left">
-                            <span :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{ detail.name
-                              }}</span>
-                            <span class="ml-6 flex items-center">
-                              <PlusIcon v-if="!open" class="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
-                                aria-hidden="true" />
-                              <MinusIcon v-else class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
-                                aria-hidden="true" />
-                            </span>
-                          </DisclosureButton>
-                        </h3>
-                        <DisclosurePanel as="div" class="prose prose-sm pb-6">
-                          <ul role="list">
-                            <li v-for="item in detail.items" :key="item">{{ item }}</li>
-                          </ul>
-                        </DisclosurePanel>
-                      </Disclosure>
+                        <Disclosure as="div" v-for="detail in details" :key="detail.name" v-slot="{ open }">
+                            <h3>
+                                <DisclosureButton
+                                    class="group relative flex w-full items-center justify-between py-6 text-left">
+                                    <span
+                                        :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{
+                                            detail.name
+                                        }}</span>
+                                    <span class="ml-6 flex items-center">
+                                        <PlusIcon v-if="!open"
+                                            class="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                                            aria-hidden="true" />
+                                        <MinusIcon v-else
+                                            class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                                            aria-hidden="true" />
+                                    </span>
+                                </DisclosureButton>
+                            </h3>
+                            <DisclosurePanel as="div" class="prose prose-sm pb-6">
+                                <ul role="list">
+                                    <li v-for="item in detail.items" :key="item">{{ item }}</li>
+                                </ul>
+                            </DisclosurePanel>
+                        </Disclosure>
                     </div>
-                  </section>
+                </section>
                 <div class="flex flex-col space-y-2">
-                    
-                    <Input label="Fecha de Reserva" class="w-full" type="date"/>
+
+                    <Input label="Fecha de Reserva" class="w-full" type="date" />
                     <div class="flex flex-col md:flex-row justify-between  md:space-x-4">
-                        <Input label="Adultos" class="w-full" v-model="adultos"  type="number"/>
-                        <Input label="Niños"  class="w-full" type="number"/>
+                        <Input label="Adultos" class="w-full" v-model="adultos" type="number" />
+                        <Input label="Niños" class="w-full" type="number" />
                     </div>
                     <div class="flex w-full justify-end text-xl font-bold">
-                        <span>Precio Total <strong>{{USDollar.format(totalCost)}}</strong></span>
+                        <span>Precio Total <strong>{{ USDollar.format(totalCost) }}</strong></span>
                     </div>
-                    <Button label="Reservar"  class="w-full"/>
+                    <Button label="Reservar" class="w-full" />
                 </div>
             </div>
         </div>
@@ -158,6 +170,7 @@ import { Head } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
+import FsLightbox from "fslightbox-vue/v3";
 import Card from './Card.vue';
 
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
@@ -168,7 +181,7 @@ const getServices = () => {
         services.value = response.data.services.slice(0, 5);
     });
 }
-
+const toggler = ref(false);
 const visible = ref(false);
 
 const randomIndex = Math.floor(Math.random() * 3);
@@ -219,17 +232,17 @@ const details = ref([]);
 const productSelection = (product) => {
     selectedProduct.value = product;
     visible.value = true;
-    details.value =  [
-    {
-      name: 'Incluidos',
-      items: JSON.parse(selectedProduct.value.includes),
-    },
-    {
-      name: 'No Incluidos',
-      items: JSON.parse(selectedProduct.value.notIncludes),
-    },
-    // More sections...
-  ]
+    details.value = [
+        {
+            name: 'Incluidos',
+            items: JSON.parse(selectedProduct.value.includes),
+        },
+        {
+            name: 'No Incluidos',
+            items: JSON.parse(selectedProduct.value.notIncludes),
+        },
+        // More sections...
+    ]
 }
 
 
@@ -245,42 +258,42 @@ const totalCost = computed(() => {
 
 <style scoped>
 .carousel__slide {
-  padding: 5px;
+    padding: 5px;
 }
 
 .carousel__viewport {
-  perspective: 2000px;
+    perspective: 2000px;
 }
 
 .carousel__track {
-  transform-style: preserve-3d;
+    transform-style: preserve-3d;
 }
 
 .carousel__slide--sliding {
-  transition: 0.5s;
+    transition: 0.5s;
 }
 
 .carousel__slide {
-  opacity: 0.9;
-  transform: rotateY(-20deg) scale(0.9);
+    opacity: 0.9;
+    transform: rotateY(-20deg) scale(0.9);
 }
 
-.carousel__slide--active ~ .carousel__slide {
-  transform: rotateY(20deg) scale(0.9);
+.carousel__slide--active~.carousel__slide {
+    transform: rotateY(20deg) scale(0.9);
 }
 
 .carousel__slide--prev {
-  opacity: 1;
-  transform: rotateY(-10deg) scale(0.95);
+    opacity: 1;
+    transform: rotateY(-10deg) scale(0.95);
 }
 
 .carousel__slide--next {
-  opacity: 1;
-  transform: rotateY(10deg) scale(0.95);
+    opacity: 1;
+    transform: rotateY(10deg) scale(0.95);
 }
 
 .carousel__slide--active {
-  opacity: 1;
-  transform: rotateY(0) scale(1.1);
+    opacity: 1;
+    transform: rotateY(0) scale(1.1);
 }
 </style>

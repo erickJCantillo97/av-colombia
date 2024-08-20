@@ -1,8 +1,6 @@
 <template>
-    <div 
-        :style="`background-image: url('/images/productos/${currentImage}');background-position:center;background-size:cover`"
-        class="min-h-50 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]"
-       >
+    <div :style="`background-image: url('/images/productos/${currentImage}');background-position:center;background-size:cover`"
+        class="min-h-50 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]">
 
         <div class="flex flex-col justify-between h-full px-10 ">
             <h3 class="text-right text-white text-2xl font-bold p-2">{{ USDollar.format(service.price) }}</h3>
