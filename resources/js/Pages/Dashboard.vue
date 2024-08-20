@@ -1,18 +1,49 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { Link } from '@inertiajs/vue3';
+import axios from 'axios';
+import { ref } from 'vue';
+
+const services = ref([]);
+const getServices = () => {
+    axios.get(route('get.services')).then(response => {
+        services.value = response.data.services.slice(0, 5);
+    });
+}
+getServices();
+
 </script>
 
 <template>
     <AppLayout title="Dashboard">
         <div class="py-4">
-            <div class="w-full mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="w-full mx-auto sm:px-6 lg:px-8 space-y-4">
+                <div class="bg-white overflow-hidden  sm:rounded-lg flex justify-between items-center px-8">
                     <h1>
-                        Bienvenido a tu panel de control <strong>
+                        Hola <strong class="uppercase">
                             {{ $page.props.auth.user.name }}
-                        </strong>
+                        </strong>, Bienvenido a tu panel de control
                     </h1>
-
+                    <Link :href="route('portafolio')">
+                    <Button label="Ir al Portafolio" />
+                    </Link>
+                </div>
+                <div class=" p-4 rounded-lg grid grid-cols-2 gap-4">
+                    <div class="shadow-md rounded-md p-4 text-center ">
+                        <h2>Actual Tiene</h2>
+                        <h3 class="text-xl font-bold">
+                            {{ services.length }} servicios
+                        </h3>
+                    </div>
+                    <div class="shadow-md rounded-md p-4 text-center ">
+                        <h2>Tu Rol es</h2>
+                        <h3 class="text-xl font-bold" v-if="$page.props.auth.user.name != 'Brian'">
+                            Vendedor
+                        </h3>
+                        <h3 class="text-xl font-bold" v-else>
+                            Administrador
+                        </h3>
+                    </div>
                 </div>
             </div>
         </div>
