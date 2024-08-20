@@ -25,12 +25,12 @@ getServices();
                         </strong>, Bienvenido a tu panel de control
                     </h1>
                     <Link :href="route('portafolio')">
-                    <Button label="Ir al Portafolio" />
+                    <Button label="Ver Portafolio" />
                     </Link>
                 </div>
                 <div class=" p-4 rounded-lg grid grid-cols-2 gap-4">
                     <div class="shadow-md rounded-md p-4 text-center ">
-                        <h2>Actual Tiene</h2>
+                        <h2>Actualmente Tiene</h2>
                         <h3 class="text-xl font-bold">
                             {{ services.length }} servicios
                         </h3>
