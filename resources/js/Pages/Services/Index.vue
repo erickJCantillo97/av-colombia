@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Services">
         <div class="h-[99vh]">
-            <Datatable :columnas="columns" :data="services" routecreate="services.create" :actions="buttons"
+            <Datatable :add :columnas="columns" :data="services" routecreate="services.create" :actions="buttons"
                 title="Servicios">
             </Datatable>
         </div>
@@ -15,19 +15,18 @@
         <template #icon>
             <i class="fa-solid fa-plus" />
         </template>
-        <template #body>
-            <div class="grid grid-cols-2 gap-4 my-4">
-                <Input label="Titulo" v-model="form.title" />
-                <Input label="Precio" type="number" currency="COP" :minFractionDigits="2" :maxFractionDigits="2"
+        <h3 class="text-2xl font-bold my-4">
+            Agregar Tarifa a <strong>
+                {{ form.title }}
+            </strong>
+        </h3>
+                <Input label="Nueva Tarifa" type="number" currency="COP" :minFractionDigits="2" :maxFractionDigits="2"
                     v-model="form.price" />
-            </div>
-            <Editor v-model="form.description" :key="editor" editorStyle="height: 120px" />
-
-            <div>
-                <label for="">Fotos</label>
-                <Input type="file-pond" v-model="files" />
-            </div>
-        </template>
+                    <div>
+                        <span class="italic text-sm mt-1">
+                            La tariafa Base  es de {{ COP.format(form.price) }}
+                        </span>
+                    </div>
         <template #footer>
             <Button @click="submit" title="Save" severity="success" label="Save" outlined icon="fa-solid fa-save"
                 class="!h-8" />
@@ -50,6 +49,19 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 
 const files = ref([])
+
+const add =  {
+    action: () => {
+        router.visit(route('services.create'))
+    },
+    
+}
+
+const COP = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+});
 
 const columns = [
     {

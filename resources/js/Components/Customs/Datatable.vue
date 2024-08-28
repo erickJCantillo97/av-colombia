@@ -15,6 +15,10 @@ const toast = useToast();
 const dt = ref()
 
 const props = defineProps({
+    add : {
+        type: Object,
+        default: null
+    },
     data: {
         type: Array,
         default: []
@@ -214,18 +218,10 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                         </p>
                         <slot name="title" />
                     </div>
-                    <span class="space-x-1">
-                        <slot name="buttonHeader" />
-                        <Button v-if="showAdd || routes?.store" v-tooltip.left="'Add'"
-                            @click="routes?.store ? open($event, {}, 'new') : $emit('addClick', $event)"
-                            severity="success" icon="fa-solid fa-plus" label="New" outlined />
-                    </span>
                 </span>
                 <div class="flex gap-2 w-full border border-gray-300 py-1.5 px-2 rounded-xl h-10 items-center">
-                    <Link :href="route(routecreate)">
-                    <Button v-tooltip.top="'Nuevo ' + title" @click="clearFilter()" text
+                    <Button v-tooltip.top="'Nuevo ' + title" v-if="add" @click="add.action($event)"  text
                         icon="fa-solid fa-plus text-sm" />
-                    </Link>
                     <Button v-tooltip.top="'Quitar Filteros'" @click="clearFilter()"
                         icon="fa-solid fa-filter-circle-xmark text-sm" text />
                     <IconField class="w-full flex items-center">

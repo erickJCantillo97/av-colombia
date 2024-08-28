@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Services">
         <div class="h-[99vh]">
-            <Datatable :columnas="columns" :data="users" routecreate="services.create" :actions="buttons"
+            <Datatable :columnas="columns" :add :data="users" routecreate="services.create" :actions="buttons"
                 title="Servicios">
             </Datatable>
         </div>
@@ -10,7 +10,7 @@
     <Modal v-model:visible="visible">
         <template #title>
             <span class="text-xl font-bold white-space-nowrap">
-                Agregar Servicio</span>
+                Agregar Usuario</span>
         </template>
         <template #icon>
             <i class="fa-solid fa-plus" />
@@ -18,8 +18,9 @@
             <div class="space-y-3">
                 <Input label="Nombre" v-model="form.name" />
                 <Input label="Email" v-model="form.email" />
+                <Input label="Rol" type="dropdown" :options="['ADMINISTRADOR', 'VENDEDOR', 'VISITANTE', 'SIN ROL']" v-model="form.rol" />
                 <Input label="Contraseña" type="password" v-model="form.password" />
-                <Input label="Confirmar contraseña" type="password" v-model="form.comfirmPassword" />
+                <Input label="Confirmar contraseña" type="password" v-model="form.password_confirmation" />
             </div>
         <template #footer>
             <Button @click="submit" title="Guardar" severity="success" label="Guardar" outlined icon="fa-solid fa-save"
@@ -42,7 +43,7 @@ import Input from '@/Components/Customs/Input.vue';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 
-const files = ref([])
+
 
 const columns = [
     {
@@ -67,21 +68,34 @@ const columns = [
 const toast = useToast()
 
 const confirm = useConfirm()
+
 const editor = ref(false)
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
-    comfirmPassword: '',
+    password_confirmation: '',
 });
 
 const visible = ref(false)
+
+const add =  {
+    action: () => {
+        form.reset();
+        editor.value = false;
+        visible.value = true
+    },
+    
+}
+
+
 const buttons = [
     
     {
         action: (data) => {
             visible.value = true
+            editor.value = true
             form.name = data.name
             form.email = data.email
           
@@ -124,7 +138,15 @@ const props = defineProps({
 });
 
 const submit = () => {
-
+    if(editor.value){
+        router.put(route('users.update', form.id), form)
+    }else{
+        router.post(route('users.store'), form, {
+            onSuccess: () => {
+                visible.value = false
+            }
+        })
+    }
 }
 
 </script>
