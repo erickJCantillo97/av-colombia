@@ -112,4 +112,14 @@ class ServiceController extends Controller
             return Back()->withErrors(['message' => 'No se puedo Eliminar']);
         }
     }
+
+    public function reservar(Request $request){
+        $validateData = $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'adultos' => 'required|numeric',
+            'boys' => 'required|numeric',
+            'date' => 'required|date',
+        ]);
+
+    }
 }

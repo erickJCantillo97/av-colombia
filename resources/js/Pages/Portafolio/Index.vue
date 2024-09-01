@@ -147,13 +147,13 @@
                 </section>
                 <div class="flex flex-col space-y-2">
 
-                    <Input label="Fecha de Reserva" class="w-full" type="date" />
+                    <Input label="Fecha de Reserva" v-model="form.date" class="w-full" type="date" />
                     <div class="flex flex-col md:flex-row justify-between  md:space-x-4">
-                        <Input label="Adultos" class="w-full" v-model="adultos" type="number" />
-                        <Input label="Niños" class="w-full" type="number" />
+                        <Input label="Adultos"  class="w-full" v-model="form.adultos" min="1" type="number" />
+                        <Input label="Niños" class="w-full" min="0" type="number" v-model="form.boys" />
                     </div>
                     <div class="flex w-full justify-end text-xl font-bold">
-                        <span>Precio Total <strong>{{ USDollar.format(totalCost) }}</strong></span>
+                        <span>Precio Total <strong>{{ USDollar.format(form.adultos * selectedProduct.price) }}</strong></span>
                     </div>
                     <Button label="Reservar" class="w-full" />
                 </div>
@@ -166,7 +166,7 @@ import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
@@ -186,15 +186,29 @@ const visible = ref(false);
 
 const randomIndex = Math.floor(Math.random() * 3);
 const currentImage = ref(images.value[randomIndex]);
+const form = useForm({
+    adultos: 1,
+    boys: '',
+    date: ''
+})
 
 const intervalId = ref(null);
-const adultos = ref(1);
+
+
 const changeImage = () => {
     var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
     // console.error(nextImageIndex);
 
     currentImage.value = images.value[nextImageIndex];
     console.log(currentImage.value);
+}
+
+const reservar = () => {
+    form.post(route('reservar'), {
+        onSuccess : () => {
+            console.log('reserva Realizada')
+        }
+    })
 }
 
 
@@ -227,7 +241,9 @@ const USDollar = new Intl.NumberFormat("es-CO", {
     maximumFractionDigits: 0,
 });
 
-const selectedProduct = ref(null);
+const selectedProduct = ref({
+    price: 0
+});
 const details = ref([]);
 const productSelection = (product) => {
     selectedProduct.value = product;
@@ -249,7 +265,7 @@ const productSelection = (product) => {
 
 const totalCost = computed(() => {
     if (selectedProduct.value) {
-        return selectedProduct.value.price * adultos.value;
+        return selectedProduct.value.price * form.adultos;
     }
     return 0;
 });

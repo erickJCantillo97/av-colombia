@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('custom_product_users', function (Blueprint $table) {
+        Schema::create('booking_services', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->double('custom_price');
-            $table->id('user_id');
+            $table->string('service');
             $table->uuid('service_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
+            $table->integer('adults');
+            $table->integer('boys');
+            $table->date('date');
+            $table->string('status')->default('reservation');
+            $table->string('payment')->default('pending');
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('custom_product_users');
+        Schema::dropIfExists('booking_services');
     }
 };

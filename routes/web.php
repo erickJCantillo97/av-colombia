@@ -30,6 +30,8 @@ Route::middleware([
     Route::get('portafolio', function () {
         return Inertia::render('Portafolio/Index');
     })->name('portafolio');
+
+    Route::get('reservar', [ServiceController::class , 'reservar'])->name('reservar');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
