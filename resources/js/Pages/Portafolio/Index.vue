@@ -149,11 +149,11 @@
 
                     <Input label="Fecha de Reserva" v-model="form.date" class="w-full" type="date" />
                     <div class="flex flex-col md:flex-row justify-between  md:space-x-4">
-                        <Input label="Adultos"  class="w-full" v-model="form.adultos" min="1" type="number" />
-                        <Input label="Niños" class="w-full" min="0" type="number" v-model="form.boys" />
+                        <Input label="Adultos"  class="w-full" v-model="form.adults" min="1" type="number" />
+                        <Input :label="'Niños'" class="w-full" min="0" type="number" v-model="form.boys" />
                     </div>
                     <div class="flex w-full justify-end text-xl font-bold">
-                        <span>Precio Total <strong>{{ USDollar.format(form.adultos * selectedProduct.price) }}</strong></span>
+                        <span>Precio Total <strong>{{ USDollar.format((form.adults * selectedProduct.adult_tarifa) + (form.boys * selectedProduct.boy_tarifa)) }}</strong></span>
                     </div>
                     <Button label="Reservar" class="w-full" />
                 </div>
@@ -187,7 +187,7 @@ const visible = ref(false);
 const randomIndex = Math.floor(Math.random() * 3);
 const currentImage = ref(images.value[randomIndex]);
 const form = useForm({
-    adultos: 1,
+    adults: 1,
     boys: '',
     date: ''
 })
@@ -265,7 +265,7 @@ const productSelection = (product) => {
 
 const totalCost = computed(() => {
     if (selectedProduct.value) {
-        return selectedProduct.value.price * form.adultos;
+        return selectedProduct.value.price * form.adults;
     }
     return 0;
 });

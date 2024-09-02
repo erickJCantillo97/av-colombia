@@ -16,17 +16,18 @@
             <i class="fa-solid fa-plus" />
         </template>
         <h3 class="text-2xl font-bold my-4">
-            Agregar Tarifa a <strong>
-                {{ form.title }}
-            </strong>
+            Agregar Tarifa a <strong>{{ service.title }}</strong>
         </h3>
-                <Input label="Nueva Tarifa" type="number" currency="COP" :minFractionDigits="2" :maxFractionDigits="2"
-                    v-model="form.price" />
-                    <div>
-                        <span class="italic text-sm mt-1">
-                            La tariafa Base  es de {{ COP.format(form.price) }}
-                        </span>
-                    </div>
+        <Input label="Tarifa para Adultos" type="number" currency="COP" :minFractionDigits="2" :maxFractionDigits="2"
+            v-model="form.adult_tarifa" />
+        <div class="italic text-xs mt-1 mb-4">
+            La tariafa Base es de {{ COP.format(service.adults_price) }}
+        </div>
+        <Input label="Tarifa para niños" type="number" currency="COP" :minFractionDigits="2" :maxFractionDigits="2"
+            v-model="form.boys_tarifa" />
+        <span class="italic text-xs mt-1">
+            La tariafa Base es de {{ COP.format(service.boys_price) }}
+        </span>
         <template #footer>
             <Button @click="submit" title="Save" severity="success" label="Save" outlined icon="fa-solid fa-save"
                 class="!h-8" />
@@ -50,11 +51,11 @@ import { useToast } from 'primevue/usetoast';
 
 const files = ref([])
 
-const add =  {
+const add = {
     action: () => {
         router.visit(route('services.create'))
     },
-    
+
 }
 
 const COP = new Intl.NumberFormat("es-CO", {
@@ -76,10 +77,30 @@ const columns = [
         filter: true,
     },
     {
-        header: 'Precio',
-        field: 'price',
+        header: 'Precio Adultos',
+        field: 'adults_price',
         type: 'currency',
         filter: true,
+    },
+    {
+        header: 'Tarifa Adultos',
+        field: 'adult_tarifa',
+        type: 'currency',
+        filter: true,
+        // visible: false
+    },
+    {
+        header: 'Precio Niños',
+        field: 'boys_price',
+        type: 'currency',
+        filter: true,
+    },
+    {
+        header: 'Tarifa Niños',
+        field: 'boy_tarifa',
+        type: 'currency',
+        filter: true,
+        // visible: false
     },
 
 ];
@@ -90,11 +111,12 @@ const confirm = useConfirm()
 const editor = ref(false)
 
 const form = useForm({
-    title: '',
-    description: '',
-    price: '',
-    images: []
+    service_id: '',
+    adult_tarifa: 0,
+    boys_tarifa: 0,
 });
+
+const service = ref({})
 
 const visible = ref(false)
 const buttons = [
@@ -109,10 +131,10 @@ const buttons = [
     {
         action: (data) => {
             visible.value = true
-            form.title = data.title
-            form.description = data.description
-            editor.value = data.id;
-            form.price = data.price
+            service.value = data
+            form.service_id = data.id
+            form.adult_tarifa = data.adult_tarifa
+            form.boys_tarifa = data.boy_tarifa
         },
         severity: 'secondary',
         icon: 'fa-solid fa-pencil text-sm',
@@ -152,13 +174,8 @@ const props = defineProps({
 });
 
 const submit = () => {
-    let data = [];
-    if (files.value) {
-        console.log(files.value)
-        files.value.getFiles().forEach((file) => data.push(file.file));
-    }
-    form.images = data;
-    form.post(route('services.store'), {
+    
+    form.post(route('custom.product'), {
         onSuccess: () => {
             visible.value = false
         }

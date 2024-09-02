@@ -22,13 +22,16 @@ class Service extends Model
         'title_en',
         'slug',
         'days',
+        'adults_price',
+        'boys_price',
         'description',
         'description_en',
-        'price',
         'custom_price',
         'includes',
         'notIncludes'
     ];
+
+    protected $appends = ['adult_tarifa', 'boy_tarifa'];
 
     public function getRouteKeyName(): string
     {
@@ -54,4 +57,28 @@ class Service extends Model
     {
         return $this->belongsToMany(Feature::class);
     }
+
+    public function bookingServices(): HasMany
+    {
+        return $this->hasMany(BookingService::class);
+    }
+
+    public function getAdultTarifaAttribute(){
+        if(auth()->user() == null){
+            return $this->adults_price;
+        }else if(auth()->user()->role == 'admin'){
+            return $this->adults_price;
+        }
+        
+        return CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->adult_tarifa ?? $this->adults_price;
+    }
+    public function getBoyTarifaAttribute(){
+        if(auth()->user() == null){
+            return $this->boys_price;
+        }else if(auth()->user()->role == 'admin'){
+            return $this->boys_price;
+        }
+        return CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->boys_tarifa ?? $this->boys_price;
+    }
+
 }

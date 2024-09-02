@@ -15,13 +15,17 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('service');
             $table->uuid('service_id');
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->integer('adults');
+            $table->double('adults_price');
+            $table->double('adult_tarifa');
             $table->integer('boys');
+            $table->double('boys_tarifa');
+            $table->double('boys_price');
             $table->date('date');
             $table->string('status')->default('reservation');
             $table->string('payment')->default('pending');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->timestamps();
         });
     }

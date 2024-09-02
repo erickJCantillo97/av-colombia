@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\BookingService;
 use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
+use App\Models\Service;
+use Exception;
 
 class BookingServiceController extends Controller
 {
@@ -29,7 +31,21 @@ class BookingServiceController extends Controller
      */
     public function store(StoreBookingServiceRequest $request)
     {
-        //
+        $validateData = $request->validated();
+        try{
+            $service = Service::find($validateData['service_id']);
+            $validateData['service'] = $service->title;
+            $validateData['adults_price'] = $service->adult_price;
+            $validateData['adult_tarifa'] = $service->adult_tarifa;
+            $validateData['boys_tarifa']  = $service->boys_tarifa;
+            $validateData['boys_price'] = $service->boys_price;
+            $validateData['user_id'] = auth()->user()->id;
+            $bookingService = BookingService::create($validateData);
+            return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $bookingService], 201);
+        }catch(Exception $e){
+            return response()->json(['message' => 'Error al guardar la reservación'], 500);
+        }
+
     }
 
     /**

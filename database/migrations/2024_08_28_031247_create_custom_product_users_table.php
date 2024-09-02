@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('custom_product_users', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->double('custom_price');
-            $table->id('user_id');
-            $table->uuid('service_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
+            $table->double('boys_tarifa');
+            $table->double('adult_tarifa');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('service_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

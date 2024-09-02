@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('days')->nullable();
             $table->text('description', 4000);
             $table->text('description_en', 4000)->nullable();
-            $table->double('price');
+            $table->double('adults_price');
+            $table->double('boys_price');
             $table->string('includes')->nullable();
             $table->string('notIncludes')->nullable();
-            $table->double('custom_price')->nullable();
             $table->timestamps();
         });
     }

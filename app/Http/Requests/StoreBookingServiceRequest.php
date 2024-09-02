@@ -22,7 +22,11 @@ class StoreBookingServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'service_id' => ['required', 'uuid'],
+            'adults' => ['required', 'integer'],
+            'boys' => ['required', 'integer'],
+            'date' => ['required', 'date', 'after_or_equals:today'],
+
         ];
     }
 }

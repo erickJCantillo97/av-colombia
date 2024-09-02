@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use App\Models\BookingService;
 use App\Models\Feature;
 use App\Models\Included;
 use Exception;
@@ -40,8 +41,10 @@ class ServiceController extends Controller
     public function create()
     {
         $features = Feature::orderBy('name')->get();
+        
         return Inertia::render('Services/Form', [
-            'features' => $features
+            'features' => $features,
+            'included' => Included::orderBy('name')->pluck('name')->toArray()
         ]);
     }
 
@@ -56,11 +59,11 @@ class ServiceController extends Controller
         }
 
         $service = Service::create($request->validated());
-        foreach ($request->features as $feature) {
-            $service->features()->attach(
-                Feature::firstOrCreate($feature)->id
-            );
-        }
+        // foreach ($request->features as $feature) {
+        //     $service->features()->attach(
+        //         Feature::firstOrCreate($feature)->id
+        //     );
+        // }
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $service->images()->create([
@@ -116,10 +119,13 @@ class ServiceController extends Controller
     public function reservar(Request $request){
         $validateData = $request->validate([
             'service_id' => 'required|exists:services,id',
-            'adultos' => 'required|numeric',
+            'adults' => 'required|numeric',
             'boys' => 'required|numeric',
             'date' => 'required|date',
         ]);
+        $validateData['user_id'] = auth()->user()->id;
+        $validateData['service'] = Service::find($validateData['service_id'])->title;
+        BookingService::create($validateData);
 
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -32,6 +33,8 @@ Route::middleware([
     })->name('portafolio');
 
     Route::get('reservar', [ServiceController::class , 'reservar'])->name('reservar');
+
+    Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

@@ -2,9 +2,9 @@
     <div :style="`background-image: url('/images/productos/${currentImage}');background-position:center;background-size:cover`"
         class="min-h-50 cursor-pointer w-full shadow-md z-10 rounded-tr-[3rem] rounded-bl-[3rem]">
 
-        <div class="flex flex-col justify-between h-full px-10 ">
-            <h3 class="text-right text-white text-2xl font-bold p-2">{{ USDollar.format(service.price) }}</h3>
-            <h4 class="text-white text-3xl font-extrabold mb-2 bg-gray-500/20">{{ service.title }}
+        <div class="flex flex-col justify-between h-full  ">
+            <h3 class="text-right text-white text-2xl font-bold p-2 pr-4">{{ USDollar.format(service.adult_tarifa) }}</h3>
+            <h4 class="text-white text-xl pl-6  font-extrabold w-full bg-gray-500/60 py-2 rounded-bl-[3rem]">{{ service.title }}
             </h4>
         </div>
     </div>
