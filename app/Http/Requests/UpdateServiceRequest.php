@@ -22,12 +22,18 @@ class UpdateServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:services,'.request('id'),
-            'title_en' => 'nullable|string|max:255|unique:services,'.request('id'),
+            'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
+            'images' => 'nullable|array',
+            'images.*' => 'nullable|image|max:8192',
             'description' => 'required|string|max:4000',
             'description_en' => 'nullable|string|max:4000',
-            'price' => 'required|numeric',
-            'custom_price' => 'nullable|numeric',
+            'boys_price' => 'required|numeric',
+            'adults_price' => 'required|numeric',
+            'days' => 'required|string',
+            'days.*' => 'required|numeric',
+            'includes' => 'nullable|string',
+            'notIncludes' => 'nullable|string',
         ];
     }
 }

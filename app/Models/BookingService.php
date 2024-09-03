@@ -13,6 +13,8 @@ class BookingService extends Model
 
     protected $guarded = [];
 
+    protected $appends = ['total_price', 'total_price_sales'];
+
     public function service()
     {
         return $this->belongsTo(Service::class);
@@ -21,5 +23,15 @@ class BookingService extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getTotalPriceAttribute()
+    {
+        return $this->adults * $this->adults_price + $this->boys * $this->boys_price;
+    }
+
+    public function getTotalPriceSalesAttribute()
+    {
+        return $this->adults * $this->adult_tarifa + $this->boys * $this->boy_tarifa;
     }
 }

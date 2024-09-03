@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
 use App\Models\Service;
 use Exception;
+use Inertia\Inertia;
 
 class BookingServiceController extends Controller
 {
@@ -15,7 +16,9 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('BookingServices/Index', [
+            'bookingServices' => BookingService::with('service', 'user')->get()
+        ]);
     }
 
     /**

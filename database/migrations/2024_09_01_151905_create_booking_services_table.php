@@ -22,8 +22,8 @@ return new class extends Migration
             $table->double('boys_tarifa');
             $table->double('boys_price');
             $table->date('date');
-            $table->string('status')->default('reservation');
-            $table->string('payment')->default('pending');
+            $table->string('status')->default('reservado');
+            $table->string('payment')->default('pendiente');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->timestamps();

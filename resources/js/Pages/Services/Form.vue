@@ -6,7 +6,7 @@ import { useForm } from '@inertiajs/vue3';
 import { root } from 'postcss';
 import AutoComplete from 'primevue/autocomplete';
 import MultiSelect from 'primevue/multiselect';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const op = ref();
 const includes = ref()
@@ -14,13 +14,27 @@ const noIncludes = ref()
 
 const props = defineProps({
     features: Array,
-    included: Array
+    included: Array,
+    service: Object
 })
 
 const feature = ref({
     name: '',
     color: ''
 });
+
+onMounted(() => {
+    if (props.service) {
+        form.title = props.service.title;
+        form.description = props.service.description;
+        form.adults_price = props.service.adults_price;
+        form.boys_price = props.service.boys_price;
+        form.days = JSON.parse(props.service.days);
+        form.includes = JSON.parse(props.service.includes);
+        form.notIncludes = JSON.parse(props.service.notIncludes);
+
+    }
+})
 
 
 const noIncludeName = ref();
@@ -31,12 +45,12 @@ const addincludes = () => {
         form.includes.push(includeLabel.value)
     }
     includeLabel.value = ''
-    
+
 }
 
 const addNoIncludes = () => {
     if (!noIncludeName.value || form.includes.includes(noIncludeName.value)) return;
-    if(!form.notIncludes.includes(noIncludeName.value)){
+    if (!form.notIncludes.includes(noIncludeName.value)) {
         form.notIncludes.push(noIncludeName.value)
     }
     noIncludeName.value = ''
@@ -49,10 +63,7 @@ const removeIncludes = (index) => {
 
 const removeNotIncludes = (index) => {
     form.notIncludes.splice(index, 1)
-} 
-
-
-
+}
 
 const form = useForm({
     title: '',
@@ -79,12 +90,20 @@ const submit = () => {
     form.days = JSON.stringify(form.days);
     form.notIncludes = JSON.stringify(form.notIncludes);
     form.includes = JSON.stringify(form.includes);
-    form.post(route('services.store'), {
-        onSuccess: () => {
-            form.reset();
-            visible.value = false
-        }
-    })
+    if(props.service){
+        form.put(route('services.update', props.service.slug), {
+            onSuccess: () => {
+                visible.value = false
+            }
+        })
+    } else {
+        form.post(route('services.store'), {
+            onSuccess: () => {
+                form.reset();
+                visible.value = false
+            }
+        })
+    }
 }
 
 const includeLabel = ref('');
@@ -94,9 +113,9 @@ const includeSuggestions = ref(props.included);
 
 
 const search = (includes) => {
-    if(includes) {
-        includeSuggestions.value = props.included.filter((x) => x.toLowerCase().includes(includeLabel.value.toLowerCase()) )
-    }else{
+    if (includes) {
+        includeSuggestions.value = props.included.filter((x) => x.toLowerCase().includes(includeLabel.value.toLowerCase()))
+    } else {
         includeSuggestions.value = props.included.filter((x) => x.toLowerCase().includes(noIncludeName.value.toLowerCase()))
 
     }
@@ -147,16 +166,19 @@ const days = [
                         <label for="" class="text-lg font-bold text-center ">Incluidos en El servicio</label>
                         <div class="flex space-x-4 overflow-y-auto border-b py-2 w-full">
                             <AutoComplete @complete="search(true)" emptyMessage="Sin resultados"
-                            :suggestions="includeSuggestions" @keyup.enter="addincludes" v-model="includeLabel" class="w-full" />
-                            <Button title="Añadir" @click="addincludes"  severity="primary" label="Añadir" icon="fa-solid fa-plus" class="!h-11"  />
+                                :suggestions="includeSuggestions" @keyup.enter="addincludes" v-model="includeLabel"
+                                class="w-full" />
+                            <Button title="Añadir" @click="addincludes" severity="primary" label="Añadir"
+                                icon="fa-solid fa-plus" class="!h-11" />
                         </div>
-                        <div v-for="(feature,index) in form.includes"
+                        <div v-for="(feature, index) in form.includes"
                             class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b">
-                            
+
                             <p>
-                               {{ index +1 }}. {{ feature }}
+                                {{ index + 1 }}. {{ feature }}
                             </p>
-                            <span @click="removeIncludes(index)" v-tooltip="'Quitar'" class="cursor-pointer"><i class="fa-solid fa-trash text-red-500"></i></span>
+                            <span @click="removeIncludes(index)" v-tooltip="'Quitar'" class="cursor-pointer"><i
+                                    class="fa-solid fa-trash text-red-500"></i></span>
                         </div>
                     </div>
                     <div class="w-full shadow-md p-2 bg-gray-200 rounded-md">
@@ -164,20 +186,23 @@ const days = [
                         <div class="flex justify-between">
                             <div class="card p-fluid">
                                 <AutoComplete @complete="search(false)" emptySearchMessage="Sin resultados"
-                                :suggestions="includeSuggestions" @keyup.enter="addNoIncludes" v-model="noIncludeName" />
-                                
+                                    :suggestions="includeSuggestions" @keyup.enter="addNoIncludes"
+                                    v-model="noIncludeName" />
+
                             </div>
-                            <Button title="Añadir" @click="addNoIncludes"  severity="primary" label="Añadir" icon="fa-solid fa-plus" class="!h-11"  />
-                        </div>  
-                        <div v-for="(feature,index) in form.notIncludes"
+                            <Button title="Añadir" @click="addNoIncludes" severity="primary" label="Añadir"
+                                icon="fa-solid fa-plus" class="!h-11" />
+                        </div>
+                        <div v-for="(feature, index) in form.notIncludes"
                             class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b border-white">
                             <p>
-                                {{ index +1 }}. {{ feature }}
+                                {{ index + 1 }}. {{ feature }}
                             </p>
-                            <span @click="removeNotIncludes(index)" class="cursor-pointer"><i class="fa-solid fa-trash text-red-500"></i></span>
+                            <span @click="removeNotIncludes(index)" class="cursor-pointer"><i
+                                    class="fa-solid fa-trash text-red-500"></i></span>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div>
                     <label for="" class="text-md font-bold">Fotos</label>

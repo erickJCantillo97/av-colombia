@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateServiceRequest;
 use App\Models\BookingService;
 use App\Models\Feature;
 use App\Models\Included;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -55,7 +56,7 @@ class ServiceController extends Controller
     {
         $included = array_merge(json_decode($request->includes), json_decode($request->notIncludes));
         foreach ($included as $i) {
-            Included::create(['name' => $i]);
+            Included::firstOrCreate(['name' => $i]);
         }
 
         $service = Service::create($request->validated());
@@ -93,7 +94,14 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        //
+        $features = Feature::orderBy('name')->get();
+        
+        return Inertia::render('Services/Form', [
+            'features' => $features,
+            'service' => $service,
+            'features' => $service->features,
+            'included' => Included::orderBy('name')->pluck('name')->toArray()
+        ]);
     }
 
     /**
@@ -101,7 +109,11 @@ class ServiceController extends Controller
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
-        //
+        $included = array_merge(json_decode($request->includes), json_decode($request->notIncludes));
+        foreach ($included as $i) {
+            Included::firstOrCreate(['name' => $i]);
+        }
+        $service->update($request->validated());
     }
 
     /**
@@ -123,8 +135,14 @@ class ServiceController extends Controller
             'boys' => 'required|numeric',
             'date' => 'required|date',
         ]);
+        $validateData['date'] = Carbon::parse($validateData['date'])->format('Y-m-d');
+        $service = Service::find($validateData['service_id']);
         $validateData['user_id'] = auth()->user()->id;
-        $validateData['service'] = Service::find($validateData['service_id'])->title;
+        $validateData['service'] = $service->title;
+        $validateData['adults_price'] = $service->adults_price;
+        $validateData['adult_tarifa'] = $service->adult_tarifa;
+        $validateData['boys_price'] = $service->boys_price;
+        $validateData['boys_tarifa'] = $service->boy_tarifa;
         BookingService::create($validateData);
 
     }

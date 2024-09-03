@@ -10,7 +10,7 @@
     <Modal v-model:visible="visible">
         <template #title>
             <span class="text-xl font-bold white-space-nowrap">
-                Agregar Servicio</span>
+                Modificar  Servicio</span>
         </template>
         <template #icon>
             <i class="fa-solid fa-plus" />
@@ -41,7 +41,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Datatable from '@/Components/Customs/Datatable.vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import ConfirmPopup from 'primevue/confirmpopup';
 import Modal from '@/Components/Customs/Modal.vue';
 import { ref } from 'vue';
@@ -124,17 +124,22 @@ const buttons = [
         action: (data) => {
             router.visit(route('services.show', data.slug))
         },
+        show: usePage().props.auth.user.rol == 'admin',
         severity: 'primary',
         icon: 'fa-solid fa-eye text-sm',
         label: 'Ver',
     },
     {
         action: (data) => {
-            visible.value = true
-            service.value = data
-            form.service_id = data.id
-            form.adult_tarifa = data.adult_tarifa
-            form.boys_tarifa = data.boy_tarifa
+            if(usePage().props.auth.user.rol == 'admin'){
+                router.visit(route('services.edit', data.slug))
+            }else{
+                visible.value = true
+                service.value = data
+                form.service_id = data.id
+                form.adult_tarifa = data.adult_tarifa
+                form.boys_tarifa = data.boy_tarifa
+            }
         },
         severity: 'secondary',
         icon: 'fa-solid fa-pencil text-sm',
@@ -161,6 +166,7 @@ const buttons = [
                 }
             });
         },
+        show: usePage().props.auth.user.rol == 'admin',
         severity: 'danger',
         icon: 'fa-regular fa-trash-can text-sm',
 

@@ -95,7 +95,7 @@
         '/images/productos/baru-3.webp',
     ]" />
     <Modal v-model="visible" title="" width="95vw">
-        <div class=" flex flex-col md:flex-row  w-full ">
+        <div class=" flex flex-col md:flex-row  w-full">
             <div class="">
                 <carousel :items-to-show="1.2" :wrapAround="true" :transition="500">
                     <slide v-for="image in images" :key="image">
@@ -145,17 +145,29 @@
                         </Disclosure>
                     </div>
                 </section>
-                <div class="flex flex-col space-y-2">
+                <div class="flex flex-col space-y-4">
 
                     <Input label="Fecha de Reserva" v-model="form.date" class="w-full" type="date" />
-                    <div class="flex flex-col md:flex-row justify-between  md:space-x-4">
-                        <Input label="Adultos"  class="w-full" v-model="form.adults" min="1" type="number" />
-                        <Input :label="'Niños'" class="w-full" min="0" type="number" v-model="form.boys" />
+                    <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
+                        <div>
+                            <div class="w-full flex justify-between font-extrabold items-end">
+                                <label for="">N° Adultos</label>
+                                <label for="" class="text-xs font-extralight italic">{{ USDollar.format(selectedProduct.adult_tarifa) }}</label>
+                            </div>
+                            <Input class="w-full" v-model="form.adults" min="1" type="number" />
+                        </div>
+                        <div>
+                            <div class="w-full flex justify-between font-extrabold items-end">
+                                <label for="">N° Niños</label>
+                                <label for="" class="text-xs font-extralight italic">{{ USDollar.format(selectedProduct.boy_tarifa) }}</label>
+                            </div>
+                            <Input  class="w-full" min="0" type="number" v-model="form.boys" />
+                        </div>
                     </div>
                     <div class="flex w-full justify-end text-xl font-bold">
                         <span>Precio Total <strong>{{ USDollar.format((form.adults * selectedProduct.adult_tarifa) + (form.boys * selectedProduct.boy_tarifa)) }}</strong></span>
                     </div>
-                    <Button label="Reservar" class="w-full" />
+                    <Button label="Reservar" @click="reservar()" class="w-full" />
                 </div>
             </div>
         </div>
@@ -188,7 +200,8 @@ const randomIndex = Math.floor(Math.random() * 3);
 const currentImage = ref(images.value[randomIndex]);
 const form = useForm({
     adults: 1,
-    boys: '',
+    service_id: null,
+    boys: 0,
     date: ''
 })
 
@@ -247,6 +260,7 @@ const selectedProduct = ref({
 const details = ref([]);
 const productSelection = (product) => {
     selectedProduct.value = product;
+    form.service_id = product.id;
     visible.value = true;
     details.value = [
         {

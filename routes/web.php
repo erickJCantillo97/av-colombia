@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
@@ -32,7 +33,8 @@ Route::middleware([
         return Inertia::render('Portafolio/Index');
     })->name('portafolio');
 
-    Route::get('reservar', [ServiceController::class , 'reservar'])->name('reservar');
+    Route::post('reservar', [ServiceController::class , 'reservar'])->name('reservar');
+    Route::resource('BookingServices', BookingServiceController::class);
 
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
 });
