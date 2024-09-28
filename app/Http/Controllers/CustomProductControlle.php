@@ -35,7 +35,11 @@ class CustomProductControlle extends Controller
         ]);
         try{
             $validateData['user_id'] = auth()->user()->id;
-            $customProduct = CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $validateData['service_id'])->first();
+            $customProduct = CustomProductUser::firstOrNew([
+                'user_id' => auth()->user()->id
+            ],
+            ['service_id' => $validateData['service_id']]
+        );
             $customProduct->boys_tarifa =  $validateData['boys_tarifa'];
             $customProduct->adult_tarifa =  $validateData['adult_tarifa'];
             $customProduct->save();

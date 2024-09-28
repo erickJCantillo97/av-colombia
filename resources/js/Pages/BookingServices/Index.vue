@@ -1,8 +1,8 @@
 <template>
     <AppLayout title="Services">
         <div class="h-[99vh]">
-            <Datatable :columnas="columns" :data="bookingServices" routecreate="services.create" 
-                title="Servicios">
+            <Datatable :add :columnas="columns"  :data="bookingServices" routecreate="services.create" 
+                title="Reservas">
             </Datatable>
         </div>
     </AppLayout>
@@ -10,6 +10,13 @@
 <script setup>
 import Datatable from '@/Components/Customs/Datatable.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { Link, router, useForm, usePage } from '@inertiajs/vue3';
+const add = {
+    action: () => {
+        router.visit(route('services.create'))
+    },
+
+}
 
 const columns = [
     {
@@ -59,14 +66,27 @@ const columns = [
     {
         field: 'status',
         header: 'Estado',
-        sortable: true,
-        filter: true,
+        filter: true, sortable: true, type: 'tag', filtertype: 'EQUALS',
+        class: 'text-center uppercase',
+        severitys: [
+            { text: 'reservado', severity: 'info', class: '' },
+            { text: 'CONSTRUCCIÓN', severity: 'success', class: '' },
+            { text: 'DISEÑO', severity: 'info', class: '' },
+            { text: 'GARANTIA', severity: 'warning', class: '' },
+            { text: 'SERVICIO POSTVENTA', severity: 'success', class: '' },
+            { text: 'SIN ESTADO', severity: 'danger', class: 'animate-pulse' }
+        ]
     },
     {
         field: 'payment',
         header: 'Pago',
         sortable: true,
         filter: true,
+        type: 'tag', filtertype: 'EQUALS',
+        class: 'text-center uppercase',
+        severitys: [
+            { text: 'pendiente', severity: 'danger', class: '' },
+        ]
     },
     
 ]

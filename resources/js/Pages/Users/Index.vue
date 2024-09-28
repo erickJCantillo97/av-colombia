@@ -2,7 +2,7 @@
     <AppLayout title="Services">
         <div class="h-[99vh]">
             <Datatable :columnas="columns" :add :data="users" routecreate="services.create" :actions="buttons"
-                title="Servicios">
+                title="Usuarios">
             </Datatable>
         </div>
     </AppLayout>

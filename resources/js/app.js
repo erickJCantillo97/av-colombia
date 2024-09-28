@@ -40,6 +40,36 @@ const Noir = definePreset(Aura, {
                     hoverColor: "{zinc.900}",
                     activeColor: "{zinc.800}",
                 },
+                danger: {
+                    color: "#FF0000",
+                    inverseColor: "#ffffff",
+                    hoverColor: "#FF0000",
+                    activeColor: "#FF0000",
+                },
+                success: {
+                    color: "#28A745",  // Verde para éxito
+                    inverseColor: "#ffffff",
+                    hoverColor: "#218838",
+                    activeColor: "#1e7e34",
+                },
+                info: {
+                    color: "#17A2B8",  // Azul para información
+                    inverseColor: "#ffffff",
+                    hoverColor: "#138496",
+                    activeColor: "#117a8b",
+                },
+                warning: {
+                    color: "#FFC107",  // Amarillo para advertencias
+                    inverseColor: "#212529",
+                    hoverColor: "#e0a800",
+                    activeColor: "#c69500",
+                },
+                secondary: {
+                    color: "#6C757D",  // Gris para secundario
+                    inverseColor: "#ffffff",
+                    hoverColor: "#5a6268",
+                    activeColor: "#545b62",
+                },
                 highlight: {
                     background: "{zinc.950}",
                     focusBackground: "{zinc.700}",

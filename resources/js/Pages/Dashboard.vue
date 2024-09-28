@@ -5,9 +5,18 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 const services = ref([]);
+const totalToPay = ref(0);
+
+const COP = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+});
+
 const getServices = () => {
-    axios.get(route('get.services')).then(response => {
-        services.value = response.data.services.slice(0, 5);
+    axios.get(route('dashboard.services.no.pay')).then(response => {
+        services.value = response.data.bookings;
+        totalToPay.value = response.data.bookings.reduce((acc, item) => acc + item.total_price, 0);
     });
 }
 getServices();
@@ -29,11 +38,9 @@ getServices();
                     </Link>
                 </div>
                 <div class=" p-4 rounded-lg grid grid-cols-2 gap-4">
-                    <div class="shadow-md rounded-md p-4 text-center ">
-                        <h2>Actualmente Tiene</h2>
-                        <h3 class="text-xl font-bold">
-                            {{ services.length }} servicios
-                        </h3>
+                    <div class="shadow-md rounded-md p-4 text-center">
+                        <h2 class="text-xl font-bold">{{ services.length }}</h2>
+                        <h3> Reservas Pendinetes de Pago por total de {{ COP.format(totalToPay)}}</h3>
                     </div>
                     <div class="shadow-md rounded-md p-4 text-center ">
                         <h2>Tu Rol es</h2>
