@@ -36,8 +36,11 @@ onMounted(() => {
     }
 })
 
-
+const includeName = ref();
 const noIncludeName = ref();
+
+
+
 
 const addincludes = () => {
     if (!includeLabel.value) return;
@@ -64,6 +67,7 @@ const removeIncludes = (index) => {
 const removeNotIncludes = (index) => {
     form.notIncludes.splice(index, 1)
 }
+
 
 const form = useForm({
     title: '',
@@ -120,7 +124,6 @@ const search = (includes) => {
 
     }
 }
-
 const days = [
     { name: 'Domingo', value: 0 },
     { name: 'Lunes', value: 1 },

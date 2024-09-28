@@ -70,6 +70,7 @@ const USDollar = new Intl.NumberFormat("es-CO", {
     maximumFractionDigits: 0,
 });
 
+<<<<<<< HEAD
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
 
 
@@ -83,6 +84,18 @@ const changeImage = () =>  {
     // console.error(nextImageIndex);
     
     currentImage.value = images.value[nextImageIndex];
+=======
+
+const currentImage = ref(props.product.images[0])
+const intervalId = ref()
+
+const changeImage = () =>  {
+    var nextImageIndex = (props.product.images.indexOf(currentImage.value) + 1) % props.product.images.length;
+    // console.error(nextImageIndex);
+    
+    currentImage.value = props.product.images[nextImageIndex];
+      console.table({img: currentImage.value, index: nextImageIndex});
+>>>>>>> 980aa010b00a69280d745f314806dd5874979cf2
 }
 
 onMounted(() => {
