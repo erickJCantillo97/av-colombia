@@ -32,7 +32,7 @@ getServices();
 
 const value = ref({ name: 'Option 1', value: 1 });
 const options = ref([
-    { name: 'Experiencias', value: 1 },
+    { name: 'Experiencias y Tours', value: 1 },
     { name: 'Alojamiento', value: 2 },
     { name: 'Transporte', value: 3 },
     { name: 'Embarcaciones', value: 4 }
