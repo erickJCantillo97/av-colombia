@@ -147,31 +147,38 @@
                 </section>
                 <div class="flex flex-col space-y-4">
 
-                    <Input label="Fecha de Reserva" v-model="form.date" class="w-full" type="date" />
+                    <Input label="Fecha de Reserva" v-model="form.date" :min-date="new Date()" class="w-full"
+                        type="date" />
                     <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                         <div>
                             <div class="w-full flex justify-between font-extrabold items-end">
                                 <label for="">N° Adultos</label>
-                                <label for="" class="text-xs font-extralight italic">{{ USDollar.format(selectedProduct.adult_tarifa) }}</label>
+                                <label for="" class="text-xs font-extralight italic">{{
+                                    USDollar.format(selectedProduct.adult_tarifa) }}</label>
                             </div>
                             <Input class="w-full" v-model="form.adults" min="1" type="number" />
                         </div>
                         <div>
                             <div class="w-full flex justify-between font-extrabold items-end">
                                 <label for="">N° Niños</label>
-                                <label for="" class="text-xs font-extralight italic">{{ USDollar.format(selectedProduct.boy_tarifa) }}</label>
+                                <label for="" class="text-xs font-extralight italic">{{
+                                    USDollar.format(selectedProduct.boy_tarifa)
+                                    }}</label>
                             </div>
-                            <Input  class="w-full" min="0" type="number" v-model="form.boys" />
+                            <Input class="w-full" min="0" type="number" v-model="form.boys" />
                         </div>
                     </div>
                     <div class="flex w-full justify-end text-xl font-bold">
-                        <span>Precio Total <strong>{{ USDollar.format((form.adults * selectedProduct.adult_tarifa) + (form.boys * selectedProduct.boy_tarifa)) }}</strong></span>
+                        <span>Precio Total <strong>{{ USDollar.format((form.adults * selectedProduct.adult_tarifa) +
+                            (form.boys *
+                                selectedProduct.boy_tarifa)) }}</strong></span>
                     </div>
-                    <Button label="Reservar" @click="reservar()" class="w-full" />
+                    <Button :loading label="Reservar" @click="reservar()" class="w-full" />
                 </div>
             </div>
         </div>
     </Modal>
+    <Toast />
 </template>
 <script setup>
 import Input from '@/Components/Customs/Input.vue';
@@ -184,6 +191,11 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
 import FsLightbox from "fslightbox-vue/v3";
 import Card from './Card.vue';
+import { useToast } from 'primevue/usetoast';
+import axios from 'axios';
+import Toast from 'primevue/toast';
+
+const toast = useToast();
 
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
 
@@ -211,17 +223,24 @@ const intervalId = ref(null);
 const changeImage = () => {
     var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
     // console.error(nextImageIndex);
-
     currentImage.value = images.value[nextImageIndex];
     console.log(currentImage.value);
 }
-
+const loading = ref(false);
 const reservar = () => {
-    form.post(route('reservar'), {
-        onSuccess : () => {
-            console.log('reserva Realizada')
-        }
-    })
+    loading.value = true
+    axios.post(route('reservar'), form).then(response => {
+        toast.add({
+            severity: 'success',
+            summary: 'Reserva Realizada',
+            detail: 'Tu reserva ha sido realizada con exito',
+            life: 3000
+        });
+        loading.value = false;
+        visible.value = false;
+        console.log('reserva Realizada')
+    });
+
 }
 
 

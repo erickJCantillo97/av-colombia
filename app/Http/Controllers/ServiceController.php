@@ -42,7 +42,7 @@ class ServiceController extends Controller
     public function create()
     {
         $features = Feature::orderBy('name')->get();
-        
+
         return Inertia::render('Services/Form', [
             'features' => $features,
             'included' => Included::orderBy('name')->pluck('name')->toArray()
@@ -95,7 +95,7 @@ class ServiceController extends Controller
     public function edit(Service $service)
     {
         $features = Feature::orderBy('name')->get();
-        
+
         return Inertia::render('Services/Form', [
             'features' => $features,
             'service' => $service,
@@ -128,7 +128,8 @@ class ServiceController extends Controller
         }
     }
 
-    public function reservar(Request $request){
+    public function reservar(Request $request)
+    {
         $validateData = $request->validate([
             'service_id' => 'required|exists:services,id',
             'adults' => 'required|numeric',
@@ -144,6 +145,6 @@ class ServiceController extends Controller
         $validateData['boys_price'] = $service->boys_price;
         $validateData['boys_tarifa'] = $service->boy_tarifa;
         BookingService::create($validateData);
-
+        return response()->json(['message' => 'Reserva Exitosa']);
     }
 }

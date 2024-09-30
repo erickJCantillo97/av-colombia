@@ -361,8 +361,8 @@ defineEmits(['valueChange'])
                         }" />
                 </span>
                 <span v-else-if="type == 'date'">
-                    <VueDatePicker class="w-full" hide-offset-dates v-model="input" :teleport="true" auto-apply
-                        :enable-time-picker="false">
+                    <VueDatePicker class="w-full" hide-offset-dates :min-date="minDate" v-model="input" :teleport="true"
+                        auto-apply :enable-time-picker="false">
                     </VueDatePicker>
                     <!-- <Calendar :manualInput :disabled :id  :minDate :maxDate :placeholder :required
                         showIcon :disabledDays :selectionMode @date-select="$emit('valueChange', $event)"
@@ -387,7 +387,7 @@ defineEmits(['valueChange'])
                 <file-pond v-else-if="type == 'file-pond'" name="test" ref="input" storeAsFile="true"
                     label-idle="Archvios" :allow-multiple="true" accepted-file-types="image/*" />
 
-              
+
                 <span v-else class="w-full">
                     <InputText size="small" :id :disabled :placeholder :class="invalid ? 'p-invalid' : ''"
                         @change="$emit('valueChange', $event)" v-model="input" :type :required
