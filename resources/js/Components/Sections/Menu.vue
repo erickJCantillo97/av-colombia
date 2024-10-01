@@ -3,7 +3,7 @@
     <nav class="hs-accordion-group px-2 w-full flex flex-col flex-wrap justify-between h-full" data-hs-accordion-always-open>
         <div>
            <div class="p-1 flex flex-col w-full items-center">
-                <img src="images/logo.webp" class="size-28 shadow-lg rounded-full p-4" alt="">
+                <img src="/images/logo.webp" class="size-28 shadow-lg rounded-full p-4" alt="">
                 <!-- <a class="flex-none text-xl font-semibold dark:text-white" href="#" aria-label="Brand">AV COLOMBIA</a> -->
             </div>
         <ul class="space-y-1.5 mt-4">
@@ -45,6 +45,15 @@
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                 </svg>
                 Reservas Experienicias
+                </Link>
+            </li>
+            <li v-if="$page.props.auth.user.rol == 'admin'">
+                <Link
+                    class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
+                    :href="route('payments.index')"
+                    :class="route().current() == 'payments.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
+                    <i class="fa-regular fa-money-bill-1"></i>
+                Pagos
                 </Link>
             </li>
             <li v-if="$page.props.auth.user.rol == 'admin'">

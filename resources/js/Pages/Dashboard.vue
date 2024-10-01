@@ -16,7 +16,7 @@ const COP = new Intl.NumberFormat("es-CO", {
 const getServices = () => {
     axios.get(route('dashboard.services.no.pay')).then(response => {
         services.value = response.data.bookings;
-        totalToPay.value = response.data.bookings?.reduce((acc, item) => acc + item.total_price, 0) ?? 0;
+        totalToPay.value = response.data.bookings.reduce((acc, item) => acc + item.total_price, 0);
     });
 }
 getServices();

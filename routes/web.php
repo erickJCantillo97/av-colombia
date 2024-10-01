@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\CustomProductControlle;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -35,6 +36,7 @@ Route::middleware([
 
     Route::post('reservar', [ServiceController::class , 'reservar'])->name('reservar');
     Route::resource('BookingServices', BookingServiceController::class);
+    Route::resource('payments', PaymentController::class);
 
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
 });

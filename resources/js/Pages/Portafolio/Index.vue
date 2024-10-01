@@ -9,9 +9,9 @@
             </h1>
 
         </div>
-        <div>
+        <Link :href="route('dashboard')">
             <Button label="Entrar" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
-        </div>
+        </Link>
     </div>
     <div class="h-[99vh] overflow-y-auto py-1">
         <div class="px-4 md:px-10 pt-14 md:pt-16">
@@ -71,7 +71,7 @@
                 <div class="w-full">
                     <IconField class="w-full flex items-center shadow-md">
                         <InputIcon class="fa-solid fa-magnifying-glass" />
-                        <InputText class="w-full !border-0 mx-7" type="search" size="small" placeholder="Buscar" />
+                        <InputText @input="handleInput()" v-model="search" class="w-full !border-0 mx-7" type="search" size="small" placeholder="Buscar" />
                         <Button icon="fa-solid fa-arrow-right" text rounded="" />
                     </IconField>
                     <div class="w-full flex justify-between my-4">
@@ -185,7 +185,7 @@ import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
@@ -198,10 +198,24 @@ import Toast from 'primevue/toast';
 const toast = useToast();
 
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
+const search = ref('');
+const debounceTimer = ref(null);
+
+const handleInput = () => {
+    if(debounceTimer.value){
+        clearTimeout(debounceTimer.value);
+    }
+    debounceTimer.value = setTimeout(() => {
+        getServices();
+    }, 500);
+}
+
 
 const services = ref([]);
-const getServices = () => {
-    axios.get(route('get.services')).then(response => {
+const getServices =  () => {
+    axios.get(route('get.services', {
+        search: search.value
+    })).then(response => {
         services.value = response.data.services.slice(0, 5);
     });
 }
@@ -242,9 +256,6 @@ const reservar = () => {
     });
 
 }
-
-
-
 
 getServices();
 

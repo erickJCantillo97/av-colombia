@@ -1,22 +1,60 @@
 <template>
     <AppLayout title="Services">
         <div class="h-[99vh]">
-            <Datatable :add :columnas="columns"  :data="bookingServices" routecreate="services.create" 
-                title="Reservas">
+            <Datatable :add :columnas="columns" :data="bookingServices" routecreate="services.create" title="Reservas">
             </Datatable>
         </div>
+        <Modal v-model="show" title="Añadir Reserva" width="40vw">
+            <form @submit.prevent="reservar">
+
+                <Input type="dropdown" v-model="form.service_id" label="Servicio" option-label="title" option-value="id" :options="services"></Input>
+                <Input label="Fecha" type="date" v-model="form.date"></Input>
+                <Input label="Adultos" type="number" v-model="form.adults"></Input>
+                <Input label="Niños" type="number" v-model="form.boys"></Input>
+                <div class="flex justify-end mt-4">
+                    <Button type="submit" severity="success" label="Guardar" :loading/>
+                </div>
+            </form>
+        </Modal>
+        <Toast></Toast>
     </AppLayout>
 </template>
 <script setup>
 import Datatable from '@/Components/Customs/Datatable.vue';
+import Input from '@/Components/Customs/Input.vue';
+import Modal from '@/Components/Customs/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
+const show = ref(false);
 const add = {
     action: () => {
-        router.visit(route('services.create'))
+        form.reset();
+        show.value = true;
     },
-
 }
+
+const form = useForm({
+    service_id: '',
+    user_id: '',
+    date: '',
+    adults: '',
+    boys: 0,
+})
+
+const services = ref([]);
+const getServices =  () => {
+    axios.get(route('get.services')).then(response => {
+        services.value = response.data.services.slice(0, 5);
+    });
+}
+
+getServices()
+
 
 const columns = [
     {
@@ -88,12 +126,33 @@ const columns = [
             { text: 'pendiente', severity: 'danger', class: '' },
         ]
     },
-    
+
 ]
 
 
 const props = defineProps({
     bookingServices: Array
 })
+
+const loading = ref(false);
+
+const reservar = (event) => {
+    event.preventDefault();
+    loading.value = true
+    form.post(route('reservar'), {
+
+        onSuccess: () => {
+            toast.add({
+                severity: 'success',
+                summary: 'Reserva Realizada',
+                detail: 'Tu reserva ha sido realizada con exito',
+                life: 3000
+            });
+            loading.value = false;
+            show.value = false;
+        },
+    })
+
+}
 
 </script>

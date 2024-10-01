@@ -145,6 +145,5 @@ class ServiceController extends Controller
         $validateData['boys_price'] = $service->boys_price;
         $validateData['boys_tarifa'] = $service->boy_tarifa;
         BookingService::create($validateData);
-        return response()->json(['message' => 'Reserva Exitosa']);
     }
 }
