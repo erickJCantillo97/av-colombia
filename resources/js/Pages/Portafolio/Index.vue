@@ -109,7 +109,7 @@
                     </template>
                 </carousel>
             </div>
-            <div class=" p-4 space-y-4">
+            <div v-if="formStatus == 1" class="p-4 space-y-4">
                 <h1 class="text-3xl font-bold">
                     {{ selectedProduct.title }}
                 </h1>
@@ -166,6 +166,7 @@
                                     }}</label>
                             </div>
                             <Input class="w-full" min="0" type="number" v-model="form.boys" />
+                            <label for="" class="text-xs italic text-gray-600">Niños mayores de 2 años</label>
                         </div>
                     </div>
                     <div class="flex w-full justify-end text-xl font-bold">
@@ -173,8 +174,15 @@
                             (form.boys *
                                 selectedProduct.boy_tarifa)) }}</strong></span>
                     </div>
-                    <Button :loading label="Reservar" @click="reservar()" class="w-full" />
+                    <Button :loading label="Siguiente" icon="fa-solid fa-arrow-right" icon-pos="right" @click="formStatus = 2" class="w-full" />
                 </div>
+            </div>
+            <div v-else class="p-4 space-y-4">
+                Formulario de datos del Cliente
+                <div>
+                    <!-- Aqui va el formulario de Cristian -->
+                </div>
+                <Button :loading label="Volver" icon="fa-solid fa-arrow-left" icon-pos="left" @click="formStatus = 1" class="w-full" />
             </div>
         </div>
     </Modal>
@@ -200,6 +208,8 @@ const toast = useToast();
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
 const search = ref('');
 const debounceTimer = ref(null);
+
+const formStatus = ref(1)
 
 const handleInput = () => {
     if(debounceTimer.value){
