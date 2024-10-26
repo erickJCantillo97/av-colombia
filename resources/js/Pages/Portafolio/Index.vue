@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Inicio" />
+    <Head title="Portafolio" />
     <!-- <Header /> -->
     <div class="absolute top-0 w-full h-10  p-6 flex justify-between items-center">
         <div class="flex space-x-6 items-center">

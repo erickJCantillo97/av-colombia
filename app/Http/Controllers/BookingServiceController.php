@@ -82,4 +82,10 @@ class BookingServiceController extends Controller
     {
         //
     }
+
+    public function getBookingServicesNoPayment()
+    {
+        $bookingNoPayment = BookingService::where('payment', 'pendiente')->get();
+        return response()->json(['bookingNoPayment' => $bookingNoPayment], 200);
+    }
 }

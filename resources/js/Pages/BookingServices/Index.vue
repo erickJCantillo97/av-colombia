@@ -11,6 +11,9 @@
                 <Input label="Fecha" type="date" v-model="form.date"></Input>
                 <Input label="Adultos" type="number" v-model="form.adults"></Input>
                 <Input label="Niños" type="number" v-model="form.boys"></Input>
+                <div>
+                    <Input type="checkbox" inputId="payment" v-model="form.payment" label="Este Servicio Fue pagado"></Input>
+                </div>
                 <div class="flex justify-end mt-4">
                     <Button type="submit" severity="success" label="Guardar" :loading/>
                 </div>
@@ -42,6 +45,7 @@ const form = useForm({
     service_id: '',
     user_id: '',
     date: '',
+    payment: false,
     adults: '',
     boys: 0,
 })
@@ -54,6 +58,8 @@ const getServices =  () => {
 }
 
 getServices()
+
+
 
 
 const columns = [

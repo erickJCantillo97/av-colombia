@@ -332,12 +332,12 @@ defineEmits(['valueChange'])
                         filterInput: '!h-8',
                         header: '!h-min !py-0.5'
                     }" />
-                <span v-else-if="type == 'checkbox'">
-                    <div class="w-[12vw] flex items-center">
+                <div v-else-if="type == 'checkbox'">
+                    <div class="flex w-full">
                         <Checkbox v-model="input" :inputId :name :value :binary />
-                        <label class="p-0 ml-2 -mb-0.5" :for="inputId">{{ checkboxLabel }}</label>
+                        <label class="" :for="inputId">{{ checkboxLabel }}</label>
                     </div>
-                </span>
+                </div>
                 <span v-else-if="type == 'groupcheckbox'">
                     <div class="flex flex-wrap justify-content-center gap-3">
                         <div class="flex h-8 space-x-1 items-center" v-for="option in options" :key="option.key">
