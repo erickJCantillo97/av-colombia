@@ -285,7 +285,7 @@ defineEmits(['valueChange'])
                     :editable :emptyMessage :loading @change="$emit('valueChange', $event)" showClear
                     :filter="optionLabel ? true : false" :class="invalid ? 'p-invalid' : ''" v-model="input"
                     :aria-describedby="id + '-help'" class="w-full" :pt="{
-                        root: '!h-8',
+                        root: '!h-10',
                         input: '!py-0 !flex !items-center !text-sm !font-normal',
                         item: '!py-1 !px-3 !text-sm !font-normal',
                         filterInput: '!h-8'
@@ -371,14 +371,7 @@ defineEmits(['valueChange'])
                             input: '!h-8 !text-center '
                         }" /> -->
                 </span>
-                <span v-else-if="type == 'time'">
-                    <Calendar :manualInput :disabled :id v-model="input" :min-date :max-date timeOnly hourFormat="24"
-                        :placeholder :required :showIcon dateFormat="dd/mm/yy" :stepMinute
-                        @date-select="$emit('valueChange', $event)" :pt="{
-                            root: '!w-full',
-                            input: '!h-8'
-                        }" />
-                </span>
+
                 <IconField v-else-if="loading || icon" iconPosition="left" class="w-full">
                     <InputIcon :class="loading ? 'fa-solid fa-spinner animate-spin' : icon" />
                     <InputText size="small" :id :disabled :placeholder :class="invalid ? 'p-invalid' : ''"

@@ -1,5 +1,6 @@
 import "./bootstrap";
 import "../css/app.css";
+import "../css/transitions.css";
 import "preline";
 import 'aos/dist/aos.css'
 import { createApp, h } from "vue";
@@ -14,6 +15,9 @@ import ToastService from 'primevue/toastservice';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import AOS from 'aos'
 import Tooltip from 'primevue/tooltip';
+import VueSweetalert2 from 'vue-sweetalert2';
+// If you don't need the styles, do not connect
+import 'sweetalert2/dist/sweetalert2.min.css';
 import '@vuepic/vue-datepicker/dist/main.css'
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
 
@@ -109,6 +113,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(ConfirmationService)
             .use(ToastService)
+            .use(VueSweetalert2)
             .use(PrimeVue, {
                 theme: {
                     preset: Noir,
@@ -119,7 +124,7 @@ createInertiaApp({
                     },
 
                     dropdown: {
-                        root: '!h-8',
+                        root: '!h-10',
                         input: '!py-0 !flex !items-center !text-sm !font-normal',
                         item: '!py-1 !px-3 !text-sm !font-normal',
                         filterInput: '!h-8'

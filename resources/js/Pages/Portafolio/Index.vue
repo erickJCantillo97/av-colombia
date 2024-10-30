@@ -10,7 +10,7 @@
 
         </div>
         <Link :href="route('dashboard')">
-            <Button label="Entrar" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
+        <Button label="Entrar" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
         </Link>
     </div>
     <div class="h-[99vh] overflow-y-auto py-1">
@@ -71,7 +71,8 @@
                 <div class="w-full">
                     <IconField class="w-full flex items-center shadow-md">
                         <InputIcon class="fa-solid fa-magnifying-glass" />
-                        <InputText @input="handleInput()" v-model="search" class="w-full !border-0 mx-7" type="search" size="small" placeholder="Buscar" />
+                        <InputText @input="handleInput()" v-model="search" class="w-full !border-0 mx-7" type="search"
+                            size="small" placeholder="Buscar" />
                         <Button icon="fa-solid fa-arrow-right" text rounded="" />
                     </IconField>
                     <div class="w-full flex justify-between my-4">
@@ -95,9 +96,9 @@
         '/images/productos/baru-3.webp',
     ]" />
     <Modal v-model="visible" title="" width="95vw">
-        <div class=" flex flex-col md:flex-row  w-full">
-            <div class="">
-                <carousel :items-to-show="1.2" :wrapAround="true" :transition="500">
+        <div class="flex flex-col md:flex-row w-full">
+            <div class="md:w-2/3">
+                <carousel :items-to-show="1.1" :wrapAround="true" :transition="500">
                     <slide v-for="image in images" :key="image">
                         <img :src="'/images/productos/' + image" alt="" @click="toggler = !toggler"
                             class="w-full h-full object-cover carousel__item">
@@ -109,80 +110,115 @@
                     </template>
                 </carousel>
             </div>
-            <div v-if="formStatus == 1" class="p-4 space-y-4">
-                <h1 class="text-3xl font-bold">
-                    {{ selectedProduct.title }}
-                </h1>
+            <div class="md:w-1/3">
+                <transition name="slide-fade">
+                    <div v-if="formStatus == 1" class="p-4 space-y-4">
+                        <h1 class="text-3xl font-bold">
+                            {{ selectedProduct.title }}
+                        </h1>
 
-                <p class="text-md" v-html="selectedProduct.description"></p>
-                <section aria-labelledby="details-heading" class="mt-12">
-                    <h2 id="details-heading" class="sr-only">Additional details</h2>
+                        <p class="text-md" v-html="selectedProduct.description"></p>
+                        <section aria-labelledby="details-heading" class="mt-12">
+                            <h2 id="details-heading" class="sr-only">Additional details</h2>
 
-                    <div class="divide-y divide-gray-200 border-t">
-                        <Disclosure as="div" v-for="detail in details" :key="detail.name" v-slot="{ open }">
-                            <h3>
-                                <DisclosureButton
-                                    class="group relative flex w-full items-center justify-between py-6 text-left">
-                                    <span
-                                        :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{
-                                            detail.name
-                                        }}</span>
-                                    <span class="ml-6 flex items-center">
-                                        <PlusIcon v-if="!open"
-                                            class="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
-                                            aria-hidden="true" />
-                                        <MinusIcon v-else
-                                            class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
-                                            aria-hidden="true" />
-                                    </span>
-                                </DisclosureButton>
-                            </h3>
-                            <DisclosurePanel as="div" class="prose prose-sm pb-6">
-                                <ul role="list">
-                                    <li v-for="item in detail.items" :key="item">{{ item }}</li>
-                                </ul>
-                            </DisclosurePanel>
-                        </Disclosure>
-                    </div>
-                </section>
-                <div class="flex flex-col space-y-4">
-
-                    <Input label="Fecha de Reserva" v-model="form.date" :min-date="new Date()" class="w-full"
-                        type="date" />
-                    <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
-                        <div>
-                            <div class="w-full flex justify-between font-extrabold items-end">
-                                <label for="">N° Adultos</label>
-                                <label for="" class="text-xs font-extralight italic">{{
-                                    USDollar.format(selectedProduct.adult_tarifa) }}</label>
+                            <div class="divide-y divide-gray-200 border-t">
+                                <Disclosure as="div" v-for="detail in details" :key="detail.name" v-slot="{ open }">
+                                    <h3>
+                                        <DisclosureButton
+                                            class="group relative flex w-full items-center justify-between py-6 text-left">
+                                            <span
+                                                :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{
+                                                    detail.name
+                                                }}</span>
+                                            <span class="ml-6 flex items-center">
+                                                <PlusIcon v-if="!open"
+                                                    class="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                                                    aria-hidden="true" />
+                                                <MinusIcon v-else
+                                                    class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                                                    aria-hidden="true" />
+                                            </span>
+                                        </DisclosureButton>
+                                    </h3>
+                                    <DisclosurePanel as="div" class="prose prose-sm pb-6">
+                                        <ul role="list">
+                                            <li v-for="item in detail.items" :key="item">{{ item }}</li>
+                                        </ul>
+                                    </DisclosurePanel>
+                                </Disclosure>
                             </div>
-                            <Input class="w-full" v-model="form.adults" min="1" type="number" />
-                        </div>
-                        <div>
-                            <div class="w-full flex justify-between font-extrabold items-end">
-                                <label for="">N° Niños</label>
-                                <label for="" class="text-xs font-extralight italic">{{
-                                    USDollar.format(selectedProduct.boy_tarifa)
-                                    }}</label>
+                        </section>
+                        <div class="flex flex-col space-y-4">
+                            <Input label="Fecha de Reserva" v-model="form.date" :min-date="new Date()" class="w-full"
+                                type="date" />
+                            <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
+                                <div class="w-full">
+                                    <div class="w-full flex justify-between font-extrabold items-end">
+                                        <label for="">N° Adultos</label>
+                                        <label for="" class="text-xs font-extralight italic">{{
+                                            USDollar.format(selectedProduct.adult_tarifa) }}</label>
+                                    </div>
+                                    <Input class="w-full" v-model="form.adults" min="1" type="number" />
+                                </div>
+                                <div class="w-full">
+                                    <div class="w-full flex justify-between font-extrabold items-end">
+                                        <label for="">N° Niños</label>
+                                        <label for="" class="text-xs font-extralight italic">{{
+                                            USDollar.format(selectedProduct.boy_tarifa)
+                                        }}</label>
+                                    </div>
+                                    <Input class="w-full" min="0" type="number" v-model="form.boys" />
+                                    <label for="" class="text-xs italic text-gray-600">Niños mayores de 2 años</label>
+                                </div>
                             </div>
-                            <Input class="w-full" min="0" type="number" v-model="form.boys" />
-                            <label for="" class="text-xs italic text-gray-600">Niños mayores de 2 años</label>
+                            <div class="flex w-full justify-end text-xl font-bold">
+                                <span>Precio Total <strong>{{ USDollar.format((form.adults *
+                                    selectedProduct.adult_tarifa) +
+                                    (form.boys *
+                                        selectedProduct.boy_tarifa)) }}</strong></span>
+                            </div>
+                            <Button :loading label="Siguiente" icon="fa-solid fa-arrow-right" icon-pos="right"
+                                @click="formStatus = 2" class="w-full" />
                         </div>
                     </div>
-                    <div class="flex w-full justify-end text-xl font-bold">
-                        <span>Precio Total <strong>{{ USDollar.format((form.adults * selectedProduct.adult_tarifa) +
-                            (form.boys *
-                                selectedProduct.boy_tarifa)) }}</strong></span>
+                </transition>
+                <transition name="slide-fade">
+                    <div v-if="formStatus == 2" class="p-4 space-y-4">
+                        <h2
+                            class="text-2xl font-extrabold text-center w-full border-b-1 shadow-lg rounded-md pb-1 mb-4">
+                            Detalles de la Reserva
+                        </h2>
+                        <div class="flex flex-col gap-y-4">
+                            <Input label="Nombre del Pasajero" class="w-full" />
+                            <Input label="Telefono" class="w-full" type="number" />
+                            <Input label="Ciudad de donde Proviene" class="w-full" />
+                            <Input label="Edificio u Hotel" class="w-full" />
+                            <Input type="time" label="Hora de Actividad" class="w-full" />
+
+                            <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
+                                <div class="w-full">
+                                    <div class="w-full flex justify-between font-extrabold items-end">
+                                        <label for="">Abono</label>
+                                    </div>
+                                    <Input class="w-full" v-model="form.abono" min="1" type="number" />
+                                </div>
+                                <div class="w-full">
+                                    <div class="w-full flex justify-between font-extrabold items-end">
+                                        <label for="">Medio de Pago</label>
+                                    </div>
+                                    <Input class="w-full" min="0" type="dropdown" :options="[
+                                        'Efectivo'
+                                    ]" v-model="form.boys" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <Button severity="success" class="!h-12 w-full" :loading label="Reservar"
+                            icon="fa-solid fa-calendar-check" icon-pos="right" click="formStatus = 1" />
+                        <Button :loading label="Volver" icon="fa-solid fa-arrow-left" icon-pos="left"
+                            @click="formStatus = 1" class="w-full" />
                     </div>
-                    <Button :loading label="Siguiente" icon="fa-solid fa-arrow-right" icon-pos="right" @click="formStatus = 2" class="w-full" />
-                </div>
-            </div>
-            <div v-else class="p-4 space-y-4">
-                Formulario de datos del Cliente
-                <div>
-                    <!-- Aqui va el formulario de Cristian -->
-                </div>
-                <Button :loading label="Volver" icon="fa-solid fa-arrow-left" icon-pos="left" @click="formStatus = 1" class="w-full" />
+                </transition>
             </div>
         </div>
     </Modal>
@@ -212,7 +248,7 @@ const debounceTimer = ref(null);
 const formStatus = ref(1)
 
 const handleInput = () => {
-    if(debounceTimer.value){
+    if (debounceTimer.value) {
         clearTimeout(debounceTimer.value);
     }
     debounceTimer.value = setTimeout(() => {
@@ -222,7 +258,7 @@ const handleInput = () => {
 
 
 const services = ref([]);
-const getServices =  () => {
+const getServices = () => {
     axios.get(route('get.services', {
         search: search.value
     })).then(response => {
@@ -235,6 +271,8 @@ const visible = ref(false);
 const randomIndex = Math.floor(Math.random() * 3);
 const currentImage = ref(images.value[randomIndex]);
 const form = useForm({
+    medio: 'Efectivo',
+    abono: 0,
     adults: 1,
     service_id: null,
     boys: 0,

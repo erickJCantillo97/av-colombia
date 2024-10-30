@@ -2,11 +2,13 @@
 import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { root } from 'postcss';
 import AutoComplete from 'primevue/autocomplete';
 import MultiSelect from 'primevue/multiselect';
 import { onMounted, ref } from 'vue';
+import { alerts } from '@/composable/toasts';
+const { toast } = alerts()
 
 const op = ref();
 const includes = ref()
@@ -94,7 +96,7 @@ const submit = () => {
     form.days = JSON.stringify(form.days);
     form.notIncludes = JSON.stringify(form.notIncludes);
     form.includes = JSON.stringify(form.includes);
-    if(props.service){
+    if (props.service) {
         form.put(route('services.update', props.service.slug), {
             onSuccess: () => {
                 visible.value = false
@@ -102,8 +104,11 @@ const submit = () => {
         })
     } else {
         form.post(route('services.store'), {
+
             onSuccess: () => {
                 form.reset();
+                toast('success', 'Servicio creado con exito')
+                router.visit(route('services.index'))
                 visible.value = false
             }
         })
