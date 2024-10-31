@@ -120,7 +120,6 @@
                         <p class="text-md" v-html="selectedProduct.description"></p>
                         <section aria-labelledby="details-heading" class="mt-12">
                             <h2 id="details-heading" class="sr-only">Additional details</h2>
-
                             <div class="divide-y divide-gray-200 border-t">
                                 <Disclosure as="div" v-for="detail in details" :key="detail.name" v-slot="{ open }">
                                     <h3>
@@ -148,9 +147,9 @@
                                 </Disclosure>
                             </div>
                         </section>
-                        <div class="flex flex-col space-y-4">
-                            <Input label="Fecha de Reserva" v-model="form.date" :min-date="new Date()" class="w-full"
-                                type="date" />
+                        <form class="flex flex-col space-y-10 justify-between" novalidate @submit.prevent="firstSteep">
+                            <Input label="Fecha de Reserva" v-model="date" :min-date="new Date()" class="w-full"
+                                type="date" :error-message="errors.date" v-bind="dateAttrs" />
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
@@ -158,7 +157,8 @@
                                         <label for="" class="text-xs font-extralight italic">{{
                                             USDollar.format(selectedProduct.adult_tarifa) }}</label>
                                     </div>
-                                    <Input class="w-full" v-model="form.adults" min="1" type="number" />
+                                    <Input class="w-full" v-model="adults" min="1" type="number"
+                                        :error-message="errors.adults" v-bind="adultsAttrs" />
                                 </div>
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
@@ -172,14 +172,24 @@
                                 </div>
                             </div>
                             <div class="flex w-full justify-end text-xl font-bold">
-                                <span>Precio Total <strong>{{ USDollar.format((form.adults *
+                                <span>Precio Total <strong>{{ USDollar.format((adults *
                                     selectedProduct.adult_tarifa) +
                                     (form.boys *
                                         selectedProduct.boy_tarifa)) }}</strong></span>
                             </div>
-                            <Button :loading label="Siguiente" icon="fa-solid fa-arrow-right" icon-pos="right"
-                                @click="formStatus = 2" class="w-full" />
-                        </div>
+                            <button type="submit" :disabled="!meta.valid" v-if="meta.valid"
+                                class="cta flex items-center w-full justify-center"
+                                :class="meta.valid ? '' : 'opacity-30'">
+                                <span class="hover-underline-animation"> Siguiente </span>
+                                <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10"
+                                    viewBox="0 0 46 16">
+                                    <path id="Path_10" data-name="Path 10"
+                                        d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z"
+                                        transform="translate(30)"></path>
+                                </svg>
+                            </button>
+
+                        </form>
                     </div>
                 </transition>
                 <transition name="slide-fade">
@@ -189,34 +199,60 @@
                             Detalles de la Reserva
                         </h2>
                         <div class="flex flex-col gap-y-4">
-                            <Input label="Nombre del Pasajero" class="w-full" />
-                            <Input label="Telefono" class="w-full" type="number" />
-                            <Input label="Ciudad de donde Proviene" class="w-full" />
-                            <Input label="Edificio u Hotel" class="w-full" />
-                            <Input type="time" label="Hora de Actividad" class="w-full" />
+                            <div class="flex  gap-x-2 flex-col md:flex-row">
+                                <Input label="Nombre del Pasajero" v-model="name" :error-message="errors.name"
+                                    class="w-full" />
+                                <Input label="Telefono" v-model="phone" :error-message="errors.phone" class="w-full"
+                                    type="number" />
+                            </div>
+                            <div class="flex  gap-x-2 flex-col md:flex-row">
+                                <Input label="Ciudad de donde Proviene" v-model="city" :error-message="errors.city"
+                                    class="w-full" />
+                                <Input label="Edificio u Hotel" class="w-full" v-model="building"
+                                    :error-message="errors.building" />
+                            </div>
+
+
+                            <Input type="time" label="Hora de Actividad" class="w-full" v-model="hour"
+                                :error-message="errors.hour" />
 
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
                                         <label for="">Abono</label>
                                     </div>
-                                    <Input class="w-full" v-model="form.abono" min="1" type="number" />
+                                    <Input class="w-full" v-model="abono" :error-message="errors.abono" min="1"
+                                        type="number" />
                                 </div>
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
                                         <label for="">Medio de Pago</label>
                                     </div>
-                                    <Input class="w-full" min="0" type="dropdown" :options="[
-                                        'Efectivo'
-                                    ]" v-model="form.boys" />
+                                    <Input class="w-full" min="0" type="dropdown" option-label="name" option-value="id"
+                                        :options="methods" v-model="method" />
                                 </div>
                             </div>
-
                         </div>
-                        <Button severity="success" class="!h-12 w-full" :loading label="Reservar"
-                            icon="fa-solid fa-calendar-check" icon-pos="right" click="formStatus = 1" />
-                        <Button :loading label="Volver" icon="fa-solid fa-arrow-left" icon-pos="left"
-                            @click="formStatus = 1" class="w-full" />
+                        <div class="flex gap-x-4">
+                            <button @click="formStatus = 1"
+                                class="bg-white flex text-center w-full border items-center rounded-lg text-black text-xl font-semibold group"
+                                type="button">
+                                <div
+                                    class="bg-amber-400 rounded-md h-16 w-1/4 flex items-center justify-center  left-1 top-[4px] group-hover:w-[184px] z-10 duration-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" height="25px"
+                                        width="25px">
+                                        <path d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z" fill="#000000">
+                                        </path>
+                                        <path
+                                            d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                                            fill="#000000"></path>
+                                    </svg>
+                                </div>
+                                <p class="translate-x-2 group-hover:hidden text-sx">Volver</p>
+                            </button>
+                            <Button severity="success" @click="reservar" class="!h-16 w-full" :loading label="Reservar"
+                                icon="fa-solid fa-calendar-check" icon-pos="right" click="formStatus = 1" />
+                        </div>
                     </div>
                 </transition>
             </div>
@@ -225,11 +261,12 @@
     <Toast />
 </template>
 <script setup>
+// #region Imports
 import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
@@ -238,14 +275,65 @@ import Card from './Card.vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 import Toast from 'primevue/toast';
+import { useForm } from 'vee-validate';
+import * as yup from 'yup';
+import { alerts } from '@/composable/toasts';
 
-const toast = useToast();
+// #endregion
 
+// #region variables
+const formStatus = ref(1)
+const { toast } = alerts()
 const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
 const search = ref('');
 const debounceTimer = ref(null);
+const services = ref([]);
+const toggler = ref(false);
+const visible = ref(false);
+const service_id = ref(null);
+const intervalId = ref(null);
+const methods = ref([]);
+// #endregion
 
-const formStatus = ref(1)
+// #region Validates
+const schema = yup.object({
+    date: yup.date().required(),
+    adults: yup.number().required(),
+});
+
+const schema2 = yup.object({
+    name: yup.string().required(),
+    phone: yup.string().required(),
+    city: yup.string().required(),
+    building: yup.string().required(),
+    hour: yup.string().required(),
+    abono: yup.number().required(),
+    medio: yup.string().required(),
+});
+
+const { values, defineField, errors, meta } = useForm({
+    validationSchema: formStatus.value == 1 ? schema : schema2,
+});
+// #endregion
+
+
+
+// #region Fields
+const [date, dateAttrs] = defineField('date');
+const [boys, boysAttrs] = defineField('boys');
+const [adults, adultsAttrs] = defineField('adults');
+const [name, nameAttrs] = defineField('name');
+const [phone, phoneAttrs] = defineField('phone');
+const [city, cityAttrs] = defineField('city');
+const [building, buildingAttrs] = defineField('building');
+const [hour, hourAttrs] = defineField('hour');
+const [abono, abonoAttrs] = defineField('abono');
+const [method, methodAttrs] = defineField('method');
+
+// #endregion
+
+
+
 
 const handleInput = () => {
     if (debounceTimer.value) {
@@ -257,7 +345,7 @@ const handleInput = () => {
 }
 
 
-const services = ref([]);
+
 const getServices = () => {
     axios.get(route('get.services', {
         search: search.value
@@ -265,12 +353,11 @@ const getServices = () => {
         services.value = response.data.services.slice(0, 5);
     });
 }
-const toggler = ref(false);
-const visible = ref(false);
+
 
 const randomIndex = Math.floor(Math.random() * 3);
 const currentImage = ref(images.value[randomIndex]);
-const form = useForm({
+const form = ref({
     medio: 'Efectivo',
     abono: 0,
     adults: 1,
@@ -279,25 +366,21 @@ const form = useForm({
     date: ''
 })
 
-const intervalId = ref(null);
 
 
 const changeImage = () => {
     var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
     // console.error(nextImageIndex);
     currentImage.value = images.value[nextImageIndex];
-    console.log(currentImage.value);
 }
 const loading = ref(false);
 const reservar = () => {
-    loading.value = true
-    axios.post(route('reservar'), form).then(response => {
-        toast.add({
-            severity: 'success',
-            summary: 'Reserva Realizada',
-            detail: 'Tu reserva ha sido realizada con exito',
-            life: 3000
-        });
+    console.log(values)
+    // loading.value = true
+    axios.post(route('reservar', {
+        service_id: service_id.value
+    }), values).then(response => {
+        toast('success', 'Reserva Realizada con exito');
         loading.value = false;
         visible.value = false;
         console.log('reserva Realizada')
@@ -338,7 +421,7 @@ const selectedProduct = ref({
 const details = ref([]);
 const productSelection = (product) => {
     selectedProduct.value = product;
-    form.service_id = product.id;
+    service_id.value = product.id;
     visible.value = true;
     details.value = [
         {
@@ -353,8 +436,6 @@ const productSelection = (product) => {
     ]
 }
 
-
-
 const totalCost = computed(() => {
     if (selectedProduct.value) {
         return selectedProduct.value.price * form.adults;
@@ -362,46 +443,22 @@ const totalCost = computed(() => {
     return 0;
 });
 
+const firstSteep = () => {
+    formStatus.value = 2;
+}
+
+// #region methods
+const getMethos = () => {
+    axios.get(route('paymentMethods.index'))
+        .then(response => {
+            methods.value = response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+getMethos()
+
+// #endregion
+
 </script>
-
-<style scoped>
-.carousel__slide {
-    padding: 5px;
-}
-
-.carousel__viewport {
-    perspective: 2000px;
-}
-
-.carousel__track {
-    transform-style: preserve-3d;
-}
-
-.carousel__slide--sliding {
-    transition: 0.5s;
-}
-
-.carousel__slide {
-    opacity: 0.9;
-    transform: rotateY(-20deg) scale(0.9);
-}
-
-.carousel__slide--active~.carousel__slide {
-    transform: rotateY(20deg) scale(0.9);
-}
-
-.carousel__slide--prev {
-    opacity: 1;
-    transform: rotateY(-10deg) scale(0.95);
-}
-
-.carousel__slide--next {
-    opacity: 1;
-    transform: rotateY(10deg) scale(0.95);
-}
-
-.carousel__slide--active {
-    opacity: 1;
-    transform: rotateY(0) scale(1.1);
-}
-</style>

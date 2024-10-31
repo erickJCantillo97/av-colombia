@@ -7,15 +7,17 @@
         <Modal v-model="show" title="Añadir Reserva" width="40vw">
             <form @submit.prevent="reservar">
 
-                <Input type="dropdown" v-model="form.service_id" label="Servicio" option-label="title" option-value="id" :options="services"></Input>
+                <Input type="dropdown" v-model="form.service_id" label="Servicio" option-label="title" option-value="id"
+                    :options="services"></Input>
                 <Input label="Fecha" type="date" v-model="form.date"></Input>
                 <Input label="Adultos" type="number" v-model="form.adults"></Input>
                 <Input label="Niños" type="number" v-model="form.boys"></Input>
                 <div>
-                    <Input type="checkbox" inputId="payment" v-model="form.payment" label="Este Servicio Fue pagado"></Input>
+                    <Input type="checkbox" inputId="payment" v-model="form.payment"
+                        label="Este Servicio Fue pagado"></Input>
                 </div>
                 <div class="flex justify-end mt-4">
-                    <Button type="submit" severity="success" label="Guardar" :loading/>
+                    <Button type="submit" severity="success" label="Guardar" :loading />
                 </div>
             </form>
         </Modal>
@@ -31,6 +33,11 @@ import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+
+const props = defineProps({
+    bookingServices: Array
+})
+
 
 const toast = useToast();
 const show = ref(false);
@@ -51,7 +58,7 @@ const form = useForm({
 })
 
 const services = ref([]);
-const getServices =  () => {
+const getServices = () => {
     axios.get(route('get.services')).then(response => {
         services.value = response.data.services.slice(0, 5);
     });
@@ -136,9 +143,6 @@ const columns = [
 ]
 
 
-const props = defineProps({
-    bookingServices: Array
-})
 
 const loading = ref(false);
 

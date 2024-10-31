@@ -1,6 +1,7 @@
 import "./bootstrap";
 import "../css/app.css";
 import "../css/transitions.css";
+import "../css/customs.css";
 import "preline";
 import 'aos/dist/aos.css'
 import { createApp, h } from "vue";
@@ -19,6 +20,9 @@ import VueSweetalert2 from 'vue-sweetalert2';
 // If you don't need the styles, do not connect
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { es } from 'yup-locales';
+import { setLocale } from 'yup';
+setLocale(es);
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
 
 const Noir = definePreset(Aura, {

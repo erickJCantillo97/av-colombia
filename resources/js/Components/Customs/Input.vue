@@ -393,6 +393,6 @@ defineEmits(['valueChange'])
             </span>
 
         </span>
-        <small :class="invalid ? 'p-error' : ''" v-if="help || invalid">{{ invalid ? errorMessage : help }}</small>
+        <small class="text-sm italic text-red-400 mt-1">{{ errorMessage }}</small>
     </div>
 </template>

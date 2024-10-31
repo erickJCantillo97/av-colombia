@@ -24,7 +24,7 @@ class StoreBookingServiceRequest extends FormRequest
         return [
             'service_id' => ['required', 'uuid'],
             'adults' => ['required', 'integer'],
-            'boys' => ['required', 'integer'],
+            'boys' => ['nullable', 'integer'],
             'date' => ['required', 'date', 'after_or_equals:today'],
 
         ];

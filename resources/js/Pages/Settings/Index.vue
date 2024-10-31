@@ -23,11 +23,7 @@ import PaymentMethods from '@/Components/PaymentMethods.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
 const value = ref(1);
-const options = ref([
-    { name: 'Metodos de Pago', value: 1 },
-    { name: 'Canales de Reserva', value: 2 },
-    { name: 'Usuarios', value: 3 },
-]);
+
 
 
 </script>

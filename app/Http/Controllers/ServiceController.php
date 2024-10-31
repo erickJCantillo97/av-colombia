@@ -133,11 +133,12 @@ class ServiceController extends Controller
         $validateData = $request->validate([
             'service_id' => 'required|exists:services,id',
             'adults' => 'required|numeric',
-            'boys' => 'required|numeric',
+            'boys' => 'nullable|numeric',
             'date' => 'required|date',
         ]);
         $validateData['date'] = Carbon::parse($validateData['date'])->format('Y-m-d');
         $service = Service::find($validateData['service_id']);
+        $validateData['boys'] = $validateData['boys'] ?? 0;
         $validateData['user_id'] = auth()->user()->id;
         $validateData['service'] = $service->title;
         $validateData['adults_price'] = $service->adults_price;
