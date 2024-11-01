@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBookingServiceRequest extends FormRequest
+class UpdatePaymentMethodRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,7 @@ class StoreBookingServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'service_id' => ['required', 'uuid'],
-            'adults' => ['required', 'integer'],
-            'boys' => ['nullable', 'integer'],
-            'date' => ['required', 'date', 'after_or_equals:today'],
-
+            //
         ];
     }
 }

@@ -10,7 +10,7 @@
     <Modal v-model:visible="visible">
         <template #title>
             <span class="text-xl font-bold white-space-nowrap">
-                Modificar  Servicio</span>
+                Modificar Servicio</span>
         </template>
         <template #icon>
             <i class="fa-solid fa-plus" />
@@ -47,15 +47,13 @@ import Modal from '@/Components/Customs/Modal.vue';
 import { ref } from 'vue';
 import Input from '@/Components/Customs/Input.vue';
 import { useConfirm } from 'primevue/useconfirm';
-import { useToast } from 'primevue/usetoast';
-
+import { alerts } from '@/composable/toasts';
+const { toast } = alerts()
 const files = ref([])
-
 const add = {
     action: () => {
         router.visit(route('services.create'))
     },
-
 }
 
 const COP = new Intl.NumberFormat("es-CO", {
@@ -105,7 +103,7 @@ const columns = [
 
 ];
 
-const toast = useToast()
+
 
 const confirm = useConfirm()
 const editor = ref(false)
@@ -131,9 +129,9 @@ const buttons = [
     },
     {
         action: (data) => {
-            if(usePage().props.auth.user.rol == 'admin'){
+            if (usePage().props.auth.user.rol == 'admin') {
                 router.visit(route('services.edit', data.slug))
-            }else{
+            } else {
                 visible.value = true
                 service.value = data
                 form.service_id = data.id
@@ -159,7 +157,7 @@ const buttons = [
                     console.log(data)
                     router.delete(route('services.destroy', data.id), {
                         onSuccess: () => {
-                            toast.add({ severity: 'error', icon: 'fa-solid fa-trash-can', summary: '¡Accion realizada!', detail: 'Se eliminó con exito', group: 'customTooltipDataTable', life: 5000 });
+                            toast('success', 'Servicio eliminado con exito')
                         }
                     })
 
@@ -180,9 +178,9 @@ const props = defineProps({
 });
 
 const submit = () => {
-    
     form.post(route('custom.product'), {
         onSuccess: () => {
+            toast('success', 'Tarifa creada con exito')
             visible.value = false
         }
     })

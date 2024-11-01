@@ -18,7 +18,7 @@ const props = defineProps({
     },
     closeOnEscape: {
         type: Boolean,
-        default: true
+        default: false
     },
     icon: {
         type: String,
@@ -36,13 +36,13 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    severity:{
-        type:String,
-        default:'primary'
+    severity: {
+        type: String,
+        default: 'primary'
     },
-    modal:{
-        type:Boolean,
-        default:true
+    modal: {
+        type: Boolean,
+        default: true
     }
 })
 
@@ -50,8 +50,9 @@ const visible = defineModel()
 </script>
 
 <template>
-    <Dialog v-model:visible="visible" :maximizable="maximizable" :modal :closable :closeOnEscape :autoZIndex :baseZIndex
-        :style="{ width: props.width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :pt="{
+    <Dialog pt:mask:class="backdrop-blur-sm" v-model:visible="visible" :maximizable="maximizable" :modal :closable
+        :closeOnEscape :autoZIndex :baseZIndex :style="{ width: props.width }"
+        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :pt="{
             header: { class: 'bg-black !h-10 rounded-t-lg -m-1' },
             headerActions: { class: '!text-white !p-0' },
             content: { class: '!pb-0 !pt-2' },
@@ -59,7 +60,7 @@ const visible = defineModel()
         }">
         <template #header>
             <div class="flex items-center space-x-2 text-white">
-            <i v-if="icon" :class="icon" />
+                <i v-if="icon" :class="icon" />
                 <slot v-else name="icon" />
                 <span v-if="title" class="text-xl font-bold truncate">
                     {{ title }}

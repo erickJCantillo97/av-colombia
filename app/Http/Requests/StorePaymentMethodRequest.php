@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBookingServiceRequest extends FormRequest
+class StorePaymentMethodRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,11 +22,9 @@ class StoreBookingServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'service_id' => ['required', 'uuid'],
-            'adults' => ['required', 'integer'],
-            'boys' => ['nullable', 'integer'],
-            'date' => ['required', 'date', 'after_or_equals:today'],
-
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:255'],
+            'parcent_charge' => ['required', 'numeric', 'max:255'],
         ];
     }
 }

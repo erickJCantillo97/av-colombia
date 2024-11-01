@@ -3,7 +3,11 @@
 use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\PaymentController;
+<<<<<<< HEAD
 use App\Http\Controllers\ProveedorController;
+=======
+use App\Http\Controllers\PaymentMethodController;
+>>>>>>> adc2b02f5636d495f45a6fa1f0199363a5c74696
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -35,16 +39,22 @@ Route::middleware([
         return Inertia::render('Portafolio/Index');
     })->name('portafolio');
 
-    Route::post('reservar', [ServiceController::class , 'reservar'])->name('reservar');
+    Route::post('reservar', [ServiceController::class, 'reservar'])->name('reservar');
     Route::resource('BookingServices', BookingServiceController::class);
     Route::resource('payments', PaymentController::class);
     Route::get('getBookingServicesNoPayment', [BookingServiceController::class, 'getBookingServicesNoPayment'])->name('get.services.no.payment');
+    Route::resource('paymentMethods', PaymentMethodController::class);
 
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
+<<<<<<< HEAD
 
     Route::resource('proveedors', ProveedorController::class);
+=======
+    Route::get('settings', function () {
+        return Inertia::render('Settings/Index');
+    })->name('settings');
+>>>>>>> adc2b02f5636d495f45a6fa1f0199363a5c74696
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
-

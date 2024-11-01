@@ -15,7 +15,7 @@ const toast = useToast();
 const dt = ref()
 
 const props = defineProps({
-    add : {
+    add: {
         type: Object,
         default: null
     },
@@ -220,7 +220,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                     </div>
                 </span>
                 <div class="flex gap-2 w-full border border-gray-300 py-1.5 px-2 rounded-xl h-10 items-center">
-                    <Button v-tooltip.top="'Nuevo ' + title" v-if="add" @click="add.action($event)"  text
+                    <Button v-tooltip.top="'Nuevo ' + title" v-if="add" @click="add.action($event)" text
                         icon="fa-solid fa-plus text-sm" />
                     <Button v-tooltip.top="'Quitar Filteros'" @click="clearFilter()"
                         icon="fa-solid fa-filter-circle-xmark text-sm" text />
@@ -371,7 +371,9 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                     <div v-else-if="col.type == 'html'" class="" v-html="truncateString(data[col.field] + ' ', 80)">
                     </div>
                     <p v-else class="">
-                        {{ truncateString(data[col.field] + ' ', 80) }}
+
+                        {{ col.format ? col.format(truncateString(data[col.field] + ' ',
+                            80)) : truncateString(data[col.field] + ' ', 80) }}
                         <!-- {{ truncateString(data[col.field], 80) }} -->
                     </p>
                 </template>

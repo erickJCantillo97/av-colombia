@@ -16,6 +16,9 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
+        if (request()->expectsJson()) {
+            return response()->json(['bookingServices' => BookingService::with('service', 'user')->get()], 200);
+        }
         return Inertia::render('BookingServices/Index', [
             'bookingServices' => BookingService::with('service', 'user')->get()
         ]);
@@ -35,8 +38,9 @@ class BookingServiceController extends Controller
     public function store(StoreBookingServiceRequest $request)
     {
         $validateData = $request->validated();
-        try{
+        try {
             $service = Service::find($validateData['service_id']);
+            $validateData['boys'] = $validateData['boys'] ?? 0;
             $validateData['service'] = $service->title;
             $validateData['adults_price'] = $service->adult_price;
             $validateData['adult_tarifa'] = $service->adult_tarifa;
@@ -45,10 +49,9 @@ class BookingServiceController extends Controller
             $validateData['user_id'] = auth()->user()->id;
             $bookingService = BookingService::create($validateData);
             return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $bookingService], 201);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['message' => 'Error al guardar la reservación'], 500);
         }
-
     }
 
     /**
