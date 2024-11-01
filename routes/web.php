@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,8 @@ Route::middleware([
     Route::get('getBookingServicesNoPayment', [BookingServiceController::class, 'getBookingServicesNoPayment'])->name('get.services.no.payment');
 
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
+
+    Route::resource('proveedors', ProveedorController::class);
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
