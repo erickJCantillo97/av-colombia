@@ -272,7 +272,6 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
 import FsLightbox from "fslightbox-vue/v3";
 import Card from './Card.vue';
-import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 import Toast from 'primevue/toast';
 import { useForm } from 'vee-validate';

@@ -1,4 +1,5 @@
 <script setup>
+// #region Imports
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
@@ -13,28 +14,37 @@ import {
     createViewWeek,
 } from '@schedule-x/calendar'
 import '@schedule-x/theme-default/dist/index.css'
+import { viewMonthGrid } from '@schedule-x/calendar';
+import Modal from '@/Components/Customs/Modal.vue';
 const services = ref([]);
 const totalToPay = ref(0);
+// #endregion
 
+// #region CalendarPlugins
 const eventsServicePlugin = createEventsServicePlugin();
 
+// #endregion
+
+// #region Variables
 const COP = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
     maximumFractionDigits: 0,
 });
-
-const getServices = () => {
-    axios.get(route('dashboard.services.no.pay')).then(response => {
-        services.value = response.data.bookings;
-        totalToPay.value = response.data.bookings.reduce((acc, item) => acc + item.total_price, 0);
-    });
-}
-getServices();
-
 const reservas = ref([]);
-
+const serviceSelected = ref({});
 const configCalendar = reactive({
+    defaultView: viewMonthGrid.name,
+    dayBoundaries: {
+    start: '06:00',
+    end: '19:00',
+  },
+  weekOptions: {
+    gridHeight: 500,
+    nDays: 7,
+    eventWidth: 50,
+    timeAxisFormatOptions: { hour: '2-digit', minute: '2-digit' },
+  },
     locale: 'es-ES',
     selectedDate: new Date().toISOString().split('T')[0],
     views: [
@@ -43,41 +53,51 @@ const configCalendar = reactive({
         createViewWeek(),
         createViewMonthAgenda(),
     ],
+    callbacks: {
+        onEventClick(calendarEvent) {
+            editBooking(calendarEvent);
+        },
+    },
     events: [],
     plugins: [eventsServicePlugin],
-},
-
-
-);
+});
 const calendarApp = createCalendar(configCalendar);
+
+const visible = ref(false);
+// #endregion
+
+// #region Methods
+const getServices = () => {
+    axios.get(route('dashboard.services.no.pay')).then(response => {
+        services.value = response.data.bookings;
+        totalToPay.value = response.data.bookings.reduce((acc, item) => acc + item.total_price, 0);
+    });
+}
 const getReservas = () => {
     axios.get(route('BookingServices.index')).then(response => {
         reservas.value = response.data.bookingServices;
-
-        // calendarApp.events = response.data.bookingServices.map((item) => {
-        //     return {
-        //         id: item.id,
-        //         title: item.service.title,
-        //         start: item.date,
-        //         end: item.date,
-        //     }
-        // });
         reservas.value.forEach((item) => {
-            console.log(item.date + ' 20:15');
+          
             calendarApp.eventsService.add({
-
                 title: item.service.title,
                 start: item.date + ' 09:15',
+                description: item.total_price,
                 end: item.date + ' 20:15',
                 id: item.id
             })
         });
-
+        
     });
 }
+
+const editBooking = (data) => {
+    serviceSelected.value = reservas.value.find(item => item.id == data.id);
+    visible.value = true;
+}
+getServices();
 getReservas();
 
-
+// #endregion
 </script>
 
 <template>
@@ -115,4 +135,19 @@ getReservas();
             </div>
         </div>
     </AppLayout>
+    <Modal v-model:visible="visible" :title="'Reserva de ' + serviceSelected.service?.title ?? ''" :close-on-escape="true">
+        <div class="flex flex-col gap-y-2">
+            <h1 class="text-xl font-bold">Datos de la reserva</h1>
+            <div class="grid grid-cols-4 gap-2 w-full">
+                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Fecha: {{ serviceSelected.date }}</p>
+                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Hora: {{ serviceSelected.time }}</p>
+                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Adultos: {{serviceSelected.adults}}</p>
+                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Valor: {{ COP.format(serviceSelected.total_price) }}</p>
+            </div>
+            <h1 class="text-xl font-bold">Datos del Cliente</h1>
+        </div> 
+        <!-- <code>
+            {{ serviceSelected }}
+        </code> -->
+    </Modal>
 </template>
