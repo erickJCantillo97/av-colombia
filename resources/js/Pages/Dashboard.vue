@@ -16,6 +16,7 @@ import {
 import '@schedule-x/theme-default/dist/index.css'
 import { viewMonthGrid } from '@schedule-x/calendar';
 import Modal from '@/Components/Customs/Modal.vue';
+import Tag from '@/Components/Tag.vue';
 const services = ref([]);
 const totalToPay = ref(0);
 // #endregion
@@ -36,15 +37,15 @@ const serviceSelected = ref({});
 const configCalendar = reactive({
     defaultView: viewMonthGrid.name,
     dayBoundaries: {
-    start: '06:00',
-    end: '19:00',
-  },
-  weekOptions: {
-    gridHeight: 500,
-    nDays: 7,
-    eventWidth: 50,
-    timeAxisFormatOptions: { hour: '2-digit', minute: '2-digit' },
-  },
+        start: '06:00',
+        end: '19:00',
+    },
+    weekOptions: {
+        gridHeight: 500,
+        nDays: 7,
+        eventWidth: 50,
+        timeAxisFormatOptions: { hour: '2-digit', minute: '2-digit' },
+    },
     locale: 'es-ES',
     selectedDate: new Date().toISOString().split('T')[0],
     views: [
@@ -77,7 +78,7 @@ const getReservas = () => {
     axios.get(route('BookingServices.index')).then(response => {
         reservas.value = response.data.bookingServices;
         reservas.value.forEach((item) => {
-          
+
             calendarApp.eventsService.add({
                 title: item.service.title,
                 start: item.date + ' 09:15',
@@ -86,7 +87,7 @@ const getReservas = () => {
                 id: item.id
             })
         });
-        
+
     });
 }
 
@@ -135,17 +136,20 @@ getReservas();
             </div>
         </div>
     </AppLayout>
-    <Modal v-model:visible="visible" :title="'Reserva de ' + serviceSelected.service?.title ?? ''" :close-on-escape="true">
+    <Modal v-model:visible="visible" :title="'Reserva de ' + serviceSelected.service?.title ?? ''"
+        :close-on-escape="true">
         <div class="flex flex-col gap-y-2">
             <h1 class="text-xl font-bold">Datos de la reserva</h1>
-            <div class="grid grid-cols-4 gap-2 w-full">
-                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Fecha: {{ serviceSelected.date }}</p>
-                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Hora: {{ serviceSelected.time }}</p>
-                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Adultos: {{serviceSelected.adults}}</p>
-                <p class="border border-slate-400 rounded-lg p-1 text-center hover:bg-slate-300 cursor-default">Valor: {{ COP.format(serviceSelected.total_price) }}</p>
+            <div class="grid grid-cols-3 md:grid-cols-5 gap-2 w-full">
+                <Tag label="Fecha" :value="serviceSelected.date" />
+                <Tag label="Hora" :value="serviceSelected.time" />
+                <Tag label="Adultos" :value="serviceSelected.adults" />
+                <Tag label="Niños" :value="serviceSelected.boys" />
+                <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" />
+
             </div>
             <h1 class="text-xl font-bold">Datos del Cliente</h1>
-        </div> 
+        </div>
         <!-- <code>
             {{ serviceSelected }}
         </code> -->
