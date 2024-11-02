@@ -40,19 +40,20 @@ const configCalendar = reactive({
         start: '06:00',
         end: '19:00',
     },
+    isResponsive: false,
     weekOptions: {
         gridHeight: 500,
         nDays: 7,
-        eventWidth: 50,
         timeAxisFormatOptions: { hour: '2-digit', minute: '2-digit' },
+    },
+    dayOptions: {
+        gridHeight: 400,
     },
     locale: 'es-ES',
     selectedDate: new Date().toISOString().split('T')[0],
     views: [
         createViewMonthGrid(),
-        createViewDay(),
         createViewWeek(),
-        createViewMonthAgenda(),
     ],
     callbacks: {
         onEventClick(calendarEvent) {

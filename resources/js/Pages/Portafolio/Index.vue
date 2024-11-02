@@ -233,7 +233,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex gap-x-4">
+                        <div class="flex gap-x-4 justify-center">
                             <button @click="formStatus = 1"
                                 class="bg-white flex text-center w-full border items-center rounded-lg text-black text-xl font-semibold group"
                                 type="button">
@@ -374,15 +374,13 @@ const changeImage = () => {
 }
 const loading = ref(false);
 const reservar = () => {
-    console.log(values)
-    // loading.value = true
+    loading.value = true
     axios.post(route('reservar', {
         service_id: service_id.value
     }), values).then(response => {
         toast('success', 'Reserva Realizada con exito');
         loading.value = false;
         visible.value = false;
-        console.log('reserva Realizada')
     });
 
 }
