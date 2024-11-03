@@ -10,7 +10,7 @@
             <ul class="space-y-1.5 mt-4">
                 <li>
                     <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5  text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-700 dark:text-white"
+                        class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-700 dark:text-white"
                         :href="route('dashboard')"
                         :class="route().current() == 'dashboard' ? 'bg-black text-white' : 'hover:bg-gray-100'">
                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -108,7 +108,7 @@
             <div class="flex w-full justify-between p-2">
                 <div class="text-xs flex flex-col text-left justify-end">
                     <h2 class="font-bold text-sm truncate text-nowrap w-52">{{ $page.props.auth.user.name }}</h2>
-                    <h3 class="text-xs italic text-gray-600 w-52 text-nowrap truncate">
+                    <h3 class="text-xs italic text-gray-600 w-40 text-nowrap truncate">
                         {{
                             $page.props.auth.user.name == 'Brian' ? 'Administrador AV Colombia' : 'Hotel'
                         }}
