@@ -25,5 +25,12 @@ import { ref } from 'vue';
 const value = ref(1);
 
 
+const options = [
+    { name: 'Métodos de Pago', value: 1 },
+    { name: 'Usuarios', value: 2 },
+    { name: 'Opción 3', value: 3 },
+    { name: 'Opción 4', value: 4 },
+];
+
 
 </script>

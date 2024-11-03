@@ -81,4 +81,15 @@ class Service extends Model
         return CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->boys_tarifa ?? $this->boys_price;
     }
 
+    public function locks()
+    {
+        return $this->morphMany(Lock::class, 'lockable');
+    }
+
+    public function scopeUnlocked(){
+        return $this->whereDoesntHave('locks', function($query){
+            $query->where('end_date', '>=', now());
+        });
+    }
+
 }

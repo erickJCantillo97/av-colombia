@@ -147,9 +147,10 @@
                                 </Disclosure>
                             </div>
                         </section>
-                        <form class="flex flex-col space-y-10 justify-between" novalidate @submit.prevent="firstSteep">
-                            <Input label="Fecha de Reserva" v-model="date" :min-date="new Date()" class="w-full"
-                                type="date" :error-message="errors.date" v-bind="dateAttrs" />
+                        
+                        <form class="flex flex-col space-y-10 justify-between" @submit.prevent="firstSteep">
+                            <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()" class="w-full"
+                                type="date" :error-message="errorDate" v-bind="dateAttrs" />
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
@@ -157,8 +158,8 @@
                                         <label for="" class="text-xs font-extralight italic">{{
                                             USDollar.format(selectedProduct.adult_tarifa) }}</label>
                                     </div>
-                                    <Input class="w-full" v-model="adults" min="1" type="number"
-                                        :error-message="errors.adults" v-bind="adultsAttrs" />
+                                    <Input class="w-full" required v-model="adults" min="1" type="number"
+                                        :error-message="errorsAdult" v-bind="adultsAttrs" />
                                 </div>
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
@@ -177,9 +178,8 @@
                                     (form.boys *
                                         selectedProduct.boy_tarifa)) }}</strong></span>
                             </div>
-                            <button type="submit" :disabled="!meta.valid" v-if="meta.valid"
-                                class="cta flex items-center w-full justify-center"
-                                :class="meta.valid ? '' : 'opacity-30'">
+                            <button type="submit" 
+                                class="cta flex items-center w-full justify-center">
                                 <span class="hover-underline-animation"> Siguiente </span>
                                 <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10"
                                     viewBox="0 0 46 16">
@@ -192,28 +192,28 @@
                         </form>
                     </div>
                 </transition>
-                <transition name="slide-fade">
-                    <div v-if="formStatus == 2" class="p-4 space-y-4">
+                
+                    <form @submit.prevent="reservar" novalidate v-if="formStatus == 2" class="p-4 space-y-4 animate-fadeinleft animate-once animate-duration-1000">
                         <h2
                             class="text-2xl font-extrabold text-center w-full border-b-1 shadow-lg rounded-md pb-1 mb-4">
                             Detalles de la Reserva
                         </h2>
                         <div class="flex flex-col gap-y-4">
                             <div class="flex  gap-x-2 flex-col md:flex-row">
-                                <Input label="Nombre del Pasajero" v-model="name" :error-message="errors.name"
+                                <Input label="Nombre del Pasajero" v-bind="nameAttrs" v-model="cliente_name" :error-message="errors.cliente_name"
                                     class="w-full" />
-                                <Input label="Telefono" v-model="phone" :error-message="errors.phone" class="w-full"
+                                <Input label="Telefono" v-model="cliente_phone" v-bind="phoneAttrs" :error-message="errors.cliente_phone" class="w-full"
                                     type="number" />
                             </div>
                             <div class="flex  gap-x-2 flex-col md:flex-row">
-                                <Input label="Ciudad de donde Proviene" v-model="city" :error-message="errors.city"
+                                <Input label="Ciudad de donde Proviene" v-bind="cityAttrs" v-model="cliente_city" :error-message="errors.city"
                                     class="w-full" />
-                                <Input label="Edificio u Hotel" class="w-full" v-model="building"
-                                    :error-message="errors.building" />
+                                <Input label="Edificio u Hotel" class="w-full" v-bind="buildingAttrs" v-model="cliente_building"
+                                    :error-message="errors.cliente_building" />
                             </div>
 
 
-                            <Input type="time" label="Hora de Actividad" class="w-full" v-model="hour"
+                            <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
                                 :error-message="errors.hour" />
 
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
@@ -221,14 +221,14 @@
                                     <div class="w-full flex justify-between font-extrabold items-end">
                                         <label for="">Abono</label>
                                     </div>
-                                    <Input class="w-full" v-model="abono" :error-message="errors.abono" min="1"
+                                    <Input class="w-full" v-bind="abonoAttrs" v-model="abono" :error-message="errors.abono" min="1"
                                         type="number" />
                                 </div>
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
                                         <label for="">Medio de Pago</label>
                                     </div>
-                                    <Input class="w-full" min="0" type="dropdown" option-label="name" option-value="id"
+                                    <Input class="w-full" min="0" v-bind="methodAttrs" type="dropdown" option-label="name" option-value="id"
                                         :options="methods" v-model="method" />
                                 </div>
                             </div>
@@ -250,11 +250,10 @@
                                 </div>
                                 <p class="translate-x-2 group-hover:hidden text-sx">Volver</p>
                             </button>
-                            <Button severity="success" @click="reservar" class="!h-16 w-full" :loading label="Reservar"
+                            <Button :disabled="!meta.valid" severity="success" type="submit" class="!h-16 w-full" :loading label="Reservar"
                                 icon="fa-solid fa-calendar-check" icon-pos="right" click="formStatus = 1" />
                         </div>
-                    </div>
-                </transition>
+                    </form>
             </div>
         </div>
     </Modal>
@@ -291,27 +290,29 @@ const toggler = ref(false);
 const visible = ref(false);
 const service_id = ref(null);
 const intervalId = ref(null);
+const errorDate = ref();
+const errorsAdult = ref();
 const methods = ref([]);
 // #endregion
 
 // #region Validates
-const schema = yup.object({
-    date: yup.date().required(),
-    adults: yup.number().required(),
-});
 
 const schema2 = yup.object({
-    name: yup.string().required(),
-    phone: yup.string().required(),
-    city: yup.string().required(),
-    building: yup.string().required(),
+    date: yup.date().required(),
+    adults: yup.number().required(),
+    date: yup.date().required(),
+    adults: yup.number().required(),
+    cliente_name: yup.string().required(),
+    cliente_phone: yup.string().required(),
+    cliente_city: yup.string().required(),
+    cliente_building: yup.string().required(),
     hour: yup.string().required(),
     abono: yup.number().required(),
-    medio: yup.string().required(),
+    method: yup.string().required(),
 });
 
 const { values, defineField, errors, meta } = useForm({
-    validationSchema: formStatus.value == 1 ? schema : schema2,
+    validationSchema:  schema2,
 });
 // #endregion
 
@@ -321,18 +322,15 @@ const { values, defineField, errors, meta } = useForm({
 const [date, dateAttrs] = defineField('date');
 const [boys, boysAttrs] = defineField('boys');
 const [adults, adultsAttrs] = defineField('adults');
-const [name, nameAttrs] = defineField('name');
-const [phone, phoneAttrs] = defineField('phone');
-const [city, cityAttrs] = defineField('city');
-const [building, buildingAttrs] = defineField('building');
+const [cliente_name, nameAttrs] = defineField('cliente_name');
+const [cliente_phone, phoneAttrs] = defineField('cliente_phone');
+const [cliente_city, cityAttrs] = defineField('cliente_city');
+const [cliente_building, buildingAttrs] = defineField('cliente_building');
 const [hour, hourAttrs] = defineField('hour');
 const [abono, abonoAttrs] = defineField('abono');
 const [method, methodAttrs] = defineField('method');
 
 // #endregion
-
-
-
 
 const handleInput = () => {
     if (debounceTimer.value) {
@@ -342,9 +340,6 @@ const handleInput = () => {
         getServices();
     }, 500);
 }
-
-
-
 const getServices = () => {
     axios.get(route('get.services', {
         search: search.value
@@ -352,8 +347,6 @@ const getServices = () => {
         services.value = response.data.services.slice(0, 5);
     });
 }
-
-
 const randomIndex = Math.floor(Math.random() * 3);
 const currentImage = ref(images.value[randomIndex]);
 const form = ref({
@@ -381,7 +374,10 @@ const reservar = () => {
         toast('success', 'Reserva Realizada con exito');
         loading.value = false;
         visible.value = false;
-    });
+    }).error(error => {
+        toast('error', 'Error al realizar la reserva');
+        loading.value = false;
+    })
 
 }
 
@@ -441,6 +437,15 @@ const totalCost = computed(() => {
 });
 
 const firstSteep = () => {
+    if(values.date == undefined){
+        console.log(errors)
+        errorDate.value = 'Selecione una fecha';
+        return ;
+    }
+    if(values.adults == undefined){
+        errorsAdult.value = 'Escoga el numero de adultos';
+        return ;
+    }
     formStatus.value = 2;
 }
 

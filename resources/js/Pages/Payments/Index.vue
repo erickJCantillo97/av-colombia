@@ -8,6 +8,13 @@ import { ref } from 'vue';
 
 const show = ref(false)
 
+const props = defineProps({
+    payments: {
+        type: Array,
+        required: true,
+    },
+})
+
 const form = useForm({
     payable_id: '',
     payable_type: 'App\\Models\\Service',
@@ -47,7 +54,6 @@ const getServicesNoPayment =  () => {
 
 getServicesNoPayment()
 
-
 const columns = [
     {
         header: 'Servicio',
@@ -56,7 +62,7 @@ const columns = [
     },
     {
         header: 'Metodo de Pago',
-        field: 'method',
+        field: 'metohdPayment.name',
         filter: true,
     },
     {
@@ -67,7 +73,8 @@ const columns = [
     },
     {
         header: 'Fecha',
-        field: 'date',
+        field: 'created_at',
+        type: 'date',
         filter: true,
     },
    
@@ -85,19 +92,44 @@ const columns = [
 <template>
     <AppLayout title="Pagos">
         <div class="h-[99vh]">
-            <Datatable :add :columnas="columns"
+            <Datatable :add :columnas="columns" :data="payments"
                 title="Pagos">
             </Datatable>
         </div>
         <Modal v-model="show" title="Añadir Pagos">
             <form @submit.prevent="submit">
-                <div class="grid grid-cols-1 gap-6">
-                    <div>
+                <div class="flex flex-col gap-y-4">
                         <!-- <label for="payable_id" class="block text-sm font-medium text-gray-700">Servicio</label> -->
-                        <Input type="dropdown"  :options="servicesNoPaiyment" v-model="serviceSelected" option-label="service"  label="servicio" />
-                        <Input label="Cantidad"   />
+                         <div>
+                             <label for="" class="font-bold">Servicio</label>
+                            <Select :options="servicesNoPaiyment" filter showClear v-model="form.payable_id"  class="w-full" option-label="service" placeholder="Seleccione un servicio">
+                                <template #value="slotProps">
+                                    <div v-if="slotProps.value" class="flex items-center">
+                                        <div>{{ slotProps.value.service }} - {{slotProps.value.cliente_name}}</div>
+                                    </div>
+                                    <span v-else>
+                                        {{ slotProps.placeholder }}
+                                    </span>
+                                </template>
+                                <template #option="slotProps" >
+                                        <div class="flex justify-between w-full items-center">
+                                            <div> 
+                                                <p>
+                                                    {{ slotProps.option.service }} - {{ slotProps.option.cliente_name }}
+                                                </p>
+                                                <p class="text-xs">
+                                                    {{ slotProps.option.date }} {{ slotProps.option.hour }}
+                                                </p>
+                                            </div>
+                                                <div>{{slotProps.option.total_price_sales}}</div>
+                                        </div>
+                                </template>
+                                
+                            </Select>
+                         </div>
+                        <Input label="Monto"   />
                     </div>
-                </div>
+                
             </form>
         </Modal>
     </AppLayout>

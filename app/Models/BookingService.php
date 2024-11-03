@@ -34,4 +34,9 @@ class BookingService extends Model
     {
         return $this->adults * $this->adult_tarifa + $this->boys * $this->boy_tarifa;
     }
+
+    public function payment()
+    {
+        return $this->morphMany(Payment::class, 'payable');
+    }   
 }

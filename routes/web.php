@@ -30,6 +30,8 @@ Route::middleware([
     })->name('dashboard');
 
     Route::resource('services', ServiceController::class);
+    Route::post('services/{service}/lock', [ServiceController::class, 'lock'])->name('services.lock');
+
     Route::resource('users', UserController::class);
 
     Route::get('portafolio', function () {

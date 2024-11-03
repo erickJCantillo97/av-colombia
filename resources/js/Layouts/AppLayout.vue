@@ -43,7 +43,7 @@ const logout = () => {
                 <Menu></Menu>
             </div>
             <!-- Page Content -->
-            <main class="px-2 lg:ml-64 bg-white h-[100vh] overflow-y-auto">
+            <main class="px-2 lg:ml-64 bg-white h-[100vh] overflow-y-auto animate-zoomin animate-once animate-duration-700">
                 <slot />
             </main>
         </div>

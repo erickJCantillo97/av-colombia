@@ -139,17 +139,47 @@ getReservas();
     </AppLayout>
     <Modal v-model:visible="visible" :title="'Reserva de ' + serviceSelected.service?.title ?? ''"
         :close-on-escape="true">
-        <div class="flex flex-col gap-y-2">
+        <div class="flex flex-col gap-y-5">
             <h1 class="text-xl font-bold">Datos de la reserva</h1>
             <div class="grid grid-cols-3 md:grid-cols-5 gap-2 w-full">
                 <Tag label="Fecha" :value="serviceSelected.date" />
-                <Tag label="Hora" :value="serviceSelected.time" />
+                <Tag label="Hora" :value="serviceSelected.hour" />
                 <Tag label="Adultos" :value="serviceSelected.adults" />
                 <Tag label="Niños" :value="serviceSelected.boys" />
                 <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" />
 
             </div>
             <h1 class="text-xl font-bold">Datos del Cliente</h1>
+            <div class="grid grid-cols-3 md:grid-cols-4 gap-2 w-full">
+                <Tag label="Cliente" :value="serviceSelected.cliente_name" />
+                <Tag label="Telefono" :value="serviceSelected.cliente_phone" />
+                <Tag label="Edificio" :value="serviceSelected.cliente_building" />
+                <Tag label="Ciudad de Origen" :value="serviceSelected.cliente_city" />
+                <!-- <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" /> -->
+            </div>
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-bold">Datos de Pagos</h1>
+                <div class="border bg-blue-600 font-bold p-1 rounded-lg text-white text-sm">
+                    Saldo: {{COP.format(serviceSelected.total_price -  serviceSelected.payment.reduce((a,b)  => a + b.amount, 0))}}
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <div  class="flex justify-between border-b-2 font-extrabold px-2">
+                    <span>Monto</span>
+                    <span>Moneda</span>
+                    <span>Tipo de Pago</span>
+                    <span>Metodo de Pago</span>
+                    <span>Estado del Pago</span>
+                </div>
+                <div v-for="payment in serviceSelected.payment"  class="mb-2 flex justify-between border-b px-2 py-1 rounded-md">
+                    <span>{{ COP.format(payment.amount) }}</span>
+                    <span>{{ payment.currency }}</span>
+                    <span>{{ payment.type }}</span>
+                    <span>{{ payment.metohd_payment.name }}</span>
+                    <span :class="payment.status == 'pendiente' ? 'text-red-500 font-bold capitalize':''">{{ payment.status }}</span>
+                </div>
+            </div>
+          
         </div>
         <!-- <code>
             {{ serviceSelected }}

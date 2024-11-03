@@ -1,12 +1,12 @@
 <template>
     <AppLayout title="Services">
         <div class="h-[99vh]">
-            <Datatable :add :columnas="columns" :data="bookingServices" routecreate="services.create" title="Reservas">
+            <Datatable :actions="buttons" :add :columnas="columns" :data="bookingServices" routecreate="services.create"
+                title="Reservas">
             </Datatable>
         </div>
         <Modal v-model="show" title="Añadir Reserva" width="40vw">
             <form @submit.prevent="reservar">
-
                 <Input type="dropdown" v-model="form.service_id" label="Servicio" option-label="title" option-value="id"
                     :options="services"></Input>
                 <Input label="Fecha" type="date" v-model="form.date"></Input>
@@ -22,6 +22,75 @@
             </form>
         </Modal>
         <Toast></Toast>
+        <Drawer v-model:visible="info" pt:root:class="!bg-blue-100" header="Detalles de la actividad" position="right">
+            <template #header>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-lg">Detalles de la Actividad</span>
+                </div>
+            </template>
+            <div class="flex flex-col gap-y-4">
+                <h2 class="text-lg font-bold">
+                    {{ service.service.title }}
+                </h2>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Fecha:</strong>
+                    <p>{{ service.date }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Cliente:</strong>
+                    <p>{{ service.cliente_name }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Edificio:</strong>
+                    <p>{{ service.cliente_building }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Adultos:</strong>
+                    <p>{{ service.adults }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Niños:</strong>
+                    <p>{{ service.boys }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Valor:</strong>
+                    <p>{{ COP.format(service.total_price) }}</p>
+                </div>
+                <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Vendedor:</strong>
+                    <p>{{ service.user?.name }}</p>
+                </div>
+                <div class="flex flex-col gap-y-2 mt-2 ">
+                    <div class="flex justify-between">
+                        <h2 class="text-xl font-bold ">Pagos Realizados </h2>
+                        <div class="bg-blue-600 text-white p-1 rounded-lg">
+                            {{ COP.format(service.payment.reduce((a, b) => a + b.amount, 0)) }}
+                        </div>
+                    </div>
+                    <div class="flex items-center text-xs justify-between border shadow-xl rounded-md p-1 bg-white"
+                        v-for="payment in service.payment">
+                        <div>
+                            <div class="uppercase font-bold">
+                                {{ payment.type }} {{ COP.format(payment.amount) }}
+                            </div>
+                            <div>
+                                {{ new Date(payment.created_at).toLocaleDateString('es-CO') }} {{
+                                payment.metohd_payment.name }}
+                            </div>
+
+                        </div>
+                        <div class="uppercase"
+                            :class="payment.status == 'pendiente' ? 'bg-red-500 p-1 text-white rounded-lg shadow-lg shadow-red-500' : ''">
+                            {{ payment.status }}
+                            <div>
+
+                            </div>
+                        </div>
+                        <!-- {{ payment }} -->
+                    </div>
+                </div>
+            </div>
+        </Drawer>
     </AppLayout>
 </template>
 <script setup>
@@ -37,9 +106,15 @@ import { useToast } from 'primevue/usetoast';
 const props = defineProps({
     bookingServices: Array
 })
-
-
+const info = ref(false);
+const service = ref({});
 const toast = useToast();
+
+const COP = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+});
 const show = ref(false);
 const add = {
     action: () => {
@@ -66,20 +141,56 @@ const getServices = () => {
 
 getServices()
 
-
-
+const buttons = [
+    {
+        label: 'Detalles',
+        action: (data) => {
+            service.value = data;
+            info.value = true;
+        },
+        icon: 'fa-solid fa-circle-info text-sm',
+        severity: "info"
+        // class: 'p-button-warning text-sm'
+    },
+    {
+        label: 'Registrar Pago',
+        action: (data) => {
+            form.service_id = data.id;
+            show.value = true;
+        },
+        icon: 'fa-solid fa-dollar text-sm',
+        severity: "success"
+        // class: 'p-button-warning text-sm'
+    },
+    {
+        label: 'Problematica',
+        action: (data) => {
+            form.service_id = data.id;
+            show.value = true;
+        },
+        icon: 'fa-solid fa-person-dress-burst text-sm',
+        severity: "danger"
+        // class: 'p-button-warning text-sm'
+    }
+]
 
 const columns = [
     {
-        field: 'service.title',
-        header: 'Servicio',
+        field: 'cliente_name',
+        header: 'Nombre del pasajero',
         filter: true,
         sortable: true
 
     },
     {
-        field: 'user.name',
-        header: 'Usuario',
+        field: 'cliente_building',
+        header: 'Edificio u Hotel',
+        filter: true,
+        sortable: true
+    },
+    {
+        field: 'service.title',
+        header: 'Actividad',
         filter: true,
         sortable: true
     },
@@ -89,31 +200,7 @@ const columns = [
         filter: true,
         sortable: true
     },
-    {
-        field: 'adults',
-        header: 'Adultos',
-        sortable: true
-    },
-    {
-        field: 'boys',
-        header: 'Niños',
-        sortable: true
-    },
-    {
-        field: 'total_price',
-        header: 'Precio AV Colombia',
-        type: 'currency',
-        currency: 'COP',
-        sortable: true
-    },
-    {
-        field: 'total_price_sales',
-        header: 'Precio de Venta',
-        type: 'currency',
-        currency: 'COP',
-        filter: true,
-        sortable: true
-    },
+
     {
         field: 'status',
         header: 'Estado',
@@ -128,17 +215,17 @@ const columns = [
             { text: 'SIN ESTADO', severity: 'danger', class: 'animate-pulse' }
         ]
     },
-    {
-        field: 'payment',
-        header: 'Pago',
-        sortable: true,
-        filter: true,
-        type: 'tag', filtertype: 'EQUALS',
-        class: 'text-center uppercase',
-        severitys: [
-            { text: 'pendiente', severity: 'danger', class: '' },
-        ]
-    },
+    // {
+    //     field: 'payment',
+    //     header: 'Pago',
+    //     sortable: true,
+    //     filter: true,
+    //     type: 'tag', filtertype: 'EQUALS',
+    //     class: 'text-center uppercase',
+    //     severitys: [
+    //         { text: 'pendiente', severity: 'danger', class: '' },
+    //     ]
+    // },
 
 ]
 

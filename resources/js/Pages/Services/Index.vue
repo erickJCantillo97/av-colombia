@@ -35,6 +35,28 @@
                 icon="fa-solid fa-times" class="!h-8" />
         </template>
     </Modal>
+    <Modal v-model:visible="lock">
+        <template #title>
+            <span class="text-xl font-bold white-space-nowrap">
+                Bloquear Servicio</span>
+        </template>
+        <template #icon>
+            <i class="fa-solid fa-lock" />
+        </template>
+        <h3 class="text-2xl text-center text-amber-600 font-bold my-4">
+            Bloquear Servicio <strong>{{ service.title }}</strong>
+        </h3>
+        
+        <label for="" class="font-bold">Seleccione el Rango de bloque o del servicio</label>
+        <VueDatePicker   v-model="formLock.range" :range="{}" hide-offset-dates :teleport="true"
+        auto-apply :enable-time-picker="false"></VueDatePicker>
+        <template #footer>
+            <Button @click="locked" title="Save" severity="success" label="Save" outlined icon="fa-solid fa-save"
+                class="!h-8" />
+            <Button @click="lock = false" title="Cancel" severity="danger" label="Cancel" outlined
+                icon="fa-solid fa-times" class="!h-8" />
+        </template>
+    </Modal>
     <ConfirmPopup></ConfirmPopup>
 </template>
 
@@ -55,6 +77,14 @@ const add = {
         router.visit(route('services.create'))
     },
 }
+
+const formLock = useForm({
+    range: '',
+})
+
+
+
+const lock = ref(false)
 
 const COP = new Intl.NumberFormat("es-CO", {
     style: "currency",
@@ -103,8 +133,6 @@ const columns = [
 
 ];
 
-
-
 const confirm = useConfirm()
 const editor = ref(false)
 
@@ -129,6 +157,16 @@ const buttons = [
     },
     {
         action: (data) => {
+            lock.value = true
+            service.value = data
+        },
+        show: usePage().props.auth.user.rol == 'admin',
+        severity: 'warn',
+        icon: 'fa-solid fa-lock text-sm',
+        label: 'Bloquear',
+    },
+    {
+        action: (data) => {
             if (usePage().props.auth.user.rol == 'admin') {
                 router.visit(route('services.edit', data.slug))
             } else {
@@ -139,7 +177,7 @@ const buttons = [
                 form.boys_tarifa = data.boy_tarifa
             }
         },
-        severity: 'secondary',
+        severity: 'info',
         icon: 'fa-solid fa-pencil text-sm',
 
     },
@@ -182,6 +220,18 @@ const submit = () => {
         onSuccess: () => {
             toast('success', 'Tarifa creada con exito')
             visible.value = false
+        }
+    })
+}
+
+const locked = () => {
+    router.post(route('services.lock', service.value.slug), {
+        start_date: formLock.range[0],
+        end_date: formLock.range[1],
+    },{
+        onSuccess: () => {
+            toast('success', 'Servicio Bloqueado con exito')
+            lock.value = false
         }
     })
 }

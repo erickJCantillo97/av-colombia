@@ -21,5 +21,6 @@ export default {
         },
     },
 
-    plugins: [forms, typography,require('preline/plugin')],
+    plugins: [forms, typography,require('preline/plugin'), require('tailwindcss-primeui')],
+    
 };

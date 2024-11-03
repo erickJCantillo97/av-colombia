@@ -361,7 +361,7 @@ defineEmits(['valueChange'])
                         }" />
                 </span>
                 <span v-else-if="type == 'date'">
-                    <VueDatePicker class="w-full" hide-offset-dates :min-date="minDate" v-model="input" :teleport="true"
+                    <VueDatePicker class="w-full" :name hide-offset-dates :min-date="minDate" v-model="input" :teleport="true"
                         auto-apply :enable-time-picker="false">
                     </VueDatePicker>
                     <!-- <Calendar :manualInput :disabled :id  :minDate :maxDate :placeholder :required

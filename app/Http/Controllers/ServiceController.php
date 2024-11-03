@@ -23,7 +23,7 @@ class ServiceController extends Controller
         if ($request->expectsJson()) {
             $search = '%' . $request->search . '%';
             return response()->json([
-                'services' => Service::whereAny([
+                'services' => Service::unlocked()->whereAny([
                     'title',
                     'title_en',
                     'description',
@@ -130,21 +130,42 @@ class ServiceController extends Controller
 
     public function reservar(Request $request)
     {
-        $validateData = $request->validate([
+        $validate = $request->validate([
             'service_id' => 'required|exists:services,id',
             'adults' => 'required|numeric',
             'boys' => 'nullable|numeric',
+            'cliente_name' => 'required|string',
+            'cliente_phone' => 'required|numeric',
+            // 'city' => 'required|string',
+            'cliente_building' => 'required|string',
+            'hour' => 'required|date_format:H:i',
+            
+            // 'payment_type' => 'nullable|numeric',
             'date' => 'required|date',
         ]);
-        $validateData['date'] = Carbon::parse($validateData['date'])->format('Y-m-d');
-        $service = Service::find($validateData['service_id']);
-        $validateData['boys'] = $validateData['boys'] ?? 0;
-        $validateData['user_id'] = auth()->user()->id;
-        $validateData['service'] = $service->title;
-        $validateData['adults_price'] = $service->adults_price;
-        $validateData['adult_tarifa'] = $service->adult_tarifa;
-        $validateData['boys_price'] = $service->boys_price;
-        $validateData['boys_tarifa'] = $service->boy_tarifa;
-        BookingService::create($validateData);
+        $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
+        $service = Service::find($validate['service_id']);
+        $validate['boys'] = $validate['boys'] ?? 0;
+        $validate['user_id'] = auth()->user()->id;
+        $validate['service'] = $service->title;
+        $validate['adults_price'] = $service->adults_price;
+        $validate['adult_tarifa'] = $service->adult_tarifa;
+        $validate['boys_price'] = $service->boys_price;
+        $validate['boys_tarifa'] = $service->boy_tarifa;
+        $booking = BookingService::create($validate);
+        paymentStore(request('abono'), request('method'), $booking);
+    }
+
+    public function lock(Service $service, Request $request)
+    {
+        $validate = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+        $validate['start_date'] = Carbon::parse($validate['start_date'])->format('Y-m-d');
+        $validate['end_date'] = Carbon::parse($validate['end_date'])->format('Y-m-d');
+        $validate['user_id'] = auth()->user()->id;
+        $service->locks()->create($validate);
+
     }
 }

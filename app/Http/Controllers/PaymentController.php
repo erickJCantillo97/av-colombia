@@ -13,8 +13,10 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::all();
-        return inertia('Payments/Index', compact('payments'));
+        $payments = Payment::with('metohdPayment')->get();
+        return inertia('Payments/Index', [
+            'payments' => $payments
+        ]);
     }
 
     /**
