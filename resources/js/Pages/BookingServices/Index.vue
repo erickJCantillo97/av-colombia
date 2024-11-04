@@ -25,20 +25,26 @@
         <Drawer v-model:visible="info" pt:root:class="!bg-blue-100" header="Detalles de la actividad" position="right">
             <template #header>
                 <div class="flex items-center gap-2">
-                    <span class="font-bold text-lg">Detalles de la Actividad</span>
+                    <span class="font-bold text-lg">{{service.service.title}}</span>
                 </div>
             </template>
-            <div class="flex flex-col gap-y-4">
-                <h2 class="text-lg font-bold">
-                    {{ service.service.title }}
-                </h2>
+            <div class="flex flex-col gap-y-1.5 text-sm">
+                
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-                    <strong>Fecha:</strong>
+                    <strong>Fecha del Servicio:</strong>
                     <p>{{ service.date }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Hora del Servicio:</strong>
+                    <p>{{ service.hour }}</p>
                 </div>
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Cliente:</strong>
                     <p>{{ service.cliente_name }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Telelfono:</strong>
+                    <a :href="`tel://${service.cliente_phone}`">{{ service.cliente_phone }}</a>
                 </div>
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Edificio:</strong>
@@ -60,6 +66,10 @@
                     <strong>Vendedor:</strong>
                     <p>{{ service.user?.name }}</p>
                 </div>
+                <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Fecha de reserva:</strong>
+                    <p>{{ new Date(service.created_at).toLocaleDateString('es-CO') }}</p>
+                </div>
                 <div class="flex flex-col gap-y-2 mt-2 ">
                     <div class="flex justify-between">
                         <h2 class="text-xl font-bold ">Pagos Realizados </h2>
@@ -80,7 +90,7 @@
 
                         </div>
                         <div class="uppercase"
-                            :class="payment.status == 'pendiente' ? 'bg-red-500 p-1 text-white rounded-lg shadow-lg shadow-red-500' : ''">
+                            :class="payment.status == 'pendiente' ? 'bg-red-500 p-1 text-white rounded-lg shadow-md shadow-red-500' : ''">
                             {{ payment.status }}
                             <div>
 
@@ -90,6 +100,19 @@
                     </div>
                 </div>
             </div>
+
+            <template #footer>
+                <div class="flex flex-col items-center gap-2">
+                    <h1 class="font-bold text-center">Saldo: {{ COP.format(service.total_price - service.payment.reduce((a, b) => a + b.amount, 0)) }}</h1>
+                    <div class="flex gap-x-2">
+                        <Button  icon="fa-solid fa-circle-check" text size="large" v-tooltip.top="'Completar Servicio'" class="flex-auto" severity="success"  />
+                        <Button  icon="fa-solid fa-eye-slash" text size="large" v-tooltip.top="'Servicio No show'" class="flex-auto" severity="warn"  />
+                        <Button  icon="fa-solid fa-xmark-circle" text size="large" v-tooltip.top="'Cancelar Servicio'" class="flex-auto" severity="danger"  />
+                        <Button  icon="fa-solid fa-person-dress-burst" text size="large" v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger"  />
+                        <!-- <Button label="Registrar Pago" icon="pi pi-sign-out" class="flex-auto" severity="success"  /> -->
+                    </div>
+                </div>
+            </template>
         </Drawer>
     </AppLayout>
 </template>
