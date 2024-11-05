@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateServiceRequest;
 use App\Models\BookingService;
 use App\Models\Feature;
 use App\Models\Included;
+use App\Models\Lock;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class ServiceController extends Controller
             ]);
         }
         return Inertia::render('Services/Index', [
-            'services' => Service::get(),
+            'services' => Service::with('locks')->get(),
         ]);
     }
 
@@ -166,6 +167,11 @@ class ServiceController extends Controller
         $validate['end_date'] = Carbon::parse($validate['end_date'])->format('Y-m-d');
         $validate['user_id'] = auth()->user()->id;
         $service->locks()->create($validate);
+    }
 
+    public function unlock(Lock $lock)
+    {
+        $lock->delete();
+        return back()->with('message', 'Lock eliminado');
     }
 }

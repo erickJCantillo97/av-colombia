@@ -32,7 +32,9 @@ const COP = new Intl.NumberFormat("es-CO", {
     currency: "COP",
     maximumFractionDigits: 0,
 });
+const dateActivities = ref([]);
 const reservas = ref([]);
+const todayActivity = ref(false)
 const serviceSelected = ref({});
 const configCalendar = reactive({
     defaultView: viewMonthGrid.name,
@@ -79,7 +81,11 @@ const getReservas = () => {
     axios.get(route('BookingServices.index')).then(response => {
         reservas.value = response.data.bookingServices;
         reservas.value.forEach((item) => {
-
+            console.log(item.date == new Date().toISOString().split('T')[0])
+            if(item.date == new Date().toISOString().split('T')[0]){
+                console.log(item)
+                dateActivities.value.push(item);
+            }
             calendarApp.eventsService.add({
                 title: item.service.title,
                 start: item.date + ' 09:15',
@@ -88,7 +94,9 @@ const getReservas = () => {
                 id: item.id
             })
         });
-
+        if(dateActivities.value.length > 0){
+            todayActivity.value = true;
+        }
     });
 }
 
@@ -184,5 +192,53 @@ getReservas();
         <!-- <code>
             {{ serviceSelected }}
         </code> -->
+    </Modal>
+    <Modal v-model="todayActivity" title="Actividades de Hoy" width="90vw">
+        <div>
+            <h1 class="text-xl font-bold">Actividades de Hoy</h1>
+            <div class="flex justify-between font-extrabold text-lg mt-4 bg-gray-200 rounded-t-md p-1">
+                <p class="w-full flex text-center">
+                    Actividad
+                </p>
+                <p class="w-full flex text-center">
+                    Cliente
+                </p>
+                <p class="w-full flex text-center">
+                    Edificio
+                </p>
+                <p class="w-full flex text-center">
+                    Telefono
+                </p>
+               
+                <p class="w-full flex text-center">
+                    Hora
+                </p>
+                <p class="w-full flex text-center">
+                    Valor
+                </p>
+
+            </div>
+            <div v-for="activity in dateActivities" class="flex justify-between bg-blue-200 p-1.5 text-center">
+                <p class="w-full flex text-center">
+                    {{ activity.service.title }}
+                </p>
+                <p class="w-full flex text-center">
+                    {{ activity.cliente_name }}
+                </p>
+                <p class="w-full flex text-center">
+                    {{ activity.cliente_building }}
+                </p>
+                <a :href="`tel://${activity.cliente_phone}`" class="w-full flex">
+                    {{ activity.cliente_phone }}
+                </a>
+                <p class="w-full flex text-center">
+                    {{ activity.hour }}
+                </p>
+                <p class="w-full flex text-center">
+                    {{ COP.format(activity.total_price) }}
+                </p>
+
+            </div>
+        </div>
     </Modal>
 </template>

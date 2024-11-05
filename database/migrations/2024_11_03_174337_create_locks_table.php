@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id')->nullable()->references('id')->on('users')->onDelete('cascade'); // ID del usuario
             $table->uuid('lockable_id'); // ID del servicio
+            $table->string('description')->nullable(); // Tipo de Lock
             $table->string('lockable_type'); // Tipo de Lock
             $table->date('start_date'); // 
             $table->date('end_date'); // Fecha de expiración

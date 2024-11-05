@@ -366,7 +366,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                         {{ byteSizeFormatter(data[col.field]) }}
                     </span>
                     <span v-else-if="col.type == 'boolean'" class="flex items-center justify-center">
-                        <InputSwitch v-model="data[col.field]" :disabled="col.disabled" />
+                        <InputSwitch v-model="data[col.field]" :disabled="true" />
                     </span>
                     <div v-else-if="col.type == 'html'" class="" v-html="truncateString(data[col.field] + ' ', 80)">
                     </div>
@@ -390,7 +390,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                             :severity="button.severity == undefined ? 'primary' : button.severity"
                             :outlined="button.outlined == undefined ? false : button.outlined"
                             :rounded="button.rounded == undefined ? false : button.rounded"
-                            :icon="button.icon == undefined ? 'fa-solid fa-ship' : button.icon"
+                            :icon="(typeof button.icon === 'function') ? button.icon(data, $event) : button.icon"
                             v-tooltip.left="{ pt: { root: 'text-center' }, value: button.label }" :class="button.class"
                             v-if="(typeof button.show === 'function') ? button.show(data, $event) : (button.show == undefined ? true : button.show)" />
                     </span>

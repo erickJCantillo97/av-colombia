@@ -13,12 +13,22 @@
                     </div>
                 </div>
                 <PaymentMethods v-if="value == 1" />
+                <div v-else-if="value == 3" class="p-4">
+                    <h1 class="text-xl font-extrabold ">
+                        Dolar
+                    </h1>
+                    <Input type="number" label="Valor del Dolar"/>
+                    <div class="flex justify-end mt-4">
+                        <Button label="Guardar" severity="success" class="!h-9 justify-end" />
+                    </div>
+                </div>
             </div>
         </div>
     </AppLayout>
 </template>
 
 <script setup>
+import Input from '@/Components/Customs/Input.vue';
 import PaymentMethods from '@/Components/PaymentMethods.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
@@ -28,8 +38,8 @@ const value = ref(1);
 const options = [
     { name: 'Métodos de Pago', value: 1 },
     { name: 'Usuarios', value: 2 },
-    { name: 'Opción 3', value: 3 },
-    { name: 'Opción 4', value: 4 },
+    { name: 'Plataformas', value: 4 },
+    { name: 'Tasas', value: 3 },
 ];
 
 

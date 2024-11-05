@@ -7,6 +7,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
+use App\Models\Service;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,16 +41,19 @@ Route::middleware([
 
     Route::post('reservar', [ServiceController::class, 'reservar'])->name('reservar');
     Route::resource('BookingServices', BookingServiceController::class);
-    Route::resource('payments', PaymentController::class);
     Route::get('getBookingServicesNoPayment', [BookingServiceController::class, 'getBookingServicesNoPayment'])->name('get.services.no.payment');
     Route::resource('paymentMethods', PaymentMethodController::class);
-
+    
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
-
+    
     Route::resource('proveedors', ProveedorController::class);
     Route::get('settings', function () {
         return Inertia::render('Settings/Index');
     })->name('settings');
+
+    Route::resource('payments', PaymentController::class);
+    Route::put('payments/{payment}/setState', [PaymentController::class, 'setState'])->name('payment.set.state');
+    Route::post('services/{lock}/unlock', [ServiceController::class, 'unlock'])->name('services.unlock');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

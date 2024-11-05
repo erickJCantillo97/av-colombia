@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->onDelete('cascade'); // ID del usuario
             $table->uuid('payable_id'); // ID del servicio
             $table->string('payable_type'); // Tipo de pago
-            $table->foreignId('method')->nullable()->references('id')->on('payment_methods')->onDelete('cascade');; // Metodo de pago
+            $table->foreignUuid('method')->nullable()->references('id')->on('payment_methods')->onDelete('cascade');; // Metodo de pago
             $table->string('status'); // Estado
             $table->double('amount'); // Monto
             $table->string('currency'); // Moneda

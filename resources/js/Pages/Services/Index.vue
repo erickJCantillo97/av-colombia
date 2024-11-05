@@ -38,18 +38,59 @@
     <Modal v-model:visible="lock">
         <template #title>
             <span class="text-xl font-bold white-space-nowrap">
-                Bloquear Servicio</span>
+                Bloqueos</span>
         </template>
         <template #icon>
             <i class="fa-solid fa-lock" />
         </template>
         <h3 class="text-2xl text-center text-amber-600 font-bold my-4">
-            Bloquear Servicio <strong>{{ service.title }}</strong>
+            Bloqueos del Servicio <strong>{{ service.title }}</strong>
         </h3>
         
-        <label for="" class="font-bold">Seleccione el Rango de bloque o del servicio</label>
-        <VueDatePicker   v-model="formLock.range" :range="{}" hide-offset-dates :teleport="true"
-        auto-apply :enable-time-picker="false"></VueDatePicker>
+        <div v-if="service.locks.length == 0" class="text-center text-gray-500">No hay bloqueos</div>
+        <div v-else class="flex flex-col gap-y-2">
+            <div class="flex justify-between font-bold">
+                <p>
+                    Razón
+                </p>
+                <p>
+                    Fecha Inicio
+                </p>
+                <p>
+                    Fecha Fin
+                </p>
+                <p>
+                    Quitar
+                </p>
+            </div>
+            <div class="flex justify-between border-b" v-for="lock in service.locks">
+                <p>
+                    Cierre del Servicio
+                </p>
+                <p>
+                    {{ lock.start_date }}
+                </p>
+                <p>
+                    {{ lock.end_date }}
+                </p>
+                <p>
+                   <Button icon="fa-solid fa-xmark-circle" @click="unlock(lock.id)" v-tooltip="'Quitar Bloqueo'" text severity="danger"/>
+                </p>
+            </div>
+        </div>
+
+        <div class="flex justify-between gap-x-2 my-2">
+            <div class="w-full">
+                <Input label="Razón del Bloqueo" v-model="formLock.reason" />
+            </div>
+            <div class="w-full">
+                <label for="" class="font-bold">Seleccione el Rango de bloque o del servicio</label>
+                <VueDatePicker   v-model="formLock.range" :range="{}" hide-offset-dates :teleport="true"
+                auto-apply :enable-time-picker="false"></VueDatePicker>
+            </div>
+        </div>
+        
+       
         <template #footer>
             <Button @click="locked" title="Save" severity="success" label="Save" outlined icon="fa-solid fa-save"
                 class="!h-8" />
@@ -81,8 +122,6 @@ const add = {
 const formLock = useForm({
     range: '',
 })
-
-
 
 const lock = ref(false)
 
@@ -124,6 +163,12 @@ const columns = [
         filter: true,
     },
     {
+        header: 'Bloqueado',
+        field: 'is_locked',
+        type: 'boolean',
+        filter: true,
+    },
+    {
         header: 'Tarifa Niños',
         field: 'boy_tarifa',
         type: 'currency',
@@ -162,8 +207,8 @@ const buttons = [
         },
         show: usePage().props.auth.user.rol == 'admin',
         severity: 'warn',
-        icon: 'fa-solid fa-lock text-sm',
-        label: 'Bloquear',
+        icon:  'fa-solid fa-lock',
+        label: 'Bloqueos',
     },
     {
         action: (data) => {
@@ -232,6 +277,16 @@ const locked = () => {
         onSuccess: () => {
             toast('success', 'Servicio Bloqueado con exito')
             lock.value = false
+        }
+    })
+}
+
+const unlock = (id) => {
+    router.post(route('services.unlock', id), {
+    },{
+        onSuccess: () => {
+            toast('success', 'Bloque Quitado Exitosamente')
+            // lock.value = false
         }
     })
 }

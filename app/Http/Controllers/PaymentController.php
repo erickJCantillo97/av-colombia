@@ -13,7 +13,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::with('metohdPayment')->get();
+        $payments = Payment::with('metohdPayment', 'payable')->get();
         return inertia('Payments/Index', [
             'payments' => $payments
         ]);
@@ -69,5 +69,13 @@ class PaymentController extends Controller
     public function destroy(Payment $payment)
     {
         //
+    }
+
+    public function setState(Payment $payment)
+    {
+        $payment->update([
+            'status' => request('status')
+        ]);
+        return back()->with('success', 'Estado actualizado');
     }
 }

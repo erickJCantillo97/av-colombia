@@ -31,7 +31,7 @@ class Service extends Model
         'notIncludes'
     ];
 
-    protected $appends = ['adult_tarifa', 'boy_tarifa'];
+    protected $appends = ['adult_tarifa', 'boy_tarifa', 'is_locked'];
 
     public function getRouteKeyName(): string
     {
@@ -90,6 +90,10 @@ class Service extends Model
         return $this->whereDoesntHave('locks', function($query){
             $query->where('end_date', '>=', now());
         });
+    }
+
+    public function getIsLockedAttribute(){
+        return $this->locks()->where('end_date', '>=', now())->exists();
     }
 
 }
