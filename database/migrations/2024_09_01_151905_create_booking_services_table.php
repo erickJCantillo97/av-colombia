@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('payment')->default('pendiente');
             $table->string('cliente_name');
             $table->string('cliente_phone');
+            $table->string('cliente_city');
             $table->string('cliente_building');
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->onDelete('cascade');
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
