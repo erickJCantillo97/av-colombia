@@ -108,19 +108,19 @@
             </div>
             <div class="md:w-1/3">
                 <transition name="slide-fade">
-                    <div v-if="formStatus == 1" class="p-4 space-y-4">
-                        <h1 class="text-3xl font-bold">
+                    <div v-if="formStatus == 1" class="p-4 space-y-2">
+                        <h1 class="text-xl font-bold">
                             {{ selectedProduct.title }}
                         </h1>
 
-                        <p class="text-md" v-html="selectedProduct.description"></p>
-                        <section aria-labelledby="details-heading" class="mt-12">
+                        <p class="text-md h-[20vh] overflow-y-auto" v-html="selectedProduct.description"></p>
+                        <section aria-labelledby="details-heading" class="mt-2">
                             <h2 id="details-heading" class="sr-only">Additional details</h2>
                             <div class="divide-y divide-gray-200 border-t">
                                 <Disclosure as="div" v-for="detail in details" :key="detail.name" v-slot="{ open }">
                                     <h3>
                                         <DisclosureButton
-                                            class="group relative flex w-full items-center justify-between py-6 text-left">
+                                            class="group relative flex w-full items-center justify-between py-2 text-left">
                                             <span
                                                 :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">{{
                                                     detail.name
@@ -144,7 +144,7 @@
                             </div>
                         </section>
 
-                        <form class="flex flex-col space-y-10 justify-between" @submit.prevent="firstSteep">
+                        <form class="flex flex-col space-y-4 justify-between" @submit.prevent="firstSteep">
                             <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()"
                                 class="w-full" type="date" :error-message="errorDate" v-bind="dateAttrs" />
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
