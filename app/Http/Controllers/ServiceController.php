@@ -140,7 +140,7 @@ class ServiceController extends Controller
             // 'city' => 'required|string',
             'cliente_building' => 'required|string',
             'hour' => 'required|date_format:H:i',
-            
+
             // 'payment_type' => 'nullable|numeric',
             'date' => 'required|date',
         ]);
@@ -162,6 +162,7 @@ class ServiceController extends Controller
         $validate = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date',
+            'description' => 'required|string',
         ]);
         $validate['start_date'] = Carbon::parse($validate['start_date'])->format('Y-m-d');
         $validate['end_date'] = Carbon::parse($validate['end_date'])->format('Y-m-d');

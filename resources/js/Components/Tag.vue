@@ -6,7 +6,7 @@
             }}
         </p>
         <p>
-            {{ value ?? '-' }}
+            {{ value ?? '-'  }}
         </p>
     </div>
 </template>

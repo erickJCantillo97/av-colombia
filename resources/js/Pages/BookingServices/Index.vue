@@ -5,16 +5,35 @@
                 title="Reservas">
             </Datatable>
         </div>
-        <Modal v-model="show" title="Añadir Reserva" width="40vw">
-            <form @submit.prevent="reservar">
-                <Input type="dropdown" v-model="form.service_id" label="Servicio" option-label="title" option-value="id"
-                    :options="services"></Input>
-                <Input label="Fecha" type="date" v-model="form.date"></Input>
-                <Input label="Adultos" type="number" v-model="form.adults"></Input>
-                <Input label="Niños" type="number" v-model="form.boys"></Input>
-                <div>
-                    <Input type="checkbox" inputId="payment" v-model="form.payment"
-                        label="Este Servicio Fue pagado"></Input>
+        <Modal v-model="show" title="Añadir Reserva" width="70vw">
+            <form @submit.prevent="reservar" class="grid grid-cols-3 gap-4 items-center" novalidate>
+                <Input type="dropdown" v-model="service_id" :error-message="errors.service_id" label="Servicio"
+                    option-label="title" option-value="id" :options="services" v-bind="serviceIdAttrs"></Input>
+
+                <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()" class="w-full"
+                    type="date" :error-message="errorDate" v-bind="dateAttrs" />
+
+                <Input label="Pasajeros" type="number" v-model="adults"></Input>
+                <Input label="Niños" type="number" v-model="boys"></Input>
+                <Input label="Nombre del Pasajero" v-bind="nameAttrs" v-model="cliente_name"
+                    :error-message="errors.cliente_name" class="w-full" />
+                <Input label="Telefono" v-model="cliente_phone" v-bind="phoneAttrs"
+                    :error-message="errors.cliente_phone" class="w-full" type="number" />
+                <Input label="Ciudad de donde Proviene" v-bind="cityAttrs" v-model="cliente_city"
+                    :error-message="errors.city" class="w-full" />
+                <Input label="Edificio u Hotel" class="w-full" v-bind="buildingAttrs" v-model="cliente_building"
+                    :error-message="errors.cliente_building" />
+                <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
+                    :error-message="errors.hour" />
+
+                <Input class="w-full" label="Abono" v-bind="abonoAttrs" v-model="abono" :error-message="errors.abono"
+                    min="1" type="number" />
+                <Input class="w-full" min="0" v-bind="methodAttrs" type="dropdown" option-label="name" option-value="id"
+                    :options="methods" v-model="method" label="Medio de Pago" />
+
+                <div class="">
+                    <h1 class="text-xl  font-mono font-semibold"> Precio total: {{ COP.format(totalCost) }}
+                    </h1>
                 </div>
                 <div class="flex justify-end mt-4">
                     <Button type="submit" severity="success" label="Guardar" :loading />
@@ -25,11 +44,11 @@
         <Drawer v-model:visible="info" pt:root:class="!bg-blue-100" header="Detalles de la actividad" position="right">
             <template #header>
                 <div class="flex items-center gap-2">
-                    <span class="font-bold text-lg">{{service.service.title}}</span>
+                    <span class="font-bold text-lg">{{ service.service.title }}</span>
                 </div>
             </template>
             <div class="flex flex-col gap-y-1.5 text-sm">
-                
+
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Fecha del Servicio:</strong>
                     <p>{{ service.date }}</p>
@@ -85,7 +104,7 @@
                             </div>
                             <div>
                                 {{ new Date(payment.created_at).toLocaleDateString('es-CO') }} {{
-                                payment.metohd_payment.name }}
+                                    payment.metohd_payment.name }}
                             </div>
 
                         </div>
@@ -103,12 +122,17 @@
 
             <template #footer>
                 <div class="flex flex-col items-center gap-2">
-                    <h1 class="font-bold text-center">Saldo: {{ COP.format(service.total_price - service.payment.reduce((a, b) => a + b.amount, 0)) }}</h1>
+                    <h1 class="font-bold text-center">Saldo: {{ COP.format(service.total_price -
+                        service.payment.reduce((a, b) => a + b.amount, 0)) }}</h1>
                     <div class="flex gap-x-2">
-                        <Button  icon="fa-solid fa-circle-check" text size="large" v-tooltip.top="'Completar Servicio'" class="flex-auto" severity="success"  />
-                        <Button  icon="fa-solid fa-eye-slash" text size="large" v-tooltip.top="'Servicio No show'" class="flex-auto" severity="warn"  />
-                        <Button  icon="fa-solid fa-xmark-circle" text size="large" v-tooltip.top="'Cancelar Servicio'" class="flex-auto" severity="danger"  />
-                        <Button  icon="fa-solid fa-person-dress-burst" text size="large" v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger"  />
+                        <Button icon="fa-solid fa-circle-check" text size="large" v-tooltip.top="'Completar Servicio'"
+                            class="flex-auto" severity="success" />
+                        <Button icon="fa-solid fa-eye-slash" text size="large" v-tooltip.top="'Servicio No show'"
+                            class="flex-auto" severity="warn" />
+                        <Button icon="fa-solid fa-xmark-circle" text size="large" v-tooltip.top="'Cancelar Servicio'"
+                            class="flex-auto" severity="danger" />
+                        <Button icon="fa-solid fa-person-dress-burst" text size="large"
+                            v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
                         <!-- <Button label="Registrar Pago" icon="pi pi-sign-out" class="flex-auto" severity="success"  /> -->
                     </div>
                 </div>
@@ -121,10 +145,13 @@ import Datatable from '@/Components/Customs/Datatable.vue';
 import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import * as yup from 'yup';
+import { alerts } from '@/composable/toasts';
+import { useForm } from 'vee-validate';
 
 const props = defineProps({
     bookingServices: Array
@@ -132,7 +159,6 @@ const props = defineProps({
 const info = ref(false);
 const service = ref({});
 const toast = useToast();
-
 const COP = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
@@ -141,19 +167,53 @@ const COP = new Intl.NumberFormat("es-CO", {
 const show = ref(false);
 const add = {
     action: () => {
-        form.reset();
         show.value = true;
     },
 }
+const methods = ref([]);
 
-const form = useForm({
-    service_id: '',
-    user_id: '',
-    date: '',
-    payment: false,
-    adults: '',
-    boys: 0,
-})
+// #region Validates
+
+const schema2 = yup.object({
+    service_id: yup.string().required(),
+    date: yup.date().required(),
+    adults: yup.number().required(),
+    date: yup.date().required(),
+    adults: yup.number().required(),
+    cliente_name: yup.string().required(),
+    cliente_phone: yup.string().required(),
+    cliente_city: yup.string().required(),
+    cliente_building: yup.string().required(),
+    hour: yup.string().required(),
+    abono: yup.number().required(),
+    method: yup.string().required(),
+});
+
+const { values, defineField, errors, meta } = useForm({
+    validationSchema: schema2,
+});
+// #endregion
+
+
+
+// #region Fields
+const [service_id, serviceIdAttrs] = defineField('service_id');
+const [date, dateAttrs] = defineField('date');
+const [boys, boysAttrs] = defineField('boys');
+const [adults, adultsAttrs] = defineField('adults');
+const [cliente_name, nameAttrs] = defineField('cliente_name');
+const [cliente_phone, phoneAttrs] = defineField('cliente_phone');
+const [cliente_city, cityAttrs] = defineField('cliente_city');
+const [cliente_building, buildingAttrs] = defineField('cliente_building');
+const [hour, hourAttrs] = defineField('hour');
+const [abono, abonoAttrs] = defineField('abono');
+const [method, methodAttrs] = defineField('method');
+
+boys.value = 0;
+adults.value = 1;
+
+
+// #endregion
 
 const services = ref([]);
 const getServices = () => {
@@ -252,15 +312,18 @@ const columns = [
 
 ]
 
-
+const totalCost = computed(() => {
+    let serv = services.value.find(service => service.id == service_id.value);
+    if (!serv) return 0;
+    return serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value;
+})
 
 const loading = ref(false);
 
 const reservar = (event) => {
     event.preventDefault();
     loading.value = true
-    form.post(route('reservar'), {
-
+    router.post(route('reservar', values), {
         onSuccess: () => {
             toast.add({
                 severity: 'success',
@@ -274,5 +337,16 @@ const reservar = (event) => {
     })
 
 }
+
+const getMethos = () => {
+    axios.get(route('paymentMethods.index'))
+        .then(response => {
+            methods.value = response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+getMethos()
 
 </script>

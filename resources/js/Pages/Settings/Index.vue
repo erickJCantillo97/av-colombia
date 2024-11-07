@@ -17,11 +17,15 @@
                     <h1 class="text-xl font-extrabold ">
                         Dolar
                     </h1>
-                    <Input type="number" label="Valor del Dolar"/>
+                    <Input type="number" label="Valor del Dolar" />
                     <div class="flex justify-end mt-4">
                         <Button label="Guardar" severity="success" class="!h-9 justify-end" />
                     </div>
                 </div>
+                <div v-else-if="value == 2">
+                    <Index :users />
+                </div>
+
             </div>
         </div>
     </AppLayout>
@@ -32,8 +36,15 @@ import Input from '@/Components/Customs/Input.vue';
 import PaymentMethods from '@/Components/PaymentMethods.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
+import Index from './Users/Index.vue';
 const value = ref(1);
 
+const props = defineProps({
+    users: {
+        type: Array,
+        default: [],
+    },
+});
 
 const options = [
     { name: 'Métodos de Pago', value: 1 },

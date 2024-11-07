@@ -146,7 +146,7 @@ getReservas();
         </div>
     </AppLayout>
     <Modal v-model:visible="visible" :title="'Reserva de ' + serviceSelected.service?.title ?? ''"
-        :close-on-escape="true">
+    :close-on-escape="true">
         <div class="flex flex-col gap-y-5">
             <h1 class="text-xl font-bold">Datos de la reserva</h1>
             <div class="grid grid-cols-3 md:grid-cols-5 gap-2 w-full">
