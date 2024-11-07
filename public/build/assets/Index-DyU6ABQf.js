@@ -1,0 +1,1 @@
+import{_ as e}from"./AppLayout-Dg_8Y91t.js";import{o as t,c as a,w as o,h as r}from"./app-C5qvmBMe.js";const p={__name:"Index",setup(s){return(_,c)=>(t(),a(e,null,{default:o(()=>[r(" Proveedores ")]),_:1}))}};export{p as default};

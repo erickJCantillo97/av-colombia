@@ -41,9 +41,6 @@ onMounted(() => {
 const includeName = ref();
 const noIncludeName = ref();
 
-
-
-
 const addincludes = () => {
     if (!includeLabel.value) return;
     if (!form.includes.includes(includeLabel.value)) {
@@ -93,6 +90,8 @@ const submit = () => {
         files.value.getFiles().forEach((file) => data.push(file.file));
     }
     form.images = data;
+    let included = form.includes;
+    let notIncluded = form.notIncludes;
     form.days = JSON.stringify(form.days);
     form.notIncludes = JSON.stringify(form.notIncludes);
     form.includes = JSON.stringify(form.includes);
@@ -113,6 +112,9 @@ const submit = () => {
             }
         })
     }
+    form.includes = included;
+    form.notIncludes = notIncluded;
+    
 }
 
 const includeLabel = ref('');
@@ -142,7 +144,7 @@ const days = [
 <template>
     <AppLayout>
 
-        <div class="p-10 space-y-4 h-full overflow-y-auto">
+        <div class="p-4 space-y-4 h-full overflow-y-auto">
             <h1 class="text-3xl font-extrabold">Crear nuevo servicio</h1>
             <div class="space-y-5">
                 <Input label="Titulo" v-model="form.title" />
@@ -169,19 +171,18 @@ const days = [
                     </div>
                 </div>
 
-                <div class="flex justify-between space-x-4">
+                <div class="flex justify-between space-x-4 items-center">
                     <div class="w-full shadow-md p-2 rounded-md">
                         <label for="" class="text-lg font-bold text-center ">Incluidos en El servicio</label>
-                        <div class="flex space-x-4 overflow-y-auto border-b py-2 w-full">
+                        <div class="flex space-x-2 overflow-y-auto w-full">
                             <AutoComplete @complete="search(true)" emptyMessage="Sin resultados"
-                                :suggestions="includeSuggestions" @keyup.enter="addincludes" v-model="includeLabel"
-                                class="w-full" />
+                                :suggestions="includeSuggestions" dropdown @keyup.enter="addincludes" v-model="includeLabel"
+                                class="w-full" pt:root="!w-full" pt:inputText="!w-full" />
                             <Button title="Añadir" @click="addincludes" severity="primary" label="Añadir"
                                 icon="fa-solid fa-plus" class="!h-11" />
                         </div>
                         <div v-for="(feature, index) in form.includes"
                             class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b">
-
                             <p>
                                 {{ index + 1 }}. {{ feature }}
                             </p>
@@ -191,15 +192,12 @@ const days = [
                     </div>
                     <div class="w-full shadow-md p-2 bg-gray-200 rounded-md">
                         <label for="" class="text-lg font-bold text-red-700">No Incluidos en El servicio</label>
-                        <div class="flex justify-between">
-                            <div class="card p-fluid">
-                                <AutoComplete @complete="search(false)" emptySearchMessage="Sin resultados"
-                                    :suggestions="includeSuggestions" @keyup.enter="addNoIncludes"
-                                    v-model="noIncludeName" />
-
-                            </div>
+                        <div class="flex justify-between space-x-2">
+                            <AutoComplete dropdown @complete="search(false)" emptySearchMessage="Sin resultados"
+                                :suggestions="includeSuggestions" @keyup.enter="addNoIncludes" v-model="noIncludeName"
+                                class="w-full" pt:root="!w-full" pt:inputText="!w-full" />
                             <Button title="Añadir" @click="addNoIncludes" severity="primary" label="Añadir"
-                                icon="fa-solid fa-plus" class="!h-11" />
+                                icon="fa-solid fa-plus" class="!h-11 " />
                         </div>
                         <div v-for="(feature, index) in form.notIncludes"
                             class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b border-white">
