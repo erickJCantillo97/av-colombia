@@ -6,6 +6,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Models\Service;
 use Illuminate\Foundation\Application;
@@ -43,13 +44,11 @@ Route::middleware([
     Route::resource('BookingServices', BookingServiceController::class);
     Route::get('getBookingServicesNoPayment', [BookingServiceController::class, 'getBookingServicesNoPayment'])->name('get.services.no.payment');
     Route::resource('paymentMethods', PaymentMethodController::class);
-    
+
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
-    
+
     Route::resource('proveedors', ProveedorController::class);
-    Route::get('settings', function () {
-        return Inertia::render('Settings/Index');
-    })->name('settings');
+    Route::get('settings', [SettingController::class, 'index'])->name('settings');
 
     Route::resource('payments', PaymentController::class);
     Route::put('payments/{payment}/setState', [PaymentController::class, 'setState'])->name('payment.set.state');

@@ -63,19 +63,21 @@ class Service extends Model
         return $this->hasMany(BookingService::class);
     }
 
-    public function getAdultTarifaAttribute(){
-        if(auth()->user() == null){
+    public function getAdultTarifaAttribute()
+    {
+        if (auth()->user() == null) {
             return $this->adults_price;
-        }else if(auth()->user()->role == 'admin'){
+        } else if (auth()->user()->role == 'admin') {
             return $this->adults_price;
         }
-        
+
         return CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->adult_tarifa ?? $this->adults_price;
     }
-    public function getBoyTarifaAttribute(){
-        if(auth()->user() == null){
+    public function getBoyTarifaAttribute()
+    {
+        if (auth()->user() == null) {
             return $this->boys_price;
-        }else if(auth()->user()->role == 'admin'){
+        } else if (auth()->user()->role == 'admin') {
             return $this->boys_price;
         }
         return CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->boys_tarifa ?? $this->boys_price;
@@ -86,14 +88,16 @@ class Service extends Model
         return $this->morphMany(Lock::class, 'lockable');
     }
 
-    public function scopeUnlocked(){
-        return $this->whereDoesntHave('locks', function($query){
+    public function scopeUnlocked()
+    {
+        return $this->whereDoesntHave('locks', function ($query) {
             $query->where('end_date', '>=', now());
         });
     }
 
-    public function getIsLockedAttribute(){
-        return $this->locks()->where('end_date', '>=', now())->exists();
+    public function getIsLockedAttribute()
+    {
+        // dd(now());
+        return $this->locks()->where('end_date', '>=', now()->format("Y-m-d"))->exists();
     }
-
 }

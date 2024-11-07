@@ -27,8 +27,8 @@ class Image extends Model
     protected function filepath(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => '/' . str_replace('//', '/', str_replace('public', 'storage', $value)),
-            set: fn ($value) => $value,
+            get: fn($value) => '/' . str_replace('//', '/', $value),
+            set: fn($value) => $value,
         );
     }
 }

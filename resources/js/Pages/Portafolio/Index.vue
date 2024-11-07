@@ -90,18 +90,14 @@
             </div>
         </div>
     </div>
-    <FsLightbox :toggler="toggler" :sources="[
-        '/images/productos/baru-1.webp',
-        '/images/productos/baru-2.webp',
-        '/images/productos/baru-3.webp',
-    ]" />
+    <FsLightbox :toggler="toggler" :sources="imagesSelected" />
     <Modal v-model="visible" title="" width="95vw">
         <div class="flex flex-col md:flex-row w-full">
             <div class="md:w-2/3">
                 <carousel :items-to-show="1.1" :wrapAround="true" :transition="500">
                     <slide v-for="image in images" :key="image">
-                        <img :src="'/images/productos/' + image" alt="" @click="toggler = !toggler"
-                            class="w-full h-full object-cover carousel__item">
+                        <img :src="image" alt="" @click="toggler = !toggler"
+                            class="w-full h-[80vh] object-cover carousel__item">
                     </slide>
 
                     <template #addons>
@@ -147,14 +143,14 @@
                                 </Disclosure>
                             </div>
                         </section>
-                        
+
                         <form class="flex flex-col space-y-10 justify-between" @submit.prevent="firstSteep">
-                            <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()" class="w-full"
-                                type="date" :error-message="errorDate" v-bind="dateAttrs" />
+                            <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()"
+                                class="w-full" type="date" :error-message="errorDate" v-bind="dateAttrs" />
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
-                                        <label for="">N° Adultos</label>
+                                        <label for="">Pasajeros</label>
                                         <label for="" class="text-xs font-extralight italic">{{
                                             USDollar.format(selectedProduct.adult_tarifa) }}</label>
                                     </div>
@@ -163,23 +159,19 @@
                                 </div>
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
-                                        <label for="">N° Niños</label>
-                                        <label for="" class="text-xs font-extralight italic">{{
-                                            USDollar.format(selectedProduct.boy_tarifa)
-                                        }}</label>
+                                        <label for="">N° Niños Menores a 2 años</label>
+
                                     </div>
-                                    <Input class="w-full" min="0" type="number" v-model="form.boys" />
-                                    <label for="" class="text-xs italic text-gray-600">Niños mayores de 2 años</label>
+                                    <Input class="w-full" min="0" type="number" v-model="boys" v-bind="boysAttrs" />
+                                    <label for="" class="text-xs italic text-gray-600">Niños menores de 2 años</label>
                                 </div>
                             </div>
                             <div class="flex w-full justify-end text-xl font-bold">
                                 <span>Precio Total <strong>{{ USDollar.format((adults *
                                     selectedProduct.adult_tarifa) +
-                                    (form.boys *
-                                        selectedProduct.boy_tarifa)) }}</strong></span>
+                                    (boys * selectedProduct.boy_tarifa)) }}</strong></span>
                             </div>
-                            <button type="submit" 
-                                class="cta flex items-center w-full justify-center">
+                            <button type="submit" class="cta flex items-center w-full justify-center">
                                 <span class="hover-underline-animation"> Siguiente </span>
                                 <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10"
                                     viewBox="0 0 46 16">
@@ -192,68 +184,69 @@
                         </form>
                     </div>
                 </transition>
-                
-                    <form @submit.prevent="reservar" novalidate v-if="formStatus == 2" class="p-4 space-y-4 animate-fadeinleft animate-once animate-duration-1000">
-                        <h2
-                            class="text-2xl font-extrabold text-center w-full border-b-1 shadow-lg rounded-md pb-1 mb-4">
-                            Detalles de la Reserva
-                        </h2>
-                        <div class="flex flex-col gap-y-4">
-                            <div class="flex  gap-x-2 flex-col md:flex-row">
-                                <Input label="Nombre del Pasajero" v-bind="nameAttrs" v-model="cliente_name" :error-message="errors.cliente_name"
-                                    class="w-full" />
-                                <Input label="Telefono" v-model="cliente_phone" v-bind="phoneAttrs" :error-message="errors.cliente_phone" class="w-full"
-                                    type="number" />
-                            </div>
-                            <div class="flex  gap-x-2 flex-col md:flex-row">
-                                <Input label="Ciudad de donde Proviene" v-bind="cityAttrs" v-model="cliente_city" :error-message="errors.city"
-                                    class="w-full" />
-                                <Input label="Edificio u Hotel" class="w-full" v-bind="buildingAttrs" v-model="cliente_building"
-                                    :error-message="errors.cliente_building" />
-                            </div>
+
+                <form @submit.prevent="reservar" novalidate v-if="formStatus == 2"
+                    class="p-4 space-y-4 animate-fadeinleft animate-once animate-duration-1000">
+                    <h2 class="text-2xl font-extrabold text-center w-full border-b-1 shadow-lg rounded-md pb-1 mb-4">
+                        Detalles de la Reserva
+                    </h2>
+                    <div class="flex flex-col gap-y-4">
+                        <div class="flex  gap-x-2 flex-col md:flex-row">
+                            <Input label="Nombre del Pasajero" v-bind="nameAttrs" v-model="cliente_name"
+                                :error-message="errors.cliente_name" class="w-full" />
+                            <Input label="Telefono" v-model="cliente_phone" v-bind="phoneAttrs"
+                                :error-message="errors.cliente_phone" class="w-full" type="number" />
+                        </div>
+                        <div class="flex  gap-x-2 flex-col md:flex-row">
+                            <Input label="Ciudad de donde Proviene" v-bind="cityAttrs" v-model="cliente_city"
+                                :error-message="errors.city" class="w-full" />
+                            <Input label="Edificio u Hotel" class="w-full" v-bind="buildingAttrs"
+                                v-model="cliente_building" :error-message="errors.cliente_building" />
+                        </div>
 
 
-                            <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
-                                :error-message="errors.hour" />
+                        <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
+                            :error-message="errors.hour" />
 
-                            <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
-                                <div class="w-full">
-                                    <div class="w-full flex justify-between font-extrabold items-end">
-                                        <label for="">Abono</label>
-                                    </div>
-                                    <Input class="w-full" v-bind="abonoAttrs" v-model="abono" :error-message="errors.abono" min="1"
-                                        type="number" />
+                        <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
+                            <div class="w-full">
+                                <div class="w-full flex justify-between font-extrabold items-end">
+                                    <label for="">Abono</label>
                                 </div>
-                                <div class="w-full">
-                                    <div class="w-full flex justify-between font-extrabold items-end">
-                                        <label for="">Medio de Pago</label>
-                                    </div>
-                                    <Input class="w-full" min="0" v-bind="methodAttrs" type="dropdown" option-label="name" option-value="id"
-                                        :options="methods" v-model="method" />
+                                <Input class="w-full" v-bind="abonoAttrs" v-model="abono" :error-message="errors.abono"
+                                    min="1" type="number" />
+                            </div>
+                            <div class="w-full">
+                                <div class="w-full flex justify-between font-extrabold items-end">
+                                    <label for="">Medio de Pago</label>
                                 </div>
+                                <Input class="w-full" min="0" v-bind="methodAttrs" type="dropdown" option-label="name"
+                                    option-value="id" :options="methods" v-model="method" />
                             </div>
                         </div>
-                        <div class="flex gap-x-4 justify-center">
-                            <button @click="formStatus = 1"
-                                class="bg-white flex text-center w-full border items-center rounded-lg text-black text-xl font-semibold group"
-                                type="button">
-                                <div
-                                    class="bg-amber-400 rounded-md h-16 w-1/4 flex items-center justify-center  left-1 top-[4px] group-hover:w-[184px] z-10 duration-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" height="25px"
-                                        width="25px">
-                                        <path d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z" fill="#000000">
-                                        </path>
-                                        <path
-                                            d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
-                                            fill="#000000"></path>
-                                    </svg>
-                                </div>
-                                <p class="translate-x-2 group-hover:hidden text-sx">Volver</p>
-                            </button>
-                            <Button :disabled="!meta.valid" severity="success" type="submit" class="!h-16 w-full" :loading label="Reservar"
-                                icon="fa-solid fa-calendar-check" icon-pos="right" click="formStatus = 1" />
-                        </div>
-                    </form>
+                    </div>
+                    <div class="flex gap-x-4 justify-center">
+                        <button @click="formStatus = 1"
+                            class="bg-white flex text-center w-full border items-center rounded-lg text-black text-xl font-semibold group"
+                            type="button">
+                            <div
+                                class="bg-amber-400 rounded-md h-16 w-1/4 flex items-center justify-center  left-1 top-[4px] group-hover:w-[184px] z-10 duration-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" height="25px"
+                                    width="25px">
+                                    <path d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z" fill="#000000">
+                                    </path>
+                                    <path
+                                        d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                                        fill="#000000"></path>
+                                </svg>
+                            </div>
+                            <p class="translate-x-2 group-hover:hidden text-sx">Volver</p>
+                        </button>
+                        <Button :disabled="!meta.valid" severity="success" type="submit" class="!h-16 w-full" :loading
+                            label="Reservar" icon="fa-solid fa-calendar-check" icon-pos="right"
+                            click="formStatus = 1" />
+                    </div>
+                </form>
             </div>
         </div>
     </Modal>
@@ -282,7 +275,7 @@ import { alerts } from '@/composable/toasts';
 // #region variables
 const formStatus = ref(1)
 const { toast } = alerts()
-const images = ref(['baru-1.webp', 'baru-2.webp', 'baru-3.webp']);
+const images = ref([]);
 const search = ref('');
 const debounceTimer = ref(null);
 const services = ref([]);
@@ -293,15 +286,16 @@ const intervalId = ref(null);
 const errorDate = ref();
 const errorsAdult = ref();
 const methods = ref([]);
+const imagesSelected = ref([]);
 // #endregion
 
 // #region Validates
 
 const schema2 = yup.object({
     date: yup.date().required(),
-    adults: yup.number().required(),
+    adults: yup.number().required().default(0),
+    boys: yup.number().required().default(0),
     date: yup.date().required(),
-    adults: yup.number().required(),
     cliente_name: yup.string().required(),
     cliente_phone: yup.string().required(),
     cliente_city: yup.string().required(),
@@ -312,11 +306,9 @@ const schema2 = yup.object({
 });
 
 const { values, defineField, errors, meta } = useForm({
-    validationSchema:  schema2,
+    validationSchema: schema2,
 });
 // #endregion
-
-
 
 // #region Fields
 const [date, dateAttrs] = defineField('date');
@@ -330,6 +322,8 @@ const [hour, hourAttrs] = defineField('hour');
 const [abono, abonoAttrs] = defineField('abono');
 const [method, methodAttrs] = defineField('method');
 
+boys.value = 0;
+adults.value = 1;
 // #endregion
 
 const handleInput = () => {
@@ -347,7 +341,7 @@ const getServices = () => {
         services.value = response.data.services.slice(0, 5);
     });
 }
-const randomIndex = Math.floor(Math.random() * 3);
+const randomIndex = Math.floor(Math.random() * images.value.length - 1);
 const currentImage = ref(images.value[randomIndex]);
 const form = ref({
     medio: 'Efectivo',
@@ -415,6 +409,8 @@ const details = ref([]);
 const productSelection = (product) => {
     selectedProduct.value = product;
     service_id.value = product.id;
+    images.value = product.images.map(image => image.filepath);
+    imagesSelected.value = product.images.map(image => image.filepath);
     visible.value = true;
     details.value = [
         {
@@ -437,14 +433,14 @@ const totalCost = computed(() => {
 });
 
 const firstSteep = () => {
-    if(values.date == undefined){
+    if (values.date == undefined) {
         console.log(errors)
         errorDate.value = 'Selecione una fecha';
-        return ;
+        return;
     }
-    if(values.adults == undefined){
+    if (values.adults == undefined) {
         errorsAdult.value = 'Escoga el numero de adultos';
-        return ;
+        return;
     }
     formStatus.value = 2;
 }
