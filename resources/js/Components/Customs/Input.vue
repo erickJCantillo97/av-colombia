@@ -31,6 +31,10 @@ const props = defineProps({
         type: String,
         default: 'text'
     },
+    disabledDates: {
+        type: Array,
+        default: null
+    },
     label: {
         type: String,
         default: null
@@ -361,8 +365,8 @@ defineEmits(['valueChange'])
                         }" />
                 </span>
                 <span v-else-if="type == 'date'">
-                    <VueDatePicker class="w-full" :name hide-offset-dates :min-date="minDate" v-model="input" :teleport="true"
-                        auto-apply :enable-time-picker="false">
+                    <VueDatePicker :disabledDates class="w-full" :name hide-offset-dates :min-date="minDate" v-model="input" :teleport="true"
+                        auto-apply :enable-time-picker="false" locale="es"  timezone="America/Bogota">
                     </VueDatePicker>
                     <!-- <Calendar :manualInput :disabled :id  :minDate :maxDate :placeholder :required
                         showIcon :disabledDays :selectionMode @date-select="$emit('valueChange', $event)"

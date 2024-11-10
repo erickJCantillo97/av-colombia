@@ -81,7 +81,7 @@ const getReservas = () => {
     axios.get(route('BookingServices.index')).then(response => {
         reservas.value = response.data.bookingServices;
         reservas.value.forEach((item) => {
-            console.log(item.date == new Date().toISOString().split('T')[0])
+            console.log(item.date, new Date().toISOString().split('T')[0])
             if(item.date == new Date().toISOString().split('T')[0]){
                 console.log(item)
                 dateActivities.value.push(item);
@@ -193,7 +193,7 @@ getReservas();
             {{ serviceSelected }}
         </code> -->
     </Modal>
-    <Modal v-model="todayActivity" title="Actividades de Hoy" width="90vw">
+    <Modal v-model="todayActivity" close-on-escape="true" title="Actividades de Hoy" width="90vw">
         <div>
             <h1 class="text-xl font-bold">Actividades de Hoy</h1>
             <div class="flex justify-between font-extrabold text-lg mt-4 bg-gray-200 rounded-t-md p-1">

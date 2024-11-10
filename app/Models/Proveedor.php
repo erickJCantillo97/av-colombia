@@ -12,6 +12,8 @@ class Proveedor extends Model
     use HasUuids;
 
     protected $guarded = [];
-
     
+    public function Bookings(){
+        return $this->hasMany(BookingService::class, 'booking_proveedor', 'proveedor_id', 'booking_service_id');
+    }
 }

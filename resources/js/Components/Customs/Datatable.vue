@@ -210,7 +210,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
             ">
         <template #header>
             <div class="space-y-1 w-full">
-                <span class="flex justify-between ">
+                <span class="hidden lg:flex justify-between ">
                     <div class="flex space-x-3">
                         <p v-if="title"
                             class="text-xl h-ful flex items-center font-extrabold leading-6 mb-2 capitalize text-primary">

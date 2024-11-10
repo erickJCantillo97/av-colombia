@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('proveedors', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('nombre');
-            $table->string('direccion');
-            $table->string('telefono');
+            $table->string('direccion')->nullable();
+            $table->string('telefono')->nullable();
             $table->timestamps();
         });
     }

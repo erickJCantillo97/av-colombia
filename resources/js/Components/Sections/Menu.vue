@@ -1,122 +1,129 @@
 <template>
 
-    <nav class="hs-accordion-group px-2 w-full flex flex-col flex-wrap justify-between h-full"
-        data-hs-accordion-always-open>
-        <div>
-            <div class="p-1 flex flex-col w-full items-center">
-                <img src="/images/logo.webp" class="size-28 shadow-lg rounded-full p-4" alt="">
-                <!-- <a class="flex-none text-xl font-semibold dark:text-white" href="#" aria-label="Brand">AV COLOMBIA</a> -->
-            </div>
-            <ul class="space-y-1.5 mt-4">
-                <li>
-                    <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-700 dark:text-white"
-                        :href="route('dashboard')"
-                        :class="route().current() == 'dashboard' ? 'bg-black text-white' : 'hover:bg-gray-100'">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                        <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
-                    Dashboard
-                    </Link>
-                </li>
-
-                <li>
-                    <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                        :href="route('services.index')"
-                        :class="route().current() == 'services.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                    </svg>
-                    Servicios
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                        :href="route('BookingServices.index')"
-                        :class="route().current() == 'BookingServices.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                    </svg>
-                    Reservas Experienicias
-                    </Link>
-                </li>
-                <li v-if="$page.props.auth.user.rol == 'admin'">
-                    <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                        :href="route('payments.index')"
-                        :class="route().current() == 'payments.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
-                    <i class="fa-regular fa-money-bill-1"></i>
-                    Pagos
-                    </Link>
-                </li>
-                <li v-if="$page.props.auth.user.rol == 'admin'">
-                    <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                        :href="route('proveedors.index')"
-                        :class="route().current() == 'proveedors.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
-                    <i class="fa-solid fa-truck-fast"></i>
-                    Proveedores
-                    </Link>
-                </li>
-                <!-- <li v-if="$page.props.auth.user.rol == 'admin'">
-                    <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-700 rounded-lg  dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
-                        :href="route('users.index')"
-                        :class="route().current() == 'users.index' ? 'bg-black text-white' : 'hover:bg-gray-100'">
-                    <i class="fa-solid fa-gear"></i>
-                    Ajustes
-                    </Link>
-                </li> -->
-
-            </ul>
+    <div class="flex flex-col h-full">
+        <div class="flex items-center justify-between px-2 pt-4 shrink-0">
+            <span class="inline-flex items-center gap-2">
+                <img src="/images/logo.webp" class="size-14" alt="">
+                <span class="font-semibold text-2xl text-primary">AV Colombia</span>
+            </span>
+            <span class="flex lg:hidden">
+                <Button type="button" @click="closeCallback" icon="pi pi-times" rounded outlined></Button>
+            </span>
         </div>
-
-
-        <div class="flex flex-col gap-y-4">
-            <ul class="space-y-1.5 mt-4">
+        <div class="overflow-y-auto">
+            <ul class="list-none p-2 m-0">
                 <li>
-                    <Link
-                        class="flex items-center gap-x-3.5 py-2 px-2.5  text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:bg-neutral-700 dark:text-white"
-                        :href="route('settings')"
-                        :class="route().current() == 'settings' ? 'bg-black text-white' : 'hover:bg-gray-100'">
-                    <i class="fa-solid fa-gears"></i>
-                    Configuración
-                    </Link>
+                    <div
+                        v-ripple
+                        v-styleclass="{
+                            selector: '@next',
+                            enterFromClass: 'hidden',
+                            enterActiveClass: 'animate-slidedown',
+                            leaveToClass: 'hidden',
+                            leaveActiveClass: 'animate-slideup'
+                        }"
+                        class="p-4 flex items-center justify-between text-surface-500 dark:text-surface-400 cursor-pointer p-ripple"
+                    >
+                        <span class="font-medium">FAVORITES</span>
+                        <i class="pi pi-chevron-down"></i>
+                    </div>
+                    <ul class="list-none p-0 m-0 overflow-hidden">
+                        <li>
+                            <Link :href="route('dashboard')"  v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                <i class="pi pi-home mr-2"></i>
+                                <span class="font-medium">Dashboard</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link :href="route('services.index')" v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                <svg class="size-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                            </svg>
+                                <span class="font-medium">Servicios</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <a
+                                v-ripple
+                                v-styleclass="{
+                                    selector: '@next',
+                                    enterFromClass: 'hidden',
+                                    enterActiveClass: 'animate-slidedown',
+                                    leaveToClass: 'hidden',
+                                    leaveActiveClass: 'animate-slideup'
+                                }"
+                                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
+                            >
+                                <i class="pi pi-calendar mr-2"></i>
+                                <span class="font-medium">Reservas</span>
+                                <i class="pi pi-chevron-down ml-auto"></i>
+                            </a>
+                            <ul class="list-none py-0 pl-4 pr-0 m-0 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out">
+                               
+                                <li>
+                                    <Link :href="route('BookingServices.index')" v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                        <i class="fa-solid fa-person-hiking mr-2"></i>
+                                        <span class="font-medium">Experiencias</span>
+                                    </Link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <Link v-if="$page.props.auth.user.rol == 'admin'" :href="route('payments.index')" v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                <i class="pi pi-dollar mr-2"></i>
+                                <span class="font-pago">Pagos</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link v-if="$page.props.auth.user.rol == 'admin'" :href="route('proveedors.index')" v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                <i class="pi pi-dollar mr-2"></i>
+                                <span class="font-pago">Proveedores</span>
+                            </Link>
+                        </li>
+                        <!-- <li>
+                            <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                <i class="pi pi-comments mr-2"></i>
+                                <span class="font-medium">Messages</span>
+                                <span class="inline-flex items-center justify-center ml-auto bg-primary text-primary-contrast rounded-full" style="min-width: 1.5rem; height: 1.5rem">3</span>
+                            </a>
+                        </li> -->
+                        <li>
+                            <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                <i class="pi pi-calendar mr-2"></i>
+                                <span class="font-medium">Calendario</span>
+                            </a>
+                        </li>
+                        <li>
+                            <Link :href="route('settings')" v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                                <i class="pi pi-cog mr-2"></i>
+                                <span class="font-medium">Ajustes</span>
+                            </Link>
+                        </li>
+                    </ul>
                 </li>
             </ul>
-
-            <div class="flex w-full justify-between p-2">
-                <div class="text-xs flex flex-col text-left justify-end">
-                    <h2 class="font-bold text-sm truncate text-nowrap w-52">{{ $page.props.auth.user.name }}</h2>
-                    <h3 class="text-xs italic text-gray-600 w-40 text-nowrap truncate">
-                        {{
-                            $page.props.auth.user.name == 'Brian' ? 'Administrador AV Colombia' : 'Hotel'
-                        }}
-                    </h3>
+           
+        </div>
+        <div class="mt-auto">
+            <hr class=" border-t border-0 border-surface-200 dark:border-surface-700" />
+            <div class="flex  items-center">
+                <a  v-ripple class="w-full flex items-center cursor-pointer p-2 gap-2 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple truncate">
+                    <span class="font-bold">{{$page.props.auth.user.name}}</span>
+                </a>
+                <div class="w-full py-2 border-l-2 flex justify-center items-center cursor-pointer  hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple gap-x-4 text-red-500">
+                    <Link :href="route('logout')" method="post"  class="flex items-center gap-x-4">
+                        <p>
+                            Salir
+                        </p>
+                        <i class="pi pi-sign-out"></i>
+                    </Link>
                 </div>
-
-                <Link class="" :href="route('logout')" method="post" v-tooltip.top="'Cerrar sesión'" as="button">
-                <svg class="text-gray-500 w-4 h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="24"
-                    height="24" viewBox="0 0 512 512" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path
-                        d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z" />
-                </svg>
-                </Link>
             </div>
         </div>
-
-    </nav>
+    </div>
 
 </template>
 <script setup>

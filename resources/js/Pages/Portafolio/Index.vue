@@ -145,8 +145,9 @@
                         </section>
 
                         <form class="flex flex-col space-y-4 justify-between" @submit.prevent="firstSteep">
+                            {{ date }}
                             <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()"
-                                class="w-full" type="date" :error-message="errorDate" v-bind="dateAttrs" />
+                                class="w-full" type="date" :error-message="errorDate" :disabled-dates="disabledDates" v-bind="dateAttrs" />
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
@@ -167,9 +168,7 @@
                                 </div>
                             </div>
                             <div class="flex w-full justify-end text-xl font-bold">
-                                <span>Precio Total <strong>{{ USDollar.format((adults *
-                                    selectedProduct.adult_tarifa) +
-                                    (boys * selectedProduct.boy_tarifa)) }}</strong></span>
+                                <span>Precio Total <strong>{{ USDollar.format(totalCost) }}</strong></span>
                             </div>
                             <button type="submit" class="cta flex items-center w-full justify-center">
                                 <span class="hover-underline-animation"> Siguiente </span>
@@ -213,7 +212,7 @@
                                 <div class="w-full flex justify-between font-extrabold items-end">
                                     <label for="">Abono</label>
                                 </div>
-                                <Input class="w-full" v-bind="abonoAttrs" v-model="abono" :error-message="errors.abono"
+                                <Input class="w-full" v-bind="abonoAttrs" :max="totalCost" v-model="abono" :error-message="errors.abono"
                                     min="1" type="number" />
                             </div>
                             <div class="w-full">
@@ -352,14 +351,81 @@ const form = ref({
     date: ''
 })
 
-
-
 const changeImage = () => {
     var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
     // console.error(nextImageIndex);
     currentImage.value = images.value[nextImageIndex];
 }
 const loading = ref(false);
+
+
+const USDollar = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+});
+
+const selectedProduct = ref({
+    price: 0
+});
+const details = ref([]);
+
+
+const totalCost = computed(() => {
+    var total = 0
+    if (selectedProduct.value) {
+        total = selectedProduct.value.adult_tarifa * adults.value + selectedProduct.value.boy_tarifa + boys.value;
+        return total;
+    }
+    return total;
+});
+
+
+
+// #region methods
+const getMethos = () => {
+    axios.get(route('paymentMethods.index'))
+        .then(response => {
+            methods.value = response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+getMethos()
+
+const firstSteep = () => {
+    if (values.date == undefined) {
+        console.log(errors)
+        errorDate.value = 'Selecione una fecha';
+        return;
+    }
+    if (values.adults == undefined) {
+        errorsAdult.value = 'Escoga el numero de adultos';
+        return;
+    }
+    formStatus.value = 2;
+}
+
+const productSelection = (product) => {
+    selectedProduct.value = product;
+    service_id.value = product.id;
+    images.value = product.images.map(image => image.filepath);
+    imagesSelected.value = product.images.map(image => image.filepath);
+    visible.value = true;
+    details.value = [
+        {
+            name: 'Incluidos',
+            items: JSON.parse(selectedProduct.value.includes),
+        },
+        {
+            name: 'No Incluidos',
+            items: JSON.parse(selectedProduct.value.notIncludes),
+        },
+        // More sections...
+    ]
+}
+
 const reservar = () => {
     loading.value = true
     axios.post(route('reservar', {
@@ -395,67 +461,23 @@ const stopImageRotation = () => {
         intervalId.value = null;
     }
 }
+const parseDate = (dateString) => {
+        const [year, month, day] = dateString.split('-');
+        return new Date(year, month - 1, day);
+    };
 
-const USDollar = new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-});
-
-const selectedProduct = ref({
-    price: 0
-});
-const details = ref([]);
-const productSelection = (product) => {
-    selectedProduct.value = product;
-    service_id.value = product.id;
-    images.value = product.images.map(image => image.filepath);
-    imagesSelected.value = product.images.map(image => image.filepath);
-    visible.value = true;
-    details.value = [
-        {
-            name: 'Incluidos',
-            items: JSON.parse(selectedProduct.value.includes),
-        },
-        {
-            name: 'No Incluidos',
-            items: JSON.parse(selectedProduct.value.notIncludes),
-        },
-        // More sections...
-    ]
-}
-
-const totalCost = computed(() => {
-    if (selectedProduct.value) {
-        return selectedProduct.value.price * form.adults;
+const disabledDates = computed(() => {
+    var dates = [];
+    for(var lock of selectedProduct.value.locks){
+    var start = parseDate(lock.start_date);
+    var end = parseDate(lock.end_date);
+   
+    for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
+        dates.push(new Date(d));
     }
-    return 0;
-});
-
-const firstSteep = () => {
-    if (values.date == undefined) {
-        console.log(errors)
-        errorDate.value = 'Selecione una fecha';
-        return;
     }
-    if (values.adults == undefined) {
-        errorsAdult.value = 'Escoga el numero de adultos';
-        return;
-    }
-    formStatus.value = 2;
-}
-
-// #region methods
-const getMethos = () => {
-    axios.get(route('paymentMethods.index'))
-        .then(response => {
-            methods.value = response.data
-        })
-        .catch(error => {
-            console.log(error)
-        })
-}
-getMethos()
+    return dates;
+})
 
 // #endregion
 

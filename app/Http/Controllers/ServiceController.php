@@ -24,7 +24,7 @@ class ServiceController extends Controller
         if ($request->expectsJson()) {
             $search = '%' . $request->search . '%';
             return response()->json([
-                'services' => Service::unlocked()->whereAny([
+                'services' => Service::with('locks')->whereAny([
                     'title',
                     'title_en',
                     'description',
@@ -137,10 +137,9 @@ class ServiceController extends Controller
             'boys' => 'nullable|numeric',
             'cliente_name' => 'required|string',
             'cliente_phone' => 'required|numeric',
-            // 'city' => 'required|string',
+            'cliente_city' => 'required|string',
             'cliente_building' => 'required|string',
             'hour' => 'required|date_format:H:i',
-
             // 'payment_type' => 'nullable|numeric',
             'date' => 'required|date',
         ]);
@@ -154,7 +153,9 @@ class ServiceController extends Controller
         $validate['boys_price'] = $service->boys_price;
         $validate['boys_tarifa'] = $service->boy_tarifa;
         $booking = BookingService::create($validate);
+        $booking->proveedors()->attach(request('proveedors'));
         paymentStore(request('abono'), request('method'), $booking);
+        storeState($booking, 'reservado');
     }
 
     public function lock(Service $service, Request $request)
@@ -174,5 +175,12 @@ class ServiceController extends Controller
     {
         $lock->delete();
         return back()->with('message', 'Lock eliminado');
+    }
+
+    public function setStatus(){
+        $service = BookingService::where('id',request('service'))->first();
+        // dd($service);
+        storeState($service, request('state'), request('terminated'));
+        return back()->with('message', 'Estado actualizado');
     }
 }

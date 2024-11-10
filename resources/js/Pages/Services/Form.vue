@@ -99,16 +99,22 @@ const submit = () => {
         form.put(route('services.update', props.service.slug), {
             onSuccess: () => {
                 visible.value = false
+            },
+            onError: (errror) => {
+                toast('error', 'Error al actualizar el servicio: ' + error)
             }
         })
     } else {
         form.post(route('services.store'), {
-
             onSuccess: () => {
                 form.reset();
                 toast('success', 'Servicio creado con exito')
                 router.visit(route('services.index'))
                 visible.value = false
+            },
+            onError: (error) => {
+                console.log(error)
+                toast('error', 'Error al crear el servicio: ' + Object.values(error))
             }
         })
     }
@@ -147,12 +153,12 @@ const days = [
         <div class="p-4 space-y-4 h-full overflow-y-auto">
             <h1 class="text-3xl font-extrabold">Crear nuevo servicio</h1>
             <div class="space-y-5">
-                <Input label="Titulo" v-model="form.title" />
+                <Input label="Titulo" v-model="form.title" :error-message="form.errors.title" />
                 <div class="grid grid-cols-2 gap-4 my-4">
                     <Input label="Precio Adultos" type="number" min="0" currency="COP" :minFractionDigits="2"
-                        :maxFractionDigits="2" v-model="form.adults_price" />
+                        :maxFractionDigits="2" v-model="form.adults_price"  :error-message="form.errors.adults_price"/>
                     <Input label="Precio niños" type="number" min="0" currency="COP" :minFractionDigits="2"
-                        :maxFractionDigits="2" v-model="form.boys_price" />
+                        :maxFractionDigits="2" v-model="form.boys_price" :error-message="form.errors.boys_price" />
                 </div>
                 <div class="flex justify-between space-x-4">
                     <div class="w-full">
@@ -168,6 +174,7 @@ const days = [
                     <div class="w-full">
                         <label for="" class="text-md font-bold">Descripción del Servicio</label>
                         <Editor v-model="form.description" :key="editor" editorStyle="height: 120px" />
+                        <span class="text-xs text-red-400">{{form.errors.description}}</span>
                     </div>
                 </div>
 
@@ -213,6 +220,7 @@ const days = [
                 <div>
                     <label for="" class="text-md font-bold">Fotos</label>
                     <Input type="file-pond" v-model="files" />
+                    <span class="text-red-500 text-xs -mt-1">{{form.errors.images}}</span>
                 </div>
             </div>
             <div class="flex justify-between">

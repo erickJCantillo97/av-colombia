@@ -14,7 +14,7 @@ class ProveedorController extends Controller
     public function index()
     {
         $proveedors = Proveedor::all();
-        return inertia('Proveedor/Index', ['proveedors' => $proveedors]);
+        return inertia('Proveedor/Index', ['proveedores' => $proveedors]);
     }
 
     /**
@@ -30,7 +30,12 @@ class ProveedorController extends Controller
      */
     public function store(StoreProveedorRequest $request)
     {
-        //
+        try {
+            Proveedor::create($request->validated());
+            return back()->with('Proveedor Creado');
+        } catch (\Throwable $th) {
+            return back()->withErrors(['message' => 'Error Al crear el proveedor']);
+        }
     }
 
     /**

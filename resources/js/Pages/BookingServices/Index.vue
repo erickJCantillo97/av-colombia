@@ -6,12 +6,12 @@
             </Datatable>
         </div>
         <Modal v-model="show" title="Añadir Reserva" width="70vw">
-            <form @submit.prevent="reservar" class="grid grid-cols-3 gap-4 items-center" novalidate>
+            <form @submit.prevent="reservar" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center" novalidate>
                 <Input type="dropdown" v-model="service_id" :error-message="errors.service_id" label="Servicio"
                     option-label="title" option-value="id" :options="services" v-bind="serviceIdAttrs"></Input>
 
-                <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()" class="w-full"
-                    type="date" :error-message="errorDate" v-bind="dateAttrs" />
+                <Input label="Fecha de Reserva" :disabled-dates="disabledDates" v-model="date" required
+                    :min-date="new Date()" class="w-full" type="date" :error-message="errorDate" v-bind="dateAttrs" />
 
                 <Input label="Pasajeros" type="number" v-model="adults"></Input>
                 <Input label="Niños" type="number" v-model="boys"></Input>
@@ -60,6 +60,10 @@
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Cliente:</strong>
                     <p>{{ service.cliente_name }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Ciudad:</strong>
+                    <p>{{ service.cliente_city }}</p>
                 </div>
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Telelfono:</strong>
@@ -125,11 +129,11 @@
                     <h1 class="font-bold text-center">Saldo: {{ COP.format(service.total_price -
                         service.payment.reduce((a, b) => a + b.amount, 0)) }}</h1>
                     <div class="flex gap-x-2">
-                        <Button icon="fa-solid fa-circle-check" text size="large" v-tooltip.top="'Completar Servicio'"
+                        <Button @click="setState('COMPLETADA', true)" icon="fa-solid fa-circle-check" text size="large" v-tooltip.top="'Completar Servicio'"
                             class="flex-auto" severity="success" />
-                        <Button icon="fa-solid fa-eye-slash" text size="large" v-tooltip.top="'Servicio No show'"
+                        <Button @click="setState('NO SHOW', true)" icon="fa-solid fa-eye-slash" text size="large" v-tooltip.top="'Servicio No show'"
                             class="flex-auto" severity="warn" />
-                        <Button icon="fa-solid fa-xmark-circle" text size="large" v-tooltip.top="'Cancelar Servicio'"
+                        <Button @click="setState('CANCELADA', true)" icon="fa-solid fa-xmark-circle" text size="large" v-tooltip.top="'Cancelar Servicio'"
                             class="flex-auto" severity="danger" />
                         <Button icon="fa-solid fa-person-dress-burst" text size="large"
                             v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
@@ -148,7 +152,6 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
 import * as yup from 'yup';
 import { alerts } from '@/composable/toasts';
 import { useForm } from 'vee-validate';
@@ -156,9 +159,9 @@ import { useForm } from 'vee-validate';
 const props = defineProps({
     bookingServices: Array
 })
+const { toast } = alerts()
 const info = ref(false);
 const service = ref({});
-const toast = useToast();
 const COP = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
@@ -194,8 +197,6 @@ const { values, defineField, errors, meta } = useForm({
 });
 // #endregion
 
-
-
 // #region Fields
 const [service_id, serviceIdAttrs] = defineField('service_id');
 const [date, dateAttrs] = defineField('date');
@@ -211,7 +212,6 @@ const [method, methodAttrs] = defineField('method');
 
 boys.value = 0;
 adults.value = 1;
-
 
 // #endregion
 
@@ -279,9 +279,17 @@ const columns = [
     },
     {
         field: 'date',
-        header: 'Fecha',
+        header: 'Fecha de la Actividad',
         filter: true,
-        sortable: true
+        sortable: true,
+        type: 'date'
+    },
+    {
+        field: 'created_at',
+        header: 'Fecha Entrada',
+        filter: true,
+        sortable: true,
+        type: 'date'
     },
 
     {
@@ -291,11 +299,11 @@ const columns = [
         class: 'text-center uppercase',
         severitys: [
             { text: 'reservado', severity: 'info', class: '' },
-            { text: 'CONSTRUCCIÓN', severity: 'success', class: '' },
+            { text: 'COMPLETADA', severity: 'success', class: '' },
             { text: 'DISEÑO', severity: 'info', class: '' },
-            { text: 'GARANTIA', severity: 'warning', class: '' },
+            { text: 'NO SHOW', severity: 'warn', class: '' },
             { text: 'SERVICIO POSTVENTA', severity: 'success', class: '' },
-            { text: 'SIN ESTADO', severity: 'danger', class: 'animate-pulse' }
+            { text: 'CANCELADA', severity: 'danger', class: 'animate-pulse' }
         ]
     },
     // {
@@ -323,14 +331,9 @@ const loading = ref(false);
 const reservar = (event) => {
     event.preventDefault();
     loading.value = true
-    router.post(route('reservar', values), {
+    router.post(route('reservar'), values, {
         onSuccess: () => {
-            toast.add({
-                severity: 'success',
-                summary: 'Reserva Realizada',
-                detail: 'Tu reserva ha sido realizada con exito',
-                life: 3000
-            });
+            toast('success', 'Reserva creada con exito');
             loading.value = false;
             show.value = false;
         },
@@ -348,5 +351,38 @@ const getMethos = () => {
         })
 }
 getMethos()
+
+const parseDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return new Date(year, month - 1, day);
+};
+
+const disabledDates = computed(() => {
+    var dates = [];
+    var selectedProduct = services.value.find(service => service.id == service_id.value);
+    if (!selectedProduct) return [];
+    for (var lock of selectedProduct.locks) {
+        var start = parseDate(lock.start_date);
+        var end = parseDate(lock.end_date);
+        for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
+            dates.push(new Date(d));
+        }
+    }
+    return dates;
+})
+
+
+const setState = (state, terminated) => {
+    router.post(route('set.states'), {
+        service: service.value.id,
+        state: state,
+        terminated: terminated
+    }, {
+        onSuccess: () => {
+            info.value = false;
+            toast('success', 'Reserva ' + state);
+        }
+    })
+}
 
 </script>

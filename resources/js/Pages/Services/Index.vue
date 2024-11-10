@@ -82,12 +82,18 @@
 
         <div class="flex justify-between gap-x-2 my-2">
             <div class="w-full">
-                <Input label="Razón del Bloqueo" v-model="formLock.description" />
+                <Input label="Razón del Bloqueo" v-model="formLock.description" :error-message="formLock.errors.description" />
             </div>
             <div class="w-full">
                 <label for="" class="font-bold">Seleccione el Rango de bloque o del servicio</label>
-                <VueDatePicker v-model="formLock.range" :range="{}" hide-offset-dates :teleport="true" auto-apply
-                    :enable-time-picker="false"></VueDatePicker>
+                <div class="flex items-center gap-x-2">
+                    <VueDatePicker v-model="formLock.start_date"  hide-offset-dates :teleport="true" auto-apply
+                        :enable-time-picker="false" timezone="America/Bogota"></VueDatePicker>
+                    <i class="fa-solid fa-minus"></i>
+                    <VueDatePicker v-model="formLock.end_date" :min-date="formLock.start_date"  hide-offset-dates :teleport="true" auto-apply
+                        :enable-time-picker="false" timezone="America/Bogota"></VueDatePicker>
+                </div>
+                <span class="text-xs text-red-500">{{formLock.errors.start_date}}</span>
             </div>
         </div>
 
@@ -121,7 +127,8 @@ const add = {
 }
 
 const formLock = useForm({
-    range: '',
+    start_date: '',
+    end_date: '',
     description: '',
 })
 
@@ -165,12 +172,6 @@ const columns = [
         filter: true,
     },
     {
-        header: 'Bloqueado',
-        field: 'is_locked',
-        type: 'boolean',
-        filter: true,
-    },
-    {
         header: 'Tarifa Niños',
         field: 'boy_tarifa',
         type: 'currency',
@@ -206,6 +207,7 @@ const buttons = [
     {
         action: (data) => {
             lock.value = true
+            formLock.reset()
             service.value = data
         },
         show: usePage().props.auth.user.rol == 'admin',
@@ -273,14 +275,24 @@ const submit = () => {
 }
 
 const locked = () => {
+    if(formLock.description == ''){
+        formLock.errors.description = 'Ingrese una descripción'
+        return 
+    }
+    if(formLock.start_date == '' || formLock.end_date == ''){
+        formLock.errors.start_date = 'Seleccione un rango de fechas'
+        return
+    }
+    
     router.post(route('services.lock', service.value.slug), {
-        start_date: formLock.range[0],
+        start_date: formLock.start_date,
         description: formLock.description,
-        end_date: formLock.range[1],
+        end_date: formLock.end_date,
     }, {
         onSuccess: () => {
             toast('success', 'Servicio Bloqueado con exito')
             lock.value = false
+            formLock.reset()
         }
     })
 }

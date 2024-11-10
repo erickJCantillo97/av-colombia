@@ -100,4 +100,16 @@ class Service extends Model
         // dd(now());
         return $this->locks()->where('end_date', '>=', now()->format("Y-m-d"))->exists();
     }
+
+    public function getCurrentStateAttribute()
+    {
+        return $this->states()->latest()->first();
+    }
+
+    public function states()
+    {
+        return $this->morphMany(State::class, 'statable');
+    }
+
+    
 }

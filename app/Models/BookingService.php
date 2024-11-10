@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,5 +39,24 @@ class BookingService extends Model
     public function payment()
     {
         return $this->morphMany(Payment::class, 'payable');
-    }   
+    }
+
+    public function states()
+    {
+        return $this->morphMany(State::class, 'statable');
+    }
+
+    public function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $this->states()->latest()->first()->state ?? 'reservado',
+            set: fn($value) => $value,
+        );
+    }
+
+    public function proveedors(){
+        return $this->hasMany(Proveedor::class, 'booking_proveedor', 'booking_service_id', 'proveedor_id');
+    }
+    
+    
 }

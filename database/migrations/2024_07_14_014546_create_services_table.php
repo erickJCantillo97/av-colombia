@@ -23,6 +23,7 @@ return new class extends Migration
             $table->double('boys_price');
             $table->string('includes')->nullable();
             $table->string('notIncludes')->nullable();
+            $table->boolean('problematic')->default(false);
             $table->timestamps();
         });
     }
