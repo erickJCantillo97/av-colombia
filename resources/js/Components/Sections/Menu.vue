@@ -79,7 +79,7 @@
                         </li>
                         <li>
                             <Link v-if="$page.props.auth.user.rol == 'admin'" :href="route('proveedors.index')" v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                                <i class="pi pi-dollar mr-2"></i>
+                                <i class="pi pi-truck mr-2"></i>
                                 <span class="font-pago">Proveedores</span>
                             </Link>
                         </li>

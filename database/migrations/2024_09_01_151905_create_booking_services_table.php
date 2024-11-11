@@ -25,6 +25,7 @@ return new class extends Migration
             $table->time('hour');
             $table->string('status')->default('reservado');
             $table->string('payment')->default('pendiente');
+            $table->foreignUuid('channel_id')->nullable()->references('id')->on('channels')->onDelete('cascade');
             $table->string('cliente_name');
             $table->string('cliente_phone');
             $table->string('cliente_city');

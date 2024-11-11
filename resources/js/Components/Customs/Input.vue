@@ -392,7 +392,6 @@ defineEmits(['valueChange'])
                             input: '!text-sm'
                         }" />
                 </span>
-
                 <label v-if="floatLabel && label" :for="id" class="">{{ label }}</label>
             </span>
 

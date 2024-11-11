@@ -155,9 +155,9 @@ const days = [
             <div class="space-y-5">
                 <Input label="Titulo" v-model="form.title" :error-message="form.errors.title" />
                 <div class="grid grid-cols-2 gap-4 my-4">
-                    <Input label="Precio Adultos" type="number" min="0" currency="COP" :minFractionDigits="2"
+                    <Input label="Precio Adultos" mode="currency" type="number" min="0" currency="COP" :minFractionDigits="2"
                         :maxFractionDigits="2" v-model="form.adults_price"  :error-message="form.errors.adults_price"/>
-                    <Input label="Precio niños" type="number" min="0" currency="COP" :minFractionDigits="2"
+                    <Input label="Precio niños" mode="currency" type="number" min="0" currency="COP" :minFractionDigits="2"
                         :maxFractionDigits="2" v-model="form.boys_price" :error-message="form.errors.boys_price" />
                 </div>
                 <div class="flex justify-between space-x-4">

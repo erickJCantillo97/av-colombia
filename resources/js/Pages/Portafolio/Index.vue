@@ -300,8 +300,8 @@ const schema2 = yup.object({
     cliente_city: yup.string().required(),
     cliente_building: yup.string().required(),
     hour: yup.string().required(),
-    abono: yup.number().required(),
-    method: yup.string().required(),
+    abono: yup.number(),
+    method: yup.string(),
 });
 
 const { values, defineField, errors, meta } = useForm({
