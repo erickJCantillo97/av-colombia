@@ -129,12 +129,12 @@
                     <h1 class="font-bold text-center">Saldo: {{ COP.format(service.total_price -
                         service.payment.reduce((a, b) => a + b.amount, 0)) }}</h1>
                     <div class="flex gap-x-2">
-                        <Button @click="setState('COMPLETADA', true)" icon="fa-solid fa-circle-check" text size="large" v-tooltip.top="'Completar Servicio'"
-                            class="flex-auto" severity="success" />
-                        <Button @click="setState('NO SHOW', true)" icon="fa-solid fa-eye-slash" text size="large" v-tooltip.top="'Servicio No show'"
-                            class="flex-auto" severity="warn" />
-                        <Button @click="setState('CANCELADA', true)" icon="fa-solid fa-xmark-circle" text size="large" v-tooltip.top="'Cancelar Servicio'"
-                            class="flex-auto" severity="danger" />
+                        <Button @click="setState('COMPLETADA', true)" icon="fa-solid fa-circle-check" text size="large"
+                            v-tooltip.top="'Completar Servicio'" class="flex-auto" severity="success" />
+                        <Button @click="setState('NO SHOW', true)" icon="fa-solid fa-eye-slash" text size="large"
+                            v-tooltip.top="'Servicio No show'" class="flex-auto" severity="warn" />
+                        <Button @click="setState('CANCELADA', true)" icon="fa-solid fa-xmark-circle" text size="large"
+                            v-tooltip.top="'Cancelar Servicio'" class="flex-auto" severity="danger" />
                         <Button icon="fa-solid fa-person-dress-burst" text size="large"
                             v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
                         <!-- <Button label="Registrar Pago" icon="pi pi-sign-out" class="flex-auto" severity="success"  /> -->
@@ -155,6 +155,7 @@ import Toast from 'primevue/toast';
 import * as yup from 'yup';
 import { alerts } from '@/composable/toasts';
 import { useForm } from 'vee-validate';
+import Swal from 'sweetalert2';
 
 const props = defineProps({
     bookingServices: Array
@@ -248,8 +249,23 @@ const buttons = [
     {
         label: 'Problematica',
         action: (data) => {
-            form.service_id = data.id;
-            show.value = true;
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                }
+            });
         },
         icon: 'fa-solid fa-person-dress-burst text-sm',
         severity: "danger"

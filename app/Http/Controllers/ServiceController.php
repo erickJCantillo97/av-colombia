@@ -153,8 +153,9 @@ class ServiceController extends Controller
         $validate['boys_price'] = $service->boys_price;
         $validate['boys_tarifa'] = $service->boy_tarifa;
         $booking = BookingService::create($validate);
-        $booking->proveedors()->attach(request('proveedors'));
-        paymentStore(request('abono'), request('method'), $booking);
+        // $booking->proveedors()->attach(request('proveedors'));
+        if(request('abono'))
+            paymentStore(request('abono'), request('method'), $booking);
         storeState($booking, 'reservado');
     }
 

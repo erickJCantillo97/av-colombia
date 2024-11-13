@@ -145,7 +145,7 @@
                         </section>
 
                         <form class="flex flex-col space-y-4 justify-between" @submit.prevent="firstSteep">
-                            {{ date }}
+                          
                             <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()"
                                 class="w-full" type="date" :error-message="errorDate" :disabled-dates="disabledDates" v-bind="dateAttrs" />
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
@@ -207,7 +207,7 @@
                         <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
                             :error-message="errors.hour" />
 
-                        <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
+                        <!-- <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                             <div class="w-full">
                                 <div class="w-full flex justify-between font-extrabold items-end">
                                     <label for="">Abono</label>
@@ -222,7 +222,7 @@
                                 <Input class="w-full" min="0" v-bind="methodAttrs" type="dropdown" option-label="name"
                                     option-value="id" :options="methods" v-model="method" />
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="flex gap-x-4 justify-center">
                         <button @click="formStatus = 1"
@@ -300,8 +300,8 @@ const schema2 = yup.object({
     cliente_city: yup.string().required(),
     cliente_building: yup.string().required(),
     hour: yup.string().required(),
-    abono: yup.number(),
-    method: yup.string(),
+    //abono: yup.number(),
+    //method: yup.string(),
 });
 
 const { values, defineField, errors, meta } = useForm({
@@ -318,8 +318,8 @@ const [cliente_phone, phoneAttrs] = defineField('cliente_phone');
 const [cliente_city, cityAttrs] = defineField('cliente_city');
 const [cliente_building, buildingAttrs] = defineField('cliente_building');
 const [hour, hourAttrs] = defineField('hour');
-const [abono, abonoAttrs] = defineField('abono');
-const [method, methodAttrs] = defineField('method');
+// const [abono, abonoAttrs] = defineField('abono');
+// const [method, methodAttrs] = defineField('method');
 
 boys.value = 0;
 adults.value = 1;
