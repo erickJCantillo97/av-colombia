@@ -30,7 +30,6 @@
                     min="1" type="number" />
                 <Input class="w-full" min="0" v-bind="methodAttrs" type="dropdown" option-label="name" option-value="id"
                     :options="methods" v-model="method" label="Medio de Pago" />
-
                 <div class="">
                     <h1 class="text-xl  font-mono font-semibold"> Precio total: {{ COP.format(totalCost) }}
                     </h1>
@@ -135,8 +134,8 @@
                             v-tooltip.top="'Servicio No show'" class="flex-auto" severity="warn" />
                         <Button @click="setState('CANCELADA', true)" icon="fa-solid fa-xmark-circle" text size="large"
                             v-tooltip.top="'Cancelar Servicio'" class="flex-auto" severity="danger" />
-                        <Button @click="setState('PROBLEMATICA', false)" icon="fa-solid fa-person-dress-burst" text size="large"
-                            v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
+                        <Button @click="setState('PROBLEMATICA', false)" icon="fa-solid fa-person-dress-burst" text
+                            size="large" v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
                         <!-- <Button label="Registrar Pago" icon="pi pi-sign-out" class="flex-auto" severity="success"  /> -->
                     </div>
                 </div>
@@ -249,21 +248,24 @@ const buttons = [
     {
         label: 'Problematica',
         action: (data) => {
+            var marcar = data.problematic ? 'Desmarcar' : 'Marcar';
             Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
+                title: "Estas Seguro?",
+                text: `${marcar} como problematica esta reservación!`,
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
+                cancelButtonText: "Cancelar",
+                confirmButtonText: `Si, ${marcar}!`
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: "Deleted!",
-                        text: "Your file has been deleted.",
-                        icon: "success"
-                    });
+                    router.post(route('booking.problematic', data.id), {
+                        onSuccess: () => {
+                            toast('success', 'Reserva Marcada como problematica');
+                        }
+                    })
+
                 }
             });
         },
@@ -307,7 +309,13 @@ const columns = [
         sortable: true,
         type: 'date'
     },
-
+    {
+        field: 'problematic',
+        header: 'Problematica',
+        filter: true,
+        sortable: true,
+        type: 'boolean',
+    },
     {
         field: 'status',
         header: 'Estado',
@@ -397,12 +405,12 @@ const setState = (state, terminated) => {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Si"
-        }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({
-            title: state,
-            text: "Esta reserva ha sido " + state + ".",
-            icon: "success"
+                title: state,
+                text: "Esta reserva ha sido " + state + ".",
+                icon: "success"
             });
 
             router.post(route('set.states'), {

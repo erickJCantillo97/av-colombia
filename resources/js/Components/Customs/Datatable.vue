@@ -371,9 +371,8 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                     <div v-else-if="col.type == 'html'" class="" v-html="truncateString(data[col.field] + ' ', 80)">
                     </div>
                     <p v-else class="">
-
                         {{ col.format ? col.format(truncateString(data[col.field] + ' ',
-                            80)) : truncateString(data[col.field] + ' ', 80) }}
+                        80)) : truncateString(data[col.field] + ' ', 80) }}
                         <!-- {{ truncateString(data[col.field], 80) }} -->
                     </p>
                 </template>

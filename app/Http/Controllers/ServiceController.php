@@ -29,7 +29,7 @@ class ServiceController extends Controller
                     'title_en',
                     'description',
                     'description_en'
-                ], 'LIKE', $search)->with('images', 'features')->latest()->take(5)->get()
+                ], 'LIKE', $search)->with('images', 'features')->latest()->get()
             ]);
         }
         return Inertia::render('Services/Index', [
@@ -154,7 +154,7 @@ class ServiceController extends Controller
         $validate['boys_tarifa'] = $service->boy_tarifa;
         $booking = BookingService::create($validate);
         // $booking->proveedors()->attach(request('proveedors'));
-        if(request('abono'))
+        if (request('abono'))
             paymentStore(request('abono'), request('method'), $booking);
         storeState($booking, 'reservado');
     }
@@ -178,8 +178,9 @@ class ServiceController extends Controller
         return back()->with('message', 'Lock eliminado');
     }
 
-    public function setStatus(){
-        $service = BookingService::where('id',request('service'))->first();
+    public function setStatus()
+    {
+        $service = BookingService::where('id', request('service'))->first();
         // dd($service);
         storeState($service, request('state'), request('terminated'));
         return back()->with('message', 'Estado actualizado');

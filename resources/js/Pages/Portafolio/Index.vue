@@ -13,7 +13,7 @@
         <Button label="Entrar" size="small" text="" icon="fa-solid fa-arrow-right" icon-pos="right" />
         </Link>
     </div>
-    <div class="h-[99vh] overflow-y-auto py-1">
+    <div class="h-[100vh] overflow-y-auto py-1">
         <div class="px-4 md:px-10 pt-14 md:pt-16">
             <ol class="flex items-center whitespace-nowrap">
                 <li class="inline-flex items-center">
@@ -81,7 +81,7 @@
                         </h3>
                     </div>
                     <div
-                        class="grid grid-cols-1 snap-y snap-mandatory md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[65vh] overflow-y-auto">
+                        class="grid grid-cols-1 snap-y snap-mandatory md:grid-cols-3 gap-4 mt-4 h-[66vh] md:h-[75vh] overflow-y-auto">
                         <Card class="h-64 w-full snap-start" :service v-for="service in services"
                             @click="productSelection(service)" />
 
@@ -145,9 +145,10 @@
                         </section>
 
                         <form class="flex flex-col space-y-4 justify-between" @submit.prevent="firstSteep">
-                          
+
                             <Input label="Fecha de Reserva" v-model="date" required :min-date="new Date()"
-                                class="w-full" type="date" :error-message="errorDate" :disabled-dates="disabledDates" v-bind="dateAttrs" />
+                                class="w-full" type="date" :error-message="errorDate" :disabled-dates="disabledDates"
+                                v-bind="dateAttrs" />
                             <div class="flex flex-col md:flex-row justify-between md:space-x-4 ">
                                 <div class="w-full">
                                     <div class="w-full flex justify-between font-extrabold items-end">
@@ -337,7 +338,7 @@ const getServices = () => {
     axios.get(route('get.services', {
         search: search.value
     })).then(response => {
-        services.value = response.data.services.slice(0, 5);
+        services.value = response.data.services;
     });
 }
 const randomIndex = Math.floor(Math.random() * images.value.length - 1);
@@ -462,19 +463,19 @@ const stopImageRotation = () => {
     }
 }
 const parseDate = (dateString) => {
-        const [year, month, day] = dateString.split('-');
-        return new Date(year, month - 1, day);
-    };
+    const [year, month, day] = dateString.split('-');
+    return new Date(year, month - 1, day);
+};
 
 const disabledDates = computed(() => {
     var dates = [];
-    for(var lock of selectedProduct.value.locks){
-    var start = parseDate(lock.start_date);
-    var end = parseDate(lock.end_date);
-   
-    for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
-        dates.push(new Date(d));
-    }
+    for (var lock of selectedProduct.value.locks) {
+        var start = parseDate(lock.start_date);
+        var end = parseDate(lock.end_date);
+
+        for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
+            dates.push(new Date(d));
+        }
     }
     return dates;
 })

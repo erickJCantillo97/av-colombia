@@ -82,7 +82,7 @@ const getReservas = () => {
         reservas.value = response.data.bookingServices;
         reservas.value.forEach((item) => {
             console.log(item.date, new Date().toISOString().split('T')[0])
-            if(item.date == new Date().toISOString().split('T')[0]){
+            if (item.date == new Date().toISOString().split('T')[0]) {
                 console.log(item)
                 dateActivities.value.push(item);
             }
@@ -94,7 +94,7 @@ const getReservas = () => {
                 id: item.id
             })
         });
-        if(dateActivities.value.length > 0){
+        if (dateActivities.value.length > 0) {
             todayActivity.value = true;
         }
     });
@@ -146,7 +146,7 @@ getReservas();
         </div>
     </AppLayout>
     <Modal v-model:visible="visible" :title="'Reserva de ' + serviceSelected.service?.title ?? ''"
-    :close-on-escape="true">
+        :close-on-escape="true">
         <div class="flex flex-col gap-y-5">
             <h1 class="text-xl font-bold">Datos de la reserva</h1>
             <div class="grid grid-cols-3 md:grid-cols-5 gap-2 w-full">
@@ -168,26 +168,29 @@ getReservas();
             <div class="flex justify-between items-center">
                 <h1 class="text-xl font-bold">Datos de Pagos</h1>
                 <div class="border bg-blue-600 font-bold p-1 rounded-lg text-white text-sm">
-                    Saldo: {{COP.format(serviceSelected.total_price -  serviceSelected.payment.reduce((a,b)  => a + b.amount, 0))}}
+                    Saldo: {{ COP.format(serviceSelected.total_price - serviceSelected.payment.reduce((a, b) => a +
+                        b.amount, 0)) }}
                 </div>
             </div>
             <div class="flex flex-col">
-                <div  class="flex justify-between border-b-2 font-extrabold px-2">
+                <div class="flex justify-between border-b-2 font-extrabold px-2">
                     <span>Monto</span>
                     <span>Moneda</span>
                     <span>Tipo de Pago</span>
                     <span>Metodo de Pago</span>
                     <span>Estado del Pago</span>
                 </div>
-                <div v-for="payment in serviceSelected.payment"  class="mb-2 flex justify-between border-b px-2 py-1 rounded-md">
+                <div v-for="payment in serviceSelected.payment"
+                    class="mb-2 flex justify-between border-b px-2 py-1 rounded-md">
                     <span>{{ COP.format(payment.amount) }}</span>
                     <span>{{ payment.currency }}</span>
                     <span>{{ payment.type }}</span>
                     <span>{{ payment.metohd_payment.name }}</span>
-                    <span :class="payment.status == 'pendiente' ? 'text-red-500 font-bold capitalize':''">{{ payment.status }}</span>
+                    <span :class="payment.status == 'pendiente' ? 'text-red-500 font-bold capitalize' : ''">{{
+                        payment.status }}</span>
                 </div>
             </div>
-          
+
         </div>
         <!-- <code>
             {{ serviceSelected }}
@@ -209,7 +212,7 @@ getReservas();
                 <p class="w-full flex text-center">
                     Telefono
                 </p>
-               
+
                 <p class="w-full flex text-center">
                     Hora
                 </p>
@@ -218,7 +221,8 @@ getReservas();
                 </p>
 
             </div>
-            <div v-for="activity in dateActivities" class="flex justify-between bg-blue-200 p-1.5 text-center">
+            <div v-for="activity in dateActivities" :class="activity.problematic ? 'bg-red-200' : 'bg-blue-200'"
+                class="flex justify-between p-1.5 text-center">
                 <p class="w-full flex text-center">
                     {{ activity.service.title }}
                 </p>

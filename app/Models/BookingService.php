@@ -16,6 +16,10 @@ class BookingService extends Model
 
     protected $appends = ['total_price', 'total_price_sales'];
 
+    protected $casts = [
+        'problematic' => 'boolean',
+    ];
+
     public function service()
     {
         return $this->belongsTo(Service::class);
@@ -54,9 +58,8 @@ class BookingService extends Model
         );
     }
 
-    public function proveedors(){
+    public function proveedors()
+    {
         return $this->hasMany(Proveedor::class, 'booking_proveedor', 'booking_service_id', 'proveedor_id');
     }
-    
-    
 }

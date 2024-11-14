@@ -91,4 +91,11 @@ class BookingServiceController extends Controller
         $bookingNoPayment = BookingService::where('payment', 'pendiente')->get();
         return response()->json(['bookingNoPayment' => $bookingNoPayment], 200);
     }
+
+    public function problematic(BookingService $bookingService)
+    {
+        // $problematic = $bookingService->problematic == '1' ? 1 : 0;
+        $bookingService->update(['problematic' => !$bookingService->problematic]);
+        return  back()->with('message', 'Estado actualizado correctamente');
+    }
 }

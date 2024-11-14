@@ -43,6 +43,7 @@ Route::middleware([
     Route::post('reservar', [ServiceController::class, 'reservar'])->name('reservar');
     Route::resource('BookingServices', BookingServiceController::class);
     Route::get('getBookingServicesNoPayment', [BookingServiceController::class, 'getBookingServicesNoPayment'])->name('get.services.no.payment');
+    Route::post('BookingServices/{bookingService}/problematic', [BookingServiceController::class, 'problematic'])->name('booking.problematic');
     Route::resource('paymentMethods', PaymentMethodController::class);
 
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
