@@ -135,7 +135,7 @@
                             v-tooltip.top="'Servicio No show'" class="flex-auto" severity="warn" />
                         <Button @click="setState('CANCELADA', true)" icon="fa-solid fa-xmark-circle" text size="large"
                             v-tooltip.top="'Cancelar Servicio'" class="flex-auto" severity="danger" />
-                        <Button icon="fa-solid fa-person-dress-burst" text size="large"
+                        <Button @click="setState('PROBLEMATICA', false)" icon="fa-solid fa-person-dress-burst" text size="large"
                             v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
                         <!-- <Button label="Registrar Pago" icon="pi pi-sign-out" class="flex-auto" severity="success"  /> -->
                     </div>
@@ -389,16 +389,34 @@ const disabledDates = computed(() => {
 
 
 const setState = (state, terminated) => {
-    router.post(route('set.states'), {
-        service: service.value.id,
-        state: state,
-        terminated: terminated
-    }, {
-        onSuccess: () => {
-            info.value = false;
-            toast('success', 'Reserva ' + state);
+    Swal.fire({
+        title: state,
+        text: "Estas seguro de realizar esta acción?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si"
+        }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+            title: state,
+            text: "Esta reserva ha sido " + state + ".",
+            icon: "success"
+            });
+
+            router.post(route('set.states'), {
+                service: service.value.id,
+                state: state,
+                terminated: terminated
+            }, {
+                onSuccess: () => {
+                    info.value = false;
+                    toast('success', 'Reserva ' + state);
+                }
+            })
         }
-    })
+    });
 }
 
 </script>
