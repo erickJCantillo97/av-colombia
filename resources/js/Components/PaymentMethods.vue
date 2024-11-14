@@ -4,10 +4,11 @@
     </DataTable>
 
     <Modal v-model="visible" title="Crear Metodo de Pago" :close-on-escape="true">
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Nombre" v-model="form.name" />
             <Input label="Porcentaje de pago" type="number" v-model="form.parcent_charge" />
+            <Input class="w-full" min="0" type="dropdown" option-label="name" option-value="id" :options="methods"
+                v-model="form.method" />
         </div>
         <template #footer>
             <Button @click="submit" title="Save" severity="success" label="Save" outlined icon="fa-solid fa-save"
@@ -33,6 +34,9 @@ const add = {
         visible.value = true
     },
 }
+const methods = ref([]);
+
+
 
 const columns = [
     {
@@ -100,7 +104,8 @@ const buttons = [
 const form = useForm({
     name: '',
     parcent_charge: 0,
-    description: ''
+    description: '',
+    method: ''
 })
 
 const data = ref([]);
@@ -125,4 +130,15 @@ const submit = () => {
         }
     })
 }
+
+const getMethos = () => {
+    axios.get(route('paymentMethods.index'))
+        .then(response => {
+            methods.value = response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+getMethos()
 </script>
