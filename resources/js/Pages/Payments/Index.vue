@@ -18,6 +18,8 @@ const props = defineProps({
     },
 })
 
+const methods = ref([])
+
 const validatePay = ref(false)
 
 const form = useForm({
@@ -26,6 +28,7 @@ const form = useForm({
     method: '',
     amount: '',
     currency: 'COP',
+    validatePay: false
 })
 
 const add = {
@@ -74,7 +77,20 @@ const buttons = [
 const serviceSelected = ref();
 
 const submit = (event) => {
-    event.preventDefault()
+    if(form.validatePay){
+        form.status = 'Confirmado'
+    }
+    if(form.amount == '' || form.method == '' || form.payable_id == ''){
+        toast('error', 'Todos los campos son obligatorios')
+        return
+    }
+    form.payable_id = form.payable_id.id
+    form.post(route('payments.store'), {
+        onSuccess: () => {
+            show.value = false
+            toast('success', 'Pago Registrado con exito')
+        }
+    })
 }
 
 const services = ref([]);
@@ -89,7 +105,7 @@ const servicesNoPaiyment = ref([]);
 
 const getServicesNoPayment = () => {
     axios.get(route('get.services.no.payment')).then(response => {
-        servicesNoPaiyment.value = response.data.bookingNoPayment;
+        servicesNoPaiyment.value = Object.values(response.data.bookingNoPayment);
     });
 }
 
@@ -107,9 +123,12 @@ const columns = [
         filter: true,
     },
     {
-        header: 'Metodo de Pago',
-        field: 'metohd_payment.name',
+        header: 'Tipo de Pago',
+        field: 'type',
         filter: true,
+        format: (value) => {
+            return value.toUpperCase()
+        }
     },
     {
         header: 'Monto',
@@ -117,6 +136,12 @@ const columns = [
         type: 'currency',
         filter: true,
     },
+    {
+        header: 'Metodo de Pago',
+        field: 'metohd_payment.name',
+        filter: true,
+    },
+    
     {
         header: 'Fecha',
         field: 'created_at',
@@ -129,7 +154,7 @@ const columns = [
         filter: true, sortable: true, type: 'tag', filtertype: 'EQUALS',
         class: 'text-center uppercase',
         severitys: [
-            { text: 'pendiente', severity: 'danger', class: '' },
+            { text: 'Pendiente', severity: 'danger', class: '' },
             { text: 'Confirmado', severity: 'success', class: '' },
             // { text: 'DISEÑO', severity: 'info', class: '' },
             // { text: 'GARANTIA', severity: 'warning', class: '' },
@@ -141,6 +166,18 @@ const columns = [
 
 ]
 
+const getMethos = () => {
+    axios.get(route('paymentMethods.index'))
+        .then(response => {
+            methods.value = response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+getMethos()
+
+
 </script>
 
 <template>
@@ -150,7 +187,7 @@ const columns = [
             </Datatable>
         </div>
         <Modal v-model="show" title="Añadir Pagos">
-            <form @submit.prevent="submit">
+            <form >
                 <div class="flex flex-col gap-y-4">
                     <!-- <label for="payable_id" class="block text-sm font-medium text-gray-700">Servicio</label> -->
                     <div>
@@ -181,13 +218,19 @@ const columns = [
 
                         </Select>
                     </div>
-                    <Input label="Monto" />
+                    <Input label="Monto" v-model="form.amount" mode="currency" type="number" required/>
+                    <Input label="Medio de Pago" class="w-full" min="0"  type="dropdown" option-label="name"
+                        option-value="id" :options="methods" v-model="form.method" required />
+                    <Input checkboxLabel="Pago Verificado" v-model="form.validatePay" type="checkbox" required/>
                 </div>
-
             </form>
+            <template #footer>
+                <div class="flex gap-x-4">
+                    <Button label="Cancelar" size="small" severity="danger" icon="pi pi-times" @click="show = false"/>
+                    <Button label="Guardar" size="small" severity="success" icon="pi pi-save" @click="submit"/>
+                </div>
+            </template>
         </Modal>
-        <Modal v-model="validatePay" title="Validar Pago">
-
-        </Modal>
+        
     </AppLayout>
 </template>

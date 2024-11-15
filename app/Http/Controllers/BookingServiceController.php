@@ -16,11 +16,11 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
-        if (request()->expectsJson()) {
-            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payment', 'payment.metohdPayment')->get()], 200);
+        if(request()->expectsJson()) {
+            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment')->get()], 200);
         }
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => BookingService::with('service', 'user', 'payment', 'payment.metohdPayment')->get()
+            'bookingServices' => BookingService::with('service', 'user','payments', 'payments.metohdPayment')->get()
         ]);
     }
 
@@ -88,7 +88,11 @@ class BookingServiceController extends Controller
 
     public function getBookingServicesNoPayment()
     {
-        $bookingNoPayment = BookingService::where('payment', 'pendiente')->get();
+        // $bookingNoPayment = BookingService::where('payment', 'pendiente')->get();
+        $bookingNoPayment = BookingService::with('payments')->get()->filter(function($booking) {
+            return $booking->payments->count() == 0 || $booking->payments->sum('amount') < $booking->total_price;
+        });
+        
         return response()->json(['bookingNoPayment' => $bookingNoPayment], 200);
     }
 

@@ -40,9 +40,9 @@ class BookingService extends Model
         return $this->adults * $this->adult_tarifa + $this->boys * $this->boy_tarifa;
     }
 
-    public function payment()
+    public function payments()
     {
-        return $this->morphMany(Payment::class, 'payable');
+        return $this->hasMany(Payment::class, 'payable_id');
     }
 
     public function states()

@@ -15,7 +15,7 @@ class Payment extends Model
 
     public function payable()
     {
-        return $this->morphTo();
+        return $this->belongsTo(BookingService::class, 'payable_id');
     }
 
     public function user()

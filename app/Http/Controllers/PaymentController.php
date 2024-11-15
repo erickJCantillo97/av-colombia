@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
+use App\Models\BookingService;
 
 class PaymentController extends Controller
 {
@@ -32,11 +33,20 @@ class PaymentController extends Controller
      */
     public function store(StorePaymentRequest $request)
     {
-        try {
-            $payment = Payment::create($request->validated());
-        } catch (\Exception $e) {
-            return back()->withErrors('error', 'Error al crear el pago');
-        }
+        
+            $validated = $request->validated();
+            $booking = BookingService::find($validated['payable_id']);
+            if(request('validatePay')){
+                $validated['status'] = 'Confirmado';
+            }else{
+                $validated['status'] = 'Pendiente';
+            }
+            if($validated['amount'] == $booking->total_price){
+                $validated['type'] = 'total';
+            }
+            $validated['user_id'] = auth()->id();
+            $payment = Payment::create($validated);
+        
     }
 
     /**

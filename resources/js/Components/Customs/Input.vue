@@ -337,7 +337,7 @@ defineEmits(['valueChange'])
                         header: '!h-min !py-0.5'
                     }" />
                 <div v-else-if="type == 'checkbox'">
-                    <div class="flex w-full">
+                    <div class="flex w-full gap-x-2">
                         <Checkbox v-model="input" :inputId :name :value :binary />
                         <label class="" :for="inputId">{{ checkboxLabel }}</label>
                     </div>

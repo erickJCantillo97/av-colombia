@@ -34,10 +34,26 @@
                     <h1 class="text-xl  font-mono font-semibold"> Precio total: {{ COP.format(totalCost) }}
                     </h1>
                 </div>
-                <div class="flex justify-end mt-4">
+                <div class="mt-4 w-full col-sapn-1 md:col-span-3">
+                    <h1 class="text-xl font-mono font-semibold text-center"> 
+                        Proveedores <Button icon="fa-solid fa-plus" outlined=""  severity="success" class="size-6" @click="addProveedor()" /> </h1>
+                    <div class="flex justify-between w-full font-bold">
+                        <label for="" >Proveedor</label>
+                        <label for="">Costo</label>
+                        <label for="">.</label>
+                    </div>
+                    <div v-for="(p, index) in proveedorsAdd" class="flex justify-between gap-x-4">
+                        <Input type="dropdown" v-model="p.proveedor" :error-message="errors.proveedor"
+                            option-label="nombre" option-value="id" class="w-full" :options="proveedors"></Input>
+                        <Input type="number" mode="currency" class="w-full" v-model="p.costo" :error-message="errors.costo" ></Input>
+                        <Button icon="fa-solid fa-xmark-circle" class="w-full" v-tooltip="`Quitar`" text severity="danger" @click="removeProveedor(index)"/>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-4 w-full col-sapn-1 md:col-span-3">
                     <Button type="submit" severity="success" label="Guardar" :loading />
                 </div>
             </form>
+
         </Modal>
         <Toast></Toast>
         <Drawer v-model:visible="info" pt:root:class="!bg-blue-100" header="Detalles de la actividad" position="right">
@@ -96,11 +112,11 @@
                     <div class="flex justify-between">
                         <h2 class="text-xl font-bold ">Pagos Realizados </h2>
                         <div class="bg-blue-600 text-white p-1 rounded-lg">
-                            {{ COP.format(service.payment.reduce((a, b) => a + b.amount, 0)) }}
+                            {{ COP.format(service.payments.reduce((a, b) => a + b.amount, 0)) }}
                         </div>
                     </div>
                     <div class="flex items-center text-xs justify-between border shadow-xl rounded-md p-1 bg-white"
-                        v-for="payment in service.payment">
+                        v-for="payment in service.payments">
                         <div>
                             <div class="uppercase font-bold">
                                 {{ payment.type }} {{ COP.format(payment.amount) }}
@@ -126,7 +142,7 @@
             <template #footer>
                 <div class="flex flex-col items-center gap-2">
                     <h1 class="font-bold text-center">Saldo: {{ COP.format(service.total_price -
-                        service.payment.reduce((a, b) => a + b.amount, 0)) }}</h1>
+                        service.payments.reduce((a, b) => a + b.amount, 0)) }}</h1>
                     <div class="flex gap-x-2">
                         <Button @click="setState('COMPLETADA', true)" icon="fa-solid fa-circle-check" text size="large"
                             v-tooltip.top="'Completar Servicio'" class="flex-auto" severity="success" />
@@ -213,6 +229,13 @@ const [method, methodAttrs] = defineField('method');
 boys.value = 0;
 adults.value = 1;
 
+const proveedorsAdd = ref([
+    {
+        proveedor: null,
+        costo: ''
+    }
+]);
+
 // #endregion
 
 const services = ref([]);
@@ -222,9 +245,35 @@ const getServices = () => {
     });
 }
 
+const addProveedor = () => {
+    proveedorsAdd.value.push({
+        proveedor: null,
+        costo: ''
+    })
+}
+
+const removeProveedor = (index) => {
+    if(index == 0) return;
+    proveedorsAdd.value.splice(index, 1);
+}
+
+const proveedors = ref([]);
+
+const getProveedors = () => {
+    axios.get(route('proveedors.index'))
+        .then(response => {
+            proveedors.value = response.data.proveedors
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+getProveedors()
+
 getServices()
 
 const buttons = [
+   
     {
         label: 'Detalles',
         action: (data) => {
@@ -236,15 +285,34 @@ const buttons = [
         // class: 'p-button-warning text-sm'
     },
     {
-        label: 'Registrar Pago',
+        label: 'Editar',
         action: (data) => {
-            form.service_id = data.id;
+            date.value = data.date;
+            service_id.value = data.service_id;
+            adults.value = data.adults
+            boys.value = data.boys;
+            cliente_name.value = data.cliente_name;
+            cliente_phone.value = data.cliente_phone;
+            cliente_city.value = data.cliente_city;
+            cliente_building.value = data.cliente_building;
+            hour.value = data.hour;
+            service.value = data;
             show.value = true;
         },
-        icon: 'fa-solid fa-dollar text-sm',
-        severity: "success"
+        icon: 'fa-solid fa-pencil text-sm',
+        severity: "warn"
         // class: 'p-button-warning text-sm'
     },
+    // {
+    //     label: 'Registrar Pago',
+    //     action: (data) => {
+    //         form.service_id = data.id;
+    //         show.value = true;
+    //     },
+    //     icon: 'fa-solid fa-dollar text-sm',
+    //     severity: "success"
+    //     // class: 'p-button-warning text-sm'
+    // },
     {
         label: 'Problematica',
         action: (data) => {
@@ -355,14 +423,13 @@ const loading = ref(false);
 const reservar = (event) => {
     event.preventDefault();
     loading.value = true
-    router.post(route('reservar'), values, {
+    router.post(route('reservar', {proveedors: proveedorsAdd.value}), values, {
         onSuccess: () => {
-            toast('success', 'Reserva creada con exito');
             loading.value = false;
             show.value = false;
+            toast('success', 'Reserva creada con exito');
         },
     })
-
 }
 
 const getMethos = () => {

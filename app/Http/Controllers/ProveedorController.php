@@ -13,7 +13,13 @@ class ProveedorController extends Controller
      */
     public function index()
     {
+
         $proveedors = Proveedor::all();
+        if(request()->expectsJson()){
+            return response()->json([
+                'proveedors' => $proveedors
+            ]);
+        }
         return inertia('Proveedor/Index', ['proveedores' => $proveedors]);
     }
 

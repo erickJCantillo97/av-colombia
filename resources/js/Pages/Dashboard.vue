@@ -168,7 +168,7 @@ getReservas();
             <div class="flex justify-between items-center">
                 <h1 class="text-xl font-bold">Datos de Pagos</h1>
                 <div class="border bg-blue-600 font-bold p-1 rounded-lg text-white text-sm">
-                    Saldo: {{ COP.format(serviceSelected.total_price - serviceSelected.payment.reduce((a, b) => a +
+                    Saldo: {{ COP.format(serviceSelected.total_price - serviceSelected.payments.reduce((a, b) => a +
                         b.amount, 0)) }}
                 </div>
             </div>
@@ -180,7 +180,7 @@ getReservas();
                     <span>Metodo de Pago</span>
                     <span>Estado del Pago</span>
                 </div>
-                <div v-for="payment in serviceSelected.payment"
+                <div v-for="payment in serviceSelected.payments"
                     class="mb-2 flex justify-between border-b px-2 py-1 rounded-md">
                     <span>{{ COP.format(payment.amount) }}</span>
                     <span>{{ payment.currency }}</span>
