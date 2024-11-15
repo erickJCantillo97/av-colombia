@@ -21,7 +21,7 @@ defineProps({
 const services = ref([]);
 const getServices = () => {
     axios.get(route('get.services')).then(response => {
-        services.value = response.data.services.slice(0, 5);
+        services.value = response.data.services.slice(0, 6);
     });
 }
 
@@ -47,7 +47,7 @@ const changeMotor = (motor) => {
 <template>
 
     <GuestLayout>
-        
+
         <div class="md:flex justify-center w-full h-[55vh] py-4 hidden">
             <div class=" shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[98vw] md:w-[90vw] md:px-28 h-full"
                 style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
@@ -72,7 +72,7 @@ const changeMotor = (motor) => {
         </div>
         <div class="md:hidden fixed w-full -mt-2 bg-gray-700 p-4 rounded-b">
             <h1 class="text-white font-bold text-xl capitalize">Buscar Experiencias en Cartagena</h1>
-            <Experiencias  v-if="value.value == 1" />
+            <Experiencias v-if="value.value == 1" />
         </div>
         <div class="bg-white w-full px-0 md:px-10 mt-44 md:mt-0 z-30">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
@@ -84,9 +84,10 @@ const changeMotor = (motor) => {
                     </Link>
                 </div>
                 <div class="flex w-full space-x-2 overflow-x-auto py-2 ">
-                    <ExperienceMiniCard :class="'w-1/2 lg:w-1/' + services.length > 6 ? 6:services.length"   v-for="product in services" :key="product.id" :product="product"/>
+                    <ExperienceMiniCard :class="'w-1/2 lg:w-1/' + services.length > 6 ? 6 : services.length"
+                        v-for="product in services" :key="product.id" :product="product" />
                 </div>
-                
+
             </div>
         </div>
         <!-- <div class="bg-white w-full px-0 md:px-10 border-t md:mt-0 z-30">

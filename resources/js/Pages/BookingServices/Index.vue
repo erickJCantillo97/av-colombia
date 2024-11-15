@@ -26,27 +26,33 @@
                 <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
                     :error-message="errors.hour" />
 
-                <Input class="w-full" label="Abono" v-bind="abonoAttrs" v-model="abono" :error-message="errors.abono"
-                    min="1" type="number" />
-                <Input class="w-full" min="0" v-bind="methodAttrs" type="dropdown" option-label="name" option-value="id"
-                    :options="methods" v-model="method" label="Medio de Pago" />
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Abono" v-bind="abonoAttrs"
+                    v-model="abono" :error-message="errors.abono" min="1" type="number" />
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" v-bind="methodAttrs"
+                    type="dropdown" option-label="name" option-value="id" :options="methods" v-model="method"
+                    label="Medio de Pago" />
                 <div class="">
                     <h1 class="text-xl  font-mono font-semibold"> Precio total: {{ COP.format(totalCost) }}
                     </h1>
                 </div>
-                <div class="mt-4 w-full col-sapn-1 md:col-span-3">
-                    <h1 class="text-xl font-mono font-semibold text-center"> 
-                        Proveedores <Button icon="fa-solid fa-plus" outlined=""  severity="success" class="size-6" @click="addProveedor()" /> </h1>
-                    <div class="flex justify-between w-full font-bold">
-                        <label for="" >Proveedor</label>
+                <div class="mt-4 w-full col-sapn-1 md:col-span-3 border rounded-lg"
+                    v-if="$page.props.auth.user.rol == 'admin'">
+                    <h1
+                        class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2">
+                        Proveedores <Button icon="fa-solid fa-plus" outlined="" severity="success" class="size-6"
+                            @click="addProveedor()" /> </h1>
+                    <div class="flex justify-between w-full font-bold px-2">
+                        <label for="">Proveedor</label>
                         <label for="">Costo</label>
                         <label for="">.</label>
                     </div>
-                    <div v-for="(p, index) in proveedorsAdd" class="flex justify-between gap-x-4">
+                    <div v-for="(p, index) in proveedorsAdd" class="flex justify-between gap-x-4 px-2">
                         <Input type="dropdown" v-model="p.proveedor" :error-message="errors.proveedor"
                             option-label="nombre" option-value="id" class="w-full" :options="proveedors"></Input>
-                        <Input type="number" mode="currency" class="w-full" v-model="p.costo" :error-message="errors.costo" ></Input>
-                        <Button icon="fa-solid fa-xmark-circle" class="w-full" v-tooltip="`Quitar`" text severity="danger" @click="removeProveedor(index)"/>
+                        <Input type="number" mode="currency" class="w-full" v-model="p.costo"
+                            :error-message="errors.costo"></Input>
+                        <Button icon="fa-solid fa-xmark-circle" class="w-full" v-tooltip="`Quitar`" text
+                            severity="danger" @click="removeProveedor(index)" />
                     </div>
                 </div>
                 <div class="flex justify-end mt-4 w-full col-sapn-1 md:col-span-3">
@@ -108,6 +114,25 @@
                     <strong>Fecha de reserva:</strong>
                     <p>{{ new Date(service.created_at).toLocaleDateString('es-CO') }}</p>
                 </div>
+                <div class="text-lg flex w-full justify-between mt-2" v-if="$page.props.auth.user.rol == 'admin'">
+                    <p class="font-bold">
+                        Proveedores
+                    </p>
+                    <p class="rounded-full bg-black text-white px-2">
+                        {{ service.proveedors.length }}
+                    </p>
+                    <!-- {{ service.proveedors }} -->
+                </div>
+                <div v-for="proveedor in service.proveedors" v-if="$page.props.auth.user.rol == 'admin'"
+                    class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <p>
+                        {{ proveedor.proveedor.nombre }}
+                    </p>
+                    <p>
+                        {{ COP.format(proveedor.cost) }}
+                    </p>
+
+                </div>
                 <div class="flex flex-col gap-y-2 mt-2 ">
                     <div class="flex justify-between">
                         <h2 class="text-xl font-bold ">Pagos Realizados </h2>
@@ -143,7 +168,7 @@
                 <div class="flex flex-col items-center gap-2">
                     <h1 class="font-bold text-center">Saldo: {{ COP.format(service.total_price -
                         service.payments.reduce((a, b) => a + b.amount, 0)) }}</h1>
-                    <div class="flex gap-x-2">
+                    <div class="flex gap-x-2" v-if="$page.props.auth.user.rol == 'admin'">
                         <Button @click="setState('COMPLETADA', true)" icon="fa-solid fa-circle-check" text size="large"
                             v-tooltip.top="'Completar Servicio'" class="flex-auto" severity="success" />
                         <Button @click="setState('NO SHOW', true)" icon="fa-solid fa-eye-slash" text size="large"
@@ -253,7 +278,7 @@ const addProveedor = () => {
 }
 
 const removeProveedor = (index) => {
-    if(index == 0) return;
+    if (index == 0) return;
     proveedorsAdd.value.splice(index, 1);
 }
 
@@ -273,7 +298,7 @@ getProveedors()
 getServices()
 
 const buttons = [
-   
+
     {
         label: 'Detalles',
         action: (data) => {
@@ -315,6 +340,7 @@ const buttons = [
     // },
     {
         label: 'Problematica',
+        show: usePage().props.auth.user.rol == 'admin',
         action: (data) => {
             var marcar = data.problematic ? 'Desmarcar' : 'Marcar';
             Swal.fire({
@@ -423,7 +449,7 @@ const loading = ref(false);
 const reservar = (event) => {
     event.preventDefault();
     loading.value = true
-    router.post(route('reservar', {proveedors: proveedorsAdd.value}), values, {
+    router.post(route('reservar', { proveedors: proveedorsAdd.value }), values, {
         onSuccess: () => {
             loading.value = false;
             show.value = false;

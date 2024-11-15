@@ -81,19 +81,18 @@ const getReservas = () => {
     axios.get(route('BookingServices.index')).then(response => {
         reservas.value = response.data.bookingServices;
         reservas.value.forEach((item) => {
-            console.log(item.date, new Date().toISOString().split('T')[0])
-            if (item.date == new Date().toISOString().split('T')[0]) {
-                console.log(item)
+            if (item.date == new Date().toISOString().split('T')[0] && item.status == 'reservado') {
                 dateActivities.value.push(item);
             }
             calendarApp.eventsService.add({
                 title: item.service.title,
-                start: item.date + ' 09:15',
+                start: item.date + ' ' + item.hour.substring(0, 5),
                 description: item.total_price,
-                end: item.date + ' 20:15',
+                end: item.date + ' ' + (parseInt(item.hour[1]) + 5) + item.hour.substring(2, 5),
                 id: item.id
             })
         });
+        console.log(calendarApp.eventsService.getAll());
         if (dateActivities.value.length > 0) {
             todayActivity.value = true;
         }
@@ -155,6 +154,7 @@ getReservas();
                 <Tag label="Adultos" :value="serviceSelected.adults" />
                 <Tag label="Niños" :value="serviceSelected.boys" />
                 <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" />
+                <Tag label="Estado" :value="serviceSelected.status" />
 
             </div>
             <h1 class="text-xl font-bold">Datos del Cliente</h1>

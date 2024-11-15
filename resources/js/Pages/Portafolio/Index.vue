@@ -168,18 +168,20 @@
                                     <label for="" class="text-xs italic text-gray-600">Niños menores de 2 años</label>
                                 </div>
                             </div>
-                            <div class="flex w-full justify-end text-xl font-bold">
-                                <span>Precio Total <strong>{{ USDollar.format(totalCost) }}</strong></span>
+                            <div class="flex w-full justify-between font-bold text-sm">
+                                <p class="w-full"> Precio Total <strong>{{ USDollar.format(totalCost) }}</strong>
+                                </p>
+                                <button type="submit" class="cta flex items-center w-full justify-center">
+                                    <span class="hover-underline-animation"> Siguiente </span>
+                                    <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10"
+                                        viewBox="0 0 46 16">
+                                        <path id="Path_10" data-name="Path 10"
+                                            d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z"
+                                            transform="translate(30)"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <button type="submit" class="cta flex items-center w-full justify-center">
-                                <span class="hover-underline-animation"> Siguiente </span>
-                                <svg id="arrow-horizontal" xmlns="http://www.w3.org/2000/svg" width="30" height="10"
-                                    viewBox="0 0 46 16">
-                                    <path id="Path_10" data-name="Path 10"
-                                        d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z"
-                                        transform="translate(30)"></path>
-                                </svg>
-                            </button>
+
 
                         </form>
                     </div>
@@ -247,6 +249,37 @@
                             click="formStatus = 1" />
                     </div>
                 </form>
+
+                <div class="text-xs w-full text-justify -ml-4 -mt-2">
+                    <strong class="font-semibold text-center w-full flex justify-center">
+                        Contra la pornografía infantil
+                    </strong>
+                    De acuerdo con la Ley 679 del 3 de Agosto de 2001 expedida por El Congreso de la República, con la
+                    cual se
+                    dictan disposiciones para prevenir y contrarrestar la explotación, la pornografía y el turismo
+                    sexual con
+                    menores de edad.
+
+                    De acuerdo con lo establecido la ley, todas las personas deben prevenir, bloquear, combatir y
+                    denunciar la
+                    explotación, alojamiento, uso, publicación, difusión de imágenes, textos, documentos, archivos
+                    audiovisuales,
+                    uso indebido de redes globales de información, o el establecimiento de vínculos telemáticos de
+                    cualquier clase
+                    relacionados con material pornográfico o alusivo a actividades sexuales de menores de edad.
+
+                    En desarrollo de lo dispuesto en el artículo 17 de la Ley 679 de 2001, advertimos al turista que la
+                    explotación
+                    y el abuso sexual de menores de edad en el país son sancionados penal y administrativamente,
+                    conforme a las
+                    leyes vigentes. Así mismo y con el fin de dar cumplimiento a la Resolución 3840 del 24 de diciembre
+                    de 2009 y
+                    según el Artículo 1 de la Ley 1336 del 21 de julio de 2009, AV COLOMBIA, Sandra Gil Pinilla, tiene
+                    una
+                    estructura operativa clara respecto a la prevencion e impedimento de la explotación sexual de niños,
+                    niñas y
+                    adolescentes en la actividad turística.
+                </div>
             </div>
         </div>
     </Modal>
@@ -332,7 +365,7 @@ const handleInput = () => {
     }
     debounceTimer.value = setTimeout(() => {
         getServices();
-    }, 500);
+    }, 30000);
 }
 const getServices = () => {
     axios.get(route('get.services', {

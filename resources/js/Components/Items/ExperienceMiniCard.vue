@@ -2,7 +2,7 @@
     <Link :href="route('show.services', product.slug)"
         class="flex flex-col shadow-slate-400 shadow-lg inset-0 z-10 flex-shrink-0  h-full  rounded-tr-[3rem] rounded-bl-[3rem]  bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] md:scale-90 hover:scale-100">
     <div class="flex flex-col">
-        <img :src="currentImage" :alt="currentImage"
+        <img :src="currentImage" alt="Foto"
             class="h-48 w-full object-cover object-center z-10 rounded-tr-[3rem] rounded-bl-[3rem] " />
         <div class="h-32 py-4 px-2">
             <h1 class=" md:text-lg font-bold capitalize w-full line-clamp-3">
@@ -18,7 +18,7 @@
 
         <div class="flex  w-full justify-end mb-2 px-2">
             <p class=" font-semibold text-gray-800 ">
-                <strong class="text-md font-semibold mx-1">{{ USDollar.format(product.price) }} </strong> <span
+                <strong class="text-md font-semibold mx-1">{{ USDollar.format(product.adults_price) }} </strong> <span
                     class="text-xs">
                     / Adulto
                 </span>
@@ -27,32 +27,6 @@
         </div>
     </div>
     </Link>
-    <!-- 
-
-                </div>
-            </div>
-            zdñlmsdñm -->
-    <!-- <div class="flex justify-between space-x-2 items-start px-2 py-4">
-                <div class="max-h-32 max-w-24 overflow-hidden rounded-lg">
-                </div>
-                <div class="w-full flex flex-col h-full space-y-2">
-                    <div class="flex-auto flex justify-between w-full items-start h-full">
-                        <h3 class="text-lg font-extrabold ">{{ product.title }}</h3>
-                    </div>
-                    
-                    <p class="flex-auto justify-end flex items-center px-4 text-sm">
-                        Desde <strong class="text-lg font-semibold mx-1">{{ USDollar.format(product.price)
-                        }}</strong> <i class="fa-solid fa-angle-right"></i>
-                    </p>
-                </div>
-                
-            </div> -->
-
-    <!-- <div class="mt-1">
-            <Link :href="route('show.services', product.slug)"
-                class="flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 cursor-pointer">Detalles<span
-                    class="sr-only">, {{ product.name }}</span></Link>
-        </div> -->
 </template>
 
 <script setup>
@@ -71,15 +45,13 @@ const USDollar = new Intl.NumberFormat("es-CO", {
 });
 
 const images = ref(props.product.images.map(x => x.filepath))
-const currentImage = ref(images[0])
+const currentImage = ref(props.product.images.map(x => x.filepath)[0])
 const intervalId = ref()
 
 const changeImage = () => {
-    console.log(props.product.title)
-    console.log(images.value);
+
     var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
-    currentImage.value = images.value[nextImageIndex].filepath;
-    console.log(currentImage.value);
+    currentImage.value = images.value[nextImageIndex];
     // console.table({ img: currentImage.value, index: nextImageIndex });
 }
 

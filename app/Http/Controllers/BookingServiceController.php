@@ -16,11 +16,11 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
-        if(request()->expectsJson()) {
-            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment')->get()], 200);
+        if (request()->expectsJson()) {
+            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor')->get()], 200);
         }
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => BookingService::with('service', 'user','payments', 'payments.metohdPayment')->get()
+            'bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor')->get()
         ]);
     }
 
@@ -48,6 +48,7 @@ class BookingServiceController extends Controller
             $validateData['boys_price'] = $service->boys_price;
             $validateData['user_id'] = auth()->user()->id;
             $bookingService = BookingService::create($validateData);
+
             return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $bookingService], 201);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al guardar la reservación'], 500);
@@ -89,10 +90,10 @@ class BookingServiceController extends Controller
     public function getBookingServicesNoPayment()
     {
         // $bookingNoPayment = BookingService::where('payment', 'pendiente')->get();
-        $bookingNoPayment = BookingService::with('payments')->get()->filter(function($booking) {
+        $bookingNoPayment = BookingService::with('payments')->get()->filter(function ($booking) {
             return $booking->payments->count() == 0 || $booking->payments->sum('amount') < $booking->total_price;
         });
-        
+
         return response()->json(['bookingNoPayment' => $bookingNoPayment], 200);
     }
 

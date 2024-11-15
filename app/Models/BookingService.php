@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +20,15 @@ class BookingService extends Model
     protected $casts = [
         'problematic' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('ancient', function (Builder $builder) {
+            if (auth()->user() != null && auth()->user()->rol ==  'hotel') {
+                $builder->where('user_id', auth()->user()->id);
+            }
+        });
+    }
 
     public function service()
     {
@@ -60,6 +70,6 @@ class BookingService extends Model
 
     public function proveedors()
     {
-        return $this->hasMany(Proveedor::class, 'booking_proveedor', 'booking_service_id', 'proveedor_id');
+        return $this->hasMany(BookingProveedor::class, 'booking_service_id');
     }
 }

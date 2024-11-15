@@ -154,6 +154,14 @@ class ServiceController extends Controller
         $validate['boys_tarifa'] = $service->boy_tarifa;
         $booking = BookingService::create($validate);
         // $booking->proveedors()->attach(request('proveedors'));
+        foreach (request('proveedors') as $proveedor) {
+            if ($proveedor['costo'] && $proveedor['proveedor'])
+                $booking->proveedors()->create([
+                    'booking_service_id' => $booking->id,
+                    'proveedor_id' => $proveedor['proveedor'],
+                    'cost' => $proveedor['costo'],
+                ]);
+        }
         if (request('abono'))
             paymentStore(request('abono'), request('method'), $booking);
         storeState($booking, 'reservado');
