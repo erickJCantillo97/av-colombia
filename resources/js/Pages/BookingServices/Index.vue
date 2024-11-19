@@ -266,7 +266,7 @@ const proveedorsAdd = ref([
 const services = ref([]);
 const getServices = () => {
     axios.get(route('get.services')).then(response => {
-        services.value = response.data.services.slice(0, 5);
+        services.value = response.data.services;
     });
 }
 
