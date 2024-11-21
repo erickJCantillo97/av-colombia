@@ -25,7 +25,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 const images = ref([]);
 
 const randomIndex = Math.floor(Math.random() * props.service.images.length - 1);
-const currentImage = ref(props.service.images[0]);
+const currentImage = ref(props.service.images[0].filepath);
 
 
 
