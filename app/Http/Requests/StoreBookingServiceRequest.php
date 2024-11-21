@@ -26,7 +26,7 @@ class StoreBookingServiceRequest extends FormRequest
             'adults' => ['required', 'integer'],
             'boys' => ['nullable', 'integer'],
             'date' => ['required', 'date', 'after_or_equals:today'],
-
+            'channel_id' => ['nullable', 'uuid'],
         ];
     }
 }

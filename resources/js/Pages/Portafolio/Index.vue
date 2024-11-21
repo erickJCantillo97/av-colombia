@@ -477,24 +477,6 @@ const reservar = () => {
 
 getServices();
 
-onMounted(() => {
-    startImageRotation();
-})
-
-const startImageRotation = () => {
-    intervalId.value = setInterval(changeImage, 5000); // Cambia la imagen cada 20 segundos
-}
-
-onUnmounted(() => {
-    stopImageRotation();
-})
-
-const stopImageRotation = () => {
-    if (intervalId.value) {
-        clearInterval(intervalId.value);
-        intervalId.value = null;
-    }
-}
 const parseDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
     return new Date(year, month - 1, day);

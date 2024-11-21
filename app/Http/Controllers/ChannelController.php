@@ -13,7 +13,8 @@ class ChannelController extends Controller
      */
     public function index()
     {
-        //
+        $channels = Channel::get();
+        return response()->json($channels);
     }
 
     /**
@@ -29,7 +30,15 @@ class ChannelController extends Controller
      */
     public function store(StoreChannelRequest $request)
     {
-        //
+        try {
+            $channel = Channel::create($request->validated());
+            // return response()->json($channel, 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al crear el canal',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

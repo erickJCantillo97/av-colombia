@@ -25,6 +25,9 @@
                 <div v-else-if="value == 2">
                     <Index :users />
                 </div>
+                <div v-else-if="value == 4">
+                    <Channels />
+                </div>
 
             </div>
         </div>
@@ -37,6 +40,7 @@ import PaymentMethods from '@/Components/PaymentMethods.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
 import Index from './Users/Index.vue';
+import Channels from './Channels.vue';
 const value = ref(1);
 
 const props = defineProps({
@@ -49,7 +53,7 @@ const props = defineProps({
 const options = [
     { name: 'Métodos de Pago', value: 1 },
     { name: 'Usuarios', value: 2 },
-    { name: 'Plataformas', value: 4 },
+    { name: 'Canales', value: 4 },
     { name: 'Tasas', value: 3 },
 ];
 

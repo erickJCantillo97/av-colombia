@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookingServiceController;
+use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProveedorController;
@@ -55,6 +56,8 @@ Route::middleware([
     Route::put('payments/{payment}/setState', [PaymentController::class, 'setState'])->name('payment.set.state');
     Route::post('services/{lock}/unlock', [ServiceController::class, 'unlock'])->name('services.unlock');
     Route::post('services/setStatus', [ServiceController::class, 'setStatus'])->name('set.states');
+
+    Route::resource('channels', ChannelController::class);
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

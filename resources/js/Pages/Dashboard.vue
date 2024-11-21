@@ -130,12 +130,10 @@ getReservas();
                     </div>
                     <div class="shadow-md rounded-md p-4 text-center ">
                         <h2>Tu Rol es</h2>
-                        <h3 class="text-xl font-bold" v-if="$page.props.auth.user.name != 'Brian'">
-                            Vendedor
+                        <h3 class="text-xl font-bold">
+                            {{ $page.props.auth.user.rol }}
                         </h3>
-                        <h3 class="text-xl font-bold" v-else>
-                            Administrador
-                        </h3>
+
                     </div>
                 </div>
                 <div>

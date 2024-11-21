@@ -26,11 +26,14 @@
                 <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
                     :error-message="errors.hour" />
 
-                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Abono" v-bind="abonoAttrs"
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Saldo" v-bind="abonoAttrs"
                     v-model="abono" :error-message="errors.abono" min="1" type="number" />
                 <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" v-bind="methodAttrs"
                     type="dropdown" option-label="name" option-value="id" :options="methods" v-model="method"
                     label="Medio de Pago" />
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" v-bind="ChannelIdAttrs"
+                    type="dropdown" option-label="name" option-value="id" :options="channels" v-model="channel_id"
+                    label="Canal de Venta" />
                 <div class="">
                     <h1 class="text-xl  font-mono font-semibold"> Precio total: {{ COP.format(totalCost) }}
                     </h1>
@@ -77,6 +80,10 @@
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Hora del Servicio:</strong>
                     <p>{{ service.hour }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Canal de Venta:</strong>
+                    <p>{{ service.channel.name }}</p>
                 </div>
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Cliente:</strong>
@@ -231,6 +238,7 @@ const schema2 = yup.object({
     hour: yup.string().required(),
     abono: yup.number().required(),
     method: yup.string().required(),
+    channel_id: yup.string().required(),
 });
 
 const { values, defineField, errors, meta } = useForm({
@@ -249,6 +257,7 @@ const [cliente_city, cityAttrs] = defineField('cliente_city');
 const [cliente_building, buildingAttrs] = defineField('cliente_building');
 const [hour, hourAttrs] = defineField('hour');
 const [abono, abonoAttrs] = defineField('abono');
+const [channel_id, ChannelIdAttrs] = defineField('channel_id');
 const [method, methodAttrs] = defineField('method');
 
 boys.value = 0;
@@ -283,6 +292,7 @@ const removeProveedor = (index) => {
 }
 
 const proveedors = ref([]);
+const channels = ref([]);
 
 const getProveedors = () => {
     axios.get(route('proveedors.index'))
@@ -293,9 +303,21 @@ const getProveedors = () => {
             console.log(error)
         })
 }
+
+const getChannels = () => {
+    axios.get(route('channels.index'))
+        .then(response => {
+            channels.value = response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
 getProveedors()
 
 getServices()
+
+getChannels()
 
 const buttons = [
 

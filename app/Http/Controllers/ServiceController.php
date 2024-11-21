@@ -139,6 +139,7 @@ class ServiceController extends Controller
             'cliente_phone' => 'required|numeric',
             'cliente_city' => 'required|string',
             'cliente_building' => 'required|string',
+            'channel_id' => ['nullable', 'uuid'],
             'hour' => 'required|date_format:H:i',
             // 'payment_type' => 'nullable|numeric',
             'date' => 'required|date',

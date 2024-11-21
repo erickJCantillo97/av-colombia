@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BookingService;
 use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
+use App\Models\Channel;
 use App\Models\Service;
 use Exception;
 use Inertia\Inertia;
@@ -17,10 +18,10 @@ class BookingServiceController extends Controller
     public function index()
     {
         if (request()->expectsJson()) {
-            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor')->get()], 200);
+            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel')->get()], 200);
         }
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor')->get()
+            'bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel')->get()
         ]);
     }
 
@@ -40,12 +41,14 @@ class BookingServiceController extends Controller
         $validateData = $request->validated();
         try {
             $service = Service::find($validateData['service_id']);
+
             $validateData['boys'] = $validateData['boys'] ?? 0;
             $validateData['service'] = $service->title;
             $validateData['adults_price'] = $service->adult_price;
             $validateData['adult_tarifa'] = $service->adult_tarifa;
             $validateData['boys_tarifa']  = $service->boys_tarifa;
             $validateData['boys_price'] = $service->boys_price;
+            $validateData['channel_id'] = $validateData['channel_id'] ?? Channel::where('name', 'Pagina Web')->first()->id;
             $validateData['user_id'] = auth()->user()->id;
             $bookingService = BookingService::create($validateData);
 

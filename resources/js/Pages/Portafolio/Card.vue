@@ -25,36 +25,11 @@ import { onMounted, onUnmounted, ref } from 'vue';
 const images = ref([]);
 
 const randomIndex = Math.floor(Math.random() * props.service.images.length - 1);
-const currentImage = ref(images.value[randomIndex]);
-
-const intervalId = ref(null);
-
-const changeImage = () => {
-    var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
-    // console.error(nextImageIndex);
-    currentImage.value = images.value[nextImageIndex];
-}
+const currentImage = ref(props.service.images[0]);
 
 
-onMounted(() => {
-    images.value = props.service.images.map(image => image.filepath);
-    startImageRotation();
-})
 
-const startImageRotation = () => {
-    intervalId.value = setInterval(changeImage, 5000); // Cambia la imagen cada 20 segundos
-}
 
-onUnmounted(() => {
-    stopImageRotation();
-})
-
-const stopImageRotation = () => {
-    if (intervalId.value) {
-        clearInterval(intervalId.value);
-        intervalId.value = null;
-    }
-}
 
 const USDollar = new Intl.NumberFormat("es-CO", {
     style: "currency",

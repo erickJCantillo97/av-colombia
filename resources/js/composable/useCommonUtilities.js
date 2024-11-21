@@ -116,7 +116,7 @@ export function useCommonUtilities() {
         const formattedValue = new Intl.NumberFormat("es-CO", {
             style: "currency",
             currency: currency ?? "COP",
-            maximumFractionDigits: 2,
+            maximumFractionDigits: 0,
         }).format(value);
         return formattedValue; // Elimina los espacios en blanco
     };
@@ -326,7 +326,7 @@ export function useCommonUtilities() {
             : Math.round(diffMiliseconds / milisecondsPerDay);
     };
 
-  
+
     /**
      * The `renderIcon` function takes an icon parameter and returns the corresponding HTML icon
      * element.
