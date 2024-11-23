@@ -153,12 +153,20 @@ class ServiceController extends Controller
             'percent_descuento' => 'nullable|numeric',
             'hour' => 'required|date_format:H:i',
             // 'payment_type' => 'nullable|numeric',
+            'mascota' =>  'nullable|numeric',
+            'persona_adicional' =>  'nullable|numeric',
+            'cobre_transaccion' =>  'nullable|numeric',
+            'cobro_extra_cliente' =>  'nullable|numeric',
+            'alimentacion' =>  'nullable|numeric',
+            'reserva' =>  'nullable|numeric',
+            'saldo' =>  'nullable|numeric',
+            'percent_descuento' =>  'nullable|numeric',
             'date' => 'required|date',
         ]);
         $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
         $service = Service::find($validate['service_id']);
         $validate['boys'] = $validate['boys'] ?? 0;
-        $validate['user_id'] = auth()->user()->id;
+        $validate['user_id'] = request('user_id') ?? auth()->user()->id;
         $validate['service'] = $service->title;
         $validate['adults_price'] = $service->adults_price;
         $validate['adult_tarifa'] = $service->adult_tarifa;

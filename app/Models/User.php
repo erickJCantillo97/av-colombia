@@ -48,6 +48,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'url',
     ];
 
     /**
@@ -61,5 +62,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return 'https://vendedores-site.netlify.app/' . $this->id;
     }
 }

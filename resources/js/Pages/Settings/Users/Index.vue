@@ -60,6 +60,10 @@ const columns = [
         type: 'datetime',
         filter: true,
     },
+    {
+        header: 'URL Portafolio',
+        field: 'url',
+    },
 
 ];
 
