@@ -31,6 +31,7 @@ class ChannelController extends Controller
     public function store(StoreChannelRequest $request)
     {
         try {
+
             $channel = Channel::create($request->validated());
             // return response()->json($channel, 201);
         } catch (\Exception $e) {
@@ -62,7 +63,15 @@ class ChannelController extends Controller
      */
     public function update(UpdateChannelRequest $request, Channel $channel)
     {
-        //
+        try {
+            $channel->update($request->validated());
+            // return response()->json($channel, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el canal',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

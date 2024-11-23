@@ -23,6 +23,8 @@ class StoreChannelRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'abreviacion' => 'nullable',
+            'percent' => 'required'
         ];
     }
 }

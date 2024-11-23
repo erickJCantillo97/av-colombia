@@ -111,5 +111,13 @@ class Service extends Model
         return $this->morphMany(State::class, 'statable');
     }
 
-    
+    public function proveedors()
+    {
+        return $this->belongsToMany(Proveedor::class, 'service_proveedor', 'service_id', 'proveedor_id')->withPivot('value');
+    }
+
+    public function CustomProductUsers()
+    {
+        return $this->hasMany(CustomProductUser::class);
+    }
 }

@@ -56,7 +56,7 @@ Route::middleware([
     Route::put('payments/{payment}/setState', [PaymentController::class, 'setState'])->name('payment.set.state');
     Route::post('services/{lock}/unlock', [ServiceController::class, 'unlock'])->name('services.unlock');
     Route::post('services/setStatus', [ServiceController::class, 'setStatus'])->name('set.states');
-
+    Route::get('services/proveedors/{service}', [ServiceController::class, 'getProveedors'])->name('get.proveedors');
     Route::resource('channels', ChannelController::class);
 });
 

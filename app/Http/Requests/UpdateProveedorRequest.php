@@ -11,7 +11,7 @@ class UpdateProveedorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateProveedorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nombre' => 'required',
+            'direccion' => 'nullable|string',
+            'telefono' => 'nullable',
         ];
     }
 }

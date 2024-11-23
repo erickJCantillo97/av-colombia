@@ -6,9 +6,10 @@
             </Datatable>
         </div>
         <Modal v-model="show" title="Añadir Reserva" width="70vw">
-            <form @submit.prevent="reservar" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center" novalidate>
+            <form @submit.prevent="reservar" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center" novalidate>
                 <Input type="dropdown" v-model="service_id" :error-message="errors.service_id" label="Servicio"
-                    option-label="title" option-value="id" :options="services" v-bind="serviceIdAttrs"></Input>
+                    option-label="title" option-value="id" @value-change="getProveedors" :options="services"
+                    v-bind="serviceIdAttrs"></Input>
 
                 <Input label="Fecha de Reserva" :disabled-dates="disabledDates" v-model="date" required
                     :min-date="new Date()" class="w-full" type="date" :error-message="errorDate" v-bind="dateAttrs" />
@@ -23,6 +24,23 @@
                     :error-message="errors.city" class="w-full" />
                 <Input label="Edificio u Hotel" class="w-full" v-bind="buildingAttrs" v-model="cliente_building"
                     :error-message="errors.cliente_building" />
+                <Input label="Mascota" class="w-full" v-bind="mascotaAttrs" v-model="mascota"
+                    :error-message="errors.mascota" />
+                <Input label="Persona Adicional" class="w-full" v-bind="personaAdicionalAttrs"
+                    v-model="persona_adicional" :error-message="errors.persona_adicional" />
+
+                <Input label="Cobro por transacción" type="number" class="w-full" v-bind="cobreTransaccionAttrs"
+                    v-model="cobre_transaccion" :error-message="errors.cobre_transaccion" />
+
+                <Input label="Extra por Daños cobrados al cliente" type="number" class="w-full"
+                    v-bind="cobroExtraClienteAttrs" v-model="cobro_extra_cliente"
+                    :error-message="errors.cobro_extra_cliente" />
+
+                <Input label="Alimentación" type="number" class="w-full" v-bind="alimentacionAttrs"
+                    v-model="alimentacion" :error-message="errors.alimentacion" />
+
+                <Input label="Reserva" type="number" class="w-full" v-bind="reservaAttrs" v-model="reserva" />
+
                 <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
                     :error-message="errors.hour" />
 
@@ -34,11 +52,14 @@
                 <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" v-bind="ChannelIdAttrs"
                     type="dropdown" option-label="name" option-value="id" :options="channels" v-model="channel_id"
                     label="Canal de Venta" />
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Descuento"
+                    v-bind="percentDescuentoAttrs" v-model="percent_descuento" :error-message="errors.percent_descuento"
+                    min="0" max="100" type="number" suffix=" %" />
                 <div class="">
                     <h1 class="text-xl  font-mono font-semibold"> Precio total: {{ COP.format(totalCost) }}
                     </h1>
                 </div>
-                <div class="mt-4 w-full col-sapn-1 md:col-span-3 border rounded-lg"
+                <div class="mt-4 w-full col-sapn-1 md:col-span-4 border rounded-lg"
                     v-if="$page.props.auth.user.rol == 'admin'">
                     <h1
                         class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2">
@@ -50,8 +71,9 @@
                         <label for="">.</label>
                     </div>
                     <div v-for="(p, index) in proveedorsAdd" class="flex justify-between gap-x-4 px-2">
-                        <Input type="dropdown" v-model="p.proveedor" :error-message="errors.proveedor"
-                            option-label="nombre" option-value="id" class="w-full" :options="proveedors"></Input>
+                        <Input type="dropdown" v-model="p.proveedor" @value-change="selectedProveedor(p)"
+                            :error-message="errors.proveedor" option-label="nombre" option-value="id" class="w-full"
+                            :options="proveedors"></Input>
                         <Input type="number" mode="currency" class="w-full" v-model="p.costo"
                             :error-message="errors.costo"></Input>
                         <Button icon="fa-solid fa-xmark-circle" class="w-full" v-tooltip="`Quitar`" text
@@ -108,6 +130,10 @@
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Niños:</strong>
                     <p>{{ service.boys }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Mascota:</strong>
+                    <p>{{ service.mascota }}</p>
                 </div>
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Valor:</strong>
@@ -197,7 +223,7 @@ import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Toast from 'primevue/toast';
 import * as yup from 'yup';
 import { alerts } from '@/composable/toasts';
@@ -239,6 +265,17 @@ const schema2 = yup.object({
     abono: yup.number().required(),
     method: yup.string().required(),
     channel_id: yup.string().required(),
+    mascota: yup.string(),
+    persona_adicional: yup.string(),
+    cobre_transaccion: yup.number(),
+    cobro_extra_cliente: yup.number(),
+    alimentacion: yup.number(),
+    reserva: yup.number().required(),
+    saldo: yup.number().required(),
+    percent_descuento: yup.number(),
+
+
+
 });
 
 const { values, defineField, errors, meta } = useForm({
@@ -259,6 +296,15 @@ const [hour, hourAttrs] = defineField('hour');
 const [abono, abonoAttrs] = defineField('abono');
 const [channel_id, ChannelIdAttrs] = defineField('channel_id');
 const [method, methodAttrs] = defineField('method');
+const [mascota, mascotaAttrs] = defineField('mascota');
+const [persona_adicional, personaAdicionalAttrs] = defineField('persona_adicional');
+const [cobre_transaccion, cobreTransaccionAttrs] = defineField('cobre_transaccion');
+const [cobro_extra_cliente, cobroExtraClienteAttrs] = defineField('cobro_extra_cliente');
+const [alimentacion, alimentacionAttrs] = defineField('alimentacion');
+const [reserva, reservaAttrs] = defineField('reserva');
+const [percent_descuento, percentDescuentoAttrs] = defineField('percent_descuento');
+
+
 
 boys.value = 0;
 adults.value = 1;
@@ -295,13 +341,19 @@ const proveedors = ref([]);
 const channels = ref([]);
 
 const getProveedors = () => {
-    axios.get(route('proveedors.index'))
+    axios.get(route('get.proveedors', service_id.value))
         .then(response => {
             proveedors.value = response.data.proveedors
         })
         .catch(error => {
             console.log(error)
         })
+}
+
+const selectedProveedor = (proveedor) => {
+    // console.log(proveedor, proveedors.value.find(p => p.id == proveedor.proveedor));
+
+    proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).pivot.value * adults.value;
 }
 
 const getChannels = () => {
@@ -313,7 +365,7 @@ const getChannels = () => {
             console.log(error)
         })
 }
-getProveedors()
+
 
 getServices()
 
@@ -463,7 +515,10 @@ const columns = [
 const totalCost = computed(() => {
     let serv = services.value.find(service => service.id == service_id.value);
     if (!serv) return 0;
-    return serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value;
+    let total = serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value;
+    let descuento = percent_descuento.value ? percent_descuento.value / 100 : 0;
+    return total - (descuento * total);
+    // return serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value - (percent_descuento.value * serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value);
 })
 
 const loading = ref(false);
@@ -477,6 +532,10 @@ const reservar = (event) => {
             show.value = false;
             toast('success', 'Reserva creada con exito');
         },
+        onError: () => {
+            loading.value = false;
+            toast('error', 'Error al crear la reserva');
+        }
     })
 }
 
@@ -541,5 +600,13 @@ const setState = (state, terminated) => {
         }
     });
 }
+
+watch(adults, (newAdults) => {
+    for (var p of proveedorsAdd.value) {
+        if (p.proveedor) {
+            p.costo = proveedors.value.find(prov => prov.id == p.proveedor).pivot.value * newAdults;
+        }
+    }
+})
 
 </script>

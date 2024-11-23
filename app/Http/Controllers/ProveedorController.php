@@ -14,8 +14,8 @@ class ProveedorController extends Controller
     public function index()
     {
 
-        $proveedors = Proveedor::all();
-        if(request()->expectsJson()){
+        $proveedors = Proveedor::with('services')->get();
+        if (request()->expectsJson()) {
             return response()->json([
                 'proveedors' => $proveedors
             ]);
@@ -36,12 +36,12 @@ class ProveedorController extends Controller
      */
     public function store(StoreProveedorRequest $request)
     {
-        try {
-            Proveedor::create($request->validated());
-            return back()->with('Proveedor Creado');
-        } catch (\Throwable $th) {
-            return back()->withErrors(['message' => 'Error Al crear el proveedor']);
+
+        $proveedor = Proveedor::create($request->validated());
+        foreach (request('services') as $service) {
+            $proveedor->services()->attach($service['service_id'], ['value' => $service['value']]);
         }
+        return back()->with('Proveedor Creado');
     }
 
     /**
@@ -65,7 +65,16 @@ class ProveedorController extends Controller
      */
     public function update(UpdateProveedorRequest $request, Proveedor $proveedor)
     {
-        //
+        try {
+            $proveedor->update($request->validated());
+            $proveedor->services()->detach();
+            foreach (request('services') as $service) {
+                $proveedor->services()->attach($service['service_id'], ['value' => $service['value']]);
+            }
+            return back()->with('Proveedor Actualizado');
+        } catch (\Throwable $th) {
+            return back()->withErrors(['message' => 'Error Al actualizar el proveedor']);
+        }
     }
 
     /**
@@ -73,6 +82,11 @@ class ProveedorController extends Controller
      */
     public function destroy(Proveedor $proveedor)
     {
-        //
+        try {
+            $proveedor->delete();
+            return back()->with('Proveedor Eliminado');
+        } catch (\Throwable $th) {
+            return back()->withErrors(['message' => 'Error Al eliminar el proveedor']);
+        }
     }
 }

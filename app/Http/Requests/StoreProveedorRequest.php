@@ -24,7 +24,7 @@ class StoreProveedorRequest extends FormRequest
         return [
             'nombre' => 'required',
             'direccion' => 'nullable|string',
-            'telefono' => 'nullable'
+            'telefono' => 'nullable',
         ];
     }
 }

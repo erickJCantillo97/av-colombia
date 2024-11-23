@@ -4,7 +4,7 @@
         </Datatable>
     </div>
 
-    <Modal v-model:visible="visible">
+    <Modal v-model:visible="visible" :close-on-escape="true">
         <template #title>
             <span class="text-xl font-bold white-space-nowrap">
                 Agregar Canal</span>
@@ -14,6 +14,9 @@
         </template>
         <div class="space-y-3">
             <Input label="Nombre del Canal" v-model="form.name" />
+            <Input label="Iniciales" v-model="form.abreviacion" />
+            <Input type="number" label="Porcentaje" v-model="form.percent" suffix=" %" min-fraction-digits="2"
+                max-fraction-digits="2" />
 
         </div>
         <template #footer>
@@ -47,6 +50,19 @@ const columns = [
         filter: true,
     },
     {
+        header: 'iniciales ',
+        field: 'abreviacion',
+        filter: true,
+    },
+    {
+        header: 'Porcentaje',
+        field: 'percent',
+        filter: true,
+        format: (value) => {
+            return value + '%'
+        }
+    },
+    {
         header: 'Creación',
         field: 'created_at',
         type: 'datetime',
@@ -63,7 +79,10 @@ const editor = ref(false)
 
 const form = useForm({
     name: '',
+    abreviacion: '',
+    percent: '',
 });
+
 
 const visible = ref(false)
 
@@ -82,9 +101,10 @@ const buttons = [
     {
         action: (data) => {
             visible.value = true
-            editor.value = true
+            editor.value = data.id
             form.name = data.name
-            form.email = data.email
+            form.abreviacion = data.abreviacion
+            form.percent = data.percent
 
         },
         severity: 'secondary',
@@ -123,11 +143,20 @@ const buttons = [
 
 const submit = () => {
     if (editor.value) {
-        router.put(route('channels.update', form.id), form)
+        router.put(route('channels.update', editor.value), form, {
+            onSuccess: () => {
+                visible.value = false
+                getChannels()
+                editor.value = false
+            }
+        })
+
     } else {
         router.post(route('channels.store'), form, {
             onSuccess: () => {
                 visible.value = false
+                getChannels()
+                editor.value = false
             }
         })
     }

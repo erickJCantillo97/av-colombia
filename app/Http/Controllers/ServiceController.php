@@ -9,6 +9,7 @@ use App\Models\BookingService;
 use App\Models\Feature;
 use App\Models\Included;
 use App\Models\Lock;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->expectsJson()) {
             $search = '%' . $request->search . '%';
             return response()->json([
@@ -29,7 +31,8 @@ class ServiceController extends Controller
                     'title_en',
                     'description',
                     'description_en'
-                ], 'LIKE', $search)->with('images', 'features')->latest()->get()
+                ], 'LIKE', $search)
+                    ->with('images', 'features')->latest()->get()
             ]);
         }
         return Inertia::render('Services/Index', [
@@ -140,6 +143,14 @@ class ServiceController extends Controller
             'cliente_city' => 'required|string',
             'cliente_building' => 'required|string',
             'channel_id' => ['nullable', 'uuid'],
+            'mascota' => 'nullable|numeric',
+            'persona_adicional' => 'nullable|numeric',
+            'cobre_transaccion' => 'nullable|numeric',
+            'cobro_extra_cliente' => 'nullable|numeric',
+            'alimentacion' => 'nullable|numeric',
+            'reserva' => 'nullable|numeric',
+            'saldo' => 'nullable|numeric',
+            'percent_descuento' => 'nullable|numeric',
             'hour' => 'required|date_format:H:i',
             // 'payment_type' => 'nullable|numeric',
             'date' => 'required|date',
@@ -193,5 +204,13 @@ class ServiceController extends Controller
         // dd($service);
         storeState($service, request('state'), request('terminated'));
         return back()->with('message', 'Estado actualizado');
+    }
+
+    public function getProveedors($service)
+    {
+        $service = Service::find($service);
+        return response()->json([
+            'proveedors' => $service->proveedors
+        ]);
     }
 }
