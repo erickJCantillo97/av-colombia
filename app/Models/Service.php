@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,7 +29,10 @@ class Service extends Model
         'description_en',
         'custom_price',
         'includes',
-        'notIncludes'
+        'notIncludes',
+        'type',
+        'city',
+        'portada'
     ];
 
     protected $appends = ['adult_tarifa', 'boy_tarifa', 'is_locked'];
@@ -119,5 +123,13 @@ class Service extends Model
     public function CustomProductUsers()
     {
         return $this->hasMany(CustomProductUser::class);
+    }
+
+    protected function portada(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
+            set: fn($value) => $value,
+        );
     }
 }

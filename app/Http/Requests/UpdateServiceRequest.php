@@ -34,6 +34,8 @@ class UpdateServiceRequest extends FormRequest
             'days.*' => 'required|numeric',
             'includes' => 'nullable|string',
             'notIncludes' => 'nullable|string',
+            'type' => 'required|string',
+            'city' => 'required|string',
         ];
     }
 }

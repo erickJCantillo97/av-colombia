@@ -6,58 +6,65 @@
             </Datatable>
         </div>
         <Modal v-model="show" title="Añadir Reserva" width="70vw">
-            <form @submit.prevent="reservar" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center" novalidate>
-                <Input type="dropdown" v-model="service_id" :error-message="errors.service_id" label="Servicio"
-                    option-label="title" option-value="id" @value-change="getProveedors" :options="services"
-                    v-bind="serviceIdAttrs"></Input>
+            <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center" novalidate>
+                <Input type="dropdown" v-model="form.service_id" :error-message="form.errors.service_id"
+                    label="Servicio" option-label="title" option-value="id" @value-change="getProveedors"
+                    :options="services"></Input>
 
-                <Input label="Fecha de Reserva" :disabled-dates="disabledDates" v-model="date" required
-                    :min-date="new Date()" class="w-full" type="date" :error-message="errorDate" v-bind="dateAttrs" />
+                <Input label="Fecha de Reserva" :enableTimePicker="true" :disabled-dates="disabledDates"
+                    v-model="form.date" required :min-date="new Date()" class="w-full" type="date" />
 
-                <Input label="Pasajeros" type="number" v-model="adults"></Input>
-                <Input label="Niños" type="number" v-model="boys"></Input>
-                <Input label="Nombre del Pasajero" v-bind="nameAttrs" v-model="cliente_name"
-                    :error-message="errors.cliente_name" class="w-full" />
-                <Input label="Telefono" v-model="cliente_phone" v-bind="phoneAttrs"
-                    :error-message="errors.cliente_phone" class="w-full" type="number" />
-                <Input label="Ciudad de donde Proviene" v-bind="cityAttrs" v-model="cliente_city"
-                    :error-message="errors.city" class="w-full" />
-                <Input label="Edificio u Hotel" class="w-full" v-bind="buildingAttrs" v-model="cliente_building"
-                    :error-message="errors.cliente_building" />
-                <Input label="Mascota" class="w-full" v-bind="mascotaAttrs" v-model="mascota"
-                    :error-message="errors.mascota" />
-                <Input label="Persona Adicional" class="w-full" v-bind="personaAdicionalAttrs"
-                    v-model="persona_adicional" :error-message="errors.persona_adicional" />
+                <Input label="Valor Total" type="number" mode="currency" v-model="form.total"></Input>
+                <Input label="Pasajeros" type="number" v-model="form.adults"></Input>
+                <Input label="Niños" type="number" v-model="form.boys"></Input>
+                <Input label="Nombre del Pasajero" v-model="form.cliente_name" :error-message="form.errors.cliente_name"
+                    class="w-full" />
+                <Input label="Telefono" v-model="form.cliente_phone" :error-message="form.errors.cliente_phone"
+                    class="w-full" type="number" />
+                <Input label="Ciudad de donde Proviene" v-model="form.cliente_city" :error-message="form.errors.city"
+                    class="w-full" />
+                <Input label="Edificio u Hotel" class="w-full" v-model="form.cliente_building"
+                    :error-message="form.errors.cliente_building" />
+                <!-- <Input label="Mascota" class="w-full" v-model="form.mascota" :error-message="form.errors.mascota" /> -->
+                <!-- <Input label="Persona Adicional" class="w-full" v-model="form.persona_adicional"
+                    :error-message="form.errors.persona_adicional" />
 
-                <Input label="Cobro por transacción" type="number" class="w-full" v-bind="cobreTransaccionAttrs"
-                    v-model="cobre_transaccion" :error-message="errors.cobre_transaccion" />
+                <Input label="Cobro por transacción" type="number" class="w-full" v-model="form.cobre_transaccion"
+                    :error-message="form.errors.cobre_transaccion" /> -->
 
-                <Input label="Extra por Daños cobrados al cliente" type="number" class="w-full"
-                    v-bind="cobroExtraClienteAttrs" v-model="cobro_extra_cliente"
-                    :error-message="errors.cobro_extra_cliente" />
+                <!-- <Input label="Extra por Daños cobrados al cliente" type="number" class="w-full"
+                    v-model="form.cobro_extra_cliente" :error-message="form.errors.cobro_extra_cliente" /> -->
 
-                <Input label="Alimentación" type="number" class="w-full" v-bind="alimentacionAttrs"
-                    v-model="alimentacion" :error-message="errors.alimentacion" />
-
-                <Input label="Reserva" type="number" class="w-full" v-bind="reservaAttrs" v-model="reserva" />
-
-                <Input type="time" label="Hora de Actividad" class="w-full" v-bind="hourAttrs" v-model="hour"
-                    :error-message="errors.hour" />
-
-                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Saldo" v-bind="abonoAttrs"
-                    v-model="abono" :error-message="errors.abono" min="1" type="number" />
-                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" v-bind="methodAttrs"
-                    type="dropdown" option-label="name" option-value="id" :options="methods" v-model="method"
+                <!-- <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Saldo" v-model="form.abono"
+                    :error-message="form.errors.abono" min="1" type="number" /> -->
+                {{ form.method }}
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" type="dropdown"
+                    option-label="name" option-value="id" :options="methods" v-model="form.method_id"
                     label="Medio de Pago" />
-                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" v-bind="ChannelIdAttrs"
-                    type="dropdown" option-label="name" option-value="id" :options="channels" v-model="channel_id"
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" type="dropdown"
+                    option-label="name" option-value="id" :options="channels" v-model="form.channel_id"
                     label="Canal de Venta" />
                 <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Descuento"
-                    v-bind="percentDescuentoAttrs" v-model="percent_descuento" :error-message="errors.percent_descuento"
-                    min="0" max="100" type="number" suffix=" %" />
-                <div class="">
-                    <h1 class="text-xl  font-mono font-semibold"> Precio total: {{ COP.format(totalCost) }}
-                    </h1>
+                    v-model="form.percent_descuento" :error-message="form.errors.percent_descuento" min="0" max="100"
+                    type="number" suffix=" %" />
+                <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full col-span-1 md:col-span-4"
+                    :rows-textarea="2" label="Observaciones" v-model="form.observations"
+                    :error-message="form.errors.observations" type="textarea" />
+                <div class="w-full col-span-1 md:col-span-4 flex justify-between gap-x-2 items-center">
+                    <div class="w-full flex flex-col justify-center items-center p-2 shadow-lg border">
+                        <p class="text-lg  font-mono font-semibold"> {{ COP.format(totalPax) }}
+                        </p>
+                        <p class="italic text-md">
+                            Valor Pasajero
+                        </p>
+                    </div>
+                    <div class="w-full flex flex-col justify-center items-center p-2 shadow-lg border">
+                        <p class="text-lg  font-mono font-semibold"> {{ COP.format(valorReal) }}
+                        </p>
+                        <p class="italic text-md">
+                            Valor Real
+                        </p>
+                    </div>
                 </div>
                 <div class="mt-4 w-full col-sapn-1 md:col-span-4 border rounded-lg"
                     v-if="$page.props.auth.user.rol == 'admin'">
@@ -72,19 +79,20 @@
                     </div>
                     <div v-for="(p, index) in proveedorsAdd" class="flex justify-between gap-x-4 px-2">
                         <Input type="dropdown" v-model="p.proveedor" @value-change="selectedProveedor(p)"
-                            :error-message="errors.proveedor" option-label="nombre" option-value="id" class="w-full"
-                            :options="proveedors"></Input>
-                        <Input type="number" mode="currency" class="w-full" v-model="p.costo"
-                            :error-message="errors.costo"></Input>
+                            option-label="nombre" option-value="id" class="w-full" :options="proveedors"></Input>
+                        <Input type="number" mode="currency" class="w-full" v-model="p.costo"></Input>
                         <Button icon="fa-solid fa-xmark-circle" class="w-full" v-tooltip="`Quitar`" text
                             severity="danger" @click="removeProveedor(index)" />
                     </div>
                 </div>
-                <div class="flex justify-end mt-4 w-full col-sapn-1 md:col-span-3">
-                    <Button type="submit" severity="success" label="Guardar" :loading />
-                </div>
-            </form>
 
+            </form>
+            <template #footer>
+                <div class="flex justify-end gap-x-2 mt-4 w-full">
+                    <Button @click="show = false" severity="danger" label="Cancelar" :loading />
+                    <Button type="submit" severity="success" label="Guardar" :loading @click="reservar" />
+                </div>
+            </template>
         </Modal>
         <Toast></Toast>
         <Drawer v-model:visible="info" pt:root:class="!bg-blue-100" header="Detalles de la actividad" position="right">
@@ -136,8 +144,12 @@
                     <p>{{ service.mascota }}</p>
                 </div>
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-                    <strong>Valor:</strong>
-                    <p>{{ COP.format(service.total_price) }}</p>
+                    <strong>Total:</strong>
+                    <p>{{ COP.format(service.total) }}</p>
+                </div>
+                <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Total Real:</strong>
+                    <p>{{ COP.format(service.total_real) }}</p>
                 </div>
                 <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Vendedor:</strong>
@@ -222,12 +234,10 @@ import Datatable from '@/Components/Customs/Datatable.vue';
 import Input from '@/Components/Customs/Input.vue';
 import Modal from '@/Components/Customs/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import Toast from 'primevue/toast';
-import * as yup from 'yup';
 import { alerts } from '@/composable/toasts';
-import { useForm } from 'vee-validate';
 import Swal from 'sweetalert2';
 
 const props = defineProps({
@@ -244,6 +254,7 @@ const COP = new Intl.NumberFormat("es-CO", {
 const show = ref(false);
 const add = {
     action: () => {
+        form.reset();
         show.value = true;
     },
 }
@@ -251,63 +262,33 @@ const methods = ref([]);
 
 // #region Validates
 
-const schema2 = yup.object({
-    service_id: yup.string().required(),
-    date: yup.date().required(),
-    adults: yup.number().required(),
-    date: yup.date().required(),
-    adults: yup.number().required(),
-    cliente_name: yup.string().required(),
-    cliente_phone: yup.string().required(),
-    cliente_city: yup.string().required(),
-    cliente_building: yup.string().required(),
-    hour: yup.string().required(),
-    abono: yup.number().required(),
-    method: yup.string().required(),
-    channel_id: yup.string().required(),
-    mascota: yup.string(),
-    persona_adicional: yup.string(),
-    cobre_transaccion: yup.number(),
-    cobro_extra_cliente: yup.number(),
-    alimentacion: yup.number(),
-    reserva: yup.number().required(),
-    saldo: yup.number().required(),
-    percent_descuento: yup.number(),
 
+const form = useForm({
+    service_id: null,
+    date: '',
+    adults: 1,
+    boys: 0,
+    cliente_name: '',
+    cliente_phone: '',
+    cliente_city: '',
+    cliente_building: '',
+    // hour: '',
+    mascota: 0,
+    persona_adicional: 0,
+    cobre_transaccion: 0,
+    cobro_extra_cliente: 0,
+    reserva: 0,
+    abono: 0,
+    method_id: '',
+    channel_id: '',
+    percent_descuento: 0,
+    proveedors: [],
+    total: 0,
+    total_real: 0,
+    percent_channel: 0,
+    observations: ''
+})
 
-
-});
-
-const { values, defineField, errors, meta } = useForm({
-    validationSchema: schema2,
-});
-// #endregion
-
-// #region Fields
-const [service_id, serviceIdAttrs] = defineField('service_id');
-const [date, dateAttrs] = defineField('date');
-const [boys, boysAttrs] = defineField('boys');
-const [adults, adultsAttrs] = defineField('adults');
-const [cliente_name, nameAttrs] = defineField('cliente_name');
-const [cliente_phone, phoneAttrs] = defineField('cliente_phone');
-const [cliente_city, cityAttrs] = defineField('cliente_city');
-const [cliente_building, buildingAttrs] = defineField('cliente_building');
-const [hour, hourAttrs] = defineField('hour');
-const [abono, abonoAttrs] = defineField('abono');
-const [channel_id, ChannelIdAttrs] = defineField('channel_id');
-const [method, methodAttrs] = defineField('method');
-const [mascota, mascotaAttrs] = defineField('mascota');
-const [persona_adicional, personaAdicionalAttrs] = defineField('persona_adicional');
-const [cobre_transaccion, cobreTransaccionAttrs] = defineField('cobre_transaccion');
-const [cobro_extra_cliente, cobroExtraClienteAttrs] = defineField('cobro_extra_cliente');
-const [alimentacion, alimentacionAttrs] = defineField('alimentacion');
-const [reserva, reservaAttrs] = defineField('reserva');
-const [percent_descuento, percentDescuentoAttrs] = defineField('percent_descuento');
-
-
-
-boys.value = 0;
-adults.value = 1;
 
 const proveedorsAdd = ref([
     {
@@ -341,7 +322,7 @@ const proveedors = ref([]);
 const channels = ref([]);
 
 const getProveedors = () => {
-    axios.get(route('get.proveedors', service_id.value))
+    axios.get(route('get.proveedors', form.service_id))
         .then(response => {
             proveedors.value = response.data.proveedors
         })
@@ -353,7 +334,7 @@ const getProveedors = () => {
 const selectedProveedor = (proveedor) => {
     // console.log(proveedor, proveedors.value.find(p => p.id == proveedor.proveedor));
 
-    proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).pivot.value * adults.value;
+    proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).pivot.value * form.adults;
 }
 
 const getChannels = () => {
@@ -386,15 +367,29 @@ const buttons = [
     {
         label: 'Editar',
         action: (data) => {
-            date.value = data.date;
-            service_id.value = data.service_id;
-            adults.value = data.adults
-            boys.value = data.boys;
-            cliente_name.value = data.cliente_name;
-            cliente_phone.value = data.cliente_phone;
-            cliente_city.value = data.cliente_city;
-            cliente_building.value = data.cliente_building;
-            hour.value = data.hour;
+            // form.date = data.date + ',' + data.hour;
+            form.service_id = data.service_id;
+            form.cliente_name = data.cliente_name;
+            form.cliente_phone = data.cliente_phone;
+            form.cliente_city = data.cliente_city;
+            form.cliente_building = data.cliente_building;
+            form.adults = data.adults;
+            form.total = data.total
+            form.method_id = data.method_id;
+            form.channel_id = data.channel_id;
+            form.percent_descuento = data.percent_descuento;
+            form.proveedors = data.proveedors;
+            proveedorsAdd.value = data.proveedors;
+            form.observations = data.observations;
+
+
+            // adults.value = data.adults
+            // boys.value = data.boys;
+            // cliente_name.value = data.cliente_name;
+            // cliente_phone.value = data.cliente_phone;
+            // cliente_city.value = data.cliente_city;
+            // cliente_building.value = data.cliente_building;
+            // hour.value = data.hour;
             service.value = data;
             show.value = true;
         },
@@ -512,21 +507,31 @@ const columns = [
 
 ]
 
-const totalCost = computed(() => {
-    let serv = services.value.find(service => service.id == service_id.value);
-    if (!serv) return 0;
-    let total = serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value;
-    let descuento = percent_descuento.value ? percent_descuento.value / 100 : 0;
-    return total - (descuento * total);
+const totalPax = computed(() => {
+    // let serv = services.value.find(service => service.id == form.service_id);
+    // if (!serv) return 0;
+    return form.total / form.adults;
+    // let total = serv.adult_tarifa * form.adults + serv.boy_tarifa * form.boys;
+    // let descuento = form.percent_descuento ? form.percent_descuento / 100 : 0;
+    // return total - (descuento * total);
     // return serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value - (percent_descuento.value * serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value);
+})
+
+const valorReal = computed(() => {
+    let chanel = channels.value.find(channel => channel.id == form.channel_id);
+    let chanelValue = (chanel ? chanel.percent / 100 : 0);
+    return form.total - (form.total * chanelValue);
 })
 
 const loading = ref(false);
 
 const reservar = (event) => {
     event.preventDefault();
+    form.total_real = valorReal.value;
+    form.percent_channel = channels.value.find(channel => channel.id == form.channel_id).percent;
     loading.value = true
-    router.post(route('reservar', { proveedors: proveedorsAdd.value }), values, {
+    form.proveedors = proveedorsAdd.value;
+    form.post(route('reservar'), {
         onSuccess: () => {
             loading.value = false;
             show.value = false;
@@ -557,7 +562,7 @@ const parseDate = (dateString) => {
 
 const disabledDates = computed(() => {
     var dates = [];
-    var selectedProduct = services.value.find(service => service.id == service_id.value);
+    var selectedProduct = services.value.find(service => service.id == form.service_id);
     if (!selectedProduct) return [];
     for (var lock of selectedProduct.locks) {
         var start = parseDate(lock.start_date);
@@ -601,7 +606,7 @@ const setState = (state, terminated) => {
     });
 }
 
-watch(adults, (newAdults) => {
+watch(form.adults, (newAdults) => {
     for (var p of proveedorsAdd.value) {
         if (p.proveedor) {
             p.costo = proveedors.value.find(prov => prov.id == p.proveedor).pivot.value * newAdults;

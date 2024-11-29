@@ -62,13 +62,12 @@ class ServiceController extends Controller
         foreach ($included as $i) {
             Included::firstOrCreate(['name' => $i]);
         }
+        $validated = $request->validated();
+        if ($request->hasFile('portada')) {
+            $validated['portada'] = $request->file('portada')->store('public/images');
+        }
+        $service = Service::create($validated);
 
-        $service = Service::create($request->validated());
-        // foreach ($request->features as $feature) {
-        //     $service->features()->attach(
-        //         Feature::firstOrCreate($feature)->id
-        //     );
-        // }
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $service->images()->create([
@@ -142,16 +141,14 @@ class ServiceController extends Controller
             'cliente_phone' => 'required|numeric',
             'cliente_city' => 'required|string',
             'cliente_building' => 'required|string',
-            'channel_id' => ['nullable', 'uuid'],
+            'channel_id' => ['required', 'uuid'],
             'mascota' => 'nullable|numeric',
             'persona_adicional' => 'nullable|numeric',
             'cobre_transaccion' => 'nullable|numeric',
             'cobro_extra_cliente' => 'nullable|numeric',
-            'alimentacion' => 'nullable|numeric',
             'reserva' => 'nullable|numeric',
             'saldo' => 'nullable|numeric',
             'percent_descuento' => 'nullable|numeric',
-            'hour' => 'required|date_format:H:i',
             // 'payment_type' => 'nullable|numeric',
             'mascota' =>  'nullable|numeric',
             'persona_adicional' =>  'nullable|numeric',
@@ -161,11 +158,19 @@ class ServiceController extends Controller
             'reserva' =>  'nullable|numeric',
             'saldo' =>  'nullable|numeric',
             'percent_descuento' =>  'nullable|numeric',
-            'date' => 'required|date',
+            'date' => 'required',
+            'total_real' => 'nullable|numeric',
+            'percent_channel' => 'nullable|numeric',
+            'total' => 'nullable|numeric',
+            'observations' => 'nullable|string',
+            'method_id' => 'nullable|uuid',
         ]);
+
         $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
         $service = Service::find($validate['service_id']);
         $validate['boys'] = $validate['boys'] ?? 0;
+
+        $validate['hour'] = explode(',', request('date'))[1];
         $validate['user_id'] = request('user_id') ?? auth()->user()->id;
         $validate['service'] = $service->title;
         $validate['adults_price'] = $service->adults_price;

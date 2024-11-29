@@ -6,9 +6,8 @@
     <Modal v-model="visible" title="Crear Metodo de Pago" :close-on-escape="true">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Nombre" v-model="form.name" />
-            <Input label="Porcentaje de pago" type="number" v-model="form.parcent_charge" />
-            <Input class="w-full" min="0" type="dropdown" option-label="name" option-value="id" :options="methods"
-                v-model="form.method" />
+            <Input label="Porcentaje de pago" type="number" suffix=" %" min-fraction-digits="0" max-fraction-digits="2"
+                v-model="form.parcent_charge" />
         </div>
         <template #footer>
             <Button @click="submit" title="Save" severity="success" label="Save" outlined icon="fa-solid fa-save"
@@ -31,6 +30,7 @@ const { toast } = alerts()
 const visible = ref(false)
 const add = {
     action: () => {
+        form.reset()
         visible.value = true
     },
 }
@@ -58,15 +58,12 @@ const buttons = [
 
     {
         action: (data) => {
-            if (usePage().props.auth.user.rol == 'admin') {
-                router.visit(route('services.edit', data.id))
-            } else {
-                visible.value = true
-                service.value = data
-                form.service_id = data.id
-                form.adult_tarifa = data.adult_tarifa
-                form.boys_tarifa = data.boy_tarifa
-            }
+
+            visible.value = true
+            form.name = data.name
+            form.parcent_charge = data.parcent_charge
+            form.id = data.id
+
         },
         severity: 'secondary',
         icon: 'fa-solid fa-pencil text-sm',
@@ -74,24 +71,12 @@ const buttons = [
     },
     {
         action: (data, event) => {
-            confirm.require({
-                target: event.currentTarget,
-                message: 'Seguro de Eliminar el Metodo de pago ' + data.name + '?',
-                icon: 'fa-solid fa-exclamation-triangle',
-                rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
-                acceptClass: 'p-button-sm p-button-danger',
-                rejectLabel: 'Cancelar',
-                acceptLabel: 'Eliminar',
-                accept: () => {
-                    console.log(data)
-                    router.delete(route('services.destroy', data.id), {
-                        onSuccess: () => {
-                            toast('success', 'Servicio eliminado con exito')
-                        }
-                    })
-
+            form.delete(route('paymentMethods.destroy', data.id), {
+                onSuccess: () => {
+                    getData()
+                    toast('success', 'Metodo de pago eliminado correctamente')
                 }
-            });
+            })
         },
         show: usePage().props.auth.user.rol == 'admin',
         severity: 'danger',
@@ -102,10 +87,10 @@ const buttons = [
 ]
 
 const form = useForm({
+    id: null,
     name: '',
     parcent_charge: 0,
     description: '',
-    method: ''
 })
 
 const data = ref([]);
@@ -122,6 +107,16 @@ const getData = () => {
 getData()
 
 const submit = () => {
+    if (form.id) {
+        form.put(route('paymentMethods.update', form.id), {
+            onSuccess: () => {
+                visible.value = false
+                getData()
+                toast('success', 'Metodo de pago actualizado correctamente')
+            }
+        })
+        return
+    }
     form.post(route('paymentMethods.store'), {
         onSuccess: () => {
             visible.value = false

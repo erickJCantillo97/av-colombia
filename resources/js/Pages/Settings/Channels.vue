@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[99vh]">
+    <div class="h-[80vh]">
         <Datatable :columnas="columns" :add :data="channels" routecreate="services.create" :actions="buttons">
         </Datatable>
     </div>

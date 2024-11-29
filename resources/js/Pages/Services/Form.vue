@@ -1,11 +1,8 @@
 <script setup>
 import Input from '@/Components/Customs/Input.vue';
-import Modal from '@/Components/Customs/Modal.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { root } from 'postcss';
 import AutoComplete from 'primevue/autocomplete';
-import MultiSelect from 'primevue/multiselect';
 import { onMounted, ref } from 'vue';
 import { alerts } from '@/composable/toasts';
 const { toast } = alerts()
@@ -34,7 +31,9 @@ onMounted(() => {
         form.days = JSON.parse(props.service.days);
         form.includes = JSON.parse(props.service.includes);
         form.notIncludes = JSON.parse(props.service.notIncludes);
-
+        form.type = props.service.type;
+        form.city = props.service.city;
+        form.portada = props.service.portada;
     }
 })
 
@@ -72,12 +71,15 @@ const form = useForm({
     title: '',
     description: '',
     features: [],
-    boys_price: '',
+    boys_price: 0,
     adults_price: '',
     images: [],
     days: [],
     includes: [],
-    notIncludes: []
+    notIncludes: [],
+    type: 'expericence',
+    city: 'Cartagena',
+    portada: '',
 
 });
 
@@ -85,6 +87,10 @@ const files = ref([])
 
 const submit = () => {
     let data = [];
+    if (!form.portada) {
+        toast('error', 'Debe seleccionar una imagen de portada')
+        return;
+    }
     if (files.value) {
         console.log(files.value)
         files.value.getFiles().forEach((file) => data.push(file.file));
@@ -120,7 +126,7 @@ const submit = () => {
     }
     form.includes = included;
     form.notIncludes = notIncluded;
-    
+
 }
 
 const includeLabel = ref('');
@@ -152,13 +158,27 @@ const days = [
 
         <div class="p-4 space-y-4 h-full overflow-y-auto">
             <h1 class="text-3xl font-extrabold">Crear nuevo servicio</h1>
-            <div class="space-y-5">
-                <Input label="Titulo" v-model="form.title" :error-message="form.errors.title" />
+            <div class="space-y-2">
+                <div class="w-full justify-between flex gap-x-4">
+                    <Input label="Titulo" class="w-full" v-model="form.title" :error-message="form.errors.title" />
+                    <Input label="Ubicación" class="w-full" v-model="form.city" :error-message="form.errors.city"
+                        type="dropdown" :options="[
+                            'Cartagena',
+                            'Cali'
+                        ]" />
+                    <Input label="Tipo de Servicio" class="w-full" v-model="form.type" :error-message="form.errors.type"
+                        type="dropdown" :options="[
+                            'TOUR',
+                            'TRANSFER'
+                        ]" />
+                </div>
                 <div class="grid grid-cols-2 gap-4 my-4">
-                    <Input label="Precio Adultos" mode="currency" type="number" min="0" currency="COP" :minFractionDigits="2"
-                        :maxFractionDigits="2" v-model="form.adults_price"  :error-message="form.errors.adults_price"/>
-                    <Input label="Precio niños" mode="currency" type="number" min="0" currency="COP" :minFractionDigits="2"
-                        :maxFractionDigits="2" v-model="form.boys_price" :error-message="form.errors.boys_price" />
+                    <Input label="Precio Adultos" mode="currency" type="number" min="0" currency="COP"
+                        :minFractionDigits="2" :maxFractionDigits="2" v-model="form.adults_price"
+                        :error-message="form.errors.adults_price" />
+                    <Input label="Precio niños" mode="currency" type="number" min="0" currency="COP"
+                        :minFractionDigits="2" :maxFractionDigits="2" v-model="form.boys_price"
+                        :error-message="form.errors.boys_price" />
                 </div>
                 <div class="flex justify-between space-x-4">
                     <div class="w-full">
@@ -174,7 +194,7 @@ const days = [
                     <div class="w-full">
                         <label for="" class="text-md font-bold">Descripción del Servicio</label>
                         <Editor v-model="form.description" :key="editor" editorStyle="height: 120px" />
-                        <span class="text-xs text-red-400">{{form.errors.description}}</span>
+                        <span class="text-xs text-red-400">{{ form.errors.description }}</span>
                     </div>
                 </div>
 
@@ -183,8 +203,8 @@ const days = [
                         <label for="" class="text-lg font-bold text-center ">Incluidos en El servicio</label>
                         <div class="flex space-x-2 overflow-y-auto w-full">
                             <AutoComplete @complete="search(true)" emptyMessage="Sin resultados"
-                                :suggestions="includeSuggestions" dropdown @keyup.enter="addincludes" v-model="includeLabel"
-                                class="w-full" pt:root="!w-full" pt:inputText="!w-full" />
+                                :suggestions="includeSuggestions" dropdown @keyup.enter="addincludes"
+                                v-model="includeLabel" class="w-full" pt:root="!w-full" pt:inputText="!w-full" />
                             <Button title="Añadir" @click="addincludes" severity="primary" label="Añadir"
                                 icon="fa-solid fa-plus" class="!h-11" />
                         </div>
@@ -218,9 +238,16 @@ const days = [
 
                 </div>
                 <div>
+                    <label for="" class="text-md font-bold">Portada</label>
+
+                    <Input type="file-basic" v-model="form.portada" acceptFile="image/*" />
+                    <!-- <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span> -->
+                </div>
+                <div>
                     <label for="" class="text-md font-bold">Fotos</label>
+
                     <Input type="file-pond" v-model="files" />
-                    <span class="text-red-500 text-xs -mt-1">{{form.errors.images}}</span>
+                    <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span>
                 </div>
             </div>
             <div class="flex justify-between">

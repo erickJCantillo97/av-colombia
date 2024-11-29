@@ -25,12 +25,18 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('Carolina112024'),
             'rol' => 'admin',
         ]);
-        //     User::factory()->create([
-        //         'name' => 'Hotel example',
-        //         'email' => 'hotelexample@avcolombia.com',
-        //         'password' => Hash::make('12345678'),
-        //         'rol' => 'hotel',
-        //     ]);
+        User::factory()->create([
+            'name' => 'Brian',
+            'email' => 'brian@avcolombia.com',
+            'password' => Hash::make('12345678'),
+            'rol' => 'admin',
+        ]);
+        User::factory()->create([
+            'name' => 'Hotel example',
+            'email' => 'hotelexample@avcolombia.com',
+            'password' => Hash::make('12345678'),
+            'rol' => 'hotel',
+        ]);
         $channels = [
             'Vendedor',
             'Directa',
@@ -49,6 +55,8 @@ class DatabaseSeeder extends Seeder
             Channel::create(
                 [
                     'name' => $channel,
+                    'abreviacion' => substr($channel, 0, 3),
+                    'percent' => 0,
                 ]
             );
         }

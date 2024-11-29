@@ -55,7 +55,12 @@ class PaymentMethodController extends Controller
      */
     public function update(UpdatePaymentMethodRequest $request, PaymentMethod $paymentMethod)
     {
-        //
+        try {
+            $paymentMethod->update($request->all());
+            return back()->with('success', 'Metodo de pago actualizado correctamente');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al actualizar el metodo de pago');
+        }
     }
 
     /**
@@ -63,6 +68,11 @@ class PaymentMethodController extends Controller
      */
     public function destroy(PaymentMethod $paymentMethod)
     {
-        //
+        try {
+            $paymentMethod->delete();
+            return back()->with('success', 'Metodo de pago eliminado correctamente');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al eliminar el metodo de pago');
+        }
     }
 }

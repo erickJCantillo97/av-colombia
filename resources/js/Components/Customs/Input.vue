@@ -11,6 +11,7 @@ import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import Password from 'primevue/password';
 import { root } from 'postcss';
+import Select from 'primevue/select';
 
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
@@ -234,6 +235,10 @@ const props = defineProps({
     value: {
         type: String,
         default: null
+    },
+    enableTimePicker: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -260,6 +265,18 @@ const onRemoveTemplatingFile = (removeFileCallback, index) => {
         removeFileCallback(index);
     }
 };
+const src = ref(null)
+
+function onFileSelect(event) {
+    const file = event.files[0];
+    const reader = new FileReader();
+    input.value = file;
+    reader.onload = async (e) => {
+        src.value = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
 
 defineEmits(['valueChange'])
 
@@ -285,10 +302,11 @@ defineEmits(['valueChange'])
                     :currency="currency" :mode="mode" :suffix :prefix :showButtons :step />
                 <Textarea v-else-if="type == 'textarea'" :id :disabled :rows="rowsTextarea" class="w-full" :required
                     :placeholder :class="invalid ? 'p-invalid' : ''" v-model="input" :aria-describedby="id + '-help'" />
-                <Dropdown v-else-if="type == 'dropdown'" :optionValue :id :disabled :placeholder :options :optionLabel
-                    :editable :emptyMessage :loading @change="$emit('valueChange', $event)" showClear
-                    :filter="optionLabel ? true : false" :class="invalid ? 'p-invalid' : ''" v-model="input"
-                    :aria-describedby="id + '-help'" class="w-full" :pt="{
+                <Select v-else-if="type == 'dropdown'" :virtualScrollerOptions="{ itemSize: 38 }" :optionValue :id
+                    :disabled :placeholder :options :optionLabel :editable :emptyMessage :loading
+                    @change="$emit('valueChange', $event)" showClear :filter="optionLabel ? true : false"
+                    :class="invalid ? 'p-invalid' : ''" v-model="input" :aria-describedby="id + '-help'" class="w-full"
+                    :pt="{
                         root: '!h-10',
                         input: '!py-0 !flex !items-center !text-sm !font-normal',
                         item: '!py-1 !px-3 !text-sm !font-normal',
@@ -297,7 +315,7 @@ defineEmits(['valueChange'])
                     <template #option="slotProps">
                         <slot name="optionDropdown" :slotProps="slotProps" />
                     </template>
-                </Dropdown>
+                </Select>
                 <Dropdown v-else-if="type == 'country'" :optionValue :id :disabled :placeholder :filterPlaceholder
                     filter resetFilterOnHide :options="countries" :loading :class="invalid ? 'p-invalid' : ''"
                     v-model="input" optionLabel="translations.spa.common" :aria-describedby="id + '-help'"
@@ -364,9 +382,11 @@ defineEmits(['valueChange'])
                             input: '!h-8'
                         }" />
                 </span>
+
                 <span v-else-if="type == 'date'">
-                    <VueDatePicker :disabledDates class="w-full" :name hide-offset-dates :min-date="minDate" v-model="input" :teleport="true"
-                        auto-apply :enable-time-picker="false" locale="es"  timezone="America/Bogota">
+                    <VueDatePicker :disabledDates class="w-full" :name hide-offset-dates :min-date="minDate"
+                        v-model="input" :teleport="true" model-type="yyyy-MM-dd,HH:mm" :enable-time-picker locale="es"
+                        timezone="America/Bogota">
                     </VueDatePicker>
                     <!-- <Calendar :manualInput :disabled :id  :minDate :maxDate :placeholder :required
                         showIcon :disabledDays :selectionMode @date-select="$emit('valueChange', $event)"
@@ -383,7 +403,17 @@ defineEmits(['valueChange'])
                 </IconField>
                 <file-pond v-else-if="type == 'file-pond'" name="test" ref="input" storeAsFile="true"
                     label-idle="Archvios" :allow-multiple="true" accepted-file-types="image/*" />
-
+                <span v-else-if="type == 'file-basic'">
+                    <div class="card flex w-full flex-col items-center gap-6">
+                        <FileUpload :accept="acceptFile" chooseLabel="Seleccionar Archivo" mode="basic"
+                            @select="onFileSelect" customUpload auto severity="secondary"
+                            class="p-button-outlined w-full" />
+                        <img v-if="src" :src="src" alt="Image" class="shadow-md rounded-xl w-full sm:w-64"
+                            style="filter: grayscale(100%)" />
+                    </div>
+                    <!-- <FileUpload mode="basic" :multiple :accept="acceptFile" :maxFileSize
+                        @input="input = $event.target.files[0]" class="w-full h-8" customUpload /> -->
+                </span>
 
                 <span v-else class="w-full">
                     <InputText size="small" :id :disabled :placeholder :class="invalid ? 'p-invalid' : ''"

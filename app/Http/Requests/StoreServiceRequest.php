@@ -24,8 +24,6 @@ class StoreServiceRequest extends FormRequest
         return [
             'title' => 'required|string|max:255|unique:services',
             'title_en' => 'nullable|string|max:255|unique:services',
-            'images' => 'required|array',
-            'images.*' => 'required|image|max:8192',
             'description' => 'required|string|max:4000',
             'description_en' => 'nullable|string|max:4000',
             'boys_price' => 'required|numeric',
@@ -34,6 +32,8 @@ class StoreServiceRequest extends FormRequest
             'days.*' => 'required|numeric',
             'includes' => 'nullable|string',
             'notIncludes' => 'nullable|string',
+            'type' => 'required|string',
+            'city' => 'required|string',
         ];
     }
 }
