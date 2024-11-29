@@ -102,7 +102,7 @@ const submit = () => {
     form.notIncludes = JSON.stringify(form.notIncludes);
     form.includes = JSON.stringify(form.includes);
     if (props.service) {
-        form.put(route('services.update', props.service.slug), {
+        form.post(route('services.update', props.service.slug), {
             onSuccess: () => {
                 visible.value = false
             },

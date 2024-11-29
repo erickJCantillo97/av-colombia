@@ -32,7 +32,8 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('services', ServiceController::class);
+    Route::resource('services', ServiceController::class)->except(['update']);
+    Route::post('services/{service}/update', [ServiceController::class, 'update'])->name('services.update');
     Route::post('services/{service}/lock', [ServiceController::class, 'lock'])->name('services.lock');
 
     Route::resource('users', UserController::class);

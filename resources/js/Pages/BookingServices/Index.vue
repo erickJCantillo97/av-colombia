@@ -280,7 +280,7 @@ const form = useForm({
     reserva: 0,
     abono: 0,
     method_id: '',
-    channel_id: '',
+    channel_id: '9d99a95f-6c3d-48fd-aa7d-6ef4e6860123',
     percent_descuento: 0,
     proveedors: [],
     total: 0,
