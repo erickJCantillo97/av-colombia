@@ -11,6 +11,13 @@ const op = ref();
 const includes = ref()
 const noIncludes = ref()
 
+const value = ref(1);
+
+const options = [
+    { name: 'Recogidas', value: 1 },
+    { name: 'Puntos de encuentro', value: 2 },
+];
+
 const props = defineProps({
     features: Array,
     included: Array,
@@ -80,7 +87,7 @@ const form = useForm({
     type: 'expericence',
     city: 'Cartagena',
     portada: '',
-
+    recogida: 'recogida',
 });
 
 const files = ref([])
@@ -158,7 +165,182 @@ const days = [
 
         <div class="p-4 space-y-4 h-full overflow-y-auto">
             <h1 class="text-3xl font-extrabold">Crear nuevo servicio</h1>
-            <div class="space-y-2">
+            <Tabs value="0">
+                <TabList>
+                    <Tab value="0">Datos del Servicio</Tab>
+                    <Tab value="4" v-if="service && form.type == 'TRANSFER'">Itinerario</Tab>
+                    <Tab value="1" v-if="service && form.type == 'TOUR'">Ecuentro o Recogida</Tab>
+                    <Tab value="2" v-if="service">Disponibilidad y precios</Tab>
+                    <Tab value="3" v-if="service">Fotos</Tab>
+                </TabList>
+                <TabPanels>
+                    <TabPanel value="0">
+                        <div class="gap-y-4 flex flex-col">
+                            <div class="w-full  gap-4 grid grid-cols-3">
+                                <Input label="Tipo de Servicio" class="w-full" v-model="form.type"
+                                    :error-message="form.errors.type" type="dropdown" :options="[
+                                        'TOUR',
+                                        'TRANSFER'
+                                    ]" />
+                                <Input label="Titulo" class="w-full" v-model="form.title"
+                                    :error-message="form.errors.title" />
+                                <Input label="Código de Referencia" class="w-full" v-model="form.title"
+                                    :error-message="form.errors.title" />
+                                <Input label="Ubicación del servicio" class="w-full" v-model="form.city"
+                                    :error-message="form.errors.city" type="dropdown" :options="[
+                                        'Cartagena',
+                                        'Cali'
+                                    ]" />
+                                <Input label="Lugares de Visita (Destino)" class="w-full" v-model="form.city"
+                                    :error-message="form.errors.city" type="dropdown" :options="[
+                                        'Cartagena',
+                                        'Cali'
+                                    ]" />
+                            </div>
+                            <div class="w-full">
+                                <label for="" class="text-md font-bold">Descripción del Servicio</label>
+                                <Editor v-model="form.description" :key="editor" editorStyle="height: 120px" />
+                                <span class="text-xs text-red-400">{{ form.errors.description }}</span>
+                            </div>
+
+                            <div class="flex justify-between space-x-4 items-center">
+                                <div class="w-full shadow-md p-2 rounded-md">
+                                    <label for="" class="text-lg font-bold text-center ">Incluidos en El
+                                        servicio</label>
+                                    <div class="flex space-x-2 overflow-y-auto w-full">
+                                        <AutoComplete @complete="search(true)" emptyMessage="Sin resultados"
+                                            :suggestions="includeSuggestions" dropdown @keyup.enter="addincludes"
+                                            v-model="includeLabel" class="w-full" pt:root="!w-full"
+                                            pt:inputText="!w-full" />
+                                        <Button title="Añadir" @click="addincludes" severity="primary" label="Añadir"
+                                            icon="fa-solid fa-plus" class="!h-11" />
+                                    </div>
+                                    <div v-for="(feature, index) in form.includes"
+                                        class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b">
+                                        <p>
+                                            {{ index + 1 }}. {{ feature }}
+                                        </p>
+                                        <span @click="removeIncludes(index)" v-tooltip="'Quitar'"
+                                            class="cursor-pointer"><i class="fa-solid fa-trash text-red-500"></i></span>
+                                    </div>
+                                </div>
+                                <div class="w-full shadow-md p-2 bg-gray-200 rounded-md">
+                                    <label for="" class="text-lg font-bold text-red-700">No Incluidos en El
+                                        servicio</label>
+                                    <div class="flex justify-between space-x-2">
+                                        <AutoComplete dropdown @complete="search(false)"
+                                            emptySearchMessage="Sin resultados" :suggestions="includeSuggestions"
+                                            @keyup.enter="addNoIncludes" v-model="noIncludeName" class="w-full"
+                                            pt:root="!w-full" pt:inputText="!w-full" />
+                                        <Button title="Añadir" @click="addNoIncludes" severity="primary" label="Añadir"
+                                            icon="fa-solid fa-plus" class="!h-11 " />
+                                    </div>
+                                    <div v-for="(feature, index) in form.notIncludes"
+                                        class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b border-white">
+                                        <p>
+                                            {{ index + 1 }}. {{ feature }}
+                                        </p>
+                                        <span @click="removeNotIncludes(index)" class="cursor-pointer"><i
+                                                class="fa-solid fa-trash text-red-500"></i></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </TabPanel>
+                    <TabPanel value="1">
+                        <div class="m-0">
+                            <div
+                                class="w-full bg-gray-200 rounded-md p-2 grid grid-cols-2 divide-y-2 md:flex space-x-2">
+                                <div @click="value = op.value" v-for="op in options"
+                                    class="w-full rounded-lg text-center py-2 text-sm md:text-md  cursor-pointer "
+                                    :class="value == op.value ? 'bg-white' : 'hover:bg-white/30'">
+                                    {{ op.name }}
+                                </div>
+                            </div>
+                            <div v-if="value == 1" class="mt-4">
+                                <div class="w-full shadow-md p-2 rounded-md">
+                                    <div class="flex space-x-2 overflow-y-auto w-full">
+                                        <AutoComplete @complete="search(true)"
+                                            placeholder="Describa el Lugar de Recogida" emptyMessage="Sin resultados"
+                                            :suggestions="includeSuggestions" dropdown @keyup.enter="addincludes"
+                                            v-model="includeLabel" class="w-full" pt:root="!w-full"
+                                            pt:inputText="!w-full" />
+                                        <Button title="Añadir" @click="addincludes" severity="primary" label="Añadir"
+                                            icon="fa-solid fa-plus" class="!h-11" />
+                                    </div>
+                                    <div v-for="(feature, index) in form.includes"
+                                        class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b">
+                                        <p>
+                                            {{ index + 1 }}. {{ feature }}
+                                        </p>
+                                        <span @click="removeIncludes(index)" v-tooltip="'Quitar'"
+                                            class="cursor-pointer"><i class="fa-solid fa-trash text-red-500"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="mt-4">
+                                <div class="w-full shadow-md p-2 rounded-md">
+                                    <div class="flex space-x-2 overflow-y-auto w-full">
+                                        <AutoComplete @complete="search(true)"
+                                            placeholder="Describa el punto de encuentro" emptyMessage="Sin resultados"
+                                            :suggestions="includeSuggestions" dropdown @keyup.enter="addincludes"
+                                            v-model="includeLabel" class="w-full" pt:root="!w-full"
+                                            pt:inputText="!w-full" />
+                                        <Button title="Añadir" @click="addincludes" severity="primary" label="Añadir"
+                                            icon="fa-solid fa-plus" class="!h-11" />
+                                    </div>
+                                    <div v-for="(feature, index) in form.includes"
+                                        class="py-1.5 px-3 flex justify-between my-2 text-nowrap text-sm font-bold text-emerald-700 rounded-lg border-b">
+                                        <p>
+                                            {{ index + 1 }}. {{ feature }}
+                                        </p>
+                                        <span @click="removeIncludes(index)" v-tooltip="'Quitar'"
+                                            class="cursor-pointer"><i class="fa-solid fa-trash text-red-500"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </TabPanel>
+                    <TabPanel value="2">
+                        <p class="m-0">
+                            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
+                            voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati
+                            cupiditate non provident, similique sunt in culpa
+                            qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum
+                            facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+                            cumque nihil impedit quo minus.
+                        </p>
+                    </TabPanel>
+                    <TabPanel value="3">
+                        <div class="m-0 h-[70vh] overflow-y-auto">
+                            <div>
+                                <label for="" class="text-md font-bold">Portada</label>
+                                <Input type="file-basic" v-model="form.portada" acceptFile="image/*" />
+                            </div>
+                            <div>
+                                <label for="" class="text-md font-bold">Fotos</label>
+                                <Input type="file-pond" v-model="files" />
+                                <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span>
+                            </div>
+                        </div>
+                    </TabPanel>
+                    <TabPanel value="4">
+                        <div class="m-0 h-[70vh] overflow-y-auto">
+                            <div>
+                                <label for="" class="text-md font-bold">Portada</label>
+                                <Input type="file-basic" v-model="form.portada" acceptFile="image/*" />
+                            </div>
+                            <div>
+                                <label for="" class="text-md font-bold">Fotos</label>
+                                <Input type="file-pond" v-model="files" />
+                                <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span>
+                            </div>
+                        </div>
+                    </TabPanel>
+                </TabPanels>
+            </Tabs>
+            <!-- <div class="space-y-2">
                 <div class="w-full justify-between flex gap-x-4">
                     <Input label="Titulo" class="w-full" v-model="form.title" :error-message="form.errors.title" />
                     <Input label="Ubicación" class="w-full" v-model="form.city" :error-message="form.errors.city"
@@ -241,7 +423,6 @@ const days = [
                     <label for="" class="text-md font-bold">Portada</label>
 
                     <Input type="file-basic" v-model="form.portada" acceptFile="image/*" />
-                    <!-- <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span> -->
                 </div>
                 <div>
                     <label for="" class="text-md font-bold">Fotos</label>
@@ -249,12 +430,12 @@ const days = [
                     <Input type="file-pond" v-model="files" />
                     <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span>
                 </div>
-            </div>
-            <div class="flex justify-between">
-                <Button @click="submit" title="Save" severity="success" label="Enviar" outlined icon="fa-solid fa-save"
-                    class="!h-8" />
-                <Button @click="visible = false" title="Cancel" severity="danger" label="Cancel" outlined
-                    icon="fa-solid fa-times" class="!h-8" />
+            </div> -->
+            <div class="flex gap-x-4 justify-between">
+                <Button @click="visible = false" title="Cancel" severity="danger" label="Cancel"
+                    icon="fa-solid fa-times" class="!h-9 w-full " />
+                <Button @click="submit" title="Save" severity="success" label="Guardar" icon="fa-solid fa-save"
+                    class="!h-9 w-full" />
             </div>
         </div>
     </AppLayout>

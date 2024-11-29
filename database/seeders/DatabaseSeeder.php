@@ -20,63 +20,63 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Carolina',
-            'email' => 'carolina@avcolombia.com',
-            'password' => Hash::make('Carolina112024'),
+            'name' => 'Alejandra Maturana',
+            'email' => 'alejandra@avcolombia.com',
+            'password' => Hash::make('avcolombia2024'),
             'rol' => 'admin',
         ]);
-        User::factory()->create([
-            'name' => 'Brian',
-            'email' => 'brian@avcolombia.com',
-            'password' => Hash::make('12345678'),
-            'rol' => 'admin',
-        ]);
-        User::factory()->create([
-            'name' => 'Hotel example',
-            'email' => 'hotelexample@avcolombia.com',
-            'password' => Hash::make('12345678'),
-            'rol' => 'hotel',
-        ]);
-        $channels = [
-            'Vendedor',
-            'Directa',
-            'viator',
-            'Facebook',
-            'Instagram',
-            'Tripadvisor',
-            'Booking',
-            'Expedia',
-            'Whatsapp',
-            'Plataforma',
-            'Pagina Web',
-        ];
+        // User::factory()->create([
+        //     'name' => 'Brian',
+        //     'email' => 'brian@avcolombia.com',
+        //     'password' => Hash::make('12345678'),
+        //     'rol' => 'admin',
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Hotel example',
+        //     'email' => 'hotelexample@avcolombia.com',
+        //     'password' => Hash::make('12345678'),
+        //     'rol' => 'hotel',
+        // ]);
+        // $channels = [
+        //     'Vendedor',
+        //     'Directa',
+        //     'viator',
+        //     'Facebook',
+        //     'Instagram',
+        //     'Tripadvisor',
+        //     'Booking',
+        //     'Expedia',
+        //     'Whatsapp',
+        //     'Plataforma',
+        //     'Pagina Web',
+        // ];
 
-        foreach ($channels as $channel) {
-            Channel::create(
-                [
-                    'name' => $channel,
-                    'abreviacion' => substr($channel, 0, 3),
-                    'percent' => 0,
-                ]
-            );
-        }
-        $medios = [
-            'Efectivo',
-            'Tarjeta',
-            'Transferencia',
-            'Paypal',
-            'Nequi',
-            'Daviplata',
-            'PSE',
-            'Yape',
-            'Mercado Pago',
-            'Otro',
-        ];
-        foreach ($medios as $medio) {
-            PaymentMethod::create([
-                'name' => $medio,
-                'parcent_charge' => 0,
-            ]);
-        }
+        // foreach ($channels as $channel) {
+        //     Channel::create(
+        //         [
+        //             'name' => $channel,
+        //             'abreviacion' => substr($channel, 0, 3),
+        //             'percent' => 0,
+        //         ]
+        //     );
+        // }
+        // $medios = [
+        //     'Efectivo',
+        //     'Tarjeta',
+        //     'Transferencia',
+        //     'Paypal',
+        //     'Nequi',
+        //     'Daviplata',
+        //     'PSE',
+        //     'Yape',
+        //     'Mercado Pago',
+        //     'Otro',
+        // ];
+        // foreach ($medios as $medio) {
+        //     PaymentMethod::create([
+        //         'name' => $medio,
+        //         'parcent_charge' => 0,
+        //     ]);
+        // }
     }
 }

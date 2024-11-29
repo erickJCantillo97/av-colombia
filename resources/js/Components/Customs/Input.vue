@@ -404,12 +404,10 @@ defineEmits(['valueChange'])
                 <file-pond v-else-if="type == 'file-pond'" name="test" ref="input" storeAsFile="true"
                     label-idle="Archvios" :allow-multiple="true" accepted-file-types="image/*" />
                 <span v-else-if="type == 'file-basic'">
-                    <div class="card flex w-full flex-col items-center gap-6">
+                    <div class="flex w-full  items-center gap-6">
                         <FileUpload :accept="acceptFile" chooseLabel="Seleccionar Archivo" mode="basic"
-                            @select="onFileSelect" customUpload auto severity="secondary"
-                            class="p-button-outlined w-full" />
-                        <img v-if="src" :src="src" alt="Image" class="shadow-md rounded-xl w-full sm:w-64"
-                            style="filter: grayscale(100%)" />
+                            @select="onFileSelect" customUpload auto severity="secondary" class="w-full" />
+                        <img v-if="src" :src="src" alt="Image" class="shadow-md rounded-xl w-full h-96 object-contain" />
                     </div>
                     <!-- <FileUpload mode="basic" :multiple :accept="acceptFile" :maxFileSize
                         @input="input = $event.target.files[0]" class="w-full h-8" customUpload /> -->
