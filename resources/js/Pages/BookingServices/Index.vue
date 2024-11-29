@@ -66,7 +66,15 @@
                         </p>
                     </div>
                 </div>
-                <div class="mt-4 w-full col-sapn-1 md:col-span-4 border rounded-lg"
+                <div class="mt-4 w-full col-span-1 md:col-span-4 rounded-lg" v-if="form.service_id">
+                    <!-- && services.find(x => x.id == form.service_id).type == 'Transfer' -->
+                    <div class="flex  gap-x-2">
+                        <Input label="Placa del Vehiculo" v-model="form.vehicle_plate" class="w-full" />
+                        <Input label="Nombre del Conductor" v-model="form.driver_name" class="w-full" />
+                    </div>
+
+                </div>
+                <div class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg"
                     v-if="$page.props.auth.user.rol == 'admin'">
                     <h1
                         class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2">
@@ -85,6 +93,7 @@
                             severity="danger" @click="removeProveedor(index)" />
                     </div>
                 </div>
+
 
             </form>
             <template #footer>
