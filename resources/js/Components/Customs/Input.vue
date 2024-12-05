@@ -374,19 +374,19 @@ defineEmits(['valueChange'])
                 <div v-else-if="type == 'boolean'" class="">
                     <InputSwitch v-model="input" />
                 </div>
-                <span v-else-if="type == 'datetime'">
+                <!-- <span v-else-if="type == 'datetime'">
                     <Calendar :manualInput :disabled :id v-model="input" :minDate :maxDate :placeholder showTime
                         :required hourFormat="24" showIcon :stepMinute dateFormat="dd/mm/yy"
                         @date-select="$emit('valueChange', $event)" :disabledDays :pt="{
                             root: '!w-full',
                             input: '!h-8'
                         }" />
-                </span>
+                </span> -->
 
-                <span v-else-if="type == 'date'">
+                <span v-else-if="type == 'datetime'">
                     <VueDatePicker :disabledDates class="w-full" :name hide-offset-dates :min-date="minDate"
-                        v-model="input" :teleport="true" model-type="yyyy-MM-dd,HH:mm" :enable-time-picker locale="es"
-                        timezone="America/Bogota">
+                        v-model="input" :teleport="true" model-type="yyyy-MM-dd,HH:mm" ac :enable-time-picker="true"
+                        locale="es" timezone="America/Bogota">
                     </VueDatePicker>
                     <!-- <Calendar :manualInput :disabled :id  :minDate :maxDate :placeholder :required
                         showIcon :disabledDays :selectionMode @date-select="$emit('valueChange', $event)"
@@ -394,6 +394,22 @@ defineEmits(['valueChange'])
                             root: '!w-full',
                             input: '!h-8 !text-center '
                         }" /> -->
+                </span>
+                <span v-else-if="type == 'date'">
+                    <VueDatePicker :disabledDates class="w-full" :name hide-offset-dates :min-date="minDate"
+                        v-model="input" :teleport="true" model-type="yyyy-MM-dd" :enable-time-picker="false" locale="es"
+                        timezone="America/Bogota" auto-apply>
+                    </VueDatePicker>
+                    <!-- <Calendar :manualInput :disabled :id  :minDate :maxDate :placeholder :required
+                        showIcon :disabledDays :selectionMode @date-select="$emit('valueChange', $event)"
+                        dateFormat="yy-mm-dd" :pt="{
+                            root: '!w-full',
+                            input: '!h-8 !text-center '
+                        }" /> -->
+                </span>
+                <span v-else-if="type == 'time'">
+                    <VueDatePicker v-model="input" time-picker placeholder="Seleciona una hora" class="border-0"
+                        input="border-0 ring-0" />
                 </span>
 
                 <IconField v-else-if="loading || icon" iconPosition="left" class="w-full">
@@ -407,7 +423,8 @@ defineEmits(['valueChange'])
                     <div class="flex w-full  items-center gap-6">
                         <FileUpload :accept="acceptFile" chooseLabel="Seleccionar Archivo" mode="basic"
                             @select="onFileSelect" customUpload auto severity="secondary" class="w-full" />
-                        <img v-if="src" :src="src" alt="Image" class="shadow-md rounded-xl w-full h-96 object-contain" />
+                        <img v-if="src" :src="src" alt="Image"
+                            class="shadow-md rounded-xl w-full h-96 object-contain" />
                     </div>
                     <!-- <FileUpload mode="basic" :multiple :accept="acceptFile" :maxFileSize
                         @input="input = $event.target.files[0]" class="w-full h-8" customUpload /> -->

@@ -32,7 +32,18 @@ class Service extends Model
         'notIncludes',
         'type',
         'city',
-        'portada'
+        'portada',
+        'code',
+        'destinations',
+        'duration_type',
+        'duration',
+        'duration_unit',
+        'capacidad_min',
+        'capacidad_max',
+        'availability_type',
+        'price_type',
+        'recogidas',
+        'puntos'
     ];
 
     protected $appends = ['adult_tarifa', 'boy_tarifa', 'is_locked'];
@@ -131,5 +142,14 @@ class Service extends Model
             get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
             set: fn($value) => $value,
         );
+    }
+    public function availabilities(): HasMany
+    {
+        return $this->hasMany(Availability::class);
+    }
+
+    public function precies(): HasMany
+    {
+        return $this->hasMany(Precie::class);
     }
 }

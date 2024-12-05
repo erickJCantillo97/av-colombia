@@ -517,13 +517,7 @@ const columns = [
 ]
 
 const totalPax = computed(() => {
-    // let serv = services.value.find(service => service.id == form.service_id);
-    // if (!serv) return 0;
     return form.total / form.adults;
-    // let total = serv.adult_tarifa * form.adults + serv.boy_tarifa * form.boys;
-    // let descuento = form.percent_descuento ? form.percent_descuento / 100 : 0;
-    // return total - (descuento * total);
-    // return serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value - (percent_descuento.value * serv.adult_tarifa * adults.value + serv.boy_tarifa * boys.value);
 })
 
 const valorReal = computed(() => {

@@ -23,19 +23,26 @@ class UpdateServiceRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'title_en' => 'nullable|string|max:255',
-            'images' => 'nullable|array',
-            'images.*' => 'nullable|image|max:8192',
+            'code' => 'required|string',
+            'destinos' => 'nullable|string',
+            'title_en' => 'nullable|string|max:255|unique:services',
             'description' => 'required|string|max:4000',
             'description_en' => 'nullable|string|max:4000',
-            'boys_price' => 'required|numeric',
-            'adults_price' => 'required|numeric',
-            'days' => 'required|string',
-            'days.*' => 'required|numeric',
             'includes' => 'nullable|string',
             'notIncludes' => 'nullable|string',
             'type' => 'required|string',
             'city' => 'required|string',
+            'duration_type' => 'required|string',
+            'duration' => 'nullable|numeric',
+            'duration_unit' => 'nullable|string',
+            'adults_price' => 'required|numeric',
+            'boys_price' => 'required|numeric',
+            'capacidad_min' => 'nullable|numeric',
+            'capacidad_max' => 'nullable|numeric',
+            'recogidas' => 'nullable|string',
+            'puntos' => 'nullable|string',
+            'availability_type' => 'nullable|string',
+            'price_type' => 'nullable|string',
         ];
     }
 }

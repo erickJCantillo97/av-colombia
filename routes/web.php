@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\CustomProductControlle;
@@ -44,6 +45,8 @@ Route::middleware([
 
     Route::post('reservar', [ServiceController::class, 'reservar'])->name('reservar');
     Route::resource('BookingServices', BookingServiceController::class);
+    Route::put('updateServiceStart/{service}', [ServiceController::class, 'updateStart'])->name('update.start');
+
     Route::get('getBookingServicesNoPayment', [BookingServiceController::class, 'getBookingServicesNoPayment'])->name('get.services.no.payment');
     Route::post('BookingServices/{bookingService}/problematic', [BookingServiceController::class, 'problematic'])->name('booking.problematic');
     Route::resource('paymentMethods', PaymentMethodController::class);
@@ -59,6 +62,10 @@ Route::middleware([
     Route::post('services/setStatus', [ServiceController::class, 'setStatus'])->name('set.states');
     Route::get('services/proveedors/{service}', [ServiceController::class, 'getProveedors'])->name('get.proveedors');
     Route::resource('channels', ChannelController::class);
+
+    Route::post('availability', [AvailabilityController::class, 'store'])->name('availability.store');
+    Route::put('availability/{availability}', [AvailabilityController::class, 'update'])->name('availability.update');
+    Route::delete('availability/{availability}', [AvailabilityController::class, 'destroy'])->name('availability.destroy');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

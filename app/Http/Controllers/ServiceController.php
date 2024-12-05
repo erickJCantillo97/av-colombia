@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use App\Models\Availability;
 use App\Models\BookingService;
 use App\Models\Feature;
+use App\Models\Horario;
 use App\Models\Included;
 use App\Models\Lock;
+use App\Models\Precie;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -78,6 +81,7 @@ class ServiceController extends Controller
                 ]);
             }
         }
+        return redirect()->route('services.edit', $service->slug)->with('message', 'Servicio creado');
     }
 
     /**
@@ -103,6 +107,7 @@ class ServiceController extends Controller
             'features' => $features,
             'service' => $service,
             'features' => $service->features,
+            'availabilities' => Availability::where('service_id', $service->id)->with('horarios')->get(),
             'included' => Included::orderBy('name')->pluck('name')->toArray()
         ]);
     }
@@ -225,5 +230,42 @@ class ServiceController extends Controller
         return response()->json([
             'proveedors' => $service->proveedors
         ]);
+    }
+
+    public function updateStart(Service $service, Request $request)
+    {
+        $validate = $request->validate([
+            'availability_type' => 'required|string',
+            'price_type' => 'required|string',
+            'horarios' => 'required|array',
+            'precies' => 'required|array',
+        ]);
+        // dd($validate['horarios']);
+        foreach ($validate['horarios'] as $horario) {
+            Horario::where('availability_id', $horario['id'])->delete();
+            foreach ($horario['days'] as $index => $day) {
+                foreach ($day['times'] as $time)
+                    Horario::create([
+                        'availability_id' => $horario['id'],
+                        'day' => $day['day'],
+                        'day_number' => $index + 1,
+                        'start' => $time['start']['hours'] . ':' . $time['start']['minutes'],
+                        'end' => $time['end'] ? $time['end']['hours'] . ':' . $time['end']['minutes'] : null,
+                    ]);
+            }
+        }
+        Precie::where('service_id', $service->id)->delete();
+        foreach ($validate['precies'] as $precie) {
+            $service->precies()->create([
+                'min' => $precie['min'],
+                'max' => $precie['max'],
+                'value' => $precie['value'],
+                'duration' => $precie['duration'],
+                'duration_type' => $precie['duration_type'],
+            ]);
+        }
+        unset($validate['horarios']);
+        $service->update($validate);
+        return back()->with('message', 'Servicio iniciado');
     }
 }
