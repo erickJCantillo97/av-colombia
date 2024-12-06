@@ -15,13 +15,13 @@ return new class extends Migration
             // $table->string('city')->default('cartagena');
             // $table->string('portada')->nullable();
             // $table->string('type');
-            // $table->string('code')->unique();
-            // $table->string('destinations')->nullable();
-            $table->string('duration_type');
-            $table->string('duration')->nullable();
-            $table->string('duration_unit')->nullable();
-            $table->string('capacidad_min')->nullable();
-            $table->string('capacidad_max')->nullable();
+            $table->string('code')->unique();
+            $table->string('destinations')->nullable();
+            // $table->string('duration_type');
+            // $table->string('duration')->nullable();
+            // $table->string('duration_unit')->nullable();
+            // $table->string('capacidad_min')->nullable();
+            // $table->string('capacidad_max')->nullable();
         });
     }
 

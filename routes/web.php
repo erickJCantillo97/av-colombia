@@ -70,3 +70,4 @@ Route::middleware([
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
+Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');

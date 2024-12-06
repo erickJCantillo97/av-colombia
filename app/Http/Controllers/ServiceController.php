@@ -43,6 +43,10 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function home(){
+        return Inertia::render('Home/Services');
+    }
+
     /**
      * Show the form for creating a new resource.
      */

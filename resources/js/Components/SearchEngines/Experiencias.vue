@@ -7,6 +7,12 @@ import ProductCard from '../Sections/ProductCard.vue';
 
 const search = ref('')
 
+
+const props = defineProps({
+    type: {
+        type: Boolean,
+    }
+});
 const services = ref([])
 const loading = ref(false)
 const getServices = () => {
@@ -19,12 +25,7 @@ const getServices = () => {
 }
 const isFocused = ref(false);
 
-const getDays = (days) => {
 
-    let InitialsDays = [{ initials: 'D', name: 'Domingo' }, { initials: 'L', name: 'Lunes' }, { initials: 'M', name: 'Martes' }, { initials: 'M', name: 'Miercoles' }, { initials: 'J', name: 'Jueves' }, { initials: 'V', name: 'Viernes' }, { initials: 'S', name: 'Sabado' }];
-    let initials = days.map(day => InitialsDays[day]);
-    return initials;
-}
 
 const USDollar = new Intl.NumberFormat("es-CO", {
     style: "currency",
@@ -36,7 +37,7 @@ const USDollar = new Intl.NumberFormat("es-CO", {
 <template>
     <div class="p-4">
         <InputText class="h-12 w-full" @focus="isFocused = true" @blur="isFocused = false" v-model="search"
-            @input="getServices" placeholder="Buscar" type="text" size="large" />
+            @input="getServices" :placeholder="'Buscar ' + type" type="text" size="large" />
         <div class="absolute w-[90vw] lg:w-[70vw] rounded-b-lg z-10 p-2 bg-gray-200 space-y-2"
             v-if="search || isFocused">
             <ProgressBar v-if="loading" mode="indeterminate" style="height: 6px"></ProgressBar>
@@ -52,18 +53,7 @@ const USDollar = new Intl.NumberFormat("es-CO", {
                             :style="`background-color: #${feature.color};`">
                             {{ feature.name }}
                         </div>
-                        <div v-if="JSON.parse(service.days).length == 0">
-                            <div class="bg-gray-400 text-xs rounded-full py-0.5 px-2">
-                                Todos los dias
-                            </div>
-                        </div>
-                        <div v-tooltip.bottom="day.name" v-for="day in getDays(JSON.parse(service.days))"
-                            class="bg-gray-400 text-xs rounded-full py-0.5 px-2">
-                            {{ day.initials }}
-                        </div>
                     </div>
-
-
                 </div>
                 <p>
                     {{ USDollar.format(service.price) }}

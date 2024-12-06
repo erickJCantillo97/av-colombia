@@ -21,7 +21,7 @@ defineProps({
 const services = ref([]);
 const getServices = () => {
     axios.get(route('get.services')).then(response => {
-        services.value = response.data.services.slice(0, 6);
+        services.value = response.data.services.slice(0, 5);
     });
 }
 
@@ -33,7 +33,7 @@ getServices();
 const value = ref({ name: 'Option 1', value: 1 });
 const options = ref([
     { name: 'Experiencias y Tours', value: 1 },
-    { name: 'Alojamiento', value: 2 },
+    // { name: 'Alojamiento', value: 2 },
     { name: 'Transporte', value: 3 },
     { name: 'Embarcaciones', value: 4 }
 ]);
@@ -65,7 +65,7 @@ const changeMotor = (motor) => {
                                 {{ op.name }}
                             </div>
                         </div>
-                        <Experiencias v-if="value.value == 1" />
+                        <Experiencias :type="value.name" />
                     </div>
                 </div>
             </div>
@@ -78,7 +78,8 @@ const changeMotor = (motor) => {
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between">
                     <h2 class="text-xl font-bold text-gray-900">Vive nuestras Experiencias</h2>
-                    <Link href="#" class="text-indigo-500 text-md space-x-1 hover:space-x-3 flex items-center">
+                    <Link :href="route('services.home')"
+                        class="text-indigo-500 text-md space-x-1 hover:space-x-3 flex items-center">
                     <div>Ver todas</div>
                     <i class="fa-solid fa-arrow-right"></i>
                     </Link>

@@ -45,35 +45,11 @@ const USDollar = new Intl.NumberFormat("es-CO", {
 });
 
 const images = ref(props.product.images.map(x => x.filepath))
-const currentImage = ref(props.product.images.map(x => x.filepath)[0])
-const intervalId = ref()
+const currentImage = ref(props.product.portada ?? props.product.images.map(x => x.filepath)[0])
 
-const changeImage = () => {
 
-    var nextImageIndex = (images.value.indexOf(currentImage.value) + 1) % images.value.length;
-    currentImage.value = images.value[nextImageIndex];
-    // console.table({ img: currentImage.value, index: nextImageIndex });
-}
 
-onMounted(() => {
-    startImageRotation();
-})
 
-const startImageRotation = () => {
-    // changeImage()
-    intervalId.value = setInterval(changeImage, 5000); // Cambia la imagen cada 20 segundos
-}
-
-onUnmounted(() => {
-    stopImageRotation();
-})
-
-const stopImageRotation = () => {
-    if (intervalId.value) {
-        clearInterval(intervalId.value);
-        intervalId.value = null;
-    }
-}
 </script>
 
 <style scoped>
