@@ -6,8 +6,8 @@
         <img :src="currentImage == '/laravel/public/' ? 'https://avcolombia.net/images/logo.webp' : currentImage"
             alt="Portada" class="h-48 w-full object-cover object-center z-10 rounded-tr-[3rem] rounded-bl-[3rem] " />
         <div class="h-32 py-4 px-2">
-            <h1 class=" md:text-lg font-bold capitalize w-full line-clamp-3">
-                {{ product.title }}
+            <h1 class=" md:text-lg font-bold w-1/2  capitalize  text-balance line-clamp-3">
+                {{ truncateString(product.title, 30) }}
             </h1>
             <div class="flex space-x-2 text-xs ">
                 <i class="fa-solid fa-map-pin text-emerald-500"></i>
@@ -33,7 +33,9 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useCommonUtilities } from '@/composable/useCommonUtilities';
 
+const { truncateString } = useCommonUtilities();
 const props = defineProps({
     product: Object
 });
