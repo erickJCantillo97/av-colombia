@@ -2,17 +2,17 @@
 import { ref } from 'vue';
 import Input from '../Customs/Input.vue';
 import axios from 'axios';
-import { Link } from '@inertiajs/vue3';
-import ProductCard from '../Sections/ProductCard.vue';
+import { Link, router } from '@inertiajs/vue3';
 
-const search = ref({
-    search: '',
-    date: '',
-    persons: {
-        adult: 0,
-        children: 0,
-    }
-})
+
+// const search = ref({
+//     search: '',
+//     date: '',
+//     persons: {
+//         adult: 0,
+//         children: 0,
+//     }
+// })
 
 
 const props = defineProps({
@@ -20,40 +20,106 @@ const props = defineProps({
         type: Boolean,
     }
 });
-const services = ref([])
-const loading = ref(false)
-const getServices = () => {
-    loading.value = true
-    services.value = []
-    axios.get(route('get.services', { search: search.value })).then(response => {
-        services.value = response.data.services;
-        loading.value = false
-    });
+
+const date = ref(new Date());
+
+const op = ref();
+const selectedMember = ref(null);
+
+const serviceType = ref([
+    { name: 'Experiencias', icon: 'fa-umbrella-beach', value: 'TOUR' },
+    { name: 'Alojamiento', icon: 'fa-hotel', value: 'ALOJAMIENTO' },
+    { name: 'Transporte', icon: 'fa-car', value: 'TRANSFER' },
+    { name: 'Embarcaciones', icon: 'fa-ship', value: 'EMBARCACIONES' },
+]);
+const toggle = (event) => {
+    op.value.toggle(event);
 }
-const isFocused = ref(false);
 
+const selectMember = (member) => {
+    selectedMember.value = member;
+    op.value.hide();
+    focusNextElement();
+}
 
+const searchLabel = ref('');
 
-const USDollar = new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-});
+const formatter = ref({
+    date: 'DD/MM/YYYY',
+    month: 'MM',
+})
+
+const search = () => {
+    let type = ''
+    if (selectedMember.value) {
+        type = selectedMember.value.value
+    }
+    router.visit(
+        route('services.home',
+            {
+                type: type,
+                date: date.value,
+                search: searchLabel.value
+            }))
+}
+
+const focusNextElement = () => {
+    const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    let nextElement = document.activeElement.nextElementSibling;
+
+    while (nextElement) {
+        if (nextElement.matches(focusableElements)) {
+            nextElement.focus();
+            break;
+        }
+        nextElement = nextElement.nextElementSibling;
+    }
+};
+
 </script>
 
 <template>
     <div class="p-4">
-        <div
-            class="w-full h-12 p-4 rounded-lg flex items-center border border-gray-600 gap-x-2 divide-x justify-between">
+        <form @submit.prevent="search"
+            class="w-full  rounded-lg flex items-center border border-gray-600 gap-x-2 divide-x ">
             <div class="w-full">
-                <input type="search" v-model="search.search" placeholder="Escriba aqui para buscar..."
-                    class="w-full right-0 border-0 focus:ring-0">
+                <Button type="button" size="large"
+                    :label="selectedMember ? selectedMember.name : 'Selecciona un Servicio'" text @click="toggle"
+                    class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
+                    pt:root:class="!flex justify-between " />
+                <Popover ref="op">
+                    <div class="flex flex-col gap-4">
+                        <div>
+                            <span class="mb-2 text-xl font-extrabold">Nuestros Servicios</span>
+                            <ul class="grid grid-cols-2 gap-4">
+                                <div @click="selectMember(service)" v-for="service in serviceType"
+                                    class="flex flex-col items-center justify-center shadow-sm p-4 border-gray-100 border shadow-gray-200 rounded-lg cursor-pointer hover:bg-teal-100">
+                                    <i class="fa-solid text-lg" :class="service.icon"></i>
+                                    <p class="text-lg font-bold">{{ service.name }}</p>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </Popover>
+            </div>
+
+            <div class="w-full">
+                <input type="search" v-model="searchLabel" placeholder="Escriba aqui para buscar..."
+                    class="w-full text-lg right-0 border-0 focus:ring-0">
             </div>
             <div class="w-full">
-                <Input type="date" v-model="search.date" placeholder="Escriba aqui para buscar..."
-                    class="w-full right-0 border-0 focus:ring-0" />
+                <vue-tailwind-datepicker v-model="date" i18n="es" as-single placeholder="Fecha"
+                    input-classes="w-full text-lg right-0 border-0 focus:ring-0" :shortcuts="false" overlay
+                    :formatter="formatter" />
+                <!-- <input type="date" v-model="search.date" placeholder="Escriba aqui para buscar..."
+                    class="w-full right-0 border-0 focus:ring-0" /> -->
             </div>
-        </div>
+            <button type="submit"
+                class="bg-green-400 h-full p-4 cursor-pointer  rounded-sm text-xl flex gap-x-4 items-center">
+                <i class="fa-solid fa-magnifying-glass text"></i>
+                <p>Buscar</p>
+            </button>
+        </form>
         <!-- <InputText class="h-12 w-full" @focus="isFocused = true" @blur="isFocused = false" v-model="search"
             @input="getServices" :placeholder="'Buscar ' + type" type="text" size="large" /> -->
         <!-- <div class="absolute w-[90vw] lg:w-[70vw] rounded-b-lg z-10 p-2 bg-gray-200 space-y-2"

@@ -3,6 +3,8 @@ import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 
 /** @type {import('tailwindcss').Config} */
+const colors = require("tailwindcss/colors");
+
 export default {
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
@@ -11,6 +13,7 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
         'node_modules/preline/dist/*.js',
+        "./node_modules/vue-tailwind-datepicker/**/*.js",
     ],
 
     theme: {
@@ -18,9 +21,13 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                "vtd-primary": colors.sky, // Light mode Datepicker color
+                "vtd-secondary": colors.gray, // Dark mode Datepicker color
+            },
         },
     },
 
-    plugins: [forms, typography,require('preline/plugin'), require('tailwindcss-primeui')],
-    
+    plugins: [forms, typography, require('preline/plugin'), require('tailwindcss-primeui')],
+
 };

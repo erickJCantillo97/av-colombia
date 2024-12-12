@@ -28,14 +28,23 @@ class ServiceController extends Controller
 
         if ($request->expectsJson()) {
             $search = '%' . $request->search . '%';
-            return response()->json([
-                'services' => Service::with('locks')->whereAny([
+            $service = Service::with('locks')
+                ->with('images', 'features');
+
+            if ($request->type) {
+                $service->where('type', $request->type);
+            }
+            if ($request->search) {
+                $service->whereAny([
                     'title',
                     'title_en',
                     'description',
-                    'description_en'
-                ], 'LIKE', $search)
-                    ->with('images', 'features')->latest()->get()
+                    'description_en',
+
+                ], 'LIKE', $search);
+            }
+            return response()->json([
+                'services' => $service->get(),
             ]);
         }
         return Inertia::render('Services/Index', [
@@ -43,9 +52,15 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function home()
+    public function home(Request $request)
     {
-        return Inertia::render('Home/Services');
+
+        // dd($request->all());
+        return Inertia::render('Home/Services', [
+            'search' => $request->search,
+            'date' => $request->date,
+            'type' => $request->type,
+        ]);
     }
 
     /**

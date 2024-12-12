@@ -22,6 +22,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { es } from 'yup-locales';
 import 'primeicons/primeicons.css'
+import VueTailwindDatepicker from "vue-tailwind-datepicker";
 import { setLocale } from 'yup';
 setLocale(es);
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
@@ -119,6 +120,7 @@ createInertiaApp({
             .use(ConfirmationService)
             .use(ToastService)
             .use(VueSweetalert2)
+            .use(VueTailwindDatepicker)
             .use(PrimeVue, {
                 theme: {
                     preset: Noir,

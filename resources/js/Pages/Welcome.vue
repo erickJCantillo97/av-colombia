@@ -48,23 +48,22 @@ const changeMotor = (motor) => {
 
     <GuestLayout>
 
-        <div class="md:flex justify-center w-full h-[55vh] py-4 hidden">
+        <div class="md:flex justify-center w-full h-[60vh] py-4 hidden">
             <div class=" shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[98vw] md:w-[90vw] md:px-28 h-full"
                 style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
                 <!-- <img src="/images/cartagena.webp" class="w-[90vw] h-[70vh] object-cover absolute " alt=""> -->
                 <div class="py-10 space-y-10 mt-4 w-full">
                     <h1 data-aos="zoom-in-down" data-aos-duration="2000"
                         class="text-center text-3xl lg:text-6xl text-white font-extrabold">
-                        Busca la mejor experiencia para ti
+                        Bienvenido a AV Colombia
                     </h1>
+                    <h3>
+                        <p data-aos="zoom-in-down" data-aos-duration="2000"
+                            class="text-center text-lg lg:text-3xl text-white font-bold">
+                            Encuentra las mejores experiencias
+                        </p>
+                    </h3>
                     <div data-aos="flip-down" data-aos-duration="1000" class="bg-white p-2 rounded-lg shadow-lg">
-                        <div class="w-full bg-gray-200 rounded-md p-2 grid grid-cols-2 divide-y-2 md:flex space-x-2">
-                            <div @click="changeMotor(op)" v-for="op in options"
-                                class="w-full rounded-full text-center py-2 text-sm md:text-md  cursor-pointer "
-                                :class="value.value == op.value ? 'bg-white' : 'hover:bg-white/30'">
-                                {{ op.name }}
-                            </div>
-                        </div>
                         <Experiencias :type="value.name" />
                     </div>
                 </div>
