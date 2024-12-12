@@ -29,7 +29,7 @@ const product = {
   name: props.service.title,
   price: USDollar.format(props.service.price),
   rating: 4,
-  images: props.service.images,
+  images: props.service.images.map((image) => image.filepath),
   features: props.service.features,
   description: props.service.description,
   details: [
@@ -56,7 +56,7 @@ const product = {
       <div class="w-full md:p-10">
         <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
           <!-- Image gallery -->
-          <!-- {{ service.images }} -->
+          {{ product.images }}
 
           <TabGroup as="div" class="flex flex-col-reverse">
             <!-- Image selector -->
@@ -67,7 +67,7 @@ const product = {
                   v-slot="{ selected }">
                   <span class="sr-only">{{ image.name }}</span>
                   <span class="absolute inset-0 overflow-hidden rounded-md">
-                    <img :src="'/images/productos/' + image" alt=""
+                    <img :src="image" alt=""
                       class="h-50[vh] w-full object-cover object-center" />
                   </span>
                   <span
