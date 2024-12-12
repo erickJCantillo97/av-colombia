@@ -37,8 +37,6 @@ const form = useForm({
 const show = ref(false);
 const ingredient = ref('');
 
-
-
 const submit = () => {
     axios.post(route('availability.store'), form.data()).then((response) => {
         addHorario(response.data.id);
@@ -76,6 +74,7 @@ onMounted(() => {
             name: availability.name,
             start_date: availability.start_date,
             end_date: availability.end_date,
+            precios: availability.precies,
             days: [
                 {
                     day: 'Lunes',
@@ -254,9 +253,31 @@ const copyTime = (day, index) => {
             //     end: time.end
             // });
         });
-
     }
-};  
+};
+
+const horarioSelect = ref(null);
+
+const pricesAdd = (horario) => {
+    precios.value = horarios.value.find(h => h.id == horario).precios;
+    horarioSelect.value = horario;
+    showPrice.value = true;
+};
+
+const submitPrice = () => {
+    axios.post(route('availability.syncPrices', horarioSelect.value), {
+        prices: precios.value
+    }).then(() => {
+        showPrice.value = false;
+    });
+};
+
+const USDollar = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+});
+
 </script>
 
 <template>
@@ -313,16 +334,16 @@ const copyTime = (day, index) => {
                                 </span>
                             </div>
                             <div class="flex w-full  rounded-md gap-x-2">
-                                <div
+                                <div v-for="precio in horario.precios"
                                     class="flex flex-col w-full justify-center items-center text-center text-xs shadow-lg shadow-gray-600 rounded-lg bg-white p-1">
-                                    <p> 1 a 4 Años</p>
-                                    <span>Gratis</span>
+                                    <p> {{ precio.min }} a {{ precio.max }} Años</p>
+                                    <span>{{ USDollar.format(precio.value) }}</span>
                                 </div>
 
                             </div>
                         </div>
                         <Button text icon="fa-solid fa-dollar" severity="success" class="ml-auto mr-2"
-                            @click="showPrice = true" />
+                            @click="pricesAdd(horario.id)" />
                         <Button text size="sm" icon="fa-solid fa-trash" severity="danger" value="3" class="ml-auto mr-2"
                             @click="deleteHorario(index)" />
                     </AccordionHeader>
@@ -392,6 +413,12 @@ const copyTime = (day, index) => {
                     </div>
                 </div>
             </div>
+            <template #footer>
+                <div class="flex gap-x-2">
+                    <Button severity="success" label="Guardar" @click="submitPrice()"></Button>
+                    <Button severity="danger" label="Cancelar" @click="show = false"></Button>
+                </div>
+            </template>
         </Modal>
         <div class="flex gap-x-4 mt-4 justify-between">
             <Button @click="visible = false" title="Cancel" severity="danger" label="Cancel" icon="fa-solid fa-times"

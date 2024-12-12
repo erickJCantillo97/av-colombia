@@ -70,6 +70,7 @@ Route::middleware([
     Route::post('availability', [AvailabilityController::class, 'store'])->name('availability.store');
     Route::put('availability/{availability}', [AvailabilityController::class, 'update'])->name('availability.update');
     Route::delete('availability/{availability}', [AvailabilityController::class, 'destroy'])->name('availability.destroy');
+    Route::post('availability/{availability}/syncPrices', [AvailabilityController::class, 'syncPrices'])->name('availability.syncPrices');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

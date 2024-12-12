@@ -17,4 +17,14 @@ class Availability extends Model
     {
         return $this->hasMany(Horario::class);
     }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+
+    public function precies()
+    {
+        return $this->hasMany(Precie::class);
+    }
 }

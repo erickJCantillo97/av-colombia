@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('precies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('service_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('availability_id')->constrained()->cascadeOnDelete();
             $table->integer('min')->nullable();
             $table->integer('max')->nullable();
             $table->integer('duration')->nullable();

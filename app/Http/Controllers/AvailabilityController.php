@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Availability;
+use App\Models\Precie;
 use Illuminate\Http\Request;
 
 class AvailabilityController extends Controller
@@ -51,5 +52,33 @@ class AvailabilityController extends Controller
         $availability = Availability::findOrFail($id);
         $availability->delete();
         return response()->json(null, 204);
+    }
+
+    public function syncPrices(Request $request, $id)
+    {
+        $availabilities = Availability::findOrFail($id);
+        Precie::whereIn('id', $availabilities->precies->pluck('id')->toArray())->delete();
+        foreach ($request->prices as $key => $value) {
+            Precie::create([
+                'availability_id' => $availabilities->id,
+                'min' => $value['min'],
+                'max' => $value['max'],
+                'duration' => $value['duration'],
+                'duration_type' => $value['duration_type'],
+                'value' => $value['value'],
+            ]);
+        }
+
+        // $table->uuid('id')->primary();
+        // $table->foreignUuid('availability_id')->constrained()->cascadeOnDelete();
+        // $table->integer('min')->nullable();
+        // $table->integer('max')->nullable();
+        // $table->integer('duration')->nullable();
+        // $table->string('duration_type')->nullable();
+        // $table->double('value')->nullable();
+        // foreach ($availabilities as $availability) {
+        //     $availability->syncPrices();
+        // }
+        // return response()->json(null, 200);
     }
 }

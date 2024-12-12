@@ -119,7 +119,7 @@ class ServiceController extends Controller
             'service' => $service,
             'images' => $service->images,
             'features' => $service->features,
-            'availabilities' => Availability::where('service_id', $service->id)->with('horarios')->get(),
+            'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
             'included' => Included::orderBy('name')->pluck('name')->toArray()
         ]);
     }
@@ -275,7 +275,6 @@ class ServiceController extends Controller
             'availability_type' => 'required|string',
             'price_type' => 'required|string',
             'horarios' => 'required|array',
-            'precies' => 'required|array',
         ]);
         // dd($validate['horarios']);
         foreach ($validate['horarios'] as $horario) {
@@ -291,16 +290,7 @@ class ServiceController extends Controller
                     ]);
             }
         }
-        Precie::where('service_id', $service->id)->delete();
-        foreach ($validate['precies'] as $precie) {
-            $service->precies()->create([
-                'min' => $precie['min'],
-                'max' => $precie['max'],
-                'value' => $precie['value'],
-                'duration' => $precie['duration'],
-                'duration_type' => $precie['duration_type'],
-            ]);
-        }
+        
         unset($validate['horarios']);
         $service->update($validate);
         return back()->with('message', 'Servicio iniciado');
