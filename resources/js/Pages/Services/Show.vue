@@ -56,7 +56,7 @@ const product = {
       <div class="w-full md:p-10">
         <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
           <!-- Image gallery -->
-          {{ product.images }}
+         
 
           <TabGroup as="div" class="flex flex-col-reverse">
             <!-- Image selector -->
@@ -79,7 +79,7 @@ const product = {
 
             <TabPanels class="aspect-h-1 aspect-w-1 w-full">
               <TabPanel v-for="image in product.images" :key="image.id">
-                <img :src="'/images/productos/' + image" :alt="image.alt"
+                <img :src="image" :alt="image.alt"
                   class="max-h-[65vh] w-full object-cover object-center sm:rounded-lg" />
               </TabPanel>
             </TabPanels>
