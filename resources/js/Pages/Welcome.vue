@@ -87,7 +87,6 @@ const changeMotor = (motor) => {
                     <ExperienceMiniCard :class="'w-1/2 lg:w-1/' + services.length > 6 ? 6 : services.length"
                         v-for="product in services" :key="product.id" :product="product" />
                 </div>
-
             </div>
         </div>
         <!-- <div class="bg-white w-full px-0 md:px-10 border-t md:mt-0 z-30">
