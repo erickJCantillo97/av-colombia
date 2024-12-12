@@ -43,6 +43,7 @@ class UpdateServiceRequest extends FormRequest
             'puntos' => 'nullable|string',
             'availability_type' => 'nullable|string',
             'price_type' => 'nullable|string',
+            'images' => 'nullable|array',
         ];
     }
 }

@@ -43,7 +43,8 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function home(){
+    public function home()
+    {
         return Inertia::render('Home/Services');
     }
 
@@ -110,6 +111,7 @@ class ServiceController extends Controller
         return Inertia::render('Services/Form', [
             'features' => $features,
             'service' => $service,
+            'images' => $service->images,
             'features' => $service->features,
             'availabilities' => Availability::where('service_id', $service->id)->with('horarios')->get(),
             'included' => Included::orderBy('name')->pluck('name')->toArray()
@@ -125,6 +127,16 @@ class ServiceController extends Controller
         foreach ($included as $i) {
             Included::firstOrCreate(['name' => $i]);
         }
+
+        foreach ($request->file('images') as $image) {
+            $service->images()->create([
+                'filepath' => $image->store('public/images'),
+                'filename' => $image->getClientOriginalName(),
+                'extension' => $image->extension(),
+                'size' => $image->getSize(),
+            ]);
+        }
+
         $service->update($request->validated());
     }
 

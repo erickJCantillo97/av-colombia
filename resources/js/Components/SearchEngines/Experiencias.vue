@@ -5,7 +5,14 @@ import axios from 'axios';
 import { Link } from '@inertiajs/vue3';
 import ProductCard from '../Sections/ProductCard.vue';
 
-const search = ref('')
+const search = ref({
+    search: '',
+    date: '',
+    persons: {
+        adult: 0,
+        children: 0,
+    }
+})
 
 
 const props = defineProps({
@@ -36,9 +43,20 @@ const USDollar = new Intl.NumberFormat("es-CO", {
 
 <template>
     <div class="p-4">
-        <InputText class="h-12 w-full" @focus="isFocused = true" @blur="isFocused = false" v-model="search"
-            @input="getServices" :placeholder="'Buscar ' + type" type="text" size="large" />
-        <div class="absolute w-[90vw] lg:w-[70vw] rounded-b-lg z-10 p-2 bg-gray-200 space-y-2"
+        <div
+            class="w-full h-12 p-4 rounded-lg flex items-center border border-gray-600 gap-x-2 divide-x justify-between">
+            <div class="w-full">
+                <input type="search" v-model="search.search" placeholder="Escriba aqui para buscar..."
+                    class="w-full right-0 border-0 focus:ring-0">
+            </div>
+            <div class="w-full">
+                <Input type="date" v-model="search.date" placeholder="Escriba aqui para buscar..."
+                    class="w-full right-0 border-0 focus:ring-0" />
+            </div>
+        </div>
+        <!-- <InputText class="h-12 w-full" @focus="isFocused = true" @blur="isFocused = false" v-model="search"
+            @input="getServices" :placeholder="'Buscar ' + type" type="text" size="large" /> -->
+        <!-- <div class="absolute w-[90vw] lg:w-[70vw] rounded-b-lg z-10 p-2 bg-gray-200 space-y-2"
             v-if="search || isFocused">
             <ProgressBar v-if="loading" mode="indeterminate" style="height: 6px"></ProgressBar>
             <Link v-else-if="services.length > 0 && search" :href="route('show.services', service.slug)"
@@ -67,6 +85,6 @@ const USDollar = new Intl.NumberFormat("es-CO", {
             <div v-else class="text-lg">
                 Escriba algo para buscar...
             </div>
-        </div>
+        </div> -->
     </div>
 </template>

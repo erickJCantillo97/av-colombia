@@ -30,7 +30,7 @@ getServices();
 
 
 
-const value = ref({ name: 'Option 1', value: 1 });
+const value = ref({ name: 'Experiencias y Tours', value: 1 });
 const options = ref([
     { name: 'Experiencias y Tours', value: 1 },
     // { name: 'Alojamiento', value: 2 },

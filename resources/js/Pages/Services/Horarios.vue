@@ -23,6 +23,8 @@ const formStart = useForm({
     horarios: []
 });
 
+const showPrice = ref(false);
+
 
 
 const form = useForm({
@@ -261,20 +263,12 @@ const copyTime = (day, index) => {
     <div class="card">
         <!-- {{ service }} -->
         <div class="flex justify-between gap-x-2 my-4 font-bold text-lg shadow-xl ">
-            <div class="w-full bg-gray-200 rounded-md p-2 grid grid-cols-2 divide-y-2 md:flex space-x-2">
-                <div @click="value = op.value" v-for="op in options"
-                    class="w-full rounded-lg text-center py-2 text-sm md:text-md  cursor-pointer "
-                    :class="value == op.value ? 'bg-white' : 'hover:bg-white/30'">
-                    {{ op.name }}
-                </div>
-            </div>
 
 
         </div>
-        <div class="card border p-2 rounded-md shadow-2xl" v-if="value == 1">
-            <div class="card flex flex-col gap-y-2 justify-center w-full  rounded-lg p-2">
-                <h3 class="font-bold text-xl">Tipo de Horario</h3>
-                <div class="flex flex-wrap gap-4">
+        <div class="card border p-2 rounded-md shadow-2xl">
+            <div class=" flex   justify-between w-full  rounded-lg p-2">
+                <div class="flex flex-wrap gap-4 shadow-lg p-2 rounded-lg">
                     <div class="flex items-center gap-2">
                         <RadioButton v-model="formStart.availability_type" inputId="ingredient1" name="horario"
                             value="hora" />
@@ -285,22 +279,50 @@ const copyTime = (day, index) => {
                             value="rango" />
                         <label for="ingredient2">Horario de Servicio</label>
                     </div>
-
+                </div>
+                <div class="flex flex-wrap gap-4 shadow-lg p-2 rounded-lg">
+                    <div class="flex items-center gap-2">
+                        <RadioButton v-model="formStart.price_type" inputId="precioEdad" name="precio" value="edad" />
+                        <label for="precioEdad">Precio por edades</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <RadioButton v-model="formStart.price_type" inputId="precioGrupo" name="precio" value="grupo" />
+                        <label for="precioGrupo">Precio por grupo/Vehiculo</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <RadioButton v-model="formStart.price_type" inputId="precio" name="precioDuracion"
+                            value="duracion" />
+                        <label for="precioDuracion">Precio por Duración</label>
+                    </div>
                 </div>
             </div>
-            <div class="flex justify-between w-full mt-4 border-t-2 px-4 rounded-sm pt-2">
+            <div class="flex justify-between w-full my-4 border-t-2 px-4 rounded-sm pt-2">
                 <h1 class="text-lg font-bold">Disponibilidad</h1>
                 <Button @click="show = true" type="button" severity="success" label="Nuevo" icon="pi pi-plus" />
             </div>
             <Accordion value="0" expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
                 <AccordionPanel :value="index" v-for="(horario, index) in horarios">
-                    <AccordionHeader>
-                        <span class="flex flex-col w-full text-md">
-                            <span class="font-bold whitespace-nowrap">{{ horario.name }}</span>
-                            <span class="text-xs italic">
-                                {{ horario.start_date }} - {{ horario.end_date }}
-                            </span>
-                        </span>
+                    <AccordionHeader :pt="{
+                        root: '!bg-gray-300 !font-bold !text-black',
+                    }">
+                        <div class="flex justify-between w-full ">
+                            <div class="flex flex-col w-full text-lg">
+                                <span class="font-bold whitespace-nowrap capitalize">{{ horario.name }}</span>
+                                <span class="text-xs italic">
+                                    {{ horario.start_date }} - {{ horario.end_date }}
+                                </span>
+                            </div>
+                            <div class="flex w-full  rounded-md gap-x-2">
+                                <div
+                                    class="flex flex-col w-full justify-center items-center text-center text-xs shadow-lg shadow-gray-600 rounded-lg bg-white p-1">
+                                    <p> 1 a 4 Años</p>
+                                    <span>Gratis</span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <Button text icon="fa-solid fa-dollar" severity="success" class="ml-auto mr-2"
+                            @click="showPrice = true" />
                         <Button text size="sm" icon="fa-solid fa-trash" severity="danger" value="3" class="ml-auto mr-2"
                             @click="deleteHorario(index)" />
                     </AccordionHeader>
@@ -340,24 +362,8 @@ const copyTime = (day, index) => {
 
             </Accordion>
         </div>
-        <div v-if="value == 2">
+        <Modal v-model="showPrice" title="Precios" close-on-escape>
             <div class="card flex flex-col gap-y-2 justify-center w-full  rounded-lg p-2">
-                <h3>¿Como se Fijan los precios?</h3>
-                <div class="flex flex-wrap gap-4">
-                    <div class="flex items-center gap-2">
-                        <RadioButton v-model="formStart.price_type" inputId="precioEdad" name="precio" value="edad" />
-                        <label for="precioEdad">Precio por edades</label>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <RadioButton v-model="formStart.price_type" inputId="precioGrupo" name="precio" value="grupo" />
-                        <label for="precioGrupo">Precio por grupo/Vehiculo</label>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <RadioButton v-model="formStart.price_type" inputId="precio" name="precioDuracion"
-                            value="duracion" />
-                        <label for="precioDuracion">Precio por Duración</label>
-                    </div>
-                </div>
                 <div v-for="(precio, index) in precios"
                     class="flex justify-between gap-x-4 mt-4 border p-2 rounded-md items-center">
                     <div v-if="formStart.price_type != 'duracion'" class="flex items-center gap-x-4">
@@ -386,7 +392,7 @@ const copyTime = (day, index) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Modal>
         <div class="flex gap-x-4 mt-4 justify-between">
             <Button @click="visible = false" title="Cancel" severity="danger" label="Cancel" icon="fa-solid fa-times"
                 class="!h-9 w-full " />

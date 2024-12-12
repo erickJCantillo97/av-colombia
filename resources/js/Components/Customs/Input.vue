@@ -437,6 +437,68 @@ defineEmits(['valueChange'])
                             input: '!text-sm'
                         }" />
                 </span>
+                <span v-if="type == 'file'">
+                    <span v-if="mode == 'advanced'">
+                        <FileUpload mode="advanced" :multiple :accept="acceptFile" :maxFileSize
+                            @remove="input = multiple ? $event.files : $event.files[0]"
+                            @select="input = multiple ? $event.files : $event.files[0]" class="" customUpload>
+                            <template #empty>
+                                <div class="text-primary flex flex-col items-center justify-center">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl"></i>
+                                    <p class="font-bold text-center">Arrastra aqui</p>
+                                </div>
+                            </template>
+                            <template #header="{ chooseCallback, clearCallback, files }">
+                                <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                                    <div class="flex gap-2">
+                                        <Button
+                                            @click="{ !multiple ? input = null : undefined; !multiple ? clearCallback() : undefined; chooseCallback() }"
+                                            icon="fa-solid fa-file-import" text label="Seleccionar"></Button>
+                                        <Button @click="clearCallback(); input = null" icon="fa-solid fa-circle-xmark"
+                                            text severity="danger" label="Quitar todos"
+                                            :disabled="!files || files.length === 0"></Button>
+                                    </div>
+                                </div>
+                            </template>
+                            <template #content="{ files, removeFileCallback }">
+                                <div v-if="files.length > 0">
+                                    <div class="grid w-full p-0 sm:p-1 gap-2">
+                                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size"
+                                            class="flex w-full border rounded-md p-2 justify-between items-center hover:bg-gray-100">
+                                            <div class="flex space-x-2 cursor-default" v-tooltip.left="file.name">
+                                                <span class="w-24 h-14 flex items-center justify-center">
+                                                    <img v-if="file.type.includes('image')" class="w-full p-1"
+                                                        :alt="file.name" :src="file.objectURL" />
+                                                    <i v-else-if="file.type.includes('pdf')"
+                                                        class="fa-solid fa-file-pdf text-6xl text-red-600" />
+                                                    <i v-else-if="file.type == 'text/plain'"
+                                                        class="fa-regular fa-file-lines text-6xl  text-gray-600" />
+                                                    <i v-else-if="file.type.includes('spreadsheet') || file.type.includes('excel')"
+                                                        class="fa-solid fa-file-excel text-6xl  text-green-600" />
+                                                    <i v-else-if="file.type.includes('word')"
+                                                        class="fa-solid fa-file-word text-6xl  text-primary" />
+                                                    <i v-else class="fa-solid fa-file text-6xl  text-gray-600" />
+                                                </span>
+                                                <div class="w-full">
+                                                    <p class="font-semibold">{{ file.name }}
+                                                    </p>
+                                                    <p class="text-xs">{{ byteSizeFormatter(file.size) }}</p>
+                                                </div>
+                                            </div>
+                                            <Button icon="fa-solid fa-trash-can" v-tooltip.rigth="'Quitar'"
+                                                @click="onRemoveTemplatingFile(removeFileCallback, index)" text
+                                                severity="danger" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </FileUpload>
+                    </span>
+                    <span v-else>
+                        <FileUpload mode="basic" :multiple :accept="acceptFile" :maxFileSize
+                            @input="input = $event.target.files[0]" class="w-full h-8" customUpload />
+                    </span>
+                </span>
                 <label v-if="floatLabel && label" :for="id" class="">{{ label }}</label>
             </span>
 

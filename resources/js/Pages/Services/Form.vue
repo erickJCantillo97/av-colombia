@@ -136,6 +136,7 @@ const submit = () => {
     let notIncluded = form.notIncludes;
     let puntos = form.puntos;
     let recogidas = form.recogidas;
+    form.images = files.value;
     form.notIncludes = JSON.stringify(form.notIncludes);
     form.includes = JSON.stringify(form.includes);
     form.recogidas = JSON.stringify(form.recogidas);
@@ -253,7 +254,10 @@ const search = (includes) => {
                                     :min="form.capacidad_min" />
                             </div>
                             <div class="w-full">
-                                <label for="" class="text-md font-bold">Descripción del Servicio</label>
+                                <Input type="textarea" label="Descripción Breve" :rows-textarea="3"></Input>
+                            </div>
+                            <div class="w-full">
+                                <label for="" class="text-md font-bold">Descripción larga del Servicio</label>
                                 <Editor v-model="form.description" :key="editor" editorStyle="height: 120px" />
                                 <span class="text-xs text-red-400">{{ form.errors.description }}</span>
                             </div>
@@ -382,8 +386,12 @@ const search = (includes) => {
                             </div>
                             <div>
                                 <label for="" class="text-md font-bold">Fotos</label>
-                                <Input type="file-pond" v-model="files" />
+                                <Input type="file" mode="advanced" :multiple="true" v-model="form.images" />
                                 <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span>
+                            </div>
+                            <div>
+                                <h1>Fotos</h1>
+                                {{ service }}
                             </div>
                             <div class="flex gap-x-4 mt-6 justify-between">
                                 <Button @click="visible = false" title="Cancel" severity="danger" label="Cancel"
@@ -396,15 +404,8 @@ const search = (includes) => {
                     </TabPanel>
                     <TabPanel value="4">
                         <div class="m-0 h-[70vh] overflow-y-auto">
-                            <div>
-                                <label for="" class="text-md font-bold">Portada</label>
-                                <Input type="file-basic" v-model="form.portada" acceptFile="image/*" />
-                            </div>
-                            <div>
-                                <label for="" class="text-md font-bold">Fotos</label>
-                                <Input type="file-pond" v-model="files" />
-                                <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span>
-                            </div>
+
+
                         </div>
                     </TabPanel>
                 </TabPanels>

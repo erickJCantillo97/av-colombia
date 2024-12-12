@@ -124,7 +124,7 @@ createInertiaApp({
                     preset: Noir,
                 },
                 pt: {
-                    
+
                     dropdown: {
                         root: '!h-10',
                         input: '!py-0 !flex !items-center !text-sm !font-normal',
