@@ -29,7 +29,7 @@ const product = {
   name: props.service.title,
   price: USDollar.format(props.service.price),
   rating: 4,
-  images: ['baru-1.webp', 'baru-2.webp', 'baru-3.webp'],
+  images: props.service.images,
   features: props.service.features,
   description: props.service.description,
   details: [
@@ -49,12 +49,15 @@ const product = {
 </script>
 <template>
   <GuestLayout>
-    <div class="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+    <div
+      class="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
+    </div>
     <div class="mx-4 md:mx-10">
       <div class="w-full md:p-10">
         <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
           <!-- Image gallery -->
-          <!-- {{ product.images }} -->
+          <!-- {{ service.images }} -->
+
           <TabGroup as="div" class="flex flex-col-reverse">
             <!-- Image selector -->
             <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
@@ -64,7 +67,8 @@ const product = {
                   v-slot="{ selected }">
                   <span class="sr-only">{{ image.name }}</span>
                   <span class="absolute inset-0 overflow-hidden rounded-md">
-                    <img :src="'/images/productos/'+image" alt="" class="h-50[vh] w-full object-cover object-center" />
+                    <img :src="'/images/productos/' + image" alt=""
+                      class="h-50[vh] w-full object-cover object-center" />
                   </span>
                   <span
                     :class="[selected ? 'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
@@ -75,7 +79,7 @@ const product = {
 
             <TabPanels class="aspect-h-1 aspect-w-1 w-full">
               <TabPanel v-for="image in product.images" :key="image.id">
-                <img :src="'/images/productos/'+image" :alt="image.alt"
+                <img :src="'/images/productos/' + image" :alt="image.alt"
                   class="max-h-[65vh] w-full object-cover object-center sm:rounded-lg" />
               </TabPanel>
             </TabPanels>

@@ -25,6 +25,8 @@ const props = defineProps({
 const date = ref(new Date());
 
 const op = ref();
+const opCity = ref();
+
 const selectedMember = ref(null);
 
 const serviceType = ref([
@@ -37,9 +39,22 @@ const toggle = (event) => {
     op.value.toggle(event);
 }
 
+const toogleCity = (event) => {
+    opCity.value.toggle(event);
+}
+
 const selectMember = (member) => {
     selectedMember.value = member;
     op.value.hide();
+    searchRef.value.focus();
+    // toogleCity();
+}
+
+const city = ref();
+
+const selectionCity = (member) => {
+    city.value = member;
+    opCity.value.hide();
     searchRef.value.focus();
 }
 
@@ -74,7 +89,7 @@ const search = () => {
             class="w-full  rounded-lg flex items-center border border-gray-600 gap-x-2 divide-x ">
             <div class="w-full">
                 <Button type="button" size="large"
-                    :label="selectedMember ? selectedMember.name : 'Selecciona un Servicio'" text @click="toggle"
+                    :label="selectedMember ? selectedMember.name : 'Selecciona un tipo Servicio'" text @click="toggle"
                     class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
                     pt:root:class="!flex justify-between " />
                 <Popover ref="op">
@@ -92,8 +107,35 @@ const search = () => {
                     </div>
                 </Popover>
             </div>
-
             <div class="w-full">
+                <Button type="button" size="large" :label="city ? city : 'Selecciona una Ciudad'" text
+                    @click="toogleCity" class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
+                    pt:root:class="!flex justify-between " />
+                <Popover ref="opCity">
+                    <div class="flex flex-col gap-4">
+                        <div>
+                            <span class="mb-2 text-xl font-extrabold">Ciudades</span>
+                            <ul class="grid grid-cols-2 gap-4 mt-2">
+                                <div @click="selectionCity('Cartagena')"
+                                    class="flex items-center justify-center flex-col h-32 w-52 rounded-lg grayscale hover:grayscale-0 cursor-pointer"
+                                    style="background-image: url('https://avcolombia.net/images/cartagenaSearch.webp'); background-size: cover;">
+                                    <h2 class=" font-bold text-3xl text-white backdrop-opacity-10 backdrop-invert ">
+                                        Cartagena</h2>
+                                </div>
+                                <div @click="selectionCity('Cali')"
+                                    class="flex items-center justify-center flex-col h-32 w-52 rounded-lg grayscale hover:grayscale-0 cursor-pointer"
+                                    style="background-image: url('https://avcolombia.net/images/caliSearch.webp'); background-size: cover;">
+                                    <h2 class=" font-bold text-3xl text-white backdrop-opacity-10 backdrop-invert ">
+                                        Cali</h2>
+                                </div>
+                            </ul>
+
+                        </div>
+                    </div>
+                </Popover>
+            </div>
+
+            <div class=" w-full">
                 <input type="search" ref="searchRef" v-model="searchLabel" placeholder="Escriba aqui para buscar..."
                     class="w-full text-lg right-0 border-0 focus:ring-0">
             </div>
