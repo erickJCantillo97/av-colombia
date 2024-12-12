@@ -9,6 +9,7 @@ use App\Models\Availability;
 use App\Models\BookingService;
 use App\Models\Feature;
 use App\Models\Horario;
+use App\Models\Image;
 use App\Models\Included;
 use App\Models\Lock;
 use App\Models\Precie;
@@ -132,6 +133,9 @@ class ServiceController extends Controller
         foreach ($included as $i) {
             Included::firstOrCreate(['name' => $i]);
         }
+        if ($request->hasFile('portada')) {
+            $service->portada = $request->file('portada')->store('public/images');
+        }
         $service->update($request->validated());
     }
 
@@ -149,6 +153,12 @@ class ServiceController extends Controller
                 'size' => $image->getSize(),
             ]);
         }
+    }
+
+    public function deleteImage(Image $image)
+    {
+        $image->delete();
+        // $service->images()->where('id', request('image'))->delete();
     }
 
     /**

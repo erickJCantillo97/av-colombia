@@ -56,11 +56,14 @@ Route::middleware([
     Route::resource('proveedors', ProveedorController::class);
     Route::get('settings', [SettingController::class, 'index'])->name('settings');
     Route::post('uploadFile/{service}', [ServiceController::class, 'uploadImage'])->name('upload.images');
+    Route::delete('deleteFile/{image}', [ServiceController::class, 'deleteImage'])->name('delete.images');
 
     Route::resource('payments', PaymentController::class);
     Route::put('payments/{payment}/setState', [PaymentController::class, 'setState'])->name('payment.set.state');
     Route::post('services/{lock}/unlock', [ServiceController::class, 'unlock'])->name('services.unlock');
     Route::post('services/setStatus', [ServiceController::class, 'setStatus'])->name('set.states');
+
+
     Route::get('services/proveedors/{service}', [ServiceController::class, 'getProveedors'])->name('get.proveedors');
     Route::resource('channels', ChannelController::class);
 

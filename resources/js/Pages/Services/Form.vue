@@ -147,7 +147,7 @@ const submit = () => {
             onSuccess: () => {
                 toast('success', 'Servicio actualizado con exito')
             },
-            onError: (errror) => {
+            onError: (error) => {
                 toast('error', 'Error al actualizar el servicio: ' + error)
             }
         })
@@ -187,8 +187,17 @@ const search = (includes) => {
     }
 }
 
+const removeImage = (id) => {
 
-
+    router.delete(route('delete.images', id), {
+        onSuccess: () => {
+            toast('success', 'Imagen eliminada con exito')
+        },
+        onError: (error) => {
+            toast('error', 'Error al eliminar la imagen: ' + error)
+        }
+    })
+}
 
 </script>
 <template>
@@ -390,11 +399,10 @@ const search = (includes) => {
                                 <div class="grid grid-cols-6 gap-4 my-4">
                                     <!-- image.filepath -->
                                     <div class="flex  gap-y-4" v-for="image in service.images">
-                                        {{ image.id }}
-                                        <img :src="'https://images.pexels.com/photos/805977/pexels-photo-805977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'"
-                                            alt="hola" class="h-28 shadow-md rounded-lg w-full">
+
+                                        <img :src="image.filepath" alt="hola" class="h-28 shadow-md rounded-lg w-full">
                                         <div class="-ml-5 -mt-4">
-                                            <button
+                                            <button @click="removeImage(image.id)"
                                                 class="bg-red-500 fa-solid fa-xmark hover:scale-90 rounded-full flex justify-center items-center text-white shadow-md shadow-red-400 size-8"></button>
 
                                         </div>

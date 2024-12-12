@@ -21,7 +21,7 @@ defineProps({
 const services = ref([]);
 const getServices = () => {
     axios.get(route('get.services')).then(response => {
-        services.value = response.data.services.slice(0, 5);
+        services.value = response.data.services.filter((x) => x.type == 'TOUR').slice(0, 6);
     });
 }
 
@@ -83,7 +83,7 @@ const changeMotor = (motor) => {
                     <i class="fa-solid fa-arrow-right"></i>
                     </Link>
                 </div>
-                <div class="flex w-full space-x-2 overflow-x-auto py-2 ">
+                <div class="flex w-full space-x-2 overflow-x-auto py-2 justify-center ">
                     <ExperienceMiniCard :class="'w-1/2 lg:w-1/' + services.length > 6 ? 6 : services.length"
                         v-for="product in services" :key="product.id" :product="product" />
                 </div>

@@ -3,9 +3,8 @@
 
     <div class="flex p-4 rounded-lg shadow-xl gap-x-4 items-center w-full justify-between">
         <div class="flex gap-x-5">
-            <img :src="'https://images.pexels.com/photos/805977/pexels-photo-805977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'"
-                onerror="this.onerror=null;this.src=https://images.pexels.com/photos/805977/pexels-photo-805977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';"
-                alt="imagen" class="h-full w-48 md:w-96 rounded-md object-contain shadow-sm">
+            <img :src="service.portada == '/laravel/public/' ? 'https://avcolombia.net/images/logo.webp' : service.portada"
+                alt="portada" class="h-full w-48 md:w-96 rounded-md object-contain shadow-sm">
             <div class="flex flex-col">
                 <h3 class="text-2xl font-bold [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">{{ service.title }}</h3>
                 <div v-html="truncateString(service.description, esMovil() ? 100 : 350)"
