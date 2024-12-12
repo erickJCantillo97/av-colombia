@@ -91,16 +91,6 @@ class ServiceController extends Controller
         }
         $service = Service::create($validated);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $service->images()->create([
-                    'filepath' => $image->store('public/images'),
-                    'filename' => $image->getClientOriginalName(),
-                    'extension' => $image->extension(),
-                    'size' => $image->getSize(),
-                ]);
-            }
-        }
         return redirect()->route('services.edit', $service->slug)->with('message', 'Servicio creado');
     }
 
@@ -142,8 +132,16 @@ class ServiceController extends Controller
         foreach ($included as $i) {
             Included::firstOrCreate(['name' => $i]);
         }
+        $service->update($request->validated());
+    }
 
-        foreach ($request->file('images') as $image) {
+    public function uploadImage(Request $request, Service $service)
+    {
+        $request->validate([
+            'images' => 'required|array',
+        ]);
+        $images = $request->images;
+        foreach ($images as $image) {
             $service->images()->create([
                 'filepath' => $image->store('public/images'),
                 'filename' => $image->getClientOriginalName(),
@@ -151,8 +149,6 @@ class ServiceController extends Controller
                 'size' => $image->getSize(),
             ]);
         }
-
-        $service->update($request->validated());
     }
 
     /**

@@ -14,6 +14,7 @@ import { Link, router } from '@inertiajs/vue3';
 //     }
 // })
 
+const searchRef = ref(null);
 
 const props = defineProps({
     type: {
@@ -39,7 +40,7 @@ const toggle = (event) => {
 const selectMember = (member) => {
     selectedMember.value = member;
     op.value.hide();
-    focusNextElement();
+    searchRef.value.focus();
 }
 
 const searchLabel = ref('');
@@ -63,18 +64,7 @@ const search = () => {
             }))
 }
 
-const focusNextElement = () => {
-    const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-    let nextElement = document.activeElement.nextElementSibling;
 
-    while (nextElement) {
-        if (nextElement.matches(focusableElements)) {
-            nextElement.focus();
-            break;
-        }
-        nextElement = nextElement.nextElementSibling;
-    }
-};
 
 </script>
 
@@ -104,7 +94,7 @@ const focusNextElement = () => {
             </div>
 
             <div class="w-full">
-                <input type="search" v-model="searchLabel" placeholder="Escriba aqui para buscar..."
+                <input type="search" ref="searchRef" v-model="searchLabel" placeholder="Escriba aqui para buscar..."
                     class="w-full text-lg right-0 border-0 focus:ring-0">
             </div>
             <div class="w-full">

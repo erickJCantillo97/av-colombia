@@ -55,6 +55,7 @@ Route::middleware([
 
     Route::resource('proveedors', ProveedorController::class);
     Route::get('settings', [SettingController::class, 'index'])->name('settings');
+    Route::post('uploadFile/{service}', [ServiceController::class, 'uploadImage'])->name('upload.images');
 
     Route::resource('payments', PaymentController::class);
     Route::put('payments/{payment}/setState', [PaymentController::class, 'setState'])->name('payment.set.state');
@@ -71,4 +72,3 @@ Route::middleware([
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
-

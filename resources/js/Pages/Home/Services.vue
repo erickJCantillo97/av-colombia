@@ -1,8 +1,8 @@
 <template>
     <GuestLayout>
-        <div class="w-full flex flex-col items-center justify-center">
+        <div class="w-full flex flex-col items-center justify-center gap-y-4 mt-2">
             <h1 class="text-3xl font-bold text-center">Servicios</h1>
-            <div class="w-[50vw]  rounded-lg flex items-center border border-gray-600 gap-x-2 divide-x ">
+            <div class="w-[60vw]  rounded-lg flex items-center border border-gray-600 gap-x-2 divide-x ">
                 <div class="w-full">
                     <Button type="button" size="large" :label="type ? type : 'Selecciona un Servicio'" text
                         @click="toggle" class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
@@ -97,6 +97,10 @@ const selectMember = (member) => {
     op.value.hide();
 }
 
+const formatter = ref({
+    date: 'DD/MM/YYYY',
+    month: 'MM',
+})
 
 
 </script>

@@ -6,6 +6,7 @@ import AutoComplete from 'primevue/autocomplete';
 import { onMounted, ref } from 'vue';
 import { alerts } from '@/composable/toasts';
 import Horarios from './Horarios.vue';
+import FileSelection from './FileSelection.vue';
 const { toast } = alerts()
 
 const op = ref();
@@ -384,14 +385,23 @@ const search = (includes) => {
                                 <label for="" class="text-md font-bold">Portada</label>
                                 <Input type="file-basic" v-model="form.portada" acceptFile="image/*" />
                             </div>
-                            <div>
+                            <div class="my-2">
                                 <label for="" class="text-md font-bold">Fotos</label>
-                                <Input type="file" mode="advanced" :multiple="true" v-model="form.images" />
-                                <span class="text-red-500 text-xs -mt-1">{{ form.errors.images }}</span>
-                            </div>
-                            <div>
-                                <h1>Fotos</h1>
-                                {{ service }}
+                                <div class="grid grid-cols-6 gap-4 my-4">
+                                    <!-- image.filepath -->
+                                    <div class="flex  gap-y-4" v-for="image in service.images">
+                                        {{ image.id }}
+                                        <img :src="'https://images.pexels.com/photos/805977/pexels-photo-805977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'"
+                                            alt="hola" class="h-28 shadow-md rounded-lg w-full">
+                                        <div class="-ml-5 -mt-4">
+                                            <button
+                                                class="bg-red-500 fa-solid fa-xmark hover:scale-90 rounded-full flex justify-center items-center text-white shadow-md shadow-red-400 size-8"></button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <FileSelection v-model="files" :service />
+
                             </div>
                             <div class="flex gap-x-4 mt-6 justify-between">
                                 <Button @click="visible = false" title="Cancel" severity="danger" label="Cancel"

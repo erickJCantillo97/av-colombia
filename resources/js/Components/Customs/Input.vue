@@ -424,7 +424,7 @@ defineEmits(['valueChange'])
                         <FileUpload :accept="acceptFile" chooseLabel="Seleccionar Archivo" mode="basic"
                             @select="onFileSelect" customUpload auto severity="secondary" class="w-full" />
                         <img v-if="src" :src="src" alt="Image"
-                            class="shadow-md rounded-xl w-full h-96 object-contain" />
+                            class="shadow-md rounded-xl w-full h-32 object-contain" />
                     </div>
                     <!-- <FileUpload mode="basic" :multiple :accept="acceptFile" :maxFileSize
                         @input="input = $event.target.files[0]" class="w-full h-8" customUpload /> -->
