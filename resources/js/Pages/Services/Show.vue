@@ -1,6 +1,6 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import {
   Disclosure,
   DisclosureButton,
@@ -29,7 +29,8 @@ const product = {
   name: props.service.title,
   price: USDollar.format(props.service.price),
   rating: 4,
-  images: props.service.images.map((image) => image.filepath),
+  images: ['/images/productos/baru-1.webp', '/images/productos/baru-2.webp', '/images/productos/baru-3.webp', '/images/productos/baru-1.webp', '/images/productos/baru-2.webp', '/images/productos/baru-3.webp', '/images/productos/baru-1.webp', '/images/productos/baru-2.webp', '/images/productos/baru-3.webp'],
+  // props.service.images.map((image) => image.filepath),
   features: props.service.features,
   description: props.service.description,
   details: [
@@ -45,8 +46,86 @@ const product = {
   ],
 }
 
+const responsiveOptions = ref([
+  {
+    breakpoint: '1300px',
+    numVisible: 4
+  },
+  {
+    breakpoint: '575px',
+    numVisible: 1
+  }
+]);
+
+
+
+const galleria = ref();
+const images = ref();
+const activeIndex = ref(0);
+const showThumbnails = ref(false);
+const fullScreen = ref(false);
+
+const onThumbnailButtonClick = () => {
+  showThumbnails.value = !showThumbnails.value;
+};
+
+const toggleFullScreen = () => {
+  if (fullScreen.value) {
+    closeFullScreen();
+  } else {
+    openFullScreen();
+  }
+};
+const onFullScreenChange = () => {
+  fullScreen.value = !fullScreen.value;
+};
+const openFullScreen = () => {
+  let elem = galleria.value.$el;
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    /* Firefox */
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    /* Chrome, Safari & Opera */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    /* IE/Edge */
+    elem.msRequestFullscreen();
+  }
+};
+const closeFullScreen = () => {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  }
+};
+const bindDocumentListeners = () => {
+  document.addEventListener('fullscreenchange', onFullScreenChange);
+  document.addEventListener('mozfullscreenchange', onFullScreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+  document.addEventListener('msfullscreenchange', onFullScreenChange);
+};
+const unbindDocumentListeners = () => {
+  document.removeEventListener('fullscreenchange', onFullScreenChange);
+  document.removeEventListener('mozfullscreenchange', onFullScreenChange);
+  document.removeEventListener('webkitfullscreenchange', onFullScreenChange);
+  document.removeEventListener('msfullscreenchange', onFullScreenChange);
+};
+
+const fullScreenIcon = computed(() => {
+  return `pi ${fullScreen.value ? 'pi-window-minimize' : 'pi-window-maximize'}`;
+});
+
 
 </script>
+
 <template>
   <GuestLayout>
     <div
@@ -56,34 +135,47 @@ const product = {
       <div class="w-full md:p-10">
         <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
           <!-- Image gallery -->
-         
 
-          <TabGroup as="div" class="flex flex-col-reverse">
-            <!-- Image selector -->
-            <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
-              <TabList class="grid grid-cols-4 gap-6">
-                <Tab v-for="image in product.images" :key="image.id"
-                  class="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
-                  v-slot="{ selected }">
-                  <span class="sr-only">{{ image.name }}</span>
-                  <span class="absolute inset-0 overflow-hidden rounded-md">
-                    <img :src="image" alt=""
-                      class="h-50[vh] w-full object-cover object-center" />
-                  </span>
-                  <span
-                    :class="[selected ? 'ring-indigo-500' : 'ring-transparent', 'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2']"
-                    aria-hidden="true" />
-                </Tab>
-              </TabList>
-            </div>
+          <!-- {{ product.images }} -->
+          <div class="w-full shadow-2xl">
 
-            <TabPanels class="aspect-h-1 aspect-w-1 w-full">
-              <TabPanel v-for="image in product.images" :key="image.id">
-                <img :src="image" :alt="image.alt"
-                  class="max-h-[65vh] w-full object-cover object-center sm:rounded-lg" />
-              </TabPanel>
-            </TabPanels>
-          </TabGroup>
+            <Galleria ref="galleria" :value="product.images" :numVisible="5" :showThumbnails="showThumbnails"
+              :showItemNavigators="true" :showItemNavigatorsOnHover="true" :circular="true" :autoPlay="true"
+              :transitionInterval="2000" :responsiveOptions="responsiveOptions" :pt="{
+                root: {
+                  class: [{ 'flex flex-col': fullScreen }]
+                },
+                content: {
+                  class: ['relative', { 'flex-1 justify-center': fullScreen }]
+                },
+                thumbnails: 'absolute w-full left-0 bottom-0'
+              }">
+              <template #item="slotProps">
+                <img :src="slotProps.item" :alt="slotProps.item.alt"
+                  :style="[{ width: !fullScreen ? '100%' : '', display: !fullScreen ? 'block' : '' }]" />
+              </template>
+              <template #thumbnail="slotProps">
+                <div class="grid gap-4 justify-center">
+                  <img :src="slotProps.item" alt="images" style="display: block" />
+                </div>
+              </template>
+              <template #footer>
+                <div class="flex items-stretch bg-gray-500 text-white h-10">
+                  <button type="button" @click="onThumbnailButtonClick"
+                    class="bg-transparent border-none rounded-none hover:bg-white/10 text-white inline-flex justify-center items-center cursor-pointer px-3">
+                    <i class="pi pi-th-large"></i>
+                  </button>
+                  <button type="button" @click="toggleAutoSlide"
+                    class="bg-transparent border-none rounded-none hover:bg-white/10 text-white inline-flex justify-center items-center cursor-pointer px-3"><i
+                      :class="slideButtonIcon"></i></button>
+                  <button type="button" @click="toggleFullScreen"
+                    class="bg-transparent border-none rounded-none hover:bg-white/10 text-white inline-flex justify-center items-center cursor-pointer px-3 ml-auto">
+                    <i :class="fullScreenIcon"></i>
+                  </button>
+                </div>
+              </template>
+            </Galleria>
+          </div>
 
           <!-- Product info -->
           <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">

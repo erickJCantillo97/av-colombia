@@ -86,8 +86,8 @@ const search = () => {
 <template>
     <div class="p-4">
         <form @submit.prevent="search"
-            class="w-full  rounded-lg flex items-center border border-gray-600 gap-x-2 divide-x ">
-            <div class="w-full">
+            class="w-full  rounded-lg grid grid-cols-6 items-center border border-gray-600 gap-x-2 divide-x ">
+            <div class="col-span-3 md:col-span-1">
                 <Button type="button" size="large"
                     :label="selectedMember ? selectedMember.name : 'Selecciona un tipo Servicio'" text @click="toggle"
                     class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
@@ -107,7 +107,7 @@ const search = () => {
                     </div>
                 </Popover>
             </div>
-            <div class="w-full">
+            <div class="col-span-3 md:col-span-1">
                 <Button type="button" size="large" :label="city ? city : 'Selecciona una Ciudad'" text
                     @click="toogleCity" class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
                     pt:root:class="!flex justify-between " />
@@ -135,11 +135,11 @@ const search = () => {
                 </Popover>
             </div>
 
-            <div class=" w-full">
+            <div class="col-span-6 md:col-span-2 my-4 border-2 md:border-0">
                 <input type="search" ref="searchRef" v-model="searchLabel" placeholder="Escriba aqui para buscar..."
                     class="w-full text-lg right-0 border-0 focus:ring-0">
             </div>
-            <div class="w-full">
+            <div class="col-span-6 md:col-span-1 my-2">
                 <vue-tailwind-datepicker v-model="date" i18n="es" as-single placeholder="Fecha"
                     input-classes="w-full text-lg right-0 border-0 focus:ring-0" :shortcuts="false" overlay
                     :formatter="formatter" />
@@ -147,8 +147,8 @@ const search = () => {
                     class="w-full right-0 border-0 focus:ring-0" /> -->
             </div>
             <button type="submit"
-                class="bg-green-400 h-full p-4 cursor-pointer  rounded-sm text-xl flex gap-x-4 items-center">
-                <i class="fa-solid fa-magnifying-glass text"></i>
+                class="col-span-6 md:col-span-1 text-center justify-center bg-green-400 h-full p-4 cursor-pointer  rounded-sm text-xl flex gap-x-4 items-center">
+                <i class="fa-solid fa-magnifying-glass"></i>
                 <p>Buscar</p>
             </button>
         </form>

@@ -82,18 +82,20 @@
 
         <div class="flex justify-between gap-x-2 my-2">
             <div class="w-full">
-                <Input label="Razón del Bloqueo" v-model="formLock.description" :error-message="formLock.errors.description" />
+                <Input label="Razón del Bloqueo" v-model="formLock.description"
+                    :error-message="formLock.errors.description" />
             </div>
             <div class="w-full">
                 <label for="" class="font-bold">Seleccione el Rango de bloque o del servicio</label>
                 <div class="flex items-center gap-x-2">
-                    <VueDatePicker v-model="formLock.start_date"  hide-offset-dates :teleport="true" auto-apply
+                    <VueDatePicker v-model="formLock.start_date" hide-offset-dates :teleport="true" auto-apply
                         :enable-time-picker="false" timezone="America/Bogota"></VueDatePicker>
                     <i class="fa-solid fa-minus"></i>
-                    <VueDatePicker v-model="formLock.end_date" :min-date="formLock.start_date"  hide-offset-dates :teleport="true" auto-apply
-                        :enable-time-picker="false" timezone="America/Bogota"></VueDatePicker>
+                    <VueDatePicker v-model="formLock.end_date" :min-date="formLock.start_date" hide-offset-dates
+                        :teleport="true" auto-apply :enable-time-picker="false" timezone="America/Bogota">
+                    </VueDatePicker>
                 </div>
-                <span class="text-xs text-red-500">{{formLock.errors.start_date}}</span>
+                <span class="text-xs text-red-500">{{ formLock.errors.start_date }}</span>
             </div>
         </div>
 
@@ -147,37 +149,48 @@ const columns = [
         filter: true,
     },
     {
+        header: 'Tipo de Servicio',
+        field: 'type',
+        filter: true,
+    },
+    {
+        header: 'Ciudad',
+        field: 'city',
+        filter: true,
+    },
+    {
         header: 'Descripción',
         field: 'description',
         type: 'html',
         filter: true,
     },
-    {
-        header: 'Precio Adultos',
-        field: 'adults_price',
-        type: 'currency',
-        filter: true,
-    },
-    {
-        header: 'Tarifa Adultos',
-        field: 'adult_tarifa',
-        type: 'currency',
-        filter: true,
-        // visible: false
-    },
-    {
-        header: 'Precio Niños',
-        field: 'boys_price',
-        type: 'currency',
-        filter: true,
-    },
-    {
-        header: 'Tarifa Niños',
-        field: 'boy_tarifa',
-        type: 'currency',
-        filter: true,
-        // visible: false
-    },
+
+    // {
+    //     header: 'Precio Adultos',
+    //     field: 'adults_price',
+    //     type: 'currency',
+    //     filter: true,
+    // },
+    // {
+    //     header: 'Tarifa Adultos',
+    //     field: 'adult_tarifa',
+    //     type: 'currency',
+    //     filter: true,
+    //     // visible: false
+    // },
+    // {
+    //     header: 'Precio Niños',
+    //     field: 'boys_price',
+    //     type: 'currency',
+    //     filter: true,
+    // },
+    // {
+    //     header: 'Tarifa Niños',
+    //     field: 'boy_tarifa',
+    //     type: 'currency',
+    //     filter: true,
+    //     // visible: false
+    // },
 
 ];
 
@@ -275,15 +288,15 @@ const submit = () => {
 }
 
 const locked = () => {
-    if(formLock.description == ''){
+    if (formLock.description == '') {
         formLock.errors.description = 'Ingrese una descripción'
-        return 
+        return
     }
-    if(formLock.start_date == '' || formLock.end_date == ''){
+    if (formLock.start_date == '' || formLock.end_date == '') {
         formLock.errors.start_date = 'Seleccione un rango de fechas'
         return
     }
-    
+
     router.post(route('services.lock', service.value.slug), {
         start_date: formLock.start_date,
         description: formLock.description,

@@ -48,8 +48,8 @@ const changeMotor = (motor) => {
 
     <GuestLayout>
 
-        <div class="md:flex justify-center w-full h-[60vh] py-4 hidden">
-            <div class=" shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[98vw] md:w-[90vw] md:px-28 h-full"
+        <div class="flex justify-center w-full h-[60vh] py-4">
+            <div class="shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[90vw] px-2 md:px-12 h-full"
                 style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
                 <!-- <img src="/images/cartagena.webp" class="w-[90vw] h-[70vh] object-cover absolute " alt=""> -->
                 <div class="py-10 space-y-10 mt-4 w-full">
@@ -69,10 +69,7 @@ const changeMotor = (motor) => {
                 </div>
             </div>
         </div>
-        <div class="md:hidden fixed w-full -mt-2 bg-gray-700 p-4 rounded-b">
-            <h1 class="text-white font-bold text-xl capitalize">Buscar Experiencias en Cartagena</h1>
-            <Experiencias v-if="value.value == 1" />
-        </div>
+
         <div class="bg-white w-full px-0 md:px-10 mt-44 md:mt-0 z-30">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between">
