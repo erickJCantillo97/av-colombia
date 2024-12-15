@@ -5,19 +5,14 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  RadioGroup,
-  RadioGroupOption,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
 } from '@headlessui/vue'
 import { StarIcon } from '@heroicons/vue/20/solid'
 import { HeartIcon, MinusIcon, PlusIcon } from '@heroicons/vue/24/outline'
 
+
 const props = defineProps({
   service: Object,
+  availabilities: Array,
 })
 
 const USDollar = new Intl.NumberFormat("en-US", {
@@ -56,6 +51,18 @@ const responsiveOptions = ref([
     numVisible: 1
   }
 ]);
+
+
+const op = ref();
+const members = ref([
+  { name: 'Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
+  { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
+  { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' }
+]);
+
+const toggle = (event) => {
+  op.value.toggle(event);
+}
 
 
 
@@ -106,22 +113,55 @@ const closeFullScreen = () => {
     document.msExitFullscreen();
   }
 };
-const bindDocumentListeners = () => {
-  document.addEventListener('fullscreenchange', onFullScreenChange);
-  document.addEventListener('mozfullscreenchange', onFullScreenChange);
-  document.addEventListener('webkitfullscreenchange', onFullScreenChange);
-  document.addEventListener('msfullscreenchange', onFullScreenChange);
-};
-const unbindDocumentListeners = () => {
-  document.removeEventListener('fullscreenchange', onFullScreenChange);
-  document.removeEventListener('mozfullscreenchange', onFullScreenChange);
-  document.removeEventListener('webkitfullscreenchange', onFullScreenChange);
-  document.removeEventListener('msfullscreenchange', onFullScreenChange);
-};
 
 const fullScreenIcon = computed(() => {
   return `pi ${fullScreen.value ? 'pi-window-minimize' : 'pi-window-maximize'}`;
 });
+
+
+const formatter = ref({
+  date: 'DD/MM/YYYY',
+  month: 'MM',
+})
+
+const date = ref();
+
+const allowedDates = computed(() => {
+  let horarios = props.availabilities
+  let dates = [];
+  // console.log(horarios);
+  horarios.forEach((element) => {
+    let fecha = new Date(element.start_date);
+    do {
+      // console.log(fecha);
+      dates.push(fecha);
+      fecha = new Date(fecha.setDate(fecha.getDate() + 1));
+    } while (fecha <= new Date(element.end_date))
+  });
+  // console.log(dates);
+  return dates;
+})
+
+
+
+const times = computed(() => {
+  let horarios = props.availabilities
+  let times = horarios.find((x) =>
+    x.start_date < date.value && x.end_date > date.value
+  ).horarios.filter((x) => x.day_number == new Date(date.value).getDay() + 1);
+  // const dayOfWeek = new Date(date.value).getDay();
+  // const dayNumber = dayOfWeek === 0 ? 7 : dayOfWeek;
+  // .map((element) => {
+  //   return {
+  //     label: element.start_time,
+  //     value: element.start_time
+  //   }
+  // });
+  console.log(times);
+  return times;
+  return 1;
+
+})
 
 
 </script>
@@ -205,12 +245,7 @@ const fullScreenIcon = computed(() => {
             </div>
 
             <form class="mt-6">
-              <div class="flex space-x-2">
-                <div v-for="feature in product.features" class="py-1 px-2  text-xs font-bold text-white  rounded-xl"
-                  :style="`background-color: #${feature.color};`">
-                  {{ feature.name }}
-                </div>
-              </div>
+
               <!-- <div>
                       <h3 class="text-sm font-medium text-gray-600">Color</h3>
         
@@ -226,8 +261,9 @@ const fullScreenIcon = computed(() => {
                     </div> -->
 
               <div class="mt-10 flex">
-                <button type="submit"
-                  class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-black px-8 py-3 text-base font-medium text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Reservar</button>
+                <button type="button"
+                  class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-black px-8 py-3 text-base font-medium text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
+                  @click="toggle">Reservar</button>
 
                 <button type="button"
                   class="ml-4 flex items-center justify-center rounded-md px-3 py-3 text-gray-400 hover:bg-gray-100 hover:text-gray-500">
@@ -266,5 +302,26 @@ const fullScreenIcon = computed(() => {
         </div>
       </div>
     </div>
+
   </GuestLayout>
+
+  <Popover ref="op">
+    <div class="flex flex-col gap-4 w-[25rem]">
+      <div>
+        <span class="font-medium block mb-2">Reservar este servicio</span>
+
+      </div>
+      <div>
+        <span class="font-medium block mb-2">Selecione una fecha de reserva</span>
+        <VueDatePicker v-model="date" :allowed-dates="allowedDates" hide-offset-dates :enable-time-picker="false"
+          :teleport="true" model-type="yyyy-MM-dd" :min-date="new Date()" locale="es" timezone="America/Bogota"
+          auto-apply />
+        <span v-if="date" class="block mt-2">
+          Seleccionar una hora
+          {{ times }}
+        </span>
+      </div>
+
+    </div>
+  </Popover>
 </template>

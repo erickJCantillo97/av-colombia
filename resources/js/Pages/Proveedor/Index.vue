@@ -154,6 +154,7 @@ const submit = () => {
     if (form.id) {
         form.put(route('proveedors.update', form.id), {
             onSuccess: () => {
+                form.reset()
                 visible.value = false
                 toast('success', 'Proveedor Actualizado')
             }
@@ -161,7 +162,7 @@ const submit = () => {
     } else {
         form.post(route('proveedors.store'), {
             onSuccess: () => {
-                visible.value = false
+                form.reset()
                 toast('success', 'Proveedor Creado')
             }
         })

@@ -25,8 +25,6 @@ const formStart = useForm({
 
 const showPrice = ref(false);
 
-
-
 const form = useForm({
     service_id: props.service.id,
     name: '',
@@ -198,10 +196,7 @@ const dias = ref([
     'Sabado',
     'Domingo',
 ])
-const options = [
-    { name: 'Horarios', value: 1 },
-    { name: 'Precios', value: 2 },
-];
+
 
 const deleteHorario = (index) => {
     Swal.fire({
@@ -383,7 +378,7 @@ const USDollar = new Intl.NumberFormat("es-CO", {
 
             </Accordion>
         </div>
-        <Modal v-model="showPrice" title="Precios" close-on-escape>
+        <Modal v-model="showPrice" title="Lista de Precios" close-on-escape>
             <div class="card flex flex-col gap-y-2 justify-center w-full  rounded-lg p-2">
                 <div v-for="(precio, index) in precios"
                     class="flex justify-between gap-x-4 mt-4 border p-2 rounded-md items-center">
@@ -414,9 +409,12 @@ const USDollar = new Intl.NumberFormat("es-CO", {
                 </div>
             </div>
             <template #footer>
-                <div class="flex gap-x-2">
-                    <Button severity="success" label="Guardar" @click="submitPrice()"></Button>
-                    <Button severity="danger" label="Cancelar" @click="show = false"></Button>
+                <div class="flex gap-x-2 justify-between w-full px-2 ">
+                    <Button severity="success" label="Añadir nuevo" @click="addPrecio()"></Button>
+                    <div class="flex gap-x-2">
+                        <Button severity="success" label="Guardar" @click="submitPrice()"></Button>
+                        <Button severity="danger" label="Cancelar" @click="show = false"></Button>
+                    </div>
                 </div>
             </template>
         </Modal>

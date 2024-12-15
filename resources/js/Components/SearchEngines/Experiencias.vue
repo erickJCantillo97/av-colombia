@@ -88,14 +88,13 @@ const search = () => {
         <form @submit.prevent="search"
             class="w-full  rounded-lg grid grid-cols-6 items-center border border-gray-600 gap-x-2 divide-x ">
             <div class="col-span-3 md:col-span-1">
-                <Button type="button" size="large"
-                    :label="selectedMember ? selectedMember.name : 'Selecciona un tipo Servicio'" text @click="toggle"
-                    class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
-                    pt:root:class="!flex justify-between " />
+                <Button type="button" size="large" :label="selectedMember ? selectedMember.name : 'Servicios'" text
+                    @click="toggle" class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
+                    pt:root:class="!flex !justify-between !text-md !text-gray-600" />
                 <Popover ref="op">
                     <div class="flex flex-col gap-4">
                         <div>
-                            <span class="mb-2 text-xl font-extrabold">Nuestros Servicios</span>
+                            <span class="mb-2 text-xl font-extrabold">Selecciona uno de nuestros Servicios</span>
                             <ul class="grid grid-cols-2 gap-4">
                                 <div @click="selectMember(service)" v-for="service in serviceType"
                                     class="flex flex-col items-center justify-center shadow-sm p-4 border-gray-100 border shadow-gray-200 rounded-lg cursor-pointer hover:bg-teal-100">
@@ -108,13 +107,13 @@ const search = () => {
                 </Popover>
             </div>
             <div class="col-span-3 md:col-span-1">
-                <Button type="button" size="large" :label="city ? city : 'Selecciona una Ciudad'" text
-                    @click="toogleCity" class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
-                    pt:root:class="!flex justify-between " />
+                <Button type="button" size="large" :label="city ? city : 'Ciudad'" text @click="toogleCity"
+                    class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
+                    pt:root:class="!flex !justify-between !text-md !text-gray-600" />
                 <Popover ref="opCity">
                     <div class="flex flex-col gap-4">
                         <div>
-                            <span class="mb-2 text-xl font-extrabold">Ciudades</span>
+                            <span class="mb-2 text-xl font-extrabold">Selecciona una Ciudades</span>
                             <ul class="grid grid-cols-2 gap-4 mt-2">
                                 <div @click="selectionCity('Cartagena')"
                                     class="flex items-center justify-center flex-col h-32 w-52 rounded-lg grayscale hover:grayscale-0 cursor-pointer"
@@ -135,7 +134,7 @@ const search = () => {
                 </Popover>
             </div>
 
-            <div class="col-span-6 md:col-span-2 my-4 border-2 md:border-0">
+            <div class="col-span-6 md:col-span-2 my-2 border-2 md:border-0 py-4">
                 <input type="search" ref="searchRef" v-model="searchLabel" placeholder="Escriba aqui para buscar..."
                     class="w-full text-lg right-0 border-0 focus:ring-0">
             </div>

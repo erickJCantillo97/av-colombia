@@ -103,6 +103,7 @@ class ServiceController extends Controller
         return Inertia::render('Services/Show', [
             'service' => $service,
             'gallery' => $service->images,
+            'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
             'features' => $service->features
         ]);
     }
@@ -290,7 +291,7 @@ class ServiceController extends Controller
                     ]);
             }
         }
-        
+
         unset($validate['horarios']);
         $service->update($validate);
         return back()->with('message', 'Servicio iniciado');

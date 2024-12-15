@@ -12,7 +12,7 @@
                     :options="services"></Input>
 
                 <Input label="Fecha de Reserva" :enableTimePicker="true" :disabled-dates="disabledDates"
-                    v-model="form.date" required :min-date="new Date()" class="w-full" type="date" />
+                    v-model="form.date" required :min-date="new Date()" class="w-full" type="datetime" />
 
                 <Input label="Valor Total" type="number" mode="currency" v-model="form.total"></Input>
                 <Input label="Pasajeros" type="number" v-model="form.adults"></Input>
@@ -355,7 +355,6 @@ const getChannels = () => {
             console.log(error)
         })
 }
-
 
 getServices()
 
