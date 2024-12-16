@@ -8,8 +8,7 @@
         <Modal v-model="show" title="Añadir Reserva" width="70vw">
             <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center" novalidate>
                 <Input type="dropdown" v-model="form.service_id" :error-message="form.errors.service_id"
-                    label="Servicio" option-label="title" option-value="id" @value-change="getProveedors"
-                    :options="services"></Input>
+                    label="Servicio" option-label="title" option-value="id" :options="services"></Input>
 
                 <Input label="Fecha de Reserva" :enableTimePicker="true" :disabled-dates="disabledDates"
                     v-model="form.date" required :min-date="new Date()" class="w-full" type="datetime" />
@@ -331,7 +330,7 @@ const proveedors = ref([]);
 const channels = ref([]);
 
 const getProveedors = () => {
-    axios.get(route('get.proveedors', form.service_id))
+    axios.get(route('proveedors.index'))
         .then(response => {
             proveedors.value = response.data.proveedors
         })
@@ -341,9 +340,11 @@ const getProveedors = () => {
 }
 
 const selectedProveedor = (proveedor) => {
+    
+    proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).services.find(s => s.id == form.service_id) === undefined ? 0 : proveedors.value.find(p => p.id == proveedor.proveedor).services.find(s => s.id == form.service_id)?.pivot.value * form.adults;
     // console.log(proveedor, proveedors.value.find(p => p.id == proveedor.proveedor));
-
-    proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).pivot.value * form.adults;
+    console.log(proveedor);
+    // proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).pivot.value * form.adults;
 }
 
 const getChannels = () => {
@@ -357,8 +358,8 @@ const getChannels = () => {
 }
 
 getServices()
-
 getChannels()
+getProveedors()
 
 const buttons = [
 

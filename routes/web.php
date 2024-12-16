@@ -64,7 +64,7 @@ Route::middleware([
     Route::post('services/setStatus', [ServiceController::class, 'setStatus'])->name('set.states');
 
 
-    Route::get('services/proveedors/{service}', [ServiceController::class, 'getProveedors'])->name('get.proveedors');
+    Route::get('services/proveedors', [ServiceController::class, 'getProveedors'])->name('get.proveedors');
     Route::resource('channels', ChannelController::class);
 
     Route::post('availability', [AvailabilityController::class, 'store'])->name('availability.store');

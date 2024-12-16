@@ -13,6 +13,7 @@ use App\Models\Image;
 use App\Models\Included;
 use App\Models\Lock;
 use App\Models\Precie;
+use App\Models\Proveedor;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -262,12 +263,13 @@ class ServiceController extends Controller
         return back()->with('message', 'Estado actualizado');
     }
 
-    public function getProveedors($service)
+    public function getProveedors()
     {
-        $service = Service::find($service);
-        return response()->json([
-            'proveedors' => $service->proveedors
-        ]);
+        dd('aqui');
+        // $proveedors = Proveedor::with('services')->get();
+        // return response()->json([
+        //     'proveedors' => $proveedors
+        // ]);
     }
 
     public function updateStart(Service $service, Request $request)
