@@ -340,7 +340,7 @@ const getProveedors = () => {
 }
 
 const selectedProveedor = (proveedor) => {
-    
+
     proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).services.find(s => s.id == form.service_id) === undefined ? 0 : proveedors.value.find(p => p.id == proveedor.proveedor).services.find(s => s.id == form.service_id)?.pivot.value * form.adults;
     // console.log(proveedor, proveedors.value.find(p => p.id == proveedor.proveedor));
     console.log(proveedor);
@@ -444,6 +444,32 @@ const buttons = [
         icon: 'fa-solid fa-person-dress-burst text-sm',
         severity: "danger"
         // class: 'p-button-warning text-sm'
+    },
+    {
+        label: 'Eliminar',
+        icon: 'fa-solid fa-trash text-sm',
+        severity: "danger",
+        action: (data) => {
+            Swal.fire({
+                title: "Estas Seguro?",
+                text: `Eliminar la reservación de ${data.cliente_name}?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "Cancelar",
+                confirmButtonText: `Si, Eliminar!`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.delete(route('BookingServices.destroy', data.id), {
+                        onSuccess: () => {
+                            toast('success', 'Reserva Eliminada');
+                        }
+                    })
+
+                }
+            });
+        }
     }
 ]
 

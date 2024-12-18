@@ -149,17 +149,7 @@ const times = computed(() => {
   let times = horarios.find((x) =>
     x.start_date < date.value && x.end_date > date.value
   ).horarios.filter((x) => x.day_number == new Date(date.value).getDay() + 1);
-  // const dayOfWeek = new Date(date.value).getDay();
-  // const dayNumber = dayOfWeek === 0 ? 7 : dayOfWeek;
-  // .map((element) => {
-  //   return {
-  //     label: element.start_time,
-  //     value: element.start_time
-  //   }
-  // });
-  console.log(times);
   return times;
-  return 1;
 
 })
 
@@ -221,10 +211,7 @@ const times = computed(() => {
           <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
             <h1 class="text-5xl font-bold tracking-tight text-gray-900">{{ product.name }}</h1>
 
-            <div class="mt-3">
-              <h2 class="sr-only">Product information</h2>
-              <p class="text-3xl tracking-tight text-gray-900">{{ product.price }}</p>
-            </div>
+
 
             <!-- Reviews -->
             <div class="mt-3">
@@ -317,8 +304,14 @@ const times = computed(() => {
           :teleport="true" model-type="yyyy-MM-dd" :min-date="new Date()" locale="es" timezone="America/Bogota"
           auto-apply />
         <span v-if="date" class="block mt-2">
-          Seleccionar una hora
-          {{ times }}
+          Seleccionar la hora de inicio de la Actividad
+          <div class="grid grid-cols-4 gap-2 mt-2">
+            <div v-for="time in times" :key="time.id"
+              class="flex items-center justify-center p-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-900 hover:text-white">
+              {{ time.start.substring(0, 5) }}
+            </div>
+          </div>
+          
         </span>
       </div>
 

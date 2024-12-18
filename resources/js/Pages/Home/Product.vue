@@ -15,12 +15,17 @@
                         {{ truncateString(include.toLowerCase(), 20) }}
                     </span>
                 </div>
-                <div class="mt-3 text-gray-900 flex w-full justify-between items-center">
+                <div v-if="form.date" class="mt-3 text-gray-900 flex w-full justify-between items-center">
                     <div>
                         <span>Desde</span>
-                        <h3 class="font-bold text-lg ">{{ USDollar.format(service.adult_tarifa) }}COP /persona
+                        <h3 class="font-bold text-lg ">{{ USDollar.format(service.availabilities.find((x) =>
+                            formatDate(x.start_date) <= formatDate(form.date)).precies.find((x) => x.value > 0).value)
+                                }} por Persona
                         </h3>
                     </div>
+                </div>
+                <div v-else>
+                    Ver precios
                 </div>
             </div>
         </div>
@@ -36,6 +41,11 @@
 import { useCommonUtilities } from '@/composable/useCommonUtilities.js';
 import { Link } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
+import { useHomeStore } from '@/stores/HomeStore';
+import { storeToRefs } from 'pinia';
+
+const store = useHomeStore();
+const { form } = storeToRefs(store);
 
 const { truncateString, esMovil } = useCommonUtilities();
 
@@ -44,7 +54,10 @@ const USDollar = new Intl.NumberFormat("es-CO", {
     currency: "COP",
     maximumFractionDigits: 0,
 });
-
+const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('es-CO', options);
+};
 const includes = ref([]);
 
 const props = defineProps({

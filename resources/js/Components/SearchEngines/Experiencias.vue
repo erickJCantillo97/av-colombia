@@ -3,16 +3,11 @@ import { ref } from 'vue';
 import Input from '../Customs/Input.vue';
 import axios from 'axios';
 import { Link, router } from '@inertiajs/vue3';
+import { useHomeStore } from '@/stores/HomeStore';
+import { storeToRefs } from 'pinia';
 
-
-// const search = ref({
-//     search: '',
-//     date: '',
-//     persons: {
-//         adult: 0,
-//         children: 0,
-//     }
-// })
+const store = useHomeStore();
+const { form } = storeToRefs(store);
 
 const searchRef = ref(null);
 
@@ -22,17 +17,15 @@ const props = defineProps({
     }
 });
 
-const date = ref(new Date());
-
 const op = ref();
 const opCity = ref();
 
 const selectedMember = ref(null);
 
 const serviceType = ref([
-    { name: 'Experiencias', icon: 'fa-umbrella-beach', value: 'TOUR' },
-    { name: 'Alojamiento', icon: 'fa-hotel', value: 'ALOJAMIENTO' },
-    { name: 'Transporte', icon: 'fa-car', value: 'TRANSFER' },
+    { name: 'Tours', icon: 'fa-umbrella-beach', value: 'TOUR' },
+    { name: 'Alojamientos', icon: 'fa-hotel', value: 'ALOJAMIENTO' },
+    { name: 'Transportes', icon: 'fa-car', value: 'TRANSFER' },
     { name: 'Embarcaciones', icon: 'fa-ship', value: 'EMBARCACIONES' },
 ]);
 const toggle = (event) => {
@@ -45,20 +38,18 @@ const toogleCity = (event) => {
 
 const selectMember = (member) => {
     selectedMember.value = member;
+    form.value.type = member.value;
     op.value.hide();
     searchRef.value.focus();
     // toogleCity();
 }
 
-const city = ref();
-
 const selectionCity = (member) => {
-    city.value = member;
+    form.value.city = member;
     opCity.value.hide();
     searchRef.value.focus();
 }
 
-const searchLabel = ref('');
 
 const formatter = ref({
     date: 'DD/MM/YYYY',
@@ -67,15 +58,16 @@ const formatter = ref({
 
 const search = () => {
     let type = ''
-    if (selectedMember.value) {
-        type = selectedMember.value.value
+    if (form.value.type) {
+        type = form.value.type
     }
     router.visit(
         route('services.home',
             {
                 type: type,
-                date: date.value,
-                search: searchLabel.value
+                city: form.value.city,
+                date: form.value.date,
+                search: form.value.search
             }))
 }
 
@@ -88,8 +80,8 @@ const search = () => {
         <form @submit.prevent="search"
             class="w-full  rounded-lg grid grid-cols-6 items-center border border-gray-600 gap-x-2 divide-x ">
             <div class="col-span-3 md:col-span-1">
-                <Button type="button" size="large" :label="selectedMember ? selectedMember.name : 'Servicios'" text
-                    @click="toggle" class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
+                <Button type="button" size="large" :label="form.type ? form.type : 'Servicios'" text @click="toggle"
+                    class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
                     pt:root:class="!flex !justify-between !text-md !text-gray-600" />
                 <Popover ref="op">
                     <div class="flex flex-col gap-4">
@@ -107,7 +99,7 @@ const search = () => {
                 </Popover>
             </div>
             <div class="col-span-3 md:col-span-1">
-                <Button type="button" size="large" :label="city ? city : 'Ciudad'" text @click="toogleCity"
+                <Button type="button" size="large" :label="form.city ? form.city : 'Ciudad'" text @click="toogleCity"
                     class="w-full" icon="fa-solid fa-arrow-down" icon-pos="right"
                     pt:root:class="!flex !justify-between !text-md !text-gray-600" />
                 <Popover ref="opCity">
@@ -135,11 +127,11 @@ const search = () => {
             </div>
 
             <div class="col-span-6 md:col-span-2 my-2 border-2 md:border-0 py-4">
-                <input type="search" ref="searchRef" v-model="searchLabel" placeholder="Escriba aqui para buscar..."
+                <input type="search" ref="searchRef" v-model="form.search" placeholder="Escriba aqui para buscar..."
                     class="w-full text-lg right-0 border-0 focus:ring-0">
             </div>
             <div class="col-span-6 md:col-span-1 my-2">
-                <vue-tailwind-datepicker v-model="date" i18n="es" as-single placeholder="Fecha"
+                <vue-tailwind-datepicker v-model="form.date" i18n="es" as-single placeholder="Fecha"
                     input-classes="w-full text-lg right-0 border-0 focus:ring-0" :shortcuts="false" overlay
                     :formatter="formatter" />
                 <!-- <input type="date" v-model="search.date" placeholder="Escriba aqui para buscar..."

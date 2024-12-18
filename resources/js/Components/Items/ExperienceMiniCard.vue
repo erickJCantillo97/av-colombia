@@ -16,16 +16,6 @@
                 </span>
             </div>
         </div>
-
-        <div class="flex  w-full justify-end mb-2 px-2">
-            <p class=" font-semibold text-gray-800 ">
-                <strong class="text-md font-semibold mx-1">{{ USDollar.format(product.adults_price) }} </strong> <span
-                    class="text-xs">
-                    / Adulto
-                </span>
-            </p>
-
-        </div>
     </div>
     </Link>
 </template>

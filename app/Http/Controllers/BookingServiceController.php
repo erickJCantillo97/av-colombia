@@ -85,9 +85,18 @@ class BookingServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BookingService $bookingService)
+    public function destroy($bookingService)
     {
-        //
+        try {
+            BookingService::find($bookingService)->delete();
+            return back()->with('message', 'Reservación eliminada correctamente');
+            // return response()->json(['message' => 'Reservación eliminada correctamente'], 200);
+        } catch (Exception $e) {
+            return back()->withErrors('message', 'Error al eliminar la reservación');
+            // return response()->json(['message' => 'Error al eliminar la reservación'], 500);
+        }
+        // BookingService::find($bookingService)->delete();
+        // $bookingService->delete();
     }
 
     public function getBookingServicesNoPayment()

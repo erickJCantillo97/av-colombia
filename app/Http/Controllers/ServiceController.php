@@ -31,7 +31,7 @@ class ServiceController extends Controller
         if ($request->expectsJson()) {
             $search = '%' . $request->search . '%';
             $service = Service::with('locks')
-                ->with('images', 'features');
+                ->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies');
 
             if ($request->type) {
                 $service->where('type', $request->type);

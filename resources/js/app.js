@@ -24,6 +24,8 @@ import { es } from 'yup-locales';
 import 'primeicons/primeicons.css'
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
 import { setLocale } from 'yup';
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 setLocale(es);
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
 
@@ -105,6 +107,10 @@ const Noir = definePreset(Aura, {
     },
 });
 
+const pinia = createPinia();
+
+pinia.use(piniaPluginPersistedstate);
+
 createInertiaApp({
     title: (title) => `${title}`,
     resolve: (name) =>
@@ -152,6 +158,7 @@ createInertiaApp({
             })
             .directive('tooltip', Tooltip)
             .component('VueDatePicker', VueDatePicker)
+            .use(pinia)
             .mount(el);
     },
     progress: {
