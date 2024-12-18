@@ -12,7 +12,6 @@
 
                 <Input label="Fecha de Reserva" :enableTimePicker="true" :disabled-dates="disabledDates"
                     v-model="form.date" required :min-date="new Date()" class="w-full" type="datetime" />
-
                 <Input label="Valor Total" type="number" mode="currency" v-model="form.total"></Input>
                 <Input label="Pasajeros" type="number" v-model="form.adults"></Input>
                 <Input label="Niños" type="number" v-model="form.boys"></Input>
@@ -98,7 +97,9 @@
             <template #footer>
                 <div class="flex justify-end gap-x-2 mt-4 w-full">
                     <Button @click="show = false" severity="danger" label="Cancelar" :loading />
-                    <Button type="submit" severity="success" label="Guardar" :loading @click="reservar" />
+                    <Button type="submit" v-if="form.id" label="Actualizar" severity="warn" @click="update"></Button>
+                    <Button type="submit" v-else severity="success" label="Guardar" :loading @click="reservar" />
+
                 </div>
             </template>
         </Modal>
@@ -272,6 +273,7 @@ const methods = ref([]);
 
 
 const form = useForm({
+    id: '',
     service_id: null,
     date: '',
     adults: 1,
@@ -377,6 +379,15 @@ const buttons = [
         label: 'Editar',
         action: (data) => {
             // form.date = data.date + ',' + data.hour;
+            form.id = data.id;
+            const formatDateTime = (date, time) => {
+                const [year, month, day] = date.split('-');
+                const [hour, minute] = time.split(':');
+                return `${year}-${month}-${day},${hour}:${minute}`;
+            };
+
+            form.date = formatDateTime(data.date, data.hour);
+
             form.service_id = data.service_id;
             form.cliente_name = data.cliente_name;
             form.cliente_phone = data.cliente_phone;
@@ -388,9 +399,15 @@ const buttons = [
             form.channel_id = data.channel_id;
             form.percent_descuento = data.percent_descuento;
             form.proveedors = data.proveedors;
-            proveedorsAdd.value = data.proveedors;
-            form.observations = data.observations;
 
+            proveedorsAdd.value = data.proveedors.map(prov => {
+                return {
+                    proveedor: prov.proveedor_id,
+                    costo: prov.cost
+                }
+            });
+            form.observations = data.observations;
+            console.log(data);
 
             // adults.value = data.adults
             // boys.value = data.boys;
@@ -498,7 +515,6 @@ const columns = [
         header: 'Fecha de la Actividad',
         filter: true,
         sortable: true,
-        type: 'date'
     },
     {
         field: 'created_at',
@@ -569,6 +585,18 @@ const reservar = (event) => {
         onError: () => {
             loading.value = false;
             toast('error', 'Error al crear la reserva');
+        }
+    })
+}
+
+const update = () => {
+    form.total_real = valorReal.value;
+    form.percent_channel = channels.value.find(channel => channel.id == form.channel_id).percent;
+    form.proveedors = proveedorsAdd.value;
+    form.put(route('BookingServices.update', form.id), {
+        onSuccess: () => {
+            show.value = false;
+            toast('success', 'Reserva actualizada con exito');
         }
     })
 }

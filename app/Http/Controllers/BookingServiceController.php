@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
 use App\Models\Channel;
 use App\Models\Service;
+use Carbon\Carbon;
 use Exception;
 use Inertia\Inertia;
 
@@ -77,9 +78,31 @@ class BookingServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookingServiceRequest $request, BookingService $bookingService)
+    public function update(UpdateBookingServiceRequest $request,  $bookingService)
     {
-        //
+        $booking = BookingService::find($bookingService);
+        $validate = $request->validated();
+        $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
+        $service = Service::find($validate['service_id']);
+        $validate['boys'] = $validate['boys'] ?? 0;
+        $validate['hour'] = explode(',', request('date'))[1];
+        $validate['user_id'] = request('user_id') ?? auth()->user()->id;
+        $validate['service'] = $service->title;
+        $validate['adults_price'] = $service->adults_price;
+        $validate['adult_tarifa'] = $service->adult_tarifa;
+        $validate['boys_price'] = $service->boys_price;
+        $validate['boys_tarifa'] = $service->boy_tarifa;
+        $booking->update($validate);
+        $booking->proveedors()->delete();
+        // $booking->proveedors()->attach(request('proveedors'));
+        foreach (request('proveedors') as $proveedor) {
+            if ($proveedor['costo'] && $proveedor['proveedor'])
+                $booking->proveedors()->create([
+                    'booking_service_id' => $booking->id,
+                    'proveedor_id' => $proveedor['proveedor'],
+                    'cost' => $proveedor['costo'],
+                ]);
+        }
     }
 
     /**
