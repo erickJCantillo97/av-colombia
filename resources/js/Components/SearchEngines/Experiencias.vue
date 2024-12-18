@@ -19,7 +19,7 @@ const props = defineProps({
 
 const op = ref();
 const opCity = ref();
-
+const dateSelector = ref();
 const selectedMember = ref(null);
 
 const serviceType = ref([
@@ -47,7 +47,9 @@ const selectMember = (member) => {
 const selectionCity = (member) => {
     form.value.city = member;
     opCity.value.hide();
-    searchRef.value.focus();
+    // searchRef.value.focus();
+    console.log(dateSelector.value);
+    dateSelector.value.click();
 }
 
 
@@ -130,7 +132,7 @@ const search = () => {
                 <input type="search" ref="searchRef" v-model="form.search" placeholder="Escriba aqui para buscar..."
                     class="w-full text-lg right-0 border-0 focus:ring-0">
             </div>
-            <div class="col-span-6 md:col-span-1 my-2">
+            <div class="col-span-6 md:col-span-1 my-2" ref="dateSelector">
                 <vue-tailwind-datepicker v-model="form.date" i18n="es" as-single placeholder="Fecha"
                     input-classes="w-full text-lg right-0 border-0 focus:ring-0" :shortcuts="false" overlay
                     :formatter="formatter" />
