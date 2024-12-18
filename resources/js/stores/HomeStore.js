@@ -6,7 +6,7 @@ export const useHomeStore = defineStore(
     "HomeStore",
     () => {
         const form = useForm({
-            type: 'Tours',
+            type: 'Tour',
             ciudad: '',
             search: '',
             date: '',

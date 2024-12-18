@@ -18,8 +18,9 @@
                 <div v-if="form.date" class="mt-3 text-gray-900 flex w-full justify-between items-center">
                     <div>
                         <span>Desde</span>
-                        <h3 class="font-bold text-lg ">{{ USDollar.format(service.availabilities.find((x) =>
-                            formatDate(x.start_date) <= formatDate(form.date)).precies.find((x) => x.value > 0).value)
+                        <h3 class="font-bold text-lg">{{ USDollar.format(service.availabilities.find((x) =>
+                            formatDate(x.start_date) <= formatDate(form.date))?.precies.find((x) => x.value > 0).value ??
+                            0)
                                 }} por Persona
                         </h3>
                     </div>

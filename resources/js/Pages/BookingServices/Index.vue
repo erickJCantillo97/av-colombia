@@ -578,6 +578,7 @@ const reservar = (event) => {
     form.proveedors = proveedorsAdd.value;
     form.post(route('reservar'), {
         onSuccess: () => {
+            form.reset();
             loading.value = false;
             show.value = false;
             toast('success', 'Reserva creada con exito');

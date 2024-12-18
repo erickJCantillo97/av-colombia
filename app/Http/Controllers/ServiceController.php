@@ -32,7 +32,12 @@ class ServiceController extends Controller
             $search = '%' . $request->search . '%';
             $service = Service::with('locks')
                 ->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies');
-
+            if ($request->date) {
+                $service->whereHas('availabilities', function ($query) use ($request) {
+                    $query->where('start_date', '<=', $request->date)
+                        ->where('end_date', '>=', $request->date);
+                });
+            }
             if ($request->type) {
                 $service->where('type', $request->type);
             }
