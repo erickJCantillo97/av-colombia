@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('availability_id')->constrained()->cascadeOnDelete();
             $table->string('day');
-            // $table->string('day_number');
+            $table->string('day_number');
             $table->time('start');
             $table->time('end')->nullable();
             $table->timestamps();

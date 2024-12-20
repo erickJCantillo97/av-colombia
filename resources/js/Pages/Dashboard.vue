@@ -146,7 +146,7 @@ getReservas();
         :close-on-escape="true">
         <div class="flex flex-col gap-y-5">
             <h1 class="text-xl font-bold">Datos de la reserva</h1>
-            <div class="grid grid-cols-3 md:grid-cols-5 gap-2 w-full">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 w-full">
                 <Tag label="Fecha" :value="serviceSelected.date" />
                 <Tag label="Hora" :value="serviceSelected.hour" />
                 <Tag label="Adultos" :value="serviceSelected.adults" />
@@ -164,31 +164,25 @@ getReservas();
                 <!-- <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" /> -->
             </div>
             <div class="flex justify-between items-center">
-                <h1 class="text-xl font-bold">Datos de Pagos</h1>
+                <h1 class="text-xl font-bold">Proveedores</h1>
                 <div class="border bg-blue-600 font-bold p-1 rounded-lg text-white text-sm">
-                    Saldo: {{ COP.format(serviceSelected.total_price - serviceSelected.payments.reduce((a, b) => a +
-                        b.amount, 0)) }}
+                    Costo: {{ serviceSelected.proveedors.length > 0 ? COP.format(serviceSelected.proveedors.reduce((acc,
+                        item) => acc + item.cost, 0)) : 0 }}
                 </div>
             </div>
             <div class="flex flex-col">
                 <div class="flex justify-between border-b-2 font-extrabold px-2">
-                    <span>Monto</span>
-                    <span>Moneda</span>
-                    <span>Tipo de Pago</span>
-                    <span>Metodo de Pago</span>
-                    <span>Estado del Pago</span>
+                    <span>Proveedor</span>
+                    <span>Celular</span>
+                    <span>Tarifa</span>
                 </div>
-                <div v-for="payment in serviceSelected.payments"
+                <div v-for="p in serviceSelected.proveedors"
                     class="mb-2 flex justify-between border-b px-2 py-1 rounded-md">
-                    <span>{{ COP.format(payment.amount) }}</span>
-                    <span>{{ payment.currency }}</span>
-                    <span>{{ payment.type }}</span>
-                    <span>{{ payment.metohd_payment.name }}</span>
-                    <span :class="payment.status == 'pendiente' ? 'text-red-500 font-bold capitalize' : ''">{{
-                        payment.status }}</span>
+                    <span>{{ p.proveedor.nombre }}</span>
+                    <a :href="`tel:${p.proveedor.telefono}`">{{ p.proveedor.telefono }}</a>
+                    <span>{{ COP.format(p.cost) }}</span>
                 </div>
             </div>
-
         </div>
         <!-- <code>
             {{ serviceSelected }}
@@ -197,7 +191,8 @@ getReservas();
     <Modal v-model="todayActivity" close-on-escape="true" title="Actividades de Hoy" width="90vw">
         <div>
             <h1 class="text-xl font-bold">Actividades de Hoy</h1>
-            <div class="flex justify-between font-extrabold text-lg mt-4 bg-gray-200 rounded-t-md p-1">
+            <div
+                class="flex justify-between font-extrabold text-lg mt-4 bg-gray-200 rounded-t-md gap-x-4 p-1 w-full overflow-x-auto">
                 <p class="w-full flex text-center">
                     Actividad
                 </p>
@@ -220,7 +215,7 @@ getReservas();
 
             </div>
             <div v-for="activity in dateActivities" :class="activity.problematic ? 'bg-red-200' : 'bg-blue-200'"
-                class="flex justify-between p-1.5 text-center">
+                class="flex justify-between p-1.5 text-center w-full overflow-x-auto">
                 <p class="w-full flex text-center">
                     {{ activity.service.title }}
                 </p>

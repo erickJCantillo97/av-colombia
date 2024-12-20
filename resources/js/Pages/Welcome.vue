@@ -21,7 +21,7 @@ defineProps({
 const services = ref([]);
 const getServices = () => {
     axios.get(route('get.services')).then(response => {
-        services.value = response.data.services.filter((x) => x.type == 'TOUR').slice(0, 6);
+        services.value = response.data.services.filter((x) => x.type == 'TOUR').slice(0, 5);
     });
 }
 

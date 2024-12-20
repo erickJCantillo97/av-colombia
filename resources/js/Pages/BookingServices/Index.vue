@@ -23,19 +23,7 @@
                     class="w-full" />
                 <Input label="Edificio u Hotel" class="w-full" v-model="form.cliente_building"
                     :error-message="form.errors.cliente_building" />
-                <!-- <Input label="Mascota" class="w-full" v-model="form.mascota" :error-message="form.errors.mascota" /> -->
-                <!-- <Input label="Persona Adicional" class="w-full" v-model="form.persona_adicional"
-                    :error-message="form.errors.persona_adicional" />
 
-                <Input label="Cobro por transacción" type="number" class="w-full" v-model="form.cobre_transaccion"
-                    :error-message="form.errors.cobre_transaccion" /> -->
-
-                <!-- <Input label="Extra por Daños cobrados al cliente" type="number" class="w-full"
-                    v-model="form.cobro_extra_cliente" :error-message="form.errors.cobro_extra_cliente" /> -->
-
-                <!-- <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" label="Saldo" v-model="form.abono"
-                    :error-message="form.errors.abono" min="1" type="number" /> -->
-                {{ form.method }}
                 <Input v-if="$page.props.auth.user.rol == 'admin'" class="w-full" min="0" type="dropdown"
                     option-label="name" option-value="id" :options="methods" v-model="form.method_id"
                     label="Medio de Pago" />
