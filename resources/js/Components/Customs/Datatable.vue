@@ -186,9 +186,8 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
 
 <template>
     <DataTable ref="dt" id="tabla" :value="props.routes == null ? props.data : dataResponse"
-        v-model:selection="selectedElement" :selectAll="selectAll"
-        :paginator="(dataResponse.length > 0 || data.length > 0) && paginator" :rows :selectionMode sortMode="multiple"
-        scrollable scrollHeight="flex" :loading="props.routes == null ? props.loading : dataLoading"
+        :paginator="(dataResponse.length > 0 || data.length > 0) && paginator" :rows sortMode="multiple" scrollable
+        scrollHeight="flex" :loading="props.routes == null ? props.loading : dataLoading"
         currentPageReportTemplate="{first} al {last} de un total de {totalRecords}" removableSort
         v-model:filters="filters" stripedRows filterDisplay="menu" class="p-datatable-sm  p-1 rounded-md"
         stateStorage="session" :stateKey="cacheName ? 'dt-' + cacheName + '-state-session' : null"
@@ -370,9 +369,12 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
                     </span>
                     <div v-else-if="col.type == 'html'" class="" v-html="truncateString(data[col.field] + ' ', 80)">
                     </div>
+                    <span v-else-if="col.type == 'html-custom'"
+                        v-html="typeof col.renderer === 'function' ? col.renderer(data[col.field]) : col.renderer">
+                    </span>
                     <p v-else class="">
                         {{ col.format ? col.format(truncateString(data[col.field] + ' ',
-                        80)) : truncateString(data[col.field] + ' ', 80) }}
+                            80)) : truncateString(data[col.field] + ' ', 80) }}
                         <!-- {{ truncateString(data[col.field], 80) }} -->
                     </p>
                 </template>

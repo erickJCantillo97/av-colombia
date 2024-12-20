@@ -17,6 +17,7 @@ import '@schedule-x/theme-default/dist/index.css'
 import { viewMonthGrid } from '@schedule-x/calendar';
 import Modal from '@/Components/Customs/Modal.vue';
 import Tag from '@/Components/Tag.vue';
+import Datatable from '@/Components/Customs/Datatable.vue';
 const services = ref([]);
 const totalToPay = ref(0);
 // #endregion
@@ -92,10 +93,7 @@ const getReservas = () => {
                 id: item.id
             })
         });
-        console.log(calendarApp.eventsService.getAll());
-        if (dateActivities.value.length > 0) {
-            todayActivity.value = true;
-        }
+
     });
 }
 
@@ -106,14 +104,65 @@ const editBooking = (data) => {
 getServices();
 getReservas();
 
+const actions = [
+
+    {
+        label: 'Detalles',
+        action: (data) => {
+            editBooking(data);
+        },
+        icon: 'fa-solid fa-circle-info text-sm',
+        severity: "info"
+    },
+]
+
+const columns = [
+    {
+        field: 'service.title',
+        header: 'Actividad',
+        filter: true,
+        sortable: true
+    },
+    {
+        field: 'cliente_name',
+        header: 'Nombre del pasajero',
+        filter: true,
+        sortable: true
+    },
+
+    {
+        field: 'cliente_building',
+        header: 'Edificio',
+        filter: true,
+        sortable: true
+    },
+    {
+        field: 'cliente_phone',
+        header: 'Telefono',
+        filter: true,
+        sortable: true,
+        type: 'html-custom',
+        renderer: (rowData) => {
+            return `<a href="tel:${rowData}">${rowData}</a>`;
+        }
+    },
+    {
+        field: 'hour',
+        header: 'Hora',
+        filter: true,
+        sortable: true
+    },
+]
+
+
 // #endregion
 </script>
 
 <template>
     <AppLayout title="Dashboard">
         <div class="py-4">
-            <div class="w-full mx-auto sm:px-6 lg:px-8 space-y-4">
-                <div class="bg-white overflow-hidden  sm:rounded-lg flex justify-between items-center px-8">
+            <div class="w-full mx-auto sm:px-1 lg:px-4 space-y-8">
+                <div class="bg-white overflow-hidden  sm:rounded-lg flex justify-between items-center px-1">
                     <h1>
                         Hola <strong class="uppercase">
                             {{ $page.props.auth.user.name }}
@@ -123,7 +172,7 @@ getReservas();
                     <Button label="Ver Portafolio" />
                     </Link>
                 </div>
-                <div class=" p-4 rounded-lg grid grid-cols-2 gap-4">
+                <!-- <div class=" p-1 rounded-lg grid grid-cols-2 gap-4">
                     <div class="shadow-md rounded-md p-4 text-center">
                         <h2 class="text-xl font-bold">{{ services?.length ?? 0 }}</h2>
                         <h3> Reservas Pendinetes de Pago por total de {{ COP.format(totalToPay) }}</h3>
@@ -135,10 +184,17 @@ getReservas();
                         </h3>
 
                     </div>
+                </div> -->
+                <div class="shadow-xl rounded-lg p-1">
+                    <Datatable :rows-default="20" :columnas="columns" :data="dateActivities" :actions
+                        title="Actividades de Hoy">
+                    </Datatable>
                 </div>
                 <div>
+                    <h3 class="font-bold text-xl mb-2">Calendario de Eventos</h3>
                     <ScheduleXCalendar :calendar-app="calendarApp" />
                 </div>
+
             </div>
         </div>
     </AppLayout>
