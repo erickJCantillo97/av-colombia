@@ -3,6 +3,7 @@
 use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProveedorController;
@@ -71,6 +72,12 @@ Route::middleware([
     Route::put('availability/{availability}', [AvailabilityController::class, 'update'])->name('availability.update');
     Route::delete('availability/{availability}', [AvailabilityController::class, 'destroy'])->name('availability.destroy');
     Route::post('availability/{availability}/syncPrices', [AvailabilityController::class, 'syncPrices'])->name('availability.syncPrices');
+
+    Route::get('contabilidad', [ContabilidadController::class, 'index'])->name('contabilidad');
+
+    Route::get('getVentasMouth', [ContabilidadController::class, 'getVentasMouth'])->name('get.ventas.mouth');
+    // Route::get('getVentasProveedores', [ContabilidadController::class, 'getVentasProveedores'])->name('get.ventas.proveedores');
+    Route::get('getCostosProveedores', [ContabilidadController::class, 'getCostosProveedores'])->name('get.costos.proveedores');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

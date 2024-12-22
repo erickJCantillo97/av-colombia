@@ -21,6 +21,7 @@
         "vue": "^3.3.13"
     },
     "dependencies": {
+        "chart.js": "^4.4.3",
         "@headlessui/vue": "^1.7.22",
         "@heroicons/vue": "^2.1.5",
         "@primevue/forms": "^4.2.1",
@@ -29,6 +30,7 @@
         "@schedule-x/events-service": "^2.4.1",
         "@schedule-x/theme-default": "^2.4.1",
         "@schedule-x/vue": "^2.3.1",
+        "@syncfusion/ej2-vue-charts": "^28.1.35",
         "@vee-validate/yup": "^4.14.6",
         "@vuepic/vue-datepicker": "^9.0.2",
         "aos": "^2.3.4",

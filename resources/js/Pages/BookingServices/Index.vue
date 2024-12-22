@@ -395,15 +395,7 @@ const buttons = [
                 }
             });
             form.observations = data.observations;
-            console.log(data);
 
-            // adults.value = data.adults
-            // boys.value = data.boys;
-            // cliente_name.value = data.cliente_name;
-            // cliente_phone.value = data.cliente_phone;
-            // cliente_city.value = data.cliente_city;
-            // cliente_building.value = data.cliente_building;
-            // hour.value = data.hour;
             service.value = data;
             show.value = true;
         },
@@ -411,16 +403,6 @@ const buttons = [
         severity: "warn"
         // class: 'p-button-warning text-sm'
     },
-    // {
-    //     label: 'Registrar Pago',
-    //     action: (data) => {
-    //         form.service_id = data.id;
-    //         show.value = true;
-    //     },
-    //     icon: 'fa-solid fa-dollar text-sm',
-    //     severity: "success"
-    //     // class: 'p-button-warning text-sm'
-    // },
     {
         label: 'Problematica',
         show: usePage().props.auth.user.rol == 'admin',

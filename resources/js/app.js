@@ -26,6 +26,9 @@ import VueTailwindDatepicker from "vue-tailwind-datepicker";
 import { setLocale } from 'yup';
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { registerLicense } from '@syncfusion/ej2-base';
+registerLicense('Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWH1ccHVWR2ZdU0Z2WUo=');
+
 setLocale(es);
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
 

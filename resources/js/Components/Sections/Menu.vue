@@ -69,13 +69,13 @@
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        <!-- <li>
                             <Link v-if="$page.props.auth.user.rol == 'admin'" :href="route('payments.index')" v-ripple
                                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
                             <i class="pi pi-dollar mr-2"></i>
                             <span class="font-pago">Pagos</span>
                             </Link>
-                        </li>
+                        </li> -->
                         <li>
                             <Link v-if="$page.props.auth.user.rol == 'admin'" :href="route('proveedors.index')" v-ripple
                                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
@@ -91,6 +91,13 @@
                             </a>
                         </li> -->
 
+                        <li>
+                            <Link v-if="$page.props.auth.user.rol == 'admin'" :href="route('contabilidad')" v-ripple
+                                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+                            <i class="pi pi-dollar mr-2"></i>
+                            <span class="font-medium">Contabilidad</span>
+                            </Link>
+                        </li>
                         <li>
                             <Link v-if="$page.props.auth.user.rol == 'admin'" :href="route('settings')" v-ripple
                                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
