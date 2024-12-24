@@ -10,7 +10,7 @@
             </div>
 
         </div>
-        <div class="w-full flex flex-col md:flex:row items-start justify-start gap-2 md:gap-10 p-4 md:p-20">
+        <div class="w-full flex flex-col md:flex-row items-start justify-start gap-2 md:gap-10 p-4 md:p-20">
             <div @click="openDrawer('Experiencias')"
                 class="flex efect hover:scale-105 item flex-col w-full px-5 pt-10 md:pt-20 shadow-xl hover:bg-gray-800  hover:text-white group">
                 <h3 class="font-bold text-4xl md:text-6xl">Experiencias</h3>
@@ -62,9 +62,8 @@
 
         <Drawer :pt="{
             root: '!bg-slate-900 !animate-flip !animate-once !animate-duration-500',
-            header: '!hidden',
-        }" v-model:visible="visible" :header="title" position="full">
-            <div class="text-white  flex flex-col items-center justify-center">
+        }" v-model:visible="visible" position="full">
+            <div class="text-white flex flex-col items-center justify-center">
                 <!-- <h1 class="text-6xl font-bold">Experiencias</h1> -->
                 <div class="flex flex-col md:flex-row items-start justify-between w-full md:mt-10">
                     <div class="w-full p-10 flex flex-col items-start justify-start gap-10">
