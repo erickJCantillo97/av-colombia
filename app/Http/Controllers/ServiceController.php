@@ -264,6 +264,7 @@ class ServiceController extends Controller
     {
 
         $service = BookingService::where('id', request('service'))->first();
+        $service->update(['fecha_cancelacion' => null]);
         if (request('state') == 'CANCELADA') {
             $service->proveedors()->delete();
             $service->update(['fecha_cancelacion' => request('date')]);
