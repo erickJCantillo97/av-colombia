@@ -50,29 +50,7 @@
     </Dialog>
   </header>
 
-  <div class="fixed md:hidden z-50 bottom-0 bg-white w-full py-2 ">
-    <div class="flex justify-between text-center px-2 ">
-      <div class="flex flex-col font-extrabold w-full">
-        <i class="fa-solid fa-street-view text-md"></i>
-        <h1 class="text-xs">Experiencias</h1>
-        <div class="border-b-2 border-black rounded-full mx-4" />
-      </div>
-      <div class="flex flex-col font-extrabold w-full">
-        <i class="fa-solid fa-building text-md"></i>
-        <h1 class="text-xs">Alojamientos</h1>
-        <div class="border-b-2 border-black rounded-full mx-4 hidden" />
-      </div>
-      <div class="flex flex-col font-extrabold w-full">
-        <i class="fa-solid fa-car"></i>
-        <h1 class="text-xs">Transporte</h1>
-      </div>
-      <div class="flex flex-col font-extrabold w-full">
-        <i class="fa-solid fa-ship text-md"></i>
-        <h1 class="text-xs">Embarcaciones</h1>
-        <div class="border-b-2 border-black rounded-full mx-4 hidden" />
-      </div>
-    </div>
-  </div>
+
 </template>
 
 <script setup>

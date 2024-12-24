@@ -262,7 +262,12 @@ class ServiceController extends Controller
 
     public function setStatus()
     {
+
         $service = BookingService::where('id', request('service'))->first();
+        if (request('state') == 'CANCELADA') {
+            $service->proveedors()->delete();
+            $service->update(['fecha_cancelacion' => request('date')]);
+        }
         // dd($service);
         storeState($service, request('state'), request('terminated'));
         return back()->with('message', 'Estado actualizado');

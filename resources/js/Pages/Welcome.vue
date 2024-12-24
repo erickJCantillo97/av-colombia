@@ -5,12 +5,14 @@ import { ref } from 'vue';
 import FsLightbox from "fslightbox-vue/v3";
 import Input from '@/Components/Customs/Input.vue';
 import Header from '@/Components/Sections/Header.vue';
-import Banner from '@/Components/Sections/Banner.vue';
+// import Banner from '@/Components/Sections/Banner.vue';
 import Experiencias from '@/Components/SearchEngines/Experiencias.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import ProductCard from '@/Components/Sections/ProductCard.vue';
 import ExperienceCard from '@/Components/Items/ExperienceCard.vue';
 import ExperienceMiniCard from '@/Components/Items/ExperienceMiniCard.vue';
+import Banner from './Welcome/Banner.vue';
+import Features from './Welcome/Features.vue';
 
 const toggler = ref(false)
 defineProps({
@@ -71,7 +73,7 @@ const changeMotor = (motor) => {
             </div>
         </div>
 
-        <div class="bg-white w-full px-0 md:px-10 mt-44 md:mt-0 z-30">
+        <div class="bg-white w-full px-0 md:px-10  md:mt-0 z-30">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between">
                     <h2 class="text-xl font-bold text-gray-900">Vive nuestras Experiencias</h2>
@@ -87,6 +89,8 @@ const changeMotor = (motor) => {
                 </div>
             </div>
         </div>
+        <Banner></Banner>
+        <Features ></Features>
         <!-- <div class="bg-white w-full px-0 md:px-10 border-t md:mt-0 z-30">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between ">

@@ -156,6 +156,11 @@
                     <strong>Fecha de reserva:</strong>
                     <p>{{ new Date(service.created_at).toLocaleDateString('es-CO') }}</p>
                 </div>
+                <div v-if="service.fecha_cancelacion"
+                    class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Fecha de Cancelación:</strong>
+                    <p>{{ service.fecha_cancelacion }}</p>
+                </div>
                 <div class="text-lg flex w-full justify-between mt-2" v-if="$page.props.auth.user.rol == 'admin'">
                     <p class="font-bold">
                         Proveedores
@@ -215,7 +220,7 @@
                             v-tooltip.top="'Completar Servicio'" class="flex-auto" severity="success" />
                         <Button @click="setState('NO SHOW', true)" icon="fa-solid fa-eye-slash" text size="large"
                             v-tooltip.top="'Servicio No show'" class="flex-auto" severity="warn" />
-                        <Button @click="setState('CANCELADA', true)" icon="fa-solid fa-xmark-circle" text size="large"
+                        <Button @click="cancelarServicio()" icon="fa-solid fa-xmark-circle" text size="large"
                             v-tooltip.top="'Cancelar Servicio'" class="flex-auto" severity="danger" />
                         <Button @click="setState('PROBLEMATICA', false)" icon="fa-solid fa-person-dress-burst" text
                             size="large" v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
@@ -601,6 +606,30 @@ const disabledDates = computed(() => {
     }
     return dates;
 })
+
+const cancelarServicio = () => {
+    Swal.fire({
+        title: "Cancelar Servicio",
+        input: "date",
+        inputLabel: "Fecha de Cancelación",
+        showCancelButton: true,
+        confirmButtonText: "Cancelar Servicio",
+        showLoaderOnConfirm: true,
+        preConfirm: async (date) => {
+            await router.post(route('set.states'), {
+                service: service.value.id,
+                state: 'CANCELADA',
+                date: date,
+                terminated: true
+            })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            toast('success', 'Reserva Cancelada');
+        }
+    });
+}
 
 
 const setState = (state, terminated) => {
