@@ -1,19 +1,19 @@
 <template>
     <div>
-        <div class="flex justify-between py-10 px-20 ">
+        <div class="flex justify-between py-10 px-4 md:px-20 ">
             <p
                 class="text-3xl font-bold border-t-4 border-black placeholder-vtd-primary-100 pt-8 pr-32 justify-between">
                 Nuestros Servicios <br> para ti
             </p>
-            <div class="text-justify mr-14 text-xl font-extralight w-1/3 text-gray-500 pt-10">
+            <div class="text-justify md:mr-14 text-sm md:text-xl font-extralight w-full md:w-1/3 text-gray-500 pt-10">
                 Explora nuestras opciones de servicios, encontraras todo lo necesario para tu estancia en Colombia
             </div>
 
         </div>
-        <div class="w-full flex items-start justify-start gap-10 p-20">
+        <div class="w-full flex flex-col md:flex:row items-start justify-start gap-2 md:gap-10 p-4 md:p-20">
             <div @click="openDrawer('Experiencias')"
-                class="flex efect hover:scale-105 item flex-col w-full px-5 pt-20 shadow-xl hover:bg-gray-800  hover:text-white group mb-10">
-                <h3 class="font-bold text-6xl">Experiencias</h3>
+                class="flex efect hover:scale-105 item flex-col w-full px-5 pt-10 md:pt-20 shadow-xl hover:bg-gray-800  hover:text-white group">
+                <h3 class="font-bold text-4xl md:text-6xl">Experiencias</h3>
                 <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
                 </div>
                 <p class="mt-4 text-justify">
@@ -28,8 +28,8 @@
                 </p>
             </div>
             <div
-                class="flex efect item mt-10 flex-col w-full px-5 py-20 shadow-xl hover:bg-gray-800  hover:text-white group mb-10">
-                <h1 class="font-bold text-6xl">Transportes</h1>
+                class="flex efect item md:mt-10 flex-col w-full px-5 py-20 shadow-xl hover:bg-gray-800  hover:text-white group">
+                <h1 class="font-bold text-4xl md:text-6xl">Transportes</h1>
                 <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
                 </div>
                 <p class="mt-4 text-justify">
@@ -38,8 +38,8 @@
                 </p>
             </div>
             <div
-                class="flex efect item mt-20 flex-col w-full px-5 py-20 shadow-xl hover:bg-gray-800  hover:text-white group mb-10">
-                <h1 class="font-bold text-6xl">Alojamientos</h1>
+                class="flex efect item md:mt-20 flex-col w-full px-5 py-20 shadow-xl hover:bg-gray-800  hover:text-white group">
+                <h1 class="font-bold text-4xl md:text-6xl">Alojamientos</h1>
                 <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
                 </div>
                 <p class="mt-4 text-justify">
@@ -48,8 +48,8 @@
                 </p>
             </div>
             <div
-                class="flex efect item mt-32 flex-col w-full px-5 py-20 shadow-xl hover:bg-gray-800  hover:text-white group mb-10">
-                <h1 class="font-bold text-6xl">Embarcaciones</h1>
+                class="flex efect item md:mt-32 flex-col w-full px-5 py-8 md:py-20 shadow-xl hover:bg-gray-800  hover:text-white group">
+                <h1 class="font-bold text-4xl md:text-6xl">Embarcaciones</h1>
                 <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
                 </div>
                 <p class="mt-4 text-justify">
@@ -66,10 +66,10 @@
         }" v-model:visible="visible" :header="title" position="full">
             <div class="text-white  flex flex-col items-center justify-center">
                 <!-- <h1 class="text-6xl font-bold">Experiencias</h1> -->
-                <div class="flex items-start justify-between w-full mt-10">
+                <div class="flex flex-col md:flex-row items-start justify-between w-full md:mt-10">
                     <div class="w-full p-10 flex flex-col items-start justify-start gap-10">
-                        <h2 class="text-6xl font-extrabold">Experiencias y tours</h2>
-                        <p class="text-justify text-gray-100 text-lg pr-52">
+                        <h2 class="text-4xl md:text-6xl font-extrabold">Experiencias y tours</h2>
+                        <p class="text-justify text-gray-100 text-lg md:pr-52">
                             En AV Colombia te ofrecemos las mejores experiencias para que disfrutes de tu estancia en
                             Colombia
                             al máximo.
@@ -79,7 +79,7 @@
                             y la gastronomía de nuestro país.
                         </p>
                         <button
-                            class="p-3 hover:pr-8 bg-lime-300 text-black text-lg font-bold rounded-lg mt-10 flex items-center gap-x-5 group">
+                            class="p-3 hover:pr-8 bg-lime-300 text-black text-lg font-bold rounded-lg md:mt-10 flex items-center gap-x-5 group">
                             <span>
                                 Contactar un Vendedor
                             </span>
@@ -87,7 +87,7 @@
                         </button>
 
                     </div>
-                    <video loop autoplay class="rounded-lg h-[45vh]">
+                    <video loop autoplay class="rounded-lg h-[45vh] hidden md:block">
                         <source src="https://avcolombia.net/videos/cartagena.mp4" type="video/mp4"> >
                     </video>
                 </div>
