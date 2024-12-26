@@ -423,7 +423,6 @@ const removeImage = (id) => {
                     <TabPanel value="4">
                         <div class="m-0 h-[70vh] overflow-y-auto">
 
-
                         </div>
                     </TabPanel>
                 </TabPanels>

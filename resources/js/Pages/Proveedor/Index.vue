@@ -110,11 +110,7 @@ const columnas = [
         header: 'Nombre',
         filter: true
     },
-    {
-        field: 'direccion',
-        header: 'Direción',
-        filter: true
-    },
+
     {
         field: 'telefono',
         header: 'Telefono',

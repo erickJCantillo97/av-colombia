@@ -1,8 +1,8 @@
 <template>
 
     <Head title="Inicio" />
-    <Header />
-    <div class="h-[100vh] overflow-y-auto py-1 pb-20">
+
+    <div class="h-[100vh] overflow-y-auto pb-20">
         <!-- <Banner class=""  /> -->
         <slot />
     </div>

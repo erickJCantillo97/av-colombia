@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white block">
+  <header class="bg-transparent w-full" :class="{ 'header-fixed': isFixed }">
     <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
         <h1 class="-m-1.5 p-1.5 text-lg font-bold">AV Colombia
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { Link } from '@inertiajs/vue3';
@@ -66,5 +66,38 @@ const navigation = [
   { name: 'Mi Reserva', href: 'welcome' },
 ]
 
+
+const isFixed = ref(false)
+
 const mobileMenuOpen = ref(false)
+
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  console.log('mounted')
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll); // Importante para evitar fugas de memoria
+})
+
+const handleScroll = () => {
+  if (window.scrollY > 0) { // Ajusta este valor según necesites
+    isFixed.value = true;
+  } else {
+    isFixed.value = false;
+  }
+  console.log(0)
+}
 </script>
+
+<style>
+.header-fixed {
+  position: fixed;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  /* Negro con transparencia al hacer scroll */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Sombra sutil */
+}
+</style>

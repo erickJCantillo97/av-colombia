@@ -24,8 +24,7 @@ const product = {
   name: props.service.title,
   price: USDollar.format(props.service.price),
   rating: 4,
-  images: ['/images/productos/baru-1.webp', '/images/productos/baru-2.webp', '/images/productos/baru-3.webp', '/images/productos/baru-1.webp', '/images/productos/baru-2.webp', '/images/productos/baru-3.webp', '/images/productos/baru-1.webp', '/images/productos/baru-2.webp', '/images/productos/baru-3.webp'],
-  // props.service.images.map((image) => image.filepath),
+  images: props.service.images.map((image) => image.filepath),
   features: props.service.features,
   description: props.service.description,
   details: [
@@ -311,7 +310,7 @@ const times = computed(() => {
               {{ time.start.substring(0, 5) }}
             </div>
           </div>
-          
+
         </span>
       </div>
 

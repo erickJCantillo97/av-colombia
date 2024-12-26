@@ -51,9 +51,11 @@ const changeMotor = (motor) => {
 
     <GuestLayout>
 
-        <div class="flex justify-center w-full h-[60vh] py-4">
-            <div class="shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[90vw] px-2 md:px-12 h-full"
-                style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
+        <div class="justify-center w-full h-[60vh] flex flex-col items-center pb-5"
+            style="background-image: url('/images/cartagena.webp');background-size: cover;background-position: center;">
+            <Header />
+            <div
+                class="shadow-2xl shadow-gray-700 flex flex-col items-center rounded-lg md:p-5 w-[90vw] px-2 md:px-12 h-full">
                 <!-- <img src="/images/cartagena.webp" class="w-[90vw] h-[70vh] object-cover absolute " alt=""> -->
                 <div class="py-10 space-y-10 mt-4 w-full">
                     <h1 data-aos="zoom-in-down" data-aos-duration="2000"
@@ -73,7 +75,7 @@ const changeMotor = (motor) => {
             </div>
         </div>
 
-        <div class="bg-white w-full px-0 md:px-10 mt-10 md:mt-0 z-30">
+        <!-- <div class="bg-white w-full px-0 md:px-10 mt-10 md:mt-0">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between">
                     <h2 class="text-xl font-bold text-gray-900">Vive nuestras Experiencias</h2>
@@ -88,9 +90,9 @@ const changeMotor = (motor) => {
                         v-for="product in services" :key="product.id" :product="product" />
                 </div>
             </div>
-        </div>
-        <Banner></Banner>
+        </div> -->
         <Features></Features>
+        <Banner></Banner>
         <!-- <div class="bg-white w-full px-0 md:px-10 border-t md:mt-0 z-30">
             <div class="px-4 py-2 sm:px-6 sm:py-10 mx-auto lg:px-1">
                 <div class="flex justify-between ">
