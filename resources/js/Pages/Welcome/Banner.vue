@@ -1,6 +1,6 @@
 <template>
-    <div class="w-full py-4 bg-slate-900 justify-center items-center text-white gap-x-8 hidden md:flex">
-        <div class="px-10 hover:rounded-md hover:bg-slate-500 cursor-default  border-r py-4 flex gap-x-5 items-center">
+    <div class="w-full py-4 bg-slate-900 justify-center items-center text-white  hidden md:flex">
+        <div class="px-32  hover:bg-slate-500 cursor-default  border-r py-4 flex gap-x-5 items-center">
             <h3 class="text-4xl font-extrabold font-mono">
                 10
             </h3>
@@ -8,7 +8,7 @@
                 Años<br>de experiencia
             </p>
         </div>
-        <div class="px-10 hover:rounded-md hover:bg-slate-500 cursor-default  border-r py-4 flex gap-x-5 items-center">
+        <div class="px-32  hover:bg-slate-500 cursor-default  border-r py-4 flex gap-x-5 items-center">
             <h3 class="text-4xl font-extrabold font-mono">
                 1K+
             </h3>
@@ -16,7 +16,7 @@
                 Viajes<br>Realizados
             </p>
         </div>
-        <div class="px-10 hover:rounded-md hover:bg-slate-500 cursor-default  border-r py-4 flex gap-x-5 items-center">
+        <div class="px-32  hover:bg-slate-500 cursor-default  border-r py-4 flex gap-x-5 items-center">
             <h3 class="text-4xl font-extrabold font-mono">
                 5K+
             </h3>
@@ -24,7 +24,7 @@
                 Tours<br>Culminados
             </p>
         </div>
-        <div class="px-10 hover:rounded-md hover:bg-slate-500 cursor-default   py-4 flex gap-x-5 items-center">
+        <div class="px-32  hover:bg-slate-500 cursor-default   py-4 flex gap-x-5 items-center">
             <h3 class="text-4xl font-extrabold font-mono">
                 15K+
             </h3>

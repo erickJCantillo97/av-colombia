@@ -1,20 +1,24 @@
 <template>
-  <header class="bg-transparent w-full" :class="{ 'header-fixed': isFixed }">
-    <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-      <div class="flex lg:flex-1">
-        <h1 class="-m-1.5 p-1.5 text-lg font-bold">AV Colombia
+  <header class="bg-transparent w-full z-30" :class="{ 'scrolled': isScrolled }">
+    <nav class="flex items-center justify-between p-2 lg:px-8" aria-label="Global">
+      <div class="flex lg:flex-1 w-1/5 justify-start items-center">
+        <Logo width="80" height="30"></Logo>
+        <h1 class="text-sm md:text-lg font-bold">AV Colombia
         </h1>
       </div>
-      <div class="flex lg:hidden">
+
+      <div class="hidden lg:flex lg:gap-x-12 w-3/5 items-center justify-center" v-if="!isScrolled">
+        <Link v-for="item in navigation" :key="item.name" :href="route(item.href)"
+          class="text-sm font-semibold leading-6 text-gray-900 w-full">{{ item.name }}</Link>
+      </div>
+      <input v-model="search" v-else type="search" placeholder="Busqueda Rapida" class="rounded-md w-3/5">
+
+      <div class="flex lg:hidden w-1/5 justify-end">
         <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
           @click="mobileMenuOpen = true">
           <span class="sr-only">Open main menu</span>
           <Bars3Icon class="h-6 w-6" aria-hidden="true" />
         </button>
-      </div>
-      <div class="hidden lg:flex lg:gap-x-12">
-        <Link v-for="item in navigation" :key="item.name" :href="route(item.href)"
-          class="text-sm font-semibold leading-6 text-gray-900">{{ item.name }}</Link>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
         <Link :href="route('login')" class="text-sm font-semibold leading-6 text-gray-900">Log in <span
@@ -58,6 +62,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { Link } from '@inertiajs/vue3';
+import Logo from '../logo.vue';
 
 const navigation = [
   { name: 'Inicio', href: 'welcome' },
@@ -67,37 +72,53 @@ const navigation = [
 ]
 
 
-const isFixed = ref(false)
+const search = ref('')
+
+const isScrolled = ref(false);
 
 const mobileMenuOpen = ref(false)
+
+const handleScroll = () => {
+  console.log(window.scrollY);
+  if (window.scrollY > 300) {
+    isScrolled.value = true; // Si se ha hecho scroll más de 50px, cambiamos el estado
+  } else {
+    isScrolled.value = false; // Si no, lo dejamos en el estado inicial
+  }
+};
 
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
-  console.log('mounted')
-})
+});
 
+// Limpiar el evento cuando el componente se destruya
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll); // Importante para evitar fugas de memoria
-})
+  window.removeEventListener('scroll', handleScroll);
+});
 
-const handleScroll = () => {
-  if (window.scrollY > 0) { // Ajusta este valor según necesites
-    isFixed.value = true;
-  } else {
-    isFixed.value = false;
-  }
-  console.log(0)
-}
+
 </script>
 
-<style>
-.header-fixed {
+<style scoped>
+/* Estilo por defecto del header */
+header {
+  padding: 15px;
   position: fixed;
+  width: 100%;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  /* Negro con transparencia al hacer scroll */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Sombra sutil */
+  transition: background-color 0.3s ease;
+}
+
+.scrolled {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.384);
+}
+
+/* Contenido principal */
+.content {
+  padding-top: 80px;
+  /* Asegurarse de que el header no cubra el contenido */
 }
 </style>

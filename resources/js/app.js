@@ -1,6 +1,7 @@
 import "./bootstrap";
 import "../css/app.css";
 import "../css/transitions.css";
+
 import "../css/customs.css";
 import "preline";
 import 'aos/dist/aos.css'
@@ -27,6 +28,8 @@ import { setLocale } from 'yup';
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { registerLicense } from '@syncfusion/ej2-base';
+import { SchedulePlugin } from '@syncfusion/ej2-vue-schedule';
+
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWH1ccHVWR2ZdU0Z2WUo=');
 
 setLocale(es);
@@ -129,6 +132,7 @@ createInertiaApp({
             .use(ConfirmationService)
             .use(ToastService)
             .use(VueSweetalert2)
+            .use(SchedulePlugin)
             .use(VueTailwindDatepicker)
             .use(PrimeVue, {
                 theme: {

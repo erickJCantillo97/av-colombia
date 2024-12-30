@@ -11,54 +11,22 @@
             </div>
 
         </div>
-        <div class="w-full flex flex-col md:flex-row items-start justify-start gap-2 md:gap-10 p-4 md:p-20">
-            <div @click="openDrawer('Experiencias')"
-                class="flex efect hover:scale-105 item flex-col w-full px-5 pt-10 md:pt-20 shadow-xl hover:bg-gray-800  hover:text-white group">
-                <h3 class="font-bold text-4xl md:text-6xl">Experiencias</h3>
+        <div class="w-full flex flex-col md:flex-row items-start justify-start gap-2 md:gap-10 p-4 px-10 md:px-20">
+            <div v-for="(service, index) in servicesType" @click="openDrawer(service.type)" class="flex efect hover:scale-105 item flex-col w-full p-5 md:pt-10 shadow-xl hover:bg-gray-800
+                hover:text-white group">
+                <h3 class="font-bold text-4xl md:text-5xl">{{ service.name }}</h3>
                 <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
                 </div>
                 <p class="mt-4 text-justify">
-                    Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la
-                    gastronomía de nuestro país.
+                    {{ service.text }}
                 </p>
                 <p class="mt-10 text-right text-xl font-bold mb-4 flex items-center justify-end gap-x-2">
                     <span>
-                        Ir a Disfrutar
+                        {{ service.textButton }}
                     </span>
                     <i class="fa-solid fa-caret-right"></i>
                 </p>
             </div>
-            <div
-                class="flex efect item md:mt-10 flex-col w-full px-5 py-20 shadow-xl hover:bg-gray-800  hover:text-white group">
-                <h1 class="font-bold text-4xl md:text-6xl">Transportes</h1>
-                <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
-                </div>
-                <p class="mt-4 text-justify">
-                    Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la
-                    gastronomía de nuestro país.
-                </p>
-            </div>
-            <div
-                class="flex efect item md:mt-20 flex-col w-full px-5 py-20 shadow-xl hover:bg-gray-800  hover:text-white group">
-                <h1 class="font-bold text-4xl md:text-6xl">Alojamientos</h1>
-                <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
-                </div>
-                <p class="mt-4 text-justify">
-                    Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la
-                    gastronomía de nuestro país.
-                </p>
-            </div>
-            <div
-                class="flex efect item md:mt-32 flex-col w-full px-5 py-8 md:py-20 shadow-xl hover:bg-gray-800  hover:text-white group">
-                <h1 class="font-bold text-4xl md:text-6xl">Embarcaciones</h1>
-                <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
-                </div>
-                <p class="mt-4 text-justify">
-                    Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la
-                    gastronomía de nuestro país.
-                </p>
-            </div>
-
         </div>
 
         <Drawer :pt="{
@@ -68,7 +36,7 @@
                 <!-- <h1 class="text-6xl font-bold">Experiencias</h1> -->
                 <div class="flex flex-col md:flex-row items-start justify-between w-full md:mt-10">
                     <div class="w-full p-10 flex flex-col items-start justify-start gap-10">
-                        <h2 class="text-4xl md:text-6xl font-extrabold">Experiencias y tours</h2>
+                        <h2 class="text-4xl md:text-5xl font-extrabold">Experiencias y tours</h2>
                         <p class="text-justify text-gray-100 text-lg md:pr-52">
                             En AV Colombia te ofrecemos las mejores experiencias para que disfrutes de tu estancia en
                             Colombia
@@ -171,6 +139,37 @@ const responsiveOptions = ref([
         numVisible: 1,
         numScroll: 1
     }
+]);
+
+const servicesType = ref([
+    {
+        type: 'TOUR',
+        name: 'Experiencias',
+        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        textButton: 'Ir a Disfrutar'
+
+    },
+    {
+        type: 'TRANSPORT',
+        name: 'Transportes',
+        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        textButton: 'Transportes Seguros'
+
+    },
+    {
+        type: 'ACCOMMODATION',
+        name: 'Alojamientos',
+        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        textButton: 'Ir a Alojamientos'
+
+    },
+    {
+        type: 'BOAT',
+        name: 'Embarcaciones',
+        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        textButton: 'Ver Embarcaciones'
+    }
+
 ]);
 
 

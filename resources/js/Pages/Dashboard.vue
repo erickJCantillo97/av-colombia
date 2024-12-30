@@ -18,6 +18,7 @@ import { viewMonthGrid } from '@schedule-x/calendar';
 import Modal from '@/Components/Customs/Modal.vue';
 import Tag from '@/Components/Tag.vue';
 import Datatable from '@/Components/Customs/Datatable.vue';
+import Scheduler from './Dashboards/Scheduler.vue';
 const services = ref([]);
 const totalToPay = ref(0);
 // #endregion
@@ -34,7 +35,7 @@ const COP = new Intl.NumberFormat("es-CO", {
     maximumFractionDigits: 0,
 });
 const dateActivities = ref([]);
-const reservas = ref([]);
+const reservas = ref();
 const todayActivity = ref(false)
 const serviceSelected = ref({});
 const configCalendar = reactive({
@@ -72,12 +73,7 @@ const visible = ref(false);
 // #endregion
 
 // #region Methods
-const getServices = () => {
-    axios.get(route('dashboard.services.no.pay')).then(response => {
-        services.value = response.data.bookings;
-        totalToPay.value = response.data.bookings.reduce((acc, item) => acc + item.total_price, 0);
-    });
-}
+
 const getReservas = () => {
     axios.get(route('BookingServices.index')).then(response => {
         reservas.value = response.data.bookingServices;
@@ -101,7 +97,7 @@ const editBooking = (data) => {
     serviceSelected.value = reservas.value.find(item => item.id == data.id);
     visible.value = true;
 }
-getServices();
+
 getReservas();
 
 const actions = [
@@ -190,11 +186,11 @@ const columns = [
                         title="Actividades de Hoy">
                     </Datatable>
                 </div>
-                <div>
+                <!-- <div>
                     <h3 class="font-bold text-xl mb-2">Calendario de Eventos</h3>
                     <ScheduleXCalendar :calendar-app="calendarApp" />
-                </div>
-
+                </div> -->
+                <Scheduler v-if="reservas" :reservas></Scheduler>
             </div>
         </div>
     </AppLayout>

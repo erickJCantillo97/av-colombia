@@ -1,1 +1,0 @@
-import{dJ as e,C as o}from"./app-D6Ngx2Ch.js";const s=e("HomeStore",()=>({form:o({type:"Tour",ciudad:"",search:"",date:""})}),{persist:{storage:sessionStorage,paths:["form"]}});export{s as u};
