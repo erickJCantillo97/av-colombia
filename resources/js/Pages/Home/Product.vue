@@ -47,7 +47,7 @@
         </span>
 
         <div class="px-5 min-w-full shadow-xl rounded-xl my-4">
-            <img v-if="service.portada == '/laravel/public/'" :src="service.portada" alt="portada"
+            <img v-if="service.portada != '/laravel/public/'" :src="service.portada" alt="portada"
                 class="h-[25vh] w-full rounded-md object-contain shadow-sm">
             <div v-else
                 class="h-[25vh] w-full rounded-md object-cover shadow-sm flex flex-col items-center justify-center">
@@ -64,7 +64,8 @@
             }} por Persona</span>
             <button class="bg-blue-800 py-1.5 px-3 font-semibold  text-white rounded-md " v-else>Ver precios</button>
 
-            <button class="border-gray-800 shadow-md py-1.5 px-3 font-extrabold rounded-md border">Explorar</button>
+            <Link :href="route('show.services', service.slug)"
+                class="border-gray-800 shadow-md py-1.5 px-3 font-extrabold rounded-md border">Explorar</Link>
         </div>
     </div>
 </template>
