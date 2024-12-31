@@ -53,26 +53,6 @@ import { AppBarComponent } from "@syncfusion/ej2-vue-navigations";
 MultiSelect.Inject(CheckBoxSelection);
 
 var app = createApp();
-var dateHeaderTemplate = app.component("date-header-template", {
-    template: '<div><div class="date-text">{{getDateHeaderDay(data.date)}}</div><div class="date-text">' +
-        '{{getDateHeaderDate(data.date)}}</div><div v-html=getWeather(data.date)></div></div>',
-    data() {
-        return {
-            intl: new Internationalization(),
-            data: {},
-            dateHeader: ''
-        };
-    },
-    methods: {
-        getDateHeaderDay: function (value) {
-            return value ? this.intl.formatDate(value, { skeleton: 'E' }) : '';
-        },
-        getDateHeaderDate: function (value) {
-            return value ? this.intl.formatDate(value, { skeleton: 'd' }) : '';
-        },
-
-    }
-});
 
 var liveTimeInterval;
 

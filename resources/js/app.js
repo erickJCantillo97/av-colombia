@@ -29,10 +29,25 @@ import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { registerLicense } from '@syncfusion/ej2-base';
 import { SchedulePlugin } from '@syncfusion/ej2-vue-schedule';
+import { setCulture, setCurrencyCode } from '@syncfusion/ej2-base';
+import { loadCldr } from '@syncfusion/ej2-base';
+import esNumberData from "@syncfusion/ej2-cldr-data/main/es/numbers.json";
+import estimeZoneData from "@syncfusion/ej2-cldr-data/main/es/timeZoneNames.json";
+import esGregorian from '@syncfusion/ej2-cldr-data/main/es/ca-gregorian.json'
 
+import frNumberData from '@syncfusion/ej2-cldr-data/main/fr-CH/numbers.json';
+import frtimeZoneData from '@syncfusion/ej2-cldr-data/main/fr-CH/timeZoneNames.json';
+import frGregorian from '@syncfusion/ej2-cldr-data/main/fr-CH/ca-gregorian.json';
+import frNumberingSystem from '@syncfusion/ej2-cldr-data/supplemental/numberingSystems.json';
+
+// loadCldr(frNumberData, frtimeZoneData, frGregorian, frNumberingSystem);
+
+loadCldr(esNumberData, estimeZoneData, esGregorian);
+setCulture('es');
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWH1ccHVWR2ZdU0Z2WUo=');
 
 setLocale(es);
+
 // https://vue3datepicker.com/installation/#global [Libreria para seleccionar fechas y horas]
 
 const Noir = definePreset(Aura, {
