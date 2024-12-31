@@ -2,17 +2,12 @@
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, onMounted, onUnmounted } from 'vue';
-import FsLightbox from "fslightbox-vue/v3";
-import Input from '@/Components/Customs/Input.vue';
-import Header from '@/Components/Sections/Header.vue';
-// import Banner from '@/Components/Sections/Banner.vue';
-import Experiencias from '@/Components/SearchEngines/Experiencias.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import ProductCard from '@/Components/Sections/ProductCard.vue';
-import ExperienceCard from '@/Components/Items/ExperienceCard.vue';
-import ExperienceMiniCard from '@/Components/Items/ExperienceMiniCard.vue';
 import Banner from './Welcome/Banner.vue';
 import Features from './Welcome/Features.vue';
+import PopularSection from './Welcome/PopularSection.vue';
+import HotelSection from './Welcome/HotelSection.vue';
+import ContactSection from './Welcome/ContactSection.vue';
 
 const toggler = ref(false)
 defineProps({
@@ -42,7 +37,9 @@ const changeMotor = (motor) => {
     <GuestLayout>
         <Features></Features>
         <Banner></Banner>
-
+        <PopularSection></PopularSection>
+        <HotelSection></HotelSection>
+        <ContactSection></ContactSection>
     </GuestLayout>
 
 </template>

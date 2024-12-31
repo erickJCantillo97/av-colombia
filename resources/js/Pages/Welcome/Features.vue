@@ -59,7 +59,6 @@
                         <source src="https://avcolombia.net/videos/cartagena.mp4" type="video/mp4"> >
                     </video>
                 </div>
-                <!-- {{ services }} -->
                 <div class="w-full space-x-2 py-2 justify-center mt-6 " v-if="services.length > 0">
                     <Carousel :pt="{
                         indicator: '!hidden',
@@ -106,8 +105,8 @@ const services = ref([]);
 const openDrawer = (t) => {
     title.value = t;
     visible.value = true;
-
-    if (t == 'Experiencias') {
+    console.log(t);
+    if (t == 'TOUR') {
         axios.get(route('get.services'), {
             type: 'TOUR'
         }).then((response) => {

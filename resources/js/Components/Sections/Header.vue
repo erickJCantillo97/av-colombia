@@ -3,7 +3,7 @@
     <nav class="flex items-center justify-between p-2 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1 w-1/5 justify-start items-center">
         <Logo width="80" height="30"></Logo>
-        <h1 class="text-sm md:text-lg font-bold">AV Colombia
+        <h1 class="text-sm md:text-lg font-bold hidden md:flex items-center space-x-2">AV Colombia
         </h1>
       </div>
 
@@ -79,7 +79,6 @@ const isScrolled = ref(false);
 const mobileMenuOpen = ref(false)
 
 const handleScroll = () => {
-  console.log(window.scrollY);
   if (window.scrollY > 300) {
     isScrolled.value = true; // Si se ha hecho scroll más de 50px, cambiamos el estado
   } else {

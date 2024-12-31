@@ -1,5 +1,5 @@
 <template>
-    <AppLayout title="Services">
+    <AppLayout title="Reservas">
         <div class="h-[99vh]">
             <Datatable :actions="buttons" :add :columnas="columns" :data="bookingServices" routecreate="services.create"
                 title="Reservas">
