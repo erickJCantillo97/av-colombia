@@ -1,6 +1,6 @@
 <template>
 
-    <div class="flex p-4 rounded-lg shadow-xl gap-x-4 items-center w-full justify-between" v-if="type == 'list'">
+    <div class="flex p-4 rounded-lg shadow-xl gap-x-4 items-center w-full justify-between" v-if="typeList == 'list'">
         <div class="flex gap-x-5">
             <img :src="service.portada == '/laravel/public/' ? 'https://avcolombia.net/images/logo.webp' : service.portada"
                 alt="portada" class="h-full w-48 md:w-96 rounded-md object-contain shadow-sm">
@@ -65,7 +65,8 @@
             <button class="bg-blue-800 py-1.5 px-3 font-semibold  text-white rounded-md " v-else>Ver precios</button>
 
             <Link :href="route('show.services', service.slug)"
-                class="border-gray-800 shadow-md py-1.5 px-3 font-extrabold rounded-md border">Explorar</Link>
+                class="border-gray-800 hover:bg-gray-800 shadow-xl hover:text-white  py-1.5 px-3 font-extrabold rounded-md border">
+            Explorar</Link>
         </div>
     </div>
 </template>
@@ -79,7 +80,8 @@ import { useHomeStore } from '@/stores/HomeStore';
 import { storeToRefs } from 'pinia';
 import Logo from '@/Components/Logo.vue';
 const store = useHomeStore();
-const { form } = storeToRefs(store);
+const { form, typeList } = storeToRefs(store);
+
 
 const { truncateString, esMovil } = useCommonUtilities();
 

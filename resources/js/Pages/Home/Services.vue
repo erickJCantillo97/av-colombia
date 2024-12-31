@@ -7,7 +7,7 @@
                         sd
                     </div>
                     <div>
-                        <SelectButton v-model="value" :options="options" optionLabel="value" dataKey="value"
+                        <SelectButton v-model="typeList" :options="options" optionLabel="value" dataKey="value"
                             aria-labelledby="custom">
                             <template #option="slotProps">
                                 <i :class="slotProps.option.icon"></i>
@@ -25,8 +25,8 @@
                 <Loading />
             </div>
             <ul v-else class=" w-full gap-6 py-10 bg-gray-100"
-                :class="value.value == 'list' ? 'grid grid-cols-1 px-5' : 'grid grid-cols-1 md:grid-cols-3 md:px-44 px-5'">
-                <Product :service v-for="service in services" :type="value.value" />
+                :class="typeList.value == 'list' ? 'grid grid-cols-1 px-5' : 'grid grid-cols-1 md:grid-cols-3 md:px-44 px-5'">
+                <Product :service v-for="service in services" />
             </ul>
         </div>
     </GuestLayout>
@@ -37,6 +37,12 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { onMounted, ref, watch } from 'vue';
 import Product from './Product.vue';
 import Loading from '@/Components/Loading.vue';
+import { useHomeStore } from '@/stores/HomeStore';
+import { storeToRefs } from 'pinia';
+
+
+const store = useHomeStore();
+const { typeList } = storeToRefs(store);
 
 const services = ref([]);
 
@@ -80,7 +86,6 @@ const serviceType = ref([
     { name: 'Embarcaciones', icon: 'fa-ship', value: 'EMBARCACIONES' },
 ]);
 
-const value = ref({ icon: 'pi pi-list', value: 'list' });
 const options = ref([
     { icon: 'pi pi-list', value: 'list' },
     { icon: 'pi pi-th-large', value: 'grid' },

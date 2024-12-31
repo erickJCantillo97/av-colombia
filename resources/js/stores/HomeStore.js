@@ -11,13 +11,14 @@ export const useHomeStore = defineStore(
             search: '',
             date: '',
         });
+        const typeList = ref({ icon: 'pi pi-list', value: 'list' })
 
-        return { form };
+        return { form, typeList };
     },
     {
         persist: {
             storage: sessionStorage,
-            paths: ["form"],
+            paths: ["form", 'typeList'],
         },
     }
 );
