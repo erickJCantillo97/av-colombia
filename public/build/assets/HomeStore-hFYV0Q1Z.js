@@ -1,1 +1,0 @@
-import{ff as s,C as o,d as r}from"./app-CtuAXBpv.js";const a=s("HomeStore",()=>{const e=o({type:"Tour",ciudad:"",search:"",date:""}),t=r({icon:"pi pi-list",value:"list"});return{form:e,typeList:t}},{persist:{storage:sessionStorage,paths:["form","typeList"]}});export{a as u};

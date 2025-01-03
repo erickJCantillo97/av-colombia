@@ -9,10 +9,14 @@
             <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center" novalidate>
                 <Input type="dropdown" v-model="form.service_id" :error-message="form.errors.service_id"
                     label="Servicio" option-label="title" option-value="id" :options="services"></Input>
-
                 <Input label="Fecha de Reserva" :enableTimePicker="true" :disabled-dates="disabledDates"
                     v-model="form.date" required class="w-full" type="datetime" />
                 <Input label="Valor Total" type="number" mode="currency" v-model="form.total"></Input>
+                <Input label="Tiempo del Servicio" type="dropdown" v-model="form.time_service" :options="[
+                    '20 Minutos',
+                    '40 Minutos',
+                    '1 Hora',
+                ]"></Input>
                 <Input label="Pasajeros" type="number" v-model="form.adults"></Input>
                 <Input label="Niños" type="number" v-model="form.boys"></Input>
                 <Input label="Nombre del Pasajero" v-model="form.cliente_name" :error-message="form.errors.cliente_name"
@@ -107,6 +111,10 @@
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Hora del Servicio:</strong>
                     <p>{{ service.hour }}</p>
+                </div>
+                <div v-if="service.time_service" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+                    <strong>Tiempo del Servicio:</strong>
+                    <p>{{ service.time_service }}</p>
                 </div>
                 <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
                     <strong>Canal de Venta:</strong>
@@ -270,6 +278,7 @@ const form = useForm({
     service_id: null,
     date: '',
     adults: 1,
+    time_service: '',
     boys: 0,
     cliente_name: '',
     cliente_phone: '',

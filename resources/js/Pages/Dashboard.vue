@@ -74,11 +74,12 @@ const visible = ref(false);
 
 // #region Methods
 
+
 const getReservas = () => {
     axios.get(route('BookingServices.index')).then(response => {
         reservas.value = response.data.bookingServices;
         reservas.value.forEach((item) => {
-            if (item.date == new Date().toISOString().split('T')[0] && item.status == 'reservado') {
+            if (item.date == new Date().toLocaleDateString('en-CA') && item.status == 'reservado') {
                 dateActivities.value.push(item);
             }
             calendarApp.eventsService.add({
@@ -201,6 +202,7 @@ const columns = [
             <div class="grid grid-cols-1 md:grid-cols-5 gap-2 w-full">
                 <Tag label="Fecha" :value="serviceSelected.date" />
                 <Tag label="Hora" :value="serviceSelected.hour" />
+                <Tag label="Tiempo de Servicio" :value="serviceSelected.time_service" />
                 <Tag label="Adultos" :value="serviceSelected.adults" />
                 <Tag label="Niños" :value="serviceSelected.boys" />
                 <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" />

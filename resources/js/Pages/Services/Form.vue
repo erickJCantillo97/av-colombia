@@ -143,6 +143,7 @@ const submit = () => {
     form.recogidas = JSON.stringify(form.recogidas);
     form.puntos = JSON.stringify(form.puntos);
     if (props.service) {
+        
         form.post(route('services.update', props.service.slug), {
             onSuccess: () => {
                 toast('success', 'Servicio actualizado con exito')

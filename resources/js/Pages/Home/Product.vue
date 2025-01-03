@@ -1,6 +1,7 @@
 <template>
 
-    <div class="flex p-4 rounded-lg shadow-xl gap-x-4 items-center w-full justify-between" v-if="typeList == 'list'">
+    <div class="flex p-4 rounded-lg shadow-xl gap-x-4 items-center w-full justify-between"
+        v-if="typeList.value == 'list'">
         <div class="flex gap-x-5">
             <img :src="service.portada == '/laravel/public/' ? 'https://avcolombia.net/images/logo.webp' : service.portada"
                 alt="portada" class="h-full w-48 md:w-96 rounded-md object-contain shadow-sm">
@@ -37,7 +38,8 @@
     <div href="#" v-else
         class="flex flex-col bg-white py-4 px-4 rounded-md hover:scale-105 transition duration-500 ease-in-out hover:shadow-lg cursor-pointer">
         <div class="flex items-center justify-between gap-x-4 py-2">
-            <h3 class="text-xl font-extrabold text-nowrap truncate ">{{ service.title }}</h3>
+            <h3 class="text-xl font-extrabold text-nowrap truncate" v-tooltip="`${service.title}`">{{ service.title }}
+            </h3>
             <span>
                 <i class="fa-solid fa-bookmark text-xl"></i>
             </span>

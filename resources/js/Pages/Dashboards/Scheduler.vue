@@ -133,12 +133,11 @@ export default {
 
                 // Combinar fecha y hora en una sola cadena
                 const fechaHora = `${fecha}T${hora}`; // Añadir segundos para el formato completo
-                console.log(fechaHora)
+
                 // Crear un nuevo objeto Date
                 const startDate = new Date(fechaHora);
                 const endDate = new Date(fechaHora); //
                 endDate.setHours(endDate.getHours() + 2);
-                console.log(startDate)
                 eventData.push({
                     Id: reserva.id,
                     Subject: reserva.service.title,

@@ -24,8 +24,8 @@
             <div v-else-if="searching" class="w-full flex  items-center justify-center px-4 py-2 h-[20vh]">
                 <Loading />
             </div>
-            <ul v-else class=" w-full gap-6 py-10 bg-gray-100"
-                :class="typeList.value == 'list' ? 'grid grid-cols-1 px-5' : 'grid grid-cols-1 md:grid-cols-3 md:px-44 px-5'">
+            <ul v-else class=" w-full gap-2 md:gap-10 py-10 bg-gray-100"
+                :class="typeList.value == 'list' ? 'grid grid-cols-1 px-5' : 'grid grid-cols-1 md:grid-cols-4 md:px-10 px-5'">
                 <Product :service v-for="service in services" />
             </ul>
         </div>

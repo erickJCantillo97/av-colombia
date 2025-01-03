@@ -10,7 +10,7 @@
                     <span class="text-sm">Habitaciones Disponibles</span>
                 </div>
                 <img src="https://avcolombia.net/images/hotel/2.jpg"
-                    class="h-[30vh] w-64 relative -left-64 top-36 object-cover rounded-md" alt="">
+                    class="h-[25vh] md:h-[30vh] w-48 md:w-64 relative -left-64 top-36 object-cover rounded-md" alt="">
             </div>
             <div class="flex flex-col items-start justify-center w-full gap-y-4">
                 <h3 class="text-3xl font-extrabold text-left ">Nuestro hotel exclusivo cuenta con mas de 10 años de

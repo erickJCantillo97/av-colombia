@@ -213,6 +213,7 @@ class ServiceController extends Controller
             'total' => 'nullable|numeric',
             'observations' => 'nullable|string',
             'method_id' => 'nullable|uuid',
+            'time_service' => 'nullable|string',
         ]);
 
         $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
