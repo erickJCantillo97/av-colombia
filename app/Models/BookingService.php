@@ -30,6 +30,11 @@ class BookingService extends Model
         });
     }
 
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);

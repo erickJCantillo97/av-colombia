@@ -5,6 +5,7 @@ use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\CustomProductControlle;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\PaymentMethodController;
@@ -78,6 +79,8 @@ Route::middleware([
     Route::get('getVentasMouth', [ContabilidadController::class, 'getVentasMouth'])->name('get.ventas.mouth');
     // Route::get('getVentasProveedores', [ContabilidadController::class, 'getVentasProveedores'])->name('get.ventas.proveedores');
     Route::get('getCostosProveedores', [ContabilidadController::class, 'getCostosProveedores'])->name('get.costos.proveedores');
+
+    Route::resource('notes', NoteController::class);
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

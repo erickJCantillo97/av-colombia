@@ -12,6 +12,7 @@ use App\Models\Horario;
 use App\Models\Image;
 use App\Models\Included;
 use App\Models\Lock;
+use App\Models\Note;
 use App\Models\Precie;
 use App\Models\Proveedor;
 use App\Models\User;
@@ -215,7 +216,13 @@ class ServiceController extends Controller
             'method_id' => 'nullable|uuid',
             'time_service' => 'nullable|string',
         ]);
-
+        if ($validate['observations']) {
+            Note::create([
+                'booking_service_id' => $validate['service_id'],
+                'note' => $validate['observations'],
+                'user_id' => auth()->user()->id,
+            ]);
+        };
         $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
         $service = Service::find($validate['service_id']);
         $validate['boys'] = $validate['boys'] ?? 0;

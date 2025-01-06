@@ -19,8 +19,7 @@ import Modal from "@/Components/Customs/Modal.vue";
 import Tag from "@/Components/Tag.vue";
 import Datatable from "@/Components/Customs/Datatable.vue";
 import Scheduler from "./Dashboards/Scheduler.vue";
-const services = ref([]);
-const totalToPay = ref(0);
+import Input from "@/Components/Customs/Input.vue";
 // #endregion
 
 // #region CalendarPlugins
@@ -34,6 +33,10 @@ const COP = new Intl.NumberFormat("es-CO", {
   currency: "COP",
   maximumFractionDigits: 0,
 });
+const services = ref([]);
+const notes = ref([]);
+const note = ref("");
+const totalToPay = ref(0);
 const dateActivities = ref([]);
 const reservas = ref();
 const todayActivity = ref(false);
@@ -71,16 +74,26 @@ const visible = ref(false);
 
 // #region Methods
 
+const selectDate = ref(new Date().toISOString().split("T")[0]);
+
+const getServicesSelectedDate = () => {
+  dateActivities.value = reservas.value.filter((item) => item.date == selectDate.value);
+};
+
 const getReservas = () => {
+  console.log("Fecha seleccionada", selectDate.value);
   axios.get(route("BookingServices.index")).then((response) => {
-    reservas.value = response.data.bookingServices;
+    reservas.value = response.data.bookingServices.filter(
+      (item) => item.status == "reservado"
+    );
+    getServicesSelectedDate();
     reservas.value.forEach((item) => {
-      if (
-        item.date == new Date().toLocaleDateString("en-CA") &&
-        item.status == "reservado"
-      ) {
-        dateActivities.value.push(item);
-      }
+      // if (
+      //   item.date == new Date().toLocaleDateString("en-CA") &&
+      //   item.status == "reservado"
+      // ) {
+      //   dateActivities.value.push(item);
+      // }
       calendarApp.eventsService.add({
         title: item.service.title,
         start: item.date + " " + item.hour.substring(0, 5),
@@ -112,6 +125,11 @@ const actions = [
     label: "Notas",
     action: (data) => {
       serviceSelected.value = data;
+      axios
+        .get(route("notes.index", { booking_service_id: data.id }))
+        .then((response) => {
+          notes.value = response.data.notes;
+        });
       todayActivity.value = true;
     },
     icon: "fa-solid fa-note-sticky text-sm",
@@ -159,10 +177,24 @@ const columns = [
 const handleEventClick = (event) => {
   let serviceSelected = reservas.value.find((item) => item.id == event.Id);
   editBooking(serviceSelected);
-  console.log("Evento recibido:", event);
   // Manejar el evento aquí
 };
 
+const sendNote = () => {
+  axios
+    .post(route("notes.store"), {
+      note: note.value,
+      booking_service_id: serviceSelected.value.id,
+    })
+    .then((response) => {
+      axios
+        .get(route("notes.index", { booking_service_id: serviceSelected.value.id }))
+        .then((response) => {
+          notes.value = response.data.notes;
+          note.value = "";
+        });
+    });
+};
 // #endregion
 </script>
 
@@ -201,9 +233,18 @@ const handleEventClick = (event) => {
             :columnas="columns"
             :data="dateActivities"
             :actions
-            title="Actividades de Hoy"
           >
-          </Datatable>
+            <template #title>
+              <div class="flex w-full justify-between font-bold text-xl items-center">
+                <p>Actividades de</p>
+                <input
+                  type="date"
+                  class="mx-2 ring-0 border-0 shadow-md rounded-md"
+                  v-model="selectDate"
+                  @input="getServicesSelectedDate"
+                />
+              </div> </template
+          ></Datatable>
         </div>
         <!-- <div>
                     <h3 class="font-bold text-xl mb-2">Calendario de Eventos</h3>
@@ -275,48 +316,24 @@ const handleEventClick = (event) => {
             {{ serviceSelected }}
         </code> -->
   </Modal>
-  <Modal
-    v-model="todayActivity"
-    close-on-escape="true"
-    title="Actividades de Hoy"
-    width="90vw"
-  >
-    <div>
-      <h1 class="text-xl font-bold">Actividades de Hoy</h1>
-      <div
-        class="flex justify-between font-extrabold text-lg mt-4 bg-gray-200 rounded-t-md gap-x-4 p-1 w-full overflow-x-auto"
-      >
-        <p class="w-full flex text-center">Actividad</p>
-        <p class="w-full flex text-center">Cliente</p>
-        <p class="w-full flex text-center">Edificio</p>
-        <p class="w-full flex text-center">Telefono</p>
-
-        <p class="w-full flex text-center">Hora</p>
-        <p class="w-full flex text-center">Valor</p>
+  <Modal v-model="todayActivity" close-on-escape="true" title="Notas" width="90vw">
+    <div class="w-full flex flex-col gap-y-5 p-2">
+      <h3 class="text-xl font-bold">Notas de la Actividad</h3>
+      <div class="h-[30vh] overflow-y-auto flex flex-col gap-y-2">
+        <div class="flex border shadow-md p-2 rounded-md" v-for="n in notes" :key="n.id">
+          <img :src="n.user.profile_photo_url" class="size-12 rounded-full" alt="" />
+          <div class="ml-4 flex flex-col gap-y-2 w-full">
+            <h2 class="font-bold text-2xl">{{ n.user.name }}</h2>
+            <div class="w-full flex justify-between">
+              <p>{{ n.note }}</p>
+              <p>{{ new Date(n.created_at).toISOString().split("T")[0] }}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div
-        v-for="activity in dateActivities"
-        :class="activity.problematic ? 'bg-red-200' : 'bg-blue-200'"
-        class="flex justify-between p-1.5 text-center w-full overflow-x-auto"
-      >
-        <p class="w-full flex text-center">
-          {{ activity.service.title }}
-        </p>
-        <p class="w-full flex text-center">
-          {{ activity.cliente_name }}
-        </p>
-        <p class="w-full flex text-center">
-          {{ activity.cliente_building }}
-        </p>
-        <a :href="`tel://${activity.cliente_phone}`" class="w-full flex">
-          {{ activity.cliente_phone }}
-        </a>
-        <p class="w-full flex text-center">
-          {{ activity.hour }}
-        </p>
-        <p class="w-full flex text-center">
-          {{ COP.format(activity.total_price) }}
-        </p>
+      <div class="flex gap-x-2">
+        <Input type="textarea" class="w-full shadow-xl" v-model="note"></Input>
+        <Button label="Guardar" severity="info" icon="pi pi-send" @click="sendNote" />
       </div>
     </div>
   </Modal>
