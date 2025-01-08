@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
-        content="En av colombia tenemos todos los servicios disponibles para que desfrutes de tu estadia en colombia, tenemos transporte, alojamientos, tours y todo tipo de embarcaciones para que puedas tener las mejores vacaciones que puedas de sear.">
+        content="En av colombia tenemos todos los servicios disponibles para que desfrutes de tu estadia en colombia, tenemos transporte, alojamientos, tours y todo tipo de embarcaciones para que puedas tener las mejores vacaciones que puedas desear en cartagena.">
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 

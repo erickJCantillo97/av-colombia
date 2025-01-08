@@ -216,17 +216,10 @@ class ServiceController extends Controller
             'method_id' => 'nullable|uuid',
             'time_service' => 'nullable|string',
         ]);
-        if ($validate['observations']) {
-            Note::create([
-                'booking_service_id' => $validate['service_id'],
-                'note' => $validate['observations'],
-                'user_id' => auth()->user()->id,
-            ]);
-        };
+
         $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
         $service = Service::find($validate['service_id']);
         $validate['boys'] = $validate['boys'] ?? 0;
-
         $validate['hour'] = explode(',', request('date'))[1];
         $validate['user_id'] = request('user_id') ?? auth()->user()->id;
         $validate['service'] = $service->title;
@@ -236,6 +229,13 @@ class ServiceController extends Controller
         $validate['boys_tarifa'] = $service->boy_tarifa;
         $booking = BookingService::create($validate);
         // $booking->proveedors()->attach(request('proveedors'));
+        if ($validate['observations']) {
+            Note::create([
+                'booking_service_id' => $booking->id,
+                'note' => $validate['observations'],
+                'user_id' => auth()->user()->id,
+            ]);
+        };
         foreach (request('proveedors') as $proveedor) {
             if ($proveedor['costo'] && $proveedor['proveedor'])
                 $booking->proveedors()->create([
