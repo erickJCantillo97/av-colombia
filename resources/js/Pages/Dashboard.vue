@@ -20,6 +20,7 @@ import Tag from "@/Components/Tag.vue";
 import Datatable from "@/Components/Customs/Datatable.vue";
 import Scheduler from "./Dashboards/Scheduler.vue";
 import Input from "@/Components/Customs/Input.vue";
+import Logo from "@/Components/logo.vue";
 // #endregion
 
 // #region CalendarPlugins
@@ -329,6 +330,10 @@ const sendNote = () => {
               <p>{{ new Date(n.created_at).toISOString().split("T")[0] }}</p>
             </div>
           </div>
+        </div>
+        <div class="flex justify-center flex-col items-center" v-if="notes.length == 0">
+          <Logo></Logo>
+          <p class="font-semibold text-xl">Serivicio sin notas</p>
         </div>
       </div>
       <div class="flex gap-x-2">
