@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class UserController extends Controller 
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -38,6 +38,7 @@ class UserController extends Controller
             'role' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string',  'confirmed'],
         ]);
+
         User::create([
             'name' => $request['name'],
             'email' => $request['email'],
@@ -67,7 +68,25 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $validateData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'rol' => ['required', 'string', 'max:255'],
+            // 'password' => ['nullable', 'string', 'confirmed'],
+        ]);
+        if ($request->filled('password')) {
+            $validateData['password'] = Hash::make($request['password']);
+        }
+
+        try {
+
+            $user->update($validateData);
+
+            return back()->with('success', 'User updated successfully.');
+        } catch (\Exception $e) {
+            dd($e);
+            return back()->with('error', 'User not updated.');
+        }
     }
 
     /**
@@ -76,6 +95,6 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        return back()->with('success', 'User deleted successfully.');   
+        return back()->with('success', 'User deleted successfully.');
     }
 }
