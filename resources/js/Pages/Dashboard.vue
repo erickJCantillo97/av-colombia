@@ -202,7 +202,7 @@ const sendNote = () => {
 <template>
   <AppLayout title="Dashboard">
     <div class="py-4">
-      <div class="w-full mx-auto sm:px-1 lg:px-4 space-y-8">
+      <div class="w-full mx-auto sm:px-1 lg:px-4 space-y-2">
         <div
           class="bg-white overflow-hidden sm:rounded-lg flex justify-between items-center px-1"
         >
@@ -228,6 +228,15 @@ const sendNote = () => {
 
                     </div>
                 </div> -->
+        <div class="flex w-full justify-between font-bold text-xl items-center">
+          <p>Actividades</p>
+          <input
+            type="date"
+            class="mx-2 ring-0 border-0 shadow-md rounded-md"
+            v-model="selectDate"
+            @input="getServicesSelectedDate"
+          />
+        </div>
         <div class="shadow-xl rounded-lg p-1">
           <Datatable
             :rows-default="20"
@@ -235,17 +244,8 @@ const sendNote = () => {
             :data="dateActivities"
             :actions
           >
-            <template #title>
-              <div class="flex w-full justify-between font-bold text-xl items-center">
-                <p>Actividades de</p>
-                <input
-                  type="date"
-                  class="mx-2 ring-0 border-0 shadow-md rounded-md"
-                  v-model="selectDate"
-                  @input="getServicesSelectedDate"
-                />
-              </div> </template
-          ></Datatable>
+            ></Datatable
+          >
         </div>
         <!-- <div>
                     <h3 class="font-bold text-xl mb-2">Calendario de Eventos</h3>
