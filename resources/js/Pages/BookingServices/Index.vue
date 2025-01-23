@@ -43,6 +43,7 @@
           v-model="form.time_service"
           :options="[
             '20 Minutos',
+            '30 Minutos',
             '40 Minutos',
             '1 Hora',
             '2 Horas',

@@ -81,6 +81,8 @@ Route::middleware([
     Route::get('getCostosProveedores', [ContabilidadController::class, 'getCostosProveedores'])->name('get.costos.proveedores');
 
     Route::resource('notes', NoteController::class);
+
+    // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Proveedor;
 use App\Http\Requests\StoreProveedorRequest;
 use App\Http\Requests\UpdateProveedorRequest;
+use App\Imports\ProveedorImport;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProveedorController extends Controller
 {
@@ -88,5 +91,11 @@ class ProveedorController extends Controller
         } catch (\Throwable $th) {
             return back()->withErrors(['message' => 'Error Al eliminar el proveedor']);
         }
+    }
+
+    public function upload(Request $request)
+    {
+
+        Excel::import(new ProveedorImport(), $request->docs);
     }
 }

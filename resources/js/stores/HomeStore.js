@@ -11,7 +11,7 @@ export const useHomeStore = defineStore(
             search: '',
             date: '',
         });
-        const typeList = ref({ icon: 'pi pi-list', value: 'list' })
+        const typeList = ref({ icon: 'pi pi-th-large', value: 'grid' })
 
         return { form, typeList };
     },
