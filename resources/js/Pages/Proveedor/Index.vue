@@ -1,13 +1,5 @@
 <template>
   <AppLayout>
-    <CustomUpload
-      mode="advanced"
-      titleModal="Subir Estructura de SAP"
-      icon-button="fa-solid fa-chart-bar"
-      tooltip="Subir Estructura"
-      accept=".xlsx,.xls"
-      :url="route('upload.proveedors')"
-    />
     <Datatable :data="proveedores" :actions="buttons" :columnas :add title="proveedores">
     </Datatable>
   </AppLayout>
