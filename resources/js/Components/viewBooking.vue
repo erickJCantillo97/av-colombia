@@ -40,7 +40,7 @@
         </div>
         <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
           <strong>Telelfono:</strong>
-          <a :href="`tel://${service.cliente_phone}`">{{ service.cliente_phone }}</a>
+          <a :href="`https://wa.me/${service.cliente_phone}?text=Hola%20👋,%20mi%20nombre%20es%20*Sandra Gil*,%20Le%20escribo%20desde%20*AV%20COLOMBIA*`">{{ service.cliente_phone }}</a>
         </div>
         <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
           <strong>Edificio:</strong>
