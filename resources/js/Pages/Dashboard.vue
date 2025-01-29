@@ -279,7 +279,9 @@ const sendNote = () => {
       <h1 class="text-xl font-bold">Datos del Cliente</h1>
       <div class="grid grid-cols-3 md:grid-cols-4 gap-2 w-full">
         <Tag label="Cliente" :value="serviceSelected.cliente_name" />
-        <Tag label="Telefono" :value="serviceSelected.cliente_phone" />
+        <Link :href="`https://wa.me/${serviceSelected.cliente_phone}`">
+          <Tag label="Telefono" :value="serviceSelected.cliente_phone" />
+        </Link>
         <Tag label="Edificio" :value="serviceSelected.cliente_building" />
         <Tag label="Ciudad de Origen" :value="serviceSelected.cliente_city" />
         <!-- <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" /> -->
