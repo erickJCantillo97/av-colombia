@@ -33,22 +33,15 @@
                                 <span class="sr-only">Address</span>
                                 <BuildingOffice2Icon class="h-7 w-6 text-gray-400" aria-hidden="true" />
                             </dt>
-                            <dd>545 Mavis Island<br />Chicago, IL 99191</dd>
+                            <dd>Los Alpes transversal 71E  diagonal 32B 139 local 101<br /> Parque residencial los Alpes
+                               </dd>
                         </div>
                         <div class="flex gap-x-4">
                             <dt class="flex-none">
                                 <span class="sr-only">Telephone</span>
                                 <PhoneIcon class="h-7 w-6 text-gray-400" aria-hidden="true" />
                             </dt>
-                            <dd><a class="hover:text-gray-900" href="tel:+1 (555) 234-5678">+1 (555) 234-5678</a></dd>
-                        </div>
-                        <div class="flex gap-x-4">
-                            <dt class="flex-none">
-                                <span class="sr-only">Email</span>
-                                <EnvelopeIcon class="h-7 w-6 text-gray-400" aria-hidden="true" />
-                            </dt>
-                            <dd><a class="hover:text-gray-900" href="mailto:hello@example.com">hello@example.com</a>
-                            </dd>
+                            <dd><a class="hover:text-gray-900" href="tel:3046790115">3046790115 - 6056528879</a></dd>
                         </div>
                     </dl>
                 </div>
@@ -100,8 +93,7 @@
                     </div>
                     <div class="mt-8 flex justify-end">
                         <button type="submit"
-                            class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Send
-                            message</button>
+                            class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Enviar Mensaje</button>
                     </div>
                 </div>
             </form>
