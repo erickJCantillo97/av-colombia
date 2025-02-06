@@ -119,7 +119,7 @@ import { Link } from '@inertiajs/vue3';
                         <i class="fa-solid fa-map-marker-alt text-red-600"></i> Cartagena
                     </span>
                     <p class="text-sm text-gray-700 mt-2">
-                       Experimente la zona moderna y turística de Bocagrande, Laguito y Castillo Grande. Vea una de las bahías naturales más hermosas y un exuberante parque lineal.
+                       Experimente la zona moderna y turística de Bocagrande, Laguito y Castillo Grande. Vea una de las bahías naturales más hermosas y un exuberante parque.
                     </p>
                     <div class="flex flex-col-reverse md:flex-row py-1 justify-between items-end gap-y-2">
                         <Link href="/showservice/tour-5-islas-basico"
