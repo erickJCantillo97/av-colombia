@@ -505,7 +505,6 @@ const columns = [
     header: "Fecha de la Actividad",
     filter: true,
     sortable: true,
-    type: "date",
   },
   {
     field: "created_at",
