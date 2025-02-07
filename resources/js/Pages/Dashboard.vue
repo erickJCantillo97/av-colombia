@@ -21,6 +21,7 @@ import Datatable from "@/Components/Customs/Datatable.vue";
 import Scheduler from "./Dashboards/Scheduler.vue";
 import Input from "@/Components/Customs/Input.vue";
 import Logo from "@/Components/logo.vue";
+import ViewBooking from "@/Components/viewBooking.vue";
 // #endregion
 
 // #region CalendarPlugins
@@ -74,11 +75,17 @@ const visible = ref(false);
 // #endregion
 
 // #region Methods
+const totalPasajeros = ref(0);
 
-const selectDate = ref(new Date().toISOString().split("T")[0]);
+const selectDate = ref([
+  new Date(),
+  new Date(),
+]);
 
 const getServicesSelectedDate = () => {
-  dateActivities.value = reservas.value.filter((item) => item.date == selectDate.value);
+  console.log("Fecha seleccionada", selectDate.value);
+  dateActivities.value = reservas.value.filter((item) => new Date(item.date) >= new Date(selectDate.value[0]) && new Date(item.date) <= new Date(selectDate.value[1]));
+  totalPasajeros.value = dateActivities.value.reduce((acc, item) => acc + item.adults, 0);
 };
 
 const getReservas = () => {
@@ -139,6 +146,18 @@ const actions = [
 
 const columns = [
   {
+    field: "adults",
+    header: "Pasajeros",
+    filter: true,
+    sortable: true,
+  },
+  {
+    field: "channel.name",
+    header: "Canal de venta",
+    filter: true,
+    sortable: true,
+  },
+  {
     field: "service.title",
     header: "Actividad",
     filter: true,
@@ -176,6 +195,7 @@ const columns = [
 ];
 
 const handleEventClick = (event) => {
+
   let serviceSelected = reservas.value.find((item) => item.id == event.Id);
   editBooking(serviceSelected);
   // Manejar el evento aquí
@@ -203,16 +223,14 @@ const sendNote = () => {
   <AppLayout title="Dashboard">
     <div class="py-4">
       <div class="w-full mx-auto sm:px-1 lg:px-4 space-y-2">
-        <div
-          class="bg-white overflow-hidden sm:rounded-lg flex justify-between items-center px-1"
-        >
+        <div class="bg-white overflow-hidden sm:rounded-lg flex justify-between items-center px-1">
           <h1>
             Hola
             <strong class="uppercase"> {{ $page.props.auth.user.name }} </strong>,
             Bienvenido a tu panel de control
           </h1>
           <Link :href="route('portafolio')">
-            <Button label="Ver Portafolio" />
+          <Button label="Ver Portafolio" />
           </Link>
         </div>
         <!-- <div class=" p-1 rounded-lg grid grid-cols-2 gap-4">
@@ -230,22 +248,27 @@ const sendNote = () => {
                 </div> -->
         <div class="flex w-full justify-between font-bold text-xl items-center">
           <p>Actividades</p>
-          <input
+          <DatePicker v-model="selectDate" selectionMode="range" :manualInput="false"
+            @value-change="getServicesSelectedDate" />
+
+          <!-- <input
             type="date"
             class="mx-2 ring-0 border-0 shadow-md rounded-md"
             v-model="selectDate"
             @input="getServicesSelectedDate"
-          />
+          /> -->
         </div>
         <div class="shadow-xl rounded-lg p-1">
-          <Datatable
-            :rows-default="20"
-            :columnas="columns"
-            :data="dateActivities"
-            :actions
-          >
-            ></Datatable
-          >
+          <Datatable :rows-default="20" :columnas="columns" :rowClass="true" :data="dateActivities" :actions>
+            <template #groupRows>
+              <ColumnGroup type="footer">
+                <Row>
+                  <Column footer="Pasajeros:" :colspan="0" footerStyle="text-align:right" />
+                  <Column :footer="totalPasajeros" />
+                </Row>
+              </ColumnGroup>
+            </template>
+          </Datatable>
         </div>
         <!-- <div>
                     <h3 class="font-bold text-xl mb-2">Calendario de Eventos</h3>
@@ -255,70 +278,7 @@ const sendNote = () => {
       </div>
     </div>
   </AppLayout>
-  <Modal
-    v-model:visible="visible"
-    :title="'Reserva de ' + serviceSelected.service?.title ?? ''"
-    :close-on-escape="true"
-  >
-    <div class="flex flex-col gap-y-5">
-      <h1 class="text-xl font-bold">Datos de la reserva</h1>
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-2 w-full">
-        <Tag label="Fecha" :value="serviceSelected.date" />
-        <Tag label="Hora" :value="serviceSelected.hour" />
-        <Tag label="Tiempo de Servicio" :value="serviceSelected.time_service" />
-        <Tag label="Adultos" :value="serviceSelected.adults" />
-        <Tag label="Niños" :value="serviceSelected.boys" />
-        <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" />
-        <Tag label="Estado" :value="serviceSelected.status" />
-        <Tag
-          label=""
-          class="col-span-1 md:col-span-3"
-          :value="serviceSelected.observations"
-        />
-      </div>
-      <h1 class="text-xl font-bold">Datos del Cliente</h1>
-      <div class="grid grid-cols-3 md:grid-cols-4 gap-2 w-full">
-        <Tag label="Cliente" :value="serviceSelected.cliente_name" />
-        <Link :href="`https://wa.me/${serviceSelected.cliente_phone}`">
-          <Tag label="Telefono" :value="serviceSelected.cliente_phone" />
-        </Link>
-        <Tag label="Edificio" :value="serviceSelected.cliente_building" />
-        <Tag label="Ciudad de Origen" :value="serviceSelected.cliente_city" />
-        <!-- <Tag label="Valor" :value="COP.format(serviceSelected.total_price)" /> -->
-      </div>
-      <div class="flex justify-between items-center">
-        <h1 class="text-xl font-bold">Proveedores</h1>
-        <div class="border bg-blue-600 font-bold p-1 rounded-lg text-white text-sm">
-          Costo:
-          {{
-            serviceSelected.proveedors.length > 0
-              ? COP.format(
-                  serviceSelected.proveedors.reduce((acc, item) => acc + item.cost, 0)
-                )
-              : 0
-          }}
-        </div>
-      </div>
-      <div class="flex flex-col">
-        <div class="flex justify-between border-b-2 font-extrabold px-2">
-          <span>Proveedor</span>
-          <span>Celular</span>
-          <span>Tarifa</span>
-        </div>
-        <div
-          v-for="p in serviceSelected.proveedors"
-          class="mb-2 flex justify-between border-b px-2 py-1 rounded-md"
-        >
-          <span>{{ p.proveedor.nombre }}</span>
-          <a :href="`tel:${p.proveedor.telefono}`">{{ p.proveedor.telefono }}</a>
-          <span>{{ COP.format(p.cost) }}</span>
-        </div>
-      </div>
-    </div>
-    <!-- <code>
-            {{ serviceSelected }}
-        </code> -->
-  </Modal>
+  <ViewBooking v-model="visible" :service="serviceSelected" v-if="serviceSelected"></ViewBooking>
   <Modal v-model="todayActivity" close-on-escape="true" title="Notas" width="90vw">
     <div class="w-full flex flex-col gap-y-5 p-2">
       <h3 class="text-xl font-bold">Notas de la Actividad</h3>

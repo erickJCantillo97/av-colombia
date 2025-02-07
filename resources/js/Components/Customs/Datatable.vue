@@ -66,6 +66,10 @@ const props = defineProps({
         type: Array,
         default: null
     },
+    rowClass: {
+        type: Boolean,
+        default: false
+    },
     title: {
         type: String,
         default: ''
@@ -175,6 +179,25 @@ const formatDateTime = (date) => {
 }
 
 
+const rowClass = (data) => {
+    
+    if(props.rowClass){
+        if(data.problematico){
+            return '!bg-red-500'
+        }
+        switch(data.status){
+            case 'COMPLETADA':
+                return '!bg-teal-100'
+            case 'CANCELADA':
+                return '!bg-green-100'
+            case 'NO SHOW':
+                return '!bg-yellow-200'
+            default:
+                return '!bg-blue-100'
+        }
+    }
+}
+
 
 
 
@@ -185,7 +208,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
 </script>
 
 <template>
-    <DataTable ref="dt" id="tabla" :value="props.routes == null ? props.data : dataResponse"
+    <DataTable ref="dt" id="tabla" :rowClass="rowClass" :value="props.routes == null ? props.data : dataResponse"
         :paginator="(dataResponse.length > 0 || data.length > 0) && paginator" :rows sortMode="multiple" scrollable
         scrollHeight="flex" :loading="props.routes == null ? props.loading : dataLoading"
         currentPageReportTemplate="{first} al {last} de un total de {totalRecords}" removableSort
@@ -273,6 +296,7 @@ const mensaje = 'Funcion en desuso, se recomienda no usar el event dentro de but
             <i class="fa-solid fa-angle-down"></i>
         </template>
         <!-- #endregion -->
+        <slot  name="groupRows" />
 
         <!-- #region Columnas -->
         <Column :selectionMode v-if="selectionMode == 'multiple'" headerStyle="width: 3rem"></Column>

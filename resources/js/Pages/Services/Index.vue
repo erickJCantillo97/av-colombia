@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Services">
         <div class="h-[90vh] md:h-[99vh] overflow-y-auto ">
-            <Datatable :add :columnas="columns" :data="services" routecreate="services.create" :actions="buttons"
+            <Datatable :add :columnas="columns"  :data="services" routecreate="services.create" :actions="buttons"
                 title="Servicios">
             </Datatable>
         </div>

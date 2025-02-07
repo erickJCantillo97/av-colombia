@@ -8,6 +8,7 @@
         :data="bookingServices"
         routecreate="services.create"
         title="Reservas"
+        :rowClass="true"
       >
       </Datatable>
     </div>
@@ -469,6 +470,18 @@ const buttons = [
 ];
 
 const columns = [
+{
+    field: "adults",
+    header: "Pasajeros",
+    filter: true,
+    sortable: true,
+  },
+  {
+    field: "channel.name",
+    header: "Canal de venta",
+    filter: true,
+    sortable: true,
+  },
   {
     field: "cliente_name",
     header: "Nombre del pasajero",
@@ -492,6 +505,7 @@ const columns = [
     header: "Fecha de la Actividad",
     filter: true,
     sortable: true,
+    type: "date",
   },
   {
     field: "created_at",
