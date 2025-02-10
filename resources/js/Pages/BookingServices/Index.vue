@@ -449,8 +449,11 @@ const buttons = [
     label: "Notas",
     action: (data) => {
       serviceSelected.value = data;
-      
-      todayActivity.value = true;
+      axios.get(route("notes.index", { booking_service_id: data.id }))
+        .then((response) => {
+            notes.value = response.data.notes;
+            todayActivity.value = true;
+        });
     },
     icon: "fa-solid fa-note-sticky text-sm",
   },
