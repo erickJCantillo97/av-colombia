@@ -227,6 +227,8 @@
     <Toast></Toast>
     <ViewBooking v-model="info" :service="service" v-if="service"></ViewBooking>
   </AppLayout>
+
+  
 </template>
 <script setup>
 import Datatable from "@/Components/Customs/Datatable.vue";
@@ -246,6 +248,8 @@ const props = defineProps({
 const { toast } = alerts();
 const info = ref(false);
 const service = ref(null);
+
+const todayActivity = ref(false);
 
 const COP = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -362,7 +366,10 @@ const getChannels = () => {
 getServices();
 getChannels();
 getProveedors();
+const serviceSelected = ref(null);
 
+const notes = ref([]);
+const note = ref("");
 const buttons = [
   {
     label: "Detalles",
@@ -413,6 +420,15 @@ const buttons = [
     icon: "fa-solid fa-pencil text-sm",
     severity: "warn",
     // class: 'p-button-warning text-sm'
+  },
+  {
+    label: "Notas",
+    action: (data) => {
+      serviceSelected.value = data;
+      
+      todayActivity.value = true;
+    },
+    icon: "fa-solid fa-note-sticky text-sm",
   },
   {
     label: "Problematica",
@@ -471,20 +487,21 @@ const buttons = [
 
 const columns = [
 {
-    field: "adults",
-    header: "Pasajeros",
+    field: "created_at",
+    header: "Fecha Entrada",
     filter: true,
     sortable: true,
-  },
-  {
-    field: "channel.name",
-    header: "Canal de venta",
-    filter: true,
-    sortable: true,
+    type: "date",
   },
   {
     field: "cliente_name",
     header: "Nombre del pasajero",
+    filter: true,
+    sortable: true,
+  },
+{
+    field: "adults",
+    header: "Pasajeros",
     filter: true,
     sortable: true,
   },
@@ -507,18 +524,10 @@ const columns = [
     sortable: true,
   },
   {
-    field: "created_at",
-    header: "Fecha Entrada",
+    field: "channel.name",
+    header: "Canal de venta",
     filter: true,
     sortable: true,
-    type: "date",
-  },
-  {
-    field: "problematic",
-    header: "Problematica",
-    filter: true,
-    sortable: true,
-    type: "boolean",
   },
   {
     field: "status",
@@ -639,4 +648,20 @@ watch(form.adults, (newAdults) => {
     }
   }
 });
+
+const sendNote = () => {
+  axios
+    .post(route("notes.store"), {
+      note: note.value,
+      booking_service_id: serviceSelected.value.id,
+    })
+    .then((response) => {
+      axios
+        .get(route("notes.index", { booking_service_id: serviceSelected.value.id }))
+        .then((response) => {
+          notes.value = response.data.notes;
+          note.value = "";
+        });
+    });
+};
 </script>

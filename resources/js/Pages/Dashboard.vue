@@ -83,25 +83,20 @@ const selectDate = ref([
 ]);
 
 const getServicesSelectedDate = () => {
-  console.log("Fecha seleccionada", selectDate.value);
-  dateActivities.value = reservas.value.filter((item) => new Date(item.date) >= new Date(selectDate.value[0]) && new Date(item.date) <= new Date(selectDate.value[1]));
+  dateActivities.value = reservas.value.filter((item) => {
+    var fecha = new Date(item.date).toISOString().split("T")[0];
+    return fecha >= new Date(selectDate.value[0]).toISOString().split("T")[0] && fecha <= new Date(selectDate.value[1]).toISOString().split("T")[0]
+  });
   totalPasajeros.value = dateActivities.value.reduce((acc, item) => acc + item.adults, 0);
 };
 
 const getReservas = () => {
-  console.log("Fecha seleccionada", selectDate.value);
   axios.get(route("BookingServices.index")).then((response) => {
     reservas.value = response.data.bookingServices.filter(
       (item) => item.status == "reservado"
     );
     getServicesSelectedDate();
-    reservas.value.forEach((item) => {
-      // if (
-      //   item.date == new Date().toLocaleDateString("en-CA") &&
-      //   item.status == "reservado"
-      // ) {
-      //   dateActivities.value.push(item);
-      // }
+    reservas.value.forEach((item) => {    
       calendarApp.eventsService.add({
         title: item.service.title,
         start: item.date + " " + item.hour.substring(0, 5),
@@ -243,12 +238,11 @@ const sendNote = () => {
                         <h3 class="text-xl font-bold">
                             {{ $page.props.auth.user.rol }}
                         </h3>
-
                     </div>
                 </div> -->
         <div class="flex w-full justify-between font-bold text-xl items-center">
           <p>Actividades</p>
-          <DatePicker v-model="selectDate" selectionMode="range" :manualInput="false"
+          <DatePicker v-model="selectDate" selectionMode="range" dateFormat="dd/mm/yy" :manualInput="false"
             @value-change="getServicesSelectedDate" />
 
           <!-- <input
