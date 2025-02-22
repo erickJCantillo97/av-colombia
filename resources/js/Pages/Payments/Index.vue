@@ -21,6 +21,7 @@ const COP = new Intl.NumberFormat("es-CO", {
   currency: "COP",
   maximumFractionDigits: 0,
 });
+const loading = ref(false);
 
 const form = useForm({
   date: new Date(),
@@ -150,6 +151,7 @@ function previewFiles(event) {
 }
 
 const store = () => {
+  loading.value = true;
   let formData = new FormData();
   formData.append("proveedor_id", proveedor.value);
   formData.append("amount", form.amount);
@@ -166,7 +168,12 @@ const store = () => {
     })
     .then((response) => {
       toast("success", "Pago Guardado con exito");
+      laoding.value = false;
       show.value = false;
+    })
+    .error((error) => {
+      toast("error", "Error al guardar el pago");
+      laoding.value = false;
     });
 };
 </script>
@@ -254,6 +261,7 @@ const store = () => {
             Cancelar
           </button>
           <button
+            :loading
             v-if="proveedor"
             @click="store"
             class="bg-green-500 text-white px-4 py-2 rounded-md"
