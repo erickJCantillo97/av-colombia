@@ -84,6 +84,8 @@ Route::middleware([
 
     Route::resource('notes', NoteController::class);
 
+    Route::get('getBookingTimeRange', [BookingServiceController::class, 'getBookingTimeRange'])->name('get.booking.time.range');
+
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });
 

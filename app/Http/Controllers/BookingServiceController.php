@@ -9,6 +9,7 @@ use App\Models\Channel;
 use App\Models\Service;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class BookingServiceController extends Controller
@@ -137,5 +138,34 @@ class BookingServiceController extends Controller
         // $problematic = $bookingService->problematic == '1' ? 1 : 0;
         $bookingService->update(['problematic' => !$bookingService->problematic]);
         return  back()->with('message', 'Estado actualizado correctamente');
+    }
+
+
+    public function  getBookingTimeRange(Request $request)
+    {
+        $startDate = Carbon::parse($request->start_date) ?? Carbon::now();
+        $endDate = Carbon::parse($request->end_date) ?? Carbon::now();
+        $bookingTimeRange = BookingService::with('proveedors', 'proveedors.proveedor')->whereBetween('date', [$startDate, $endDate])->get()->map(function ($booking) {
+            return [
+                'title' => $booking->service,
+                'fecha' => Carbon::parse($booking->date)->format('d/m/Y'),
+                'price' => $booking->total_price,
+                'total_cost' => $booking->proveedors->sum('cost'),
+                'adults' => $booking->adults,
+                'cliente_name' => $booking->cliente_name,
+                'status' => $booking->status,
+                'proveedors' => $booking->proveedors->map(function ($proveedor) {
+                    return [
+                        'proveedor_id' => $proveedor->proveedor->id,
+                        'proveedor' => $proveedor->proveedor->nombre,
+                        'cost' => $proveedor->cost,
+                    ];
+                }),
+            ];
+        });
+        $proveedores = $bookingTimeRange->map(function ($booking) {
+            return $booking['proveedors'];
+        })->flatten(1)->unique('proveedor_id')->values();
+        return response()->json(['bookingTimeRange' => $bookingTimeRange, 'proveedores' => $proveedores], 200);
     }
 }

@@ -18,16 +18,18 @@ const COP = new Intl.NumberFormat("es-CO", {
   maximumFractionDigits: 0,
 });
 
-const props = defineProps({
-  proveedores: Array,
+const form = useForm({
+  date: new Date(),
+  value: 0,
 });
+
+const proveedores = ref([]);
 
 const selectDate = ref([new Date(), new Date()]);
 
 const reservas = ref();
 const reservasType = ref([]);
 const proveedor = ref();
-const costosReservas = ref(0);
 
 const add = {
   action: () => {
@@ -76,51 +78,43 @@ const buttons = [
 ];
 
 const getReservas = () => {
-  axios.get(route("BookingServices.index")).then((response) => {
-    let dateActivities = response.data.bookingServices.filter((item) => {
-      var fecha = new Date(item.date).toISOString().split("T")[0];
-      return (
-        fecha >= new Date(selectDate.value[0]).toISOString().split("T")[0] &&
-        fecha <= new Date(selectDate.value[1]).toISOString().split("T")[0]
-      );
+  axios
+    .get(route("get.booking.time.range"), {
+      params: {
+        start_date: new Date(selectDate.value[0]).toISOString().split("T")[0],
+        end_date: new Date(selectDate.value[1]).toISOString().split("T")[0],
+      },
+    })
+    .then((response) => {
+      proveedores.value = response.data.proveedores;
+      reservas.value = response.data.bookingTimeRange.filter((item) => {
+        let p = proveedor.value;
+        let proveedoresItems = item.proveedors.map((i) => i.proveedor_id);
+        return proveedoresItems.includes(p);
+      });
+      reservasType.value = [
+        {
+          name: "Reservado",
+          value: reservas.value.filter((item) => item.status == "reservado"),
+          color: "bg-blue-200",
+        },
+        {
+          name: "Completado",
+          value: reservas.value.filter((item) => item.status == "completado"),
+          color: "bg-green-200",
+        },
+        {
+          name: "Cancelado",
+          value: reservas.value.filter((item) => item.status == "CANCELADA"),
+          color: "bg-red-200",
+        },
+        {
+          name: "NO SHOW",
+          value: reservas.value.filter((item) => item.status == "NO SHOW"),
+          color: "bg-yellow-200",
+        },
+      ];
     });
-    reservas.value = dateActivities.filter((item) => {
-      let p = proveedor.value;
-      let proveedoresItems = item.proveedors.map((i) => i.proveedor_id);
-      return proveedoresItems.includes(p);
-    });
-    reservasType.value = [
-      {
-        name: "Reservado",
-        value: reservas.value.filter((item) => item.status == "reservado"),
-        color: "bg-blue-200",
-      },
-      {
-        name: "Completado",
-        value: reservas.value.filter((item) => item.status == "completado"),
-        color: "bg-green-200",
-      },
-      {
-        name: "Cancelado",
-        value: reservas.value.filter((item) => item.status == "CANCELADA"),
-        color: "bg-red-200",
-      },
-      {
-        name: "NO SHOW",
-        value: reservas.value.filter((item) => item.status == "NO SHOW"),
-        color: "bg-yellow-200",
-      },
-    ];
-
-    costosReservas.value = reservas.value.reduce((accumulator, currentValue) => {
-      return (
-        accumulator +
-        currentValue.proveedors.reduce((a, c) => {
-          return a + c.cost;
-        }, 0)
-      );
-    }, 0);
-  });
 };
 
 const op = ref();
@@ -176,19 +170,21 @@ const toggle = (event, item) => {
         <Input
           label="Proveedor"
           type="dropdown"
-          option-label="nombre"
-          option-value="id"
+          option-label="proveedor"
+          option-value="proveedor_id"
           @value-change="getReservas"
           v-model="proveedor"
           :options="proveedores"
         />
 
-        <div>
+        <div v-if="proveedor" class="flex flex-col gap-y-2">
           <!-- {{ reservas }} -->
           <div class="flex justify-between gap-x-4">
             <div
               v-for="item in reservasType"
-              :class="`${item.color}`"
+              :class="`${item.color} ${
+                item.value.length > 0 ? 'cursor-pointer' : 'hidden'
+              } `"
               class="rounded-lg py-2 border w-full flex flex-col gap-y-1 items-center font-bold cursor-pointer scale-90 hover:scale-100 shadow-sm hover:shadow-lg transition-all duration-300"
               @click="toggle($event, item)"
             >
@@ -198,9 +194,9 @@ const toggle = (event, item) => {
                 {{
                   COP.format(
                     item.value.reduce(
-                      (acum, reserva) =>
-                        acum +
-                        reserva.proveedors
+                      (a, c) =>
+                        a +
+                        c.proveedors
                           .filter((x) => x.proveedor_id == proveedor)
                           .reduce((a, c) => a + c.cost, 0),
                       0
@@ -210,6 +206,32 @@ const toggle = (event, item) => {
               </p>
             </div>
           </div>
+          <div class="flex flex-col w-full justify-between font-bold">
+            <p>Fecha en que realizó el pago</p>
+            <DatePicker
+              v-model="form.date"
+              dateFormat="dd/mm/yy"
+              class="w-full"
+              :manualInput="false"
+            />
+          </div>
+          <Input label="Valor" type="number" mode="currency" v-model="form.value" />
+        </div>
+
+        <div class="flex justify-end gap-x-2">
+          <button
+            @click="show = false"
+            class="bg-red-500 text-white px-4 py-2 rounded-md"
+          >
+            Cancelar
+          </button>
+          <button
+            v-if="proveedor"
+            @click="store"
+            class="bg-green-500 text-white px-4 py-2 rounded-md"
+          >
+            Guardar
+          </button>
         </div>
       </div>
     </Modal>
@@ -225,12 +247,18 @@ const toggle = (event, item) => {
             v-for="member in members.value"
           >
             <div class="flex flex-col">
-              <span class="font-medium">{{ member.service.title }}</span>
-              <span class="text-sm">{{ member.cliente_name }}</span>
+              <span class="font-bold">{{ member.title }}</span>
+              <span class="text-xs">{{ member.cliente_name }}</span>
+              <span class="text-xs">{{ member.fecha }}</span>
             </div>
-            <div>
-              <span class="font-medium">{{
-                COP.format(member.proveedors.reduce((a, c) => a + c.cost, 0))
+            <div class="flex flex-col">
+              <span class="text-sm">{{ member.adults }} Pasajeros</span>
+              <span class="font-bold">{{
+                COP.format(
+                  member.proveedors
+                    .filter((x) => x.proveedor_id == proveedor)
+                    .reduce((a, c) => a + c.cost, 0)
+                )
               }}</span>
             </div>
           </div>
