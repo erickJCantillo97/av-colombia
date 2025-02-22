@@ -168,12 +168,8 @@ const store = () => {
     })
     .then((response) => {
       toast("success", "Pago Guardado con exito");
-      laoding.value = false;
+      loading.value = false;
       show.value = false;
-    })
-    .error((error) => {
-      toast("error", "Error al guardar el pago");
-      laoding.value = false;
     });
 };
 </script>
