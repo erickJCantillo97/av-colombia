@@ -81,7 +81,6 @@ class UserController extends Controller
         try {
 
             $user->update($validateData);
-
             return back()->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             dd($e);

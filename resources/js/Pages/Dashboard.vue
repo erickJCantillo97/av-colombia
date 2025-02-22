@@ -96,7 +96,7 @@ const getReservas = () => {
       (item) => item.status == "reservado"
     );
     getServicesSelectedDate();
-    reservas.value.forEach((item) => {    
+    reservas.value.forEach((item) => {
       calendarApp.eventsService.add({
         title: item.service.title,
         start: item.date + " " + item.hour.substring(0, 5),
@@ -178,7 +178,7 @@ const columns = [
     sortable: true,
     type: "html-custom",
     renderer: (rowData) => {
-      return `<a href="tel:${rowData}">${rowData}</a>`;
+      return `<a href="https://wa.me/${rowData}?text=Hola%20👋,%20mi%20nombre%20es%20*Sandra%20%Gil*,%20Le%20escribo%20desde%20*AV%20COLOMBIA*">${rowData}</a>`;
     },
   },
   {
@@ -190,7 +190,6 @@ const columns = [
 ];
 
 const handleEventClick = (event) => {
-
   let serviceSelected = reservas.value.find((item) => item.id == event.Id);
   editBooking(serviceSelected);
   // Manejar el evento aquí
@@ -228,29 +227,10 @@ const sendNote = () => {
           <Button label="Ver Portafolio" />
           </Link>
         </div>
-        <!-- <div class=" p-1 rounded-lg grid grid-cols-2 gap-4">
-                    <div class="shadow-md rounded-md p-4 text-center">
-                        <h2 class="text-xl font-bold">{{ services?.length ?? 0 }}</h2>
-                        <h3> Reservas Pendinetes de Pago por total de {{ COP.format(totalToPay) }}</h3>
-                    </div>
-                    <div class="shadow-md rounded-md p-4 text-center ">
-                        <h2>Tu Rol es</h2>
-                        <h3 class="text-xl font-bold">
-                            {{ $page.props.auth.user.rol }}
-                        </h3>
-                    </div>
-                </div> -->
         <div class="flex w-full justify-between font-bold text-xl items-center">
           <p>Actividades</p>
           <DatePicker v-model="selectDate" selectionMode="range" dateFormat="dd/mm/yy" :manualInput="false"
             @value-change="getServicesSelectedDate" />
-
-          <!-- <input
-            type="date"
-            class="mx-2 ring-0 border-0 shadow-md rounded-md"
-            v-model="selectDate"
-            @input="getServicesSelectedDate"
-          /> -->
         </div>
         <div class="shadow-xl rounded-lg p-1">
           <Datatable :rows-default="20" :columnas="columns" :rowClass="true" :data="dateActivities" :actions>
@@ -264,10 +244,6 @@ const sendNote = () => {
             </template>
           </Datatable>
         </div>
-        <!-- <div>
-                    <h3 class="font-bold text-xl mb-2">Calendario de Eventos</h3>
-                    <ScheduleXCalendar :calendar-app="calendarApp" />
-                </div> -->
         <Scheduler v-if="reservas" :reservas @event-click="handleEventClick"></Scheduler>
       </div>
     </div>

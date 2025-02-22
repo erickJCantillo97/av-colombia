@@ -82,7 +82,6 @@
         />
 
         <Input
-          v-if="$page.props.auth.user.rol == 'admin'"
           class="w-full"
           min="0"
           type="dropdown"
@@ -93,7 +92,6 @@
           label="Medio de Pago"
         />
         <Input
-          v-if="$page.props.auth.user.rol == 'admin'"
           class="w-full"
           min="0"
           type="dropdown"
@@ -104,7 +102,6 @@
           label="Canal de Venta"
         />
         <Input
-          v-if="$page.props.auth.user.rol == 'admin'"
           class="w-full"
           label="Descuento"
           v-model="form.percent_descuento"
@@ -115,7 +112,6 @@
           suffix=" %"
         />
         <Input
-          v-if="$page.props.auth.user.rol == 'admin'"
           class="w-full col-span-1 md:col-span-4"
           :rows-textarea="2"
           label="Observaciones"
@@ -157,10 +153,7 @@
             />
           </div>
         </div>
-        <div
-          class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg"
-          v-if="$page.props.auth.user.rol == 'admin'"
-        >
+        <div class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg">
           <h1
             class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
           >
@@ -252,7 +245,6 @@
       </div>
     </div>
   </Modal>
-  
 </template>
 <script setup>
 import Datatable from "@/Components/Customs/Datatable.vue";
@@ -449,10 +441,11 @@ const buttons = [
     label: "Notas",
     action: (data) => {
       serviceSelected.value = data;
-      axios.get(route("notes.index", { booking_service_id: data.id }))
+      axios
+        .get(route("notes.index", { booking_service_id: data.id }))
         .then((response) => {
-            notes.value = response.data.notes;
-            todayActivity.value = true;
+          notes.value = response.data.notes;
+          todayActivity.value = true;
         });
     },
     icon: "fa-solid fa-note-sticky text-sm",
@@ -513,7 +506,7 @@ const buttons = [
 ];
 
 const columns = [
-{
+  {
     field: "created_at",
     header: "Fecha Entrada",
     filter: true,
@@ -526,7 +519,7 @@ const columns = [
     filter: true,
     sortable: true,
   },
-{
+  {
     field: "adults",
     header: "Pasajeros",
     filter: true,
@@ -567,9 +560,7 @@ const columns = [
     severitys: [
       { text: "reservado", severity: "info", class: "" },
       { text: "COMPLETADA", severity: "success", class: "" },
-      { text: "DISEÑO", severity: "info", class: "" },
       { text: "NO SHOW", severity: "warn", class: "" },
-      { text: "SERVICIO POSTVENTA", severity: "success", class: "" },
       { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
     ],
   },
@@ -664,8 +655,6 @@ const disabledDates = computed(() => {
   }
   return dates;
 });
-
-
 
 watch(form.adults, (newAdults) => {
   for (var p of proveedorsAdd.value) {

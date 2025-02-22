@@ -20,6 +20,7 @@
     <div class="space-y-3">
       <Input label="Nombre" v-model="form.name" :error-message="form.errors.name" />
       <Input label="Email" v-model="form.email" />
+      {{ $page.props.auth.user.rol }}
       <Input
         label="Rol"
         type="dropdown"
@@ -148,7 +149,6 @@ const buttons = [
         rejectLabel: "Cancelar",
         acceptLabel: "Eliminar",
         accept: () => {
-          console.log(data);
           router.delete(route("users.destroy", data.id), {
             onSuccess: () => {
               toast.add({

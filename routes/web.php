@@ -76,6 +76,8 @@ Route::middleware([
 
     Route::get('contabilidad', [ContabilidadController::class, 'index'])->name('contabilidad');
 
+    Route::get('pagos', [ContabilidadController::class, 'pagos'])->name('pagos');
+
     Route::get('getVentasMouth', [ContabilidadController::class, 'getVentasMouth'])->name('get.ventas.mouth');
     // Route::get('getVentasProveedores', [ContabilidadController::class, 'getVentasProveedores'])->name('get.ventas.proveedores');
     Route::get('getCostosProveedores', [ContabilidadController::class, 'getCostosProveedores'])->name('get.costos.proveedores');

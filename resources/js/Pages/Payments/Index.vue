@@ -1,236 +1,241 @@
 <script setup>
-import Datatable from '@/Components/Customs/Datatable.vue';
-import Input from '@/Components/Customs/Input.vue';
-import Modal from '@/Components/Customs/Modal.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { router, useForm } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
-import { ref } from 'vue';
-import { alerts } from '@/composable/toasts';
-const show = ref(false)
+import Datatable from "@/Components/Customs/Datatable.vue";
+import Input from "@/Components/Customs/Input.vue";
+import Modal from "@/Components/Customs/Modal.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import { router, useForm } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
+import { ref } from "vue";
+import { alerts } from "@/composable/toasts";
+import axios from "axios";
+const show = ref(false);
 
+const { toast } = alerts();
 
-const { toast } = alerts()
+const COP = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  maximumFractionDigits: 0,
+});
+
 const props = defineProps({
-    payments: {
-        type: Array,
-        required: true,
-    },
-})
+  proveedores: Array,
+});
 
-const methods = ref([])
+const selectDate = ref([new Date(), new Date()]);
 
-const validatePay = ref(false)
-
-const form = useForm({
-    payable_id: '',
-    payable_type: 'App\\Models\\Service',
-    method: '',
-    amount: '',
-    currency: 'COP',
-    validatePay: false
-})
+const reservas = ref();
+const reservasType = ref([]);
+const proveedor = ref();
+const costosReservas = ref(0);
 
 const add = {
-    action: () => {
-        show.value = true
-        // router.visit(route('services.create'))
-    },
-}
+  action: () => {
+    show.value = true;
+    // router.visit(route('services.create'))
+  },
+};
 
 const buttons = [
-    {
-        action: (data) => {
-            // validatePay.value = true
-            Swal.fire({
-                title: "Confirmar Pago?",
-                text: "Esta seguro de Confirmar este pago?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                cancelButtonText: "Cancelar",
-                confirmButtonText: "Si, Confirmar!"
-            }).then((result) => {
-                if(result.isConfirmed){
-                    console.log(data)
-                    router.post(route('payment.set.state', data.id), {
-                        _method: 'PUT',
-                        status: 'Confirmado'
-                    },{
-                        onSuccess: () => {
-                            toast('success', 'Pago Confirmado con exito')
-                        }
-                    })
-                }
-                // toast('success', 'Pago Confirmado con exito')
-            });
-            serviceSelected.value = data
-        },
-        // <i class="fa-solid fa-file-invoice-dollar"></i>
-        severity: 'success',
-        icon: 'fa-solid fa-wallet text-sm',
-        label: 'Validar Pago',
-    },
-]
-
-const serviceSelected = ref();
-
-const submit = (event) => {
-    if(form.validatePay){
-        form.status = 'Confirmado'
-    }
-    if(form.amount == '' || form.method == '' || form.payable_id == ''){
-        toast('error', 'Todos los campos son obligatorios')
-        return
-    }
-    form.payable_id = form.payable_id.id
-    form.post(route('payments.store'), {
-        onSuccess: () => {
-            show.value = false
-            toast('success', 'Pago Registrado con exito')
+  {
+    action: (data) => {
+      // validatePay.value = true
+      Swal.fire({
+        title: "Confirmar Pago?",
+        text: "Esta seguro de Confirmar este pago?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Si, Confirmar!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.post(
+            route("payment.set.state", data.id),
+            {
+              _method: "PUT",
+              status: "Confirmado",
+            },
+            {
+              onSuccess: () => {
+                toast("success", "Pago Confirmado con exito");
+              },
+            }
+          );
         }
-    })
-}
+        // toast('success', 'Pago Confirmado con exito')
+      });
+      serviceSelected.value = data;
+    },
+    // <i class="fa-solid fa-file-invoice-dollar"></i>
+    severity: "success",
+    icon: "fa-solid fa-wallet text-sm",
+    label: "Validar Pago",
+  },
+];
 
-const services = ref([]);
-const getServices = () => {
-    axios.get(route('get.services')).then(response => {
-        services.value = response.data.services.slice(0, 5);
+const getReservas = () => {
+  axios.get(route("BookingServices.index")).then((response) => {
+    let dateActivities = response.data.bookingServices.filter((item) => {
+      var fecha = new Date(item.date).toISOString().split("T")[0];
+      return (
+        fecha >= new Date(selectDate.value[0]).toISOString().split("T")[0] &&
+        fecha <= new Date(selectDate.value[1]).toISOString().split("T")[0]
+      );
     });
-}
-getServices()
-
-const servicesNoPaiyment = ref([]);
-
-const getServicesNoPayment = () => {
-    axios.get(route('get.services.no.payment')).then(response => {
-        servicesNoPaiyment.value = Object.values(response.data.bookingNoPayment);
+    reservas.value = dateActivities.filter((item) => {
+      let p = proveedor.value;
+      let proveedoresItems = item.proveedors.map((i) => i.proveedor_id);
+      return proveedoresItems.includes(p);
     });
-}
+    reservasType.value = [
+      {
+        name: "Reservado",
+        value: reservas.value.filter((item) => item.status == "reservado"),
+        color: "bg-blue-200",
+      },
+      {
+        name: "Completado",
+        value: reservas.value.filter((item) => item.status == "completado"),
+        color: "bg-green-200",
+      },
+      {
+        name: "Cancelado",
+        value: reservas.value.filter((item) => item.status == "CANCELADA"),
+        color: "bg-red-200",
+      },
+      {
+        name: "NO SHOW",
+        value: reservas.value.filter((item) => item.status == "NO SHOW"),
+        color: "bg-yellow-200",
+      },
+    ];
 
-getServicesNoPayment()
+    costosReservas.value = reservas.value.reduce((accumulator, currentValue) => {
+      return (
+        accumulator +
+        currentValue.proveedors.reduce((a, c) => {
+          return a + c.cost;
+        }, 0)
+      );
+    }, 0);
+  });
+};
 
-const columns = [
-    {
-        header: 'Servicio',
-        field: 'payable.service',
-        filter: true,
-    },
-    {
-        header: 'Cliente',
-        field: 'payable.cliente_name',
-        filter: true,
-    },
-    {
-        header: 'Tipo de Pago',
-        field: 'type',
-        filter: true,
-        format: (value) => {
-            return value.toUpperCase()
-        }
-    },
-    {
-        header: 'Monto',
-        field: 'amount',
-        type: 'currency',
-        filter: true,
-    },
-    {
-        header: 'Metodo de Pago',
-        field: 'metohd_payment.name',
-        filter: true,
-    },
-    
-    {
-        header: 'Fecha',
-        field: 'created_at',
-        type: 'date',
-        filter: true,
-    },
-    {
-        header: 'Estado',
-        field: 'status',
-        filter: true, sortable: true, type: 'tag', filtertype: 'EQUALS',
-        class: 'text-center uppercase',
-        severitys: [
-            { text: 'Pendiente', severity: 'danger', class: '' },
-            { text: 'Confirmado', severity: 'success', class: '' },
-            // { text: 'DISEÑO', severity: 'info', class: '' },
-            // { text: 'GARANTIA', severity: 'warning', class: '' },
-            // { text: 'SERVICIO POSTVENTA', severity: 'success', class: '' },
-            // { text: 'SIN ESTADO', severity: 'danger', class: 'animate-pulse' }
-        ]
-    },
+const op = ref();
+const selectedMember = ref(null);
+const members = ref([
+  { name: "Amy Elsner", image: "amyelsner.png", email: "amy@email.com", role: "Owner" },
+  {
+    name: "Bernardo Dominic",
+    image: "bernardodominic.png",
+    email: "bernardo@email.com",
+    role: "Editor",
+  },
+  {
+    name: "Ioni Bowcher",
+    image: "ionibowcher.png",
+    email: "ioni@email.com",
+    role: "Viewer",
+  },
+]);
 
-
-]
-
-const getMethos = () => {
-    axios.get(route('paymentMethods.index'))
-        .then(response => {
-            methods.value = response.data
-        })
-        .catch(error => {
-            console.log(error)
-        })
-}
-getMethos()
-
-
+const toggle = (event, item) => {
+  console.log(item);
+  members.value = item;
+  op.value.toggle(event);
+};
 </script>
 
 <template>
-    <AppLayout title="Pagos">
-        <div class="h-[99vh]">
-            <Datatable :add :columnas="columns" :actions="buttons" :data="payments" title="Pagos">
-            </Datatable>
+  <AppLayout title="Pagos">
+    <div class="h-[99vh]">
+      <Datatable
+        :add
+        :columnas="columns"
+        :actions="buttons"
+        :data="payments"
+        title="Pagos"
+      >
+      </Datatable>
+    </div>
+    <Modal v-model="show" title="Añadir Pagos">
+      <div class="gap-y-2 flex flex-col">
+        <div class="flex flex-col w-full justify-between font-bold">
+          <p>Fechas</p>
+          <DatePicker
+            v-model="selectDate"
+            selectionMode="range"
+            dateFormat="dd/mm/yy"
+            class="w-full"
+            :manualInput="false"
+            @value-change="getReservas"
+          />
         </div>
-        <Modal v-model="show" title="Añadir Pagos">
-            <form >
-                <div class="flex flex-col gap-y-4">
-                    <!-- <label for="payable_id" class="block text-sm font-medium text-gray-700">Servicio</label> -->
-                    <div>
-                        <label for="" class="font-bold">Servicio</label>
-                        <Select :options="servicesNoPaiyment" filter showClear v-model="form.payable_id" class="w-full"
-                            option-label="service" placeholder="Seleccione un servicio">
-                            <template #value="slotProps">
-                                <div v-if="slotProps.value" class="flex items-center">
-                                    <div>{{ slotProps.value.service }} - {{ slotProps.value.cliente_name }}</div>
-                                </div>
-                                <span v-else>
-                                    {{ slotProps.placeholder }}
-                                </span>
-                            </template>
-                            <template #option="slotProps">
-                                <div class="flex justify-between w-full items-center">
-                                    <div>
-                                        <p>
-                                            {{ slotProps.option.service }} - {{ slotProps.option.cliente_name }}
-                                        </p>
-                                        <p class="text-xs">
-                                            {{ slotProps.option.date }} {{ slotProps.option.hour }}
-                                        </p>
-                                    </div>
-                                    <div>{{ slotProps.option.total_price_sales }}</div>
-                                </div>
-                            </template>
+        <Input
+          label="Proveedor"
+          type="dropdown"
+          option-label="nombre"
+          option-value="id"
+          @value-change="getReservas"
+          v-model="proveedor"
+          :options="proveedores"
+        />
 
-                        </Select>
-                    </div>
-                    <Input label="Monto" v-model="form.amount" mode="currency" type="number" required/>
-                    <Input label="Medio de Pago" class="w-full" min="0"  type="dropdown" option-label="name"
-                        option-value="id" :options="methods" v-model="form.method" required />
-                    <Input checkboxLabel="Pago Verificado" v-model="form.validatePay" type="checkbox" required/>
-                </div>
-            </form>
-            <template #footer>
-                <div class="flex gap-x-4">
-                    <Button label="Cancelar" size="small" severity="danger" icon="pi pi-times" @click="show = false"/>
-                    <Button label="Guardar" size="small" severity="success" icon="pi pi-save" @click="submit"/>
-                </div>
-            </template>
-        </Modal>
-        
-    </AppLayout>
+        <div>
+          <!-- {{ reservas }} -->
+          <div class="flex justify-between gap-x-4">
+            <div
+              v-for="item in reservasType"
+              :class="`${item.color}`"
+              class="rounded-lg py-2 border w-full flex flex-col gap-y-1 items-center font-bold cursor-pointer scale-90 hover:scale-100 shadow-sm hover:shadow-lg transition-all duration-300"
+              @click="toggle($event, item)"
+            >
+              <h1>{{ item.name }}</h1>
+              <p>{{ item.value.length }}</p>
+              <p>
+                {{
+                  COP.format(
+                    item.value.reduce(
+                      (acum, reserva) =>
+                        acum +
+                        reserva.proveedors
+                          .filter((x) => x.proveedor_id == proveedor)
+                          .reduce((a, c) => a + c.cost, 0),
+                      0
+                    )
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  </AppLayout>
+
+  <Popover ref="op">
+    <div class="flex flex-col gap-4">
+      <div>
+        <span class="font-medium block mb-2">{{ members.name }} </span>
+        <div class="flex flex-col gap-y-2 h-64 overflow-auto">
+          <div
+            class="flex items-center gap-x-8 border-b shadow-md justify-between p-3 rounded-md hover:bg-gray-300"
+            v-for="member in members.value"
+          >
+            <div class="flex flex-col">
+              <span class="font-medium">{{ member.service.title }}</span>
+              <span class="text-sm">{{ member.cliente_name }}</span>
+            </div>
+            <div>
+              <span class="font-medium">{{
+                COP.format(member.proveedors.reduce((a, c) => a + c.cost, 0))
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Popover>
 </template>
