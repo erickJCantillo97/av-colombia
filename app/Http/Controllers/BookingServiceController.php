@@ -145,7 +145,7 @@ class BookingServiceController extends Controller
     {
         $startDate = Carbon::parse($request->start_date) ?? Carbon::now();
         $endDate = Carbon::parse($request->end_date) ?? Carbon::now();
-        $bookingTimeRange = BookingService::with('proveedors', 'proveedors.proveedor')->whereBetween('date', [$startDate, $endDate])->get()->map(function ($booking) {
+        $bookingTimeRange = BookingService::with('proveedors', 'proveedors.proveedor', 'notes', 'notes.user')->whereBetween('date', [$startDate, $endDate])->get()->map(function ($booking) {
             return [
                 'title' => $booking->service,
                 'fecha' => Carbon::parse($booking->date)->format('d/m/Y'),
@@ -153,6 +153,14 @@ class BookingServiceController extends Controller
                 'total_cost' => $booking->proveedors->sum('cost'),
                 'adults' => $booking->adults,
                 'cliente_name' => $booking->cliente_name,
+                'observaciones' => $booking->observations,
+                'notas' => $booking->notes->map(function ($note) {
+                    return [
+                        'note' => $note->note,
+                        'created_at' => $note->created_at,
+                        'user' => $note->user->name,
+                    ];
+                }),
                 'status' => $booking->status,
                 'proveedors' => $booking->proveedors->map(function ($proveedor) {
                     return [

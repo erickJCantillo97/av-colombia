@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BookingProveedor;
 use App\Models\BookingService;
+use App\Models\PaymentProveedor;
 use App\Models\Proveedor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -92,10 +93,10 @@ class ContabilidadController extends Controller
     public function pagos()
     {
 
-        $proveedores = Proveedor::get();
+        $payments = PaymentProveedor::with('user', 'proveedor')->get();
 
         return Inertia::render('Payments/Index', [
-            'proveedores' => $proveedores
+            'payments' => $payments
         ]);
     }
 }

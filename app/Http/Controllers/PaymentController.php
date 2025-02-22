@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Models\BookingService;
+use App\Models\PaymentProveedor;
 
 class PaymentController extends Controller
 {
@@ -14,7 +15,8 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::with('metohdPayment', 'payable')->get();
+        $payments = PaymentProveedor::all();
+        dd($payments);
         return inertia('Payments/Index', [
             'payments' => $payments
         ]);
@@ -33,20 +35,19 @@ class PaymentController extends Controller
      */
     public function store(StorePaymentRequest $request)
     {
-        
-            $validated = $request->validated();
-            $booking = BookingService::find($validated['payable_id']);
-            if(request('validatePay')){
-                $validated['status'] = 'Confirmado';
-            }else{
-                $validated['status'] = 'Pendiente';
-            }
-            if($validated['amount'] == $booking->total_price){
-                $validated['type'] = 'total';
-            }
-            $validated['user_id'] = auth()->id();
-            $payment = Payment::create($validated);
-        
+
+        $validated = $request->validated();
+        $booking = BookingService::find($validated['payable_id']);
+        if (request('validatePay')) {
+            $validated['status'] = 'Confirmado';
+        } else {
+            $validated['status'] = 'Pendiente';
+        }
+        if ($validated['amount'] == $booking->total_price) {
+            $validated['type'] = 'total';
+        }
+        $validated['user_id'] = auth()->id();
+        $payment = Payment::create($validated);
     }
 
     /**

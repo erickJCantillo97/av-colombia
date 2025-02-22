@@ -12,6 +12,10 @@ const show = ref(false);
 
 const { toast } = alerts();
 
+const props = defineProps({
+  payments: Array,
+});
+
 const COP = new Intl.NumberFormat("es-CO", {
   style: "currency",
   currency: "COP",
@@ -20,7 +24,12 @@ const COP = new Intl.NumberFormat("es-CO", {
 
 const form = useForm({
   date: new Date(),
-  value: 0,
+  startDate: new Date(),
+  endDate: new Date(),
+  amount: 0,
+  proveedor_id: "",
+  file: "",
+  description: "",
 });
 
 const proveedores = ref([]);
@@ -38,42 +47,44 @@ const add = {
   },
 };
 
-const buttons = [
+const columns = [
   {
-    action: (data) => {
-      // validatePay.value = true
-      Swal.fire({
-        title: "Confirmar Pago?",
-        text: "Esta seguro de Confirmar este pago?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Confirmar!",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          router.post(
-            route("payment.set.state", data.id),
-            {
-              _method: "PUT",
-              status: "Confirmado",
-            },
-            {
-              onSuccess: () => {
-                toast("success", "Pago Confirmado con exito");
-              },
-            }
-          );
-        }
-        // toast('success', 'Pago Confirmado con exito')
-      });
-      serviceSelected.value = data;
+    header: "Proveedor",
+    field: "proveedor.nombre",
+    filter: true,
+  },
+  {
+    header: "Fecha de Pago",
+    field: "date",
+    type: "date",
+    filter: true,
+  },
+  {
+    header: "Valor",
+    field: "amount",
+    type: "currency",
+  },
+  {
+    header: "Fecha Inicio",
+    field: "startDate",
+    field: "date",
+    type: "date",
+    filter: true,
+  },
+  {
+    header: "Fecha Fin",
+    field: "endDate",
+    field: "date",
+    type: "date",
+    filter: true,
+  },
+  {
+    header: "Comprobante",
+    field: "comprobante",
+    type: "html-custom",
+    renderer: (row) => {
+      return `<a href="${row}" class="text-sky-600 underline" target="_blank">Ver Comprobante</a>`;
     },
-    // <i class="fa-solid fa-file-invoice-dollar"></i>
-    severity: "success",
-    icon: "fa-solid fa-wallet text-sm",
-    label: "Validar Pago",
   },
 ];
 
@@ -118,41 +129,52 @@ const getReservas = () => {
 };
 
 const op = ref();
-const selectedMember = ref(null);
-const members = ref([
-  { name: "Amy Elsner", image: "amyelsner.png", email: "amy@email.com", role: "Owner" },
-  {
-    name: "Bernardo Dominic",
-    image: "bernardodominic.png",
-    email: "bernardo@email.com",
-    role: "Editor",
-  },
-  {
-    name: "Ioni Bowcher",
-    image: "ionibowcher.png",
-    email: "ioni@email.com",
-    role: "Viewer",
-  },
-]);
+const members = ref([]);
 
 const toggle = (event, item) => {
   console.log(item);
   members.value = item;
   op.value.toggle(event);
 };
+
+const renderNotas = (notas) => {
+  var info = ``;
+  var nota = notas.map((item) => {
+    info += `${item.note} - (${item.user})\n`;
+  });
+  return info;
+};
+
+function previewFiles(event) {
+  form.file = event.target.files[0];
+}
+
+const store = () => {
+  let formData = new FormData();
+  formData.append("proveedor_id", proveedor.value);
+  formData.append("amount", form.amount);
+  formData.append("comprobante", form.file);
+  formData.append("date", new Date(form.date).toISOString().split("T")[0]);
+  formData.append("startDate", new Date(selectDate.value[0]).toISOString().split("T")[0]);
+  formData.append("endDate", new Date(selectDate.value[1]).toISOString().split("T")[0]);
+  formData.append("description", form.description);
+  axios
+    .post(route("paymentProveedors.store"), formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => {
+      toast("success", "Pago Guardado con exito");
+      show.value = false;
+    });
+};
 </script>
 
 <template>
   <AppLayout title="Pagos">
     <div class="h-[99vh]">
-      <Datatable
-        :add
-        :columnas="columns"
-        :actions="buttons"
-        :data="payments"
-        title="Pagos"
-      >
-      </Datatable>
+      <Datatable :add :columnas="columns" :data="payments" title="Pagos"> </Datatable>
     </div>
     <Modal v-model="show" title="Añadir Pagos">
       <div class="gap-y-2 flex flex-col">
@@ -189,7 +211,12 @@ const toggle = (event, item) => {
               @click="toggle($event, item)"
             >
               <h1>{{ item.name }}</h1>
-              <p>{{ item.value.length }}</p>
+              <div class="flex gap-2 divide-x-4 divide-white items-center">
+                <p class="p-1">{{ item.value.length }} Reservas</p>
+                <p class="p-1 pl-3">
+                  {{ item.value.reduce((a, c) => a + c.adults, 0) }} Pasajeros
+                </p>
+              </div>
               <p>
                 {{
                   COP.format(
@@ -215,7 +242,8 @@ const toggle = (event, item) => {
               :manualInput="false"
             />
           </div>
-          <Input label="Valor" type="number" mode="currency" v-model="form.value" />
+          <Input label="Valor" type="number" mode="currency" v-model="form.amount" />
+          <input type="file" @change="previewFiles" label="Comprobante" />
         </div>
 
         <div class="flex justify-end gap-x-2">
@@ -243,11 +271,16 @@ const toggle = (event, item) => {
         <span class="font-medium block mb-2">{{ members.name }} </span>
         <div class="flex flex-col gap-y-2 h-64 overflow-auto">
           <div
+            v-tooltip="renderNotas(member.notas)"
             class="flex items-center gap-x-8 border-b shadow-md justify-between p-3 rounded-md hover:bg-gray-300"
             v-for="member in members.value"
           >
             <div class="flex flex-col">
-              <span class="font-bold">{{ member.title }}</span>
+              <span class="font-bold flex items-center gap-x-2">
+                <p>
+                  {{ member.title }}
+                </p>
+              </span>
               <span class="text-xs">{{ member.cliente_name }}</span>
               <span class="text-xs">{{ member.fecha }}</span>
             </div>

@@ -9,9 +9,11 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PaymentProveedorController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Models\PaymentProveedor;
 use App\Models\Service;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +87,8 @@ Route::middleware([
     Route::resource('notes', NoteController::class);
 
     Route::get('getBookingTimeRange', [BookingServiceController::class, 'getBookingTimeRange'])->name('get.booking.time.range');
+
+    Route::resource('paymentProveedors', PaymentProveedorController::class);
 
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });
