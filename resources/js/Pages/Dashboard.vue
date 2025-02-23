@@ -22,6 +22,7 @@ import Scheduler from "./Dashboards/Scheduler.vue";
 import Input from "@/Components/Customs/Input.vue";
 import Logo from "@/Components/logo.vue";
 import ViewBooking from "@/Components/viewBooking.vue";
+import Notas from "@/Components/Customs/Notas.vue";
 // #endregion
 
 // #region CalendarPlugins
@@ -77,15 +78,15 @@ const visible = ref(false);
 // #region Methods
 const totalPasajeros = ref(0);
 
-const selectDate = ref([
-  new Date(),
-  new Date(),
-]);
+const selectDate = ref([new Date(), new Date()]);
 
 const getServicesSelectedDate = () => {
   dateActivities.value = reservas.value.filter((item) => {
     var fecha = new Date(item.date).toISOString().split("T")[0];
-    return fecha >= new Date(selectDate.value[0]).toISOString().split("T")[0] && fecha <= new Date(selectDate.value[1]).toISOString().split("T")[0]
+    return (
+      fecha >= new Date(selectDate.value[0]).toISOString().split("T")[0] &&
+      fecha <= new Date(selectDate.value[1]).toISOString().split("T")[0]
+    );
   });
   totalPasajeros.value = dateActivities.value.reduce((acc, item) => acc + item.adults, 0);
 };
@@ -195,21 +196,6 @@ const handleEventClick = (event) => {
   // Manejar el evento aquí
 };
 
-const sendNote = () => {
-  axios
-    .post(route("notes.store"), {
-      note: note.value,
-      booking_service_id: serviceSelected.value.id,
-    })
-    .then((response) => {
-      axios
-        .get(route("notes.index", { booking_service_id: serviceSelected.value.id }))
-        .then((response) => {
-          notes.value = response.data.notes;
-          note.value = "";
-        });
-    });
-};
 // #endregion
 </script>
 
@@ -217,27 +203,44 @@ const sendNote = () => {
   <AppLayout title="Dashboard">
     <div class="py-4">
       <div class="w-full mx-auto sm:px-1 lg:px-4 space-y-2">
-        <div class="bg-white overflow-hidden sm:rounded-lg flex justify-between items-center px-1">
+        <div
+          class="bg-white overflow-hidden sm:rounded-lg flex justify-between items-center px-1"
+        >
           <h1>
             Hola
             <strong class="uppercase"> {{ $page.props.auth.user.name }} </strong>,
             Bienvenido a tu panel de control
           </h1>
           <Link :href="route('portafolio')">
-          <Button label="Ver Portafolio" />
+            <Button label="Ver Portafolio" />
           </Link>
         </div>
         <div class="flex w-full justify-between font-bold text-xl items-center">
           <p>Actividades</p>
-          <DatePicker v-model="selectDate" selectionMode="range" dateFormat="dd/mm/yy" :manualInput="false"
-            @value-change="getServicesSelectedDate" />
+          <DatePicker
+            v-model="selectDate"
+            selectionMode="range"
+            dateFormat="dd/mm/yy"
+            :manualInput="false"
+            @value-change="getServicesSelectedDate"
+          />
         </div>
         <div class="shadow-xl rounded-lg p-1">
-          <Datatable :rows-default="20" :columnas="columns" :rowClass="true" :data="dateActivities" :actions>
+          <Datatable
+            :rows-default="20"
+            :columnas="columns"
+            :rowClass="true"
+            :data="dateActivities"
+            :actions
+          >
             <template #groupRows>
               <ColumnGroup type="footer">
                 <Row>
-                  <Column footer="Pasajeros:" :colspan="0" footerStyle="text-align:right" />
+                  <Column
+                    footer="Pasajeros:"
+                    :colspan="0"
+                    footerStyle="text-align:right"
+                  />
                   <Column :footer="totalPasajeros" />
                 </Row>
               </ColumnGroup>
@@ -248,8 +251,19 @@ const sendNote = () => {
       </div>
     </div>
   </AppLayout>
-  <ViewBooking v-model="visible" :service="serviceSelected" v-if="serviceSelected"></ViewBooking>
-  <Modal v-model="todayActivity" close-on-escape="true" title="Notas" width="90vw">
+  <ViewBooking
+    v-model="visible"
+    :service="serviceSelected"
+    v-if="serviceSelected"
+  ></ViewBooking>
+  <Notas
+    v-model="todayActivity"
+    :notes="notes"
+    v-if="todayActivity"
+    :note="note"
+    :service="serviceSelected"
+  ></Notas>
+  <!-- <Modal v-model="todayActivity" close-on-escape="true" title="Notas" width="90vw">
     <div class="w-full flex flex-col gap-y-5 p-2">
       <h3 class="text-xl font-bold">Notas de la Actividad</h3>
       <div class="h-[30vh] overflow-y-auto flex flex-col gap-y-2">
@@ -273,5 +287,5 @@ const sendNote = () => {
         <Button label="Guardar" severity="info" icon="pi pi-send" @click="sendNote" />
       </div>
     </div>
-  </Modal>
+  </Modal> -->
 </template>
