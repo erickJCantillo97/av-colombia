@@ -80,7 +80,6 @@ Route::middleware([
 
     Route::get('pagos', [ContabilidadController::class, 'pagos'])->name('pagos');
 
-    Route::get('getVentasMouth', [ContabilidadController::class, 'getVentasMouth'])->name('get.ventas.mouth');
     // Route::get('getVentasProveedores', [ContabilidadController::class, 'getVentasProveedores'])->name('get.ventas.proveedores');
     Route::get('getCostosProveedores', [ContabilidadController::class, 'getCostosProveedores'])->name('get.costos.proveedores');
 
@@ -89,6 +88,10 @@ Route::middleware([
     Route::get('getBookingTimeRange', [BookingServiceController::class, 'getBookingTimeRange'])->name('get.booking.time.range');
 
     Route::resource('paymentProveedors', PaymentProveedorController::class);
+
+    Route::get('getVentas', [ContabilidadController::class, 'getVentas'])->name('get.ventas');
+
+    Route::get('getTotalReservas', [ContabilidadController::class, 'getTotalReservas'])->name('get.total.reservas');
 
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });

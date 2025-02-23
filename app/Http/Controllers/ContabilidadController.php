@@ -25,12 +25,21 @@ class ContabilidadController extends Controller
     }
     public function index()
     {
+        return Inertia::render('Contabilidad/Index');
+    }
 
 
-        $bookings = BookingService::whereBetween('date', $this->daysMount)
+    public function getTotalReservas(Request $request)
+    {
+        $start = Carbon::parse($request->startDate) ?? Carbon::now();
+        $end = Carbon::parse($request->endDate) ?? Carbon::now();
+        $bookings = BookingService::whereBetween('date', [
+            $start,
+            $end
+        ])
             ->get()
             ->groupBy(function ($date) {
-                return Carbon::parse($date->date)->format('Y-m-d');
+                return Carbon::parse($date->date)->format('d/m/Y');
             });
 
         $counts = [];
@@ -41,16 +50,16 @@ class ContabilidadController extends Controller
             ];
         }
 
-        // return $counts;
-        return Inertia::render('Contabilidad/Index', [
-            'bookings' => $counts
-        ]);
+        return $counts;
     }
 
 
-    public function getVentasMouth()
+    public function getVentas(Request $request)
     {
-        $bookings = BookingService::whereBetween('date', $this->daysMount)->sum('total_real');
+        $start = Carbon::parse($request->startDate);
+        $end = Carbon::parse($request->endDate);
+
+        $bookings = BookingService::whereBetween('date', [$start, $end])->sum('total_real');
         return $bookings;
         // return $counts;
     }
@@ -70,10 +79,13 @@ class ContabilidadController extends Controller
         return $bookings;
     }
 
-    public function getCostosProveedores()
+    public function getCostosProveedores(Request $request)
     {
-        $bookings = BookingProveedor::with('bookingService')->whereHas('bookingService', function ($query) {
-            $query->whereBetween('date', $this->daysMount);
+        $start = Carbon::parse($request->startDate);
+        $end = Carbon::parse($request->endDate);
+
+        $bookings = BookingProveedor::with('bookingService')->whereHas('bookingService', function ($query) use ($start, $end) {
+            $query->whereBetween('date', [$start, $end]);
         })
             ->get()
             ->groupBy('proveedor_id')

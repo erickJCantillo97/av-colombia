@@ -541,6 +541,7 @@ const columns = [
     field: "date",
     header: "Fecha de la Actividad",
     filter: true,
+    type: "date",
     sortable: true,
   },
   {

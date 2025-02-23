@@ -53,6 +53,7 @@ class UpdateBookingServiceRequest extends FormRequest
             'observations' => 'nullable|string',
             'method_id' => 'nullable|uuid',
             'time_service' => 'nullable|string',
+            'duration' => 'nullable|string',
         ];
     }
 }
