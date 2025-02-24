@@ -1,30 +1,55 @@
 <template>
   asndlands
-  <Modal v-model="show" close-on-escape="true" title="Notas" width="90vw">
+  <Modal v-model="show" close-on-escape="true" title="Notas" width="60vw">
     <div class="w-full flex flex-col gap-y-5 p-2">
       <h3 class="text-xl font-bold">Notas de la Actividad</h3>
       <div class="h-[30vh] overflow-y-auto flex flex-col gap-y-2">
         <div
-          class="flex border shadow-md p-2 rounded-md items-center justify-between w-full"
+          class="flex p-2 rounded-md items-center justify-between w-full"
           v-for="n in notas"
           :key="n.id"
         >
           <!-- <img :src="n.user.profile_photo_url" class="size-16 rounded-full" alt="" /> -->
-          <span class="flex flex-col">
-            <h2 class="font-bold text-xl">{{ n.user.name }}</h2>
-            <p class="text-lg">{{ n.note }}</p>
-            <p class="italic text-sm">
-              {{ new Date(n.created_at).toISOString().split("T")[0] }}
-            </p>
-          </span>
-          <div>
-            <Button icon="fa-solid fa-pencil" text severity="info" @click="editMode(n)" />
-            <Button
-              icon="fa-solid fa-trash"
-              text
-              severity="danger"
-              @click="eliminar(n)"
-            />
+          <div class="flex w-full" v-if="n.user_id == $page.props.auth.user.id">
+            <div class="w-1/2"></div>
+            <div
+              class="w-1/2 flex py-1 px-3 rounded-md items-center border justify-between bg-sky-300"
+            >
+              <span class="flex flex-col">
+                <p class="text-lg font-bold first-letter:uppercase">{{ n.note }}</p>
+                <p class="italic text-xs">
+                  {{ new Date(n.created_at).toISOString().split("T")[0] }}
+                </p>
+              </span>
+              <div>
+                <Button
+                  icon="fa-solid fa-pencil"
+                  text
+                  severity="info"
+                  @click="editMode(n)"
+                />
+                <Button
+                  icon="fa-solid fa-trash"
+                  text
+                  severity="danger"
+                  @click="eliminar(n)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="flex w-full" v-else>
+            <div
+              class="w-1/2 flex py-1 px-3 rounded-md items-center border justify-between bg-gray-300"
+            >
+              <span class="flex flex-col">
+                <p class="text-lg font-bold first-letter:uppercase">{{ n.note }}</p>
+                <p class="italic text-xs">
+                  {{ n.user.name }} -
+                  {{ new Date(n.created_at).toISOString().split("T")[0] }}
+                </p>
+              </span>
+            </div>
+            <div class="w-1/2"></div>
           </div>
           <!-- <div class="flex flex-col gap-y-2 w-full">
             <h2 class="font-bold text-2xl">{{ n.user.name }}</h2>
@@ -38,23 +63,31 @@
           <p class="font-semibold text-xl">Serivicio sin notas</p>
         </div>
       </div>
-      <div class="flex gap-x-2">
-        <Input type="textarea" class="w-full shadow-xl" v-model="note"></Input>
+      <div class="flex gap-x-2 px-2">
+        <Input type="textarea" class="w-full" :rowsTextarea="2" v-model="note"></Input>
         <Button
           label="Guardar"
           severity="success"
+          class="!h-12"
           v-if="!noteEditMode"
           icon="pi pi-send"
           @click="sendNote"
         />
-        <Button v-else label="Editar" severity="info" icon="pi pi-send" @click="edit" />
+        <Button
+          v-else
+          label="Editar"
+          severity="info"
+          icon="pi pi-send"
+          class="!h-12"
+          @click="edit"
+        />
       </div>
     </div>
   </Modal>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Modal from "./Modal.vue";
 import Input from "./Input.vue";
 import axios from "axios";
@@ -80,12 +113,8 @@ const sendNote = () => {
       booking_service_id: props.service.id,
     })
     .then((response) => {
-      axios
-        .get(route("notes.index", { booking_service_id: props.service.id }))
-        .then((response) => {
-          notas.value = response.data.notes;
-          note.value = "";
-        });
+      note.value = "";
+      getNotes();
     });
 };
 
@@ -101,14 +130,22 @@ const edit = () => {
       note: note.value,
     })
     .then((response) => {
-      axios
-        .get(route("notes.index", { booking_service_id: props.service.id }))
-        .then((response) => {
-          notas.value = response.data.notes;
-          note.value = "";
-          noteEditMode.value = false;
-          noteSelected.value = null;
-        });
+      getNotes();
+      note.value = "";
+      noteEditMode.value = false;
+      noteSelected.value = null;
     });
 };
+
+const getNotes = () => {
+  axios
+    .get(route("notes.index", { booking_service_id: props.service.id }))
+    .then((response) => {
+      notas.value = response.data.notes;
+    });
+};
+
+onMounted(() => {
+  getNotes();
+});
 </script>

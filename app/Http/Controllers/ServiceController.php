@@ -137,7 +137,10 @@ class ServiceController extends Controller
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
-        $included = array_merge(json_decode($request->includes), json_decode($request->notIncludes));
+
+        $includes = json_decode($request->includes) ?? [];
+        $notIncludes = json_decode($request->notIncludes) ?? [];
+        $included = array_merge($includes, $notIncludes);
         foreach ($included as $i) {
             Included::firstOrCreate(['name' => $i]);
         }

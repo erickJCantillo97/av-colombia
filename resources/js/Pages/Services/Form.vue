@@ -50,21 +50,27 @@ onMounted(() => {
 });
 
 const includeName = ref();
-const noIncludeName = ref();
+const noIncludeName = ref("");
 const recogidaName = ref();
 const puntosName = ref();
 const addincludes = () => {
   if (!includeLabel.value) return;
+  if (!form.includes) {
+    form.includes = [];
+  }
   if (!form.includes.includes(includeLabel.value)) {
-    form.includes.push(includeLabel.value);
+    form.includes.push(includeLabel.value.trim());
   }
   includeLabel.value = "";
 };
 
 const addNoIncludes = () => {
-  if (!noIncludeName.value || form.includes.includes(noIncludeName.value)) return;
+  if (!form.notIncludes) {
+    form.notIncludes = [];
+  }
+  if (!noIncludeName.value) return;
   if (!form.notIncludes.includes(noIncludeName.value)) {
-    form.notIncludes.push(noIncludeName.value);
+    form.notIncludes.push(noIncludeName.value.trim());
   }
   noIncludeName.value = "";
 };
