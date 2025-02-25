@@ -277,8 +277,13 @@ class ServiceController extends Controller
         $service = BookingService::where('id', request('service'))->first();
         $service->update(['fecha_cancelacion' => null]);
         if (request('state') == 'CANCELADA') {
-            $service->proveedors()->delete();
+            // $service->proveedors()->delete();
             $service->update(['fecha_cancelacion' => request('date')]);
+        }
+        if (request('state') == 'CAMBIO DE FECHA') {
+            $service->update([
+                'date' => Carbon::parse(request('date'))->format('Y-m-d'),
+            ]);
         }
         // dd($service);
         storeState($service, request('state'), request('terminated'));

@@ -1,26 +1,18 @@
 <script setup>
 // #region Imports
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { Link } from "@inertiajs/vue3";
 import axios from "axios";
 import { reactive, ref } from "vue";
-import { ScheduleXCalendar } from "@schedule-x/vue";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 import {
   createCalendar,
-  createViewDay,
-  createViewMonthAgenda,
   createViewMonthGrid,
   createViewWeek,
 } from "@schedule-x/calendar";
 import "@schedule-x/theme-default/dist/index.css";
 import { viewMonthGrid } from "@schedule-x/calendar";
-import Modal from "@/Components/Customs/Modal.vue";
-import Tag from "@/Components/Tag.vue";
 import Datatable from "@/Components/Customs/Datatable.vue";
 import Scheduler from "./Dashboards/Scheduler.vue";
-import Input from "@/Components/Customs/Input.vue";
-import Logo from "@/Components/logo.vue";
 import ViewBooking from "@/Components/viewBooking.vue";
 import Notas from "@/Components/Customs/Notas.vue";
 // #endregion
@@ -94,7 +86,7 @@ const getServicesSelectedDate = () => {
 const getReservas = () => {
   axios.get(route("BookingServices.index")).then((response) => {
     reservas.value = response.data.bookingServices.filter(
-      (item) => item.status == "reservado"
+      (item) => item.status == "reservado" || item.status == "CAMBIO DE FECHA"
     );
     getServicesSelectedDate();
     reservas.value.forEach((item) => {
@@ -127,9 +119,14 @@ const actions = [
   },
   {
     label: "Notas",
+    text: false,
     action: (data) => {
       serviceSelected.value = data;
       todayActivity.value = true;
+    },
+    badge: (data) => {
+      if (data.notes.length == 0) return null;
+      return data.notes.length;
     },
     icon: "fa-solid fa-note-sticky text-sm",
   },

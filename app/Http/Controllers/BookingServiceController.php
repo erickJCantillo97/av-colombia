@@ -20,7 +20,7 @@ class BookingServiceController extends Controller
     public function index()
     {
         if (request()->expectsJson()) {
-            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel')->get()], 200);
+            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->get()], 200);
         }
         return Inertia::render('BookingServices/Index', [
             'bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel')->get()

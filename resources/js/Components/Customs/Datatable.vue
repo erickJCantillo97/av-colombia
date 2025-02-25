@@ -190,6 +190,8 @@ const rowClass = (data) => {
       return "!bg-red-500";
     }
     switch (data.status) {
+      case "CAMBIO DE FECHA":
+        return "!bg-gray-100";
       case "COMPLETADA":
         return "!bg-teal-100";
       case "CANCELADA":
@@ -551,6 +553,11 @@ const mensaje =
               :text="button.text == undefined ? true : button.text"
               :severity="button.severity == undefined ? 'primary' : button.severity"
               :outlined="button.outlined == undefined ? false : button.outlined"
+              :badge="
+                typeof button.badge === 'function'
+                  ? button.badge(data, $event)
+                  : button.badge
+              "
               :rounded="button.rounded == undefined ? false : button.rounded"
               :icon="
                 typeof button.icon === 'function'

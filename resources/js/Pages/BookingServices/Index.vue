@@ -6,6 +6,17 @@
         <h1 class="text-2xl font-bold">Reservas</h1>
         <div class="flex gap-x-2">
           <div
+            class="p-2 bg-black text-white text-center rounded-lg cursor-pointer transition-all duration-300 scale-95 hover:scale-100"
+            @click="statusFilter = null"
+          >
+            <p class="text-sm font-bold uppercase">Todos</p>
+            <p class="text-xs italic">
+              {{ bookingFecha.length }} Reservas |
+              {{ bookingFecha.reduce((acc, item) => acc + item.adults, 0) }}
+              Pasajeros
+            </p>
+          </div>
+          <div
             v-for="status in statues"
             @click="
               bookingFecha.filter((x) => x.status == status.text).length != 0
@@ -20,7 +31,7 @@
                 : 'border-2 border-transparent scale-95',
               bookingFecha.filter((x) => x.status == status.text).length == 0
                 ? 'cursor-not-allowed opacity-55'
-                : 'cursor-pointer hover:scale-100 hover:border-2 hover:border-gray-500',
+                : 'cursor-pointer hover:scale-105 hover:border-2 hover:border-gray-500',
             ]"
           >
             <p class="text-sm font-bold uppercase">{{ status.text }}</p>
@@ -633,6 +644,7 @@ const columns = [
     class: "text-center uppercase",
     severitys: [
       { text: "reservado", severity: "info", class: "" },
+      { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
       { text: "COMPLETADA", severity: "success", class: "" },
       { text: "NO SHOW", severity: "warn", class: "" },
       { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
@@ -653,6 +665,7 @@ const columns = [
 
 const statues = [
   { text: "reservado", color: "blue" },
+  { text: "CAMBIO DE FECHA", color: "gray" },
   { text: "COMPLETADA", color: "green" },
   { text: "NO SHOW", color: "amber" },
   { text: "CANCELADA", color: "red" },

@@ -120,7 +120,7 @@
           {{ COP.format(proveedor.cost) }}
         </p>
       </div>
-      <div class="flex flex-col gap-y-2 mt-2">
+      <!-- <div class="flex flex-col gap-y-2 mt-2">
         <div class="flex justify-between">
           <h2 class="text-xl font-bold">Pagos Realizados</h2>
           <div class="bg-blue-600 text-white p-1 rounded-lg">
@@ -152,20 +152,21 @@
             <div></div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <template #footer>
       <div class="flex flex-col items-center gap-2">
-        <h1 class="font-bold text-center">
+        <!-- <h1 class="font-bold text-center">
           Saldo:
           {{
             COP.format(
               service.total_price - service.payments.reduce((a, b) => a + b.amount, 0)
             )
           }}
-        </h1>
-        <div class="flex gap-x-2" v-if="$page.props.auth.user.rol == 'admin'">
+        </h1> -->
+        <!-- v-if="$page.props.auth.user.rol == 'admin'" -->
+        <div class="flex gap-x-2">
           <Button
             @click="setState('COMPLETADA', true)"
             icon="fa-solid fa-circle-check"
@@ -183,6 +184,15 @@
             v-tooltip.top="'Servicio No show'"
             class="flex-auto"
             severity="warn"
+          />
+          <Button
+            @click="dateChange()"
+            icon="fa-solid fa-calendar-week"
+            text
+            size="large"
+            v-tooltip.top="'Cambio de Fecha'"
+            class="flex-auto"
+            severity="info"
           />
           <Button
             @click="cancelarServicio()"
@@ -283,6 +293,30 @@ const setState = (state, terminated) => {
           },
         }
       );
+    }
+  });
+};
+
+const dateChange = () => {
+  Swal.fire({
+    title: "Cambio de Fecha",
+    input: "date",
+    inputLabel: "Nueva Fecha",
+    showCancelButton: true,
+    confirmButtonText: "Cambiar Fecha",
+    showLoaderOnConfirm: true,
+    preConfirm: async (date) => {
+      await router.post(route("set.states"), {
+        service: props.service.id,
+        state: "CAMBIO DE FECHA",
+        date: date,
+        terminated: false,
+      });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+  }).then((result) => {
+    if (result.isConfirmed) {
+      toast("success", "Fecha Cambiada");
     }
   });
 };
