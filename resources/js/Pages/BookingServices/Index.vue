@@ -1,13 +1,56 @@
 <template>
   <AppLayout title="Reservas">
-    <div class="h-[99vh]">
+    <div class="hidden bg-amber-200"></div>
+    <div class="h-[95vh]">
+      <div class="flex py-2 px-4 justify-between items-center">
+        <h1 class="text-2xl font-bold">Reservas</h1>
+        <div class="flex gap-x-2">
+          <div
+            v-for="status in statues"
+            @click="
+              bookingFecha.filter((x) => x.status == status.text).length != 0
+                ? (statusFilter = status.text)
+                : null
+            "
+            class="flex flex-col items-center transition-all duration-300"
+            :class="[
+              `bg-${status.color}-200 p-2 rounded-lg`,
+              statusFilter == status.text
+                ? 'border-2 border-gray-500 scale-105'
+                : 'border-2 border-transparent scale-95',
+              bookingFecha.filter((x) => x.status == status.text).length == 0
+                ? 'cursor-not-allowed opacity-55'
+                : 'cursor-pointer hover:scale-100 hover:border-2 hover:border-gray-500',
+            ]"
+          >
+            <p class="text-sm font-bold uppercase">{{ status.text }}</p>
+            <p class="text-xs italic">
+              {{ bookingFecha.filter((x) => x.status == status.text).length }} Reservas |
+              {{
+                bookingFecha
+                  .filter((x) => x.status == status.text)
+                  .reduce((acc, item) => acc + item.adults, 0)
+              }}
+              Pasajeros
+            </p>
+          </div>
+        </div>
+        <DatePicker
+          v-model="selectDate"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          v-tooltip.bottom="`Filtrar fecha de Actividad`"
+          :manualInput="false"
+          butt
+        />
+      </div>
       <Datatable
         :actions="buttons"
         :add
+        showButtonBar
         :columnas="columns"
-        :data="bookingServices"
+        :data="bookings"
         routecreate="services.create"
-        title="Reservas"
         :rowClass="true"
       >
       </Datatable>
@@ -264,6 +307,34 @@ const props = defineProps({
 const { toast } = alerts();
 const info = ref(false);
 const service = ref(null);
+const selectDate = ref([]);
+
+const statusFilter = ref(null);
+
+const bookings = computed(() => {
+  return props.bookingServices.filter((item) => {
+    if (selectDate.value[0] == null) {
+      return statusFilter.value == null || item.status == statusFilter.value;
+    }
+    var fecha = new Date(item.date).toISOString().split("T")[0];
+    return (
+      fecha >= new Date(selectDate.value[0]).toISOString().split("T")[0] &&
+      fecha <= new Date(selectDate.value[1]).toISOString().split("T")[0] &&
+      (statusFilter.value == null || item.status == statusFilter.value)
+    );
+  });
+});
+
+const bookingFecha = computed(() => {
+  if (!selectDate.value[0]) return props.bookingServices;
+  const [startDate, endDate] = selectDate.value.map(
+    (date) => new Date(date).toISOString().split("T")[0]
+  );
+  return props.bookingServices.filter((item) => {
+    const itemDate = new Date(item.date).toISOString().split("T")[0];
+    return itemDate >= startDate && itemDate <= endDate;
+  });
+});
 
 const todayActivity = ref(false);
 
@@ -542,7 +613,7 @@ const columns = [
   {
     field: "date",
     header: "Fecha de la Actividad",
-    filter: true,
+    filter: false,
     type: "date",
     sortable: true,
   },
@@ -578,6 +649,13 @@ const columns = [
   //         { text: 'pendiente', severity: 'danger', class: '' },
   //     ]
   // },
+];
+
+const statues = [
+  { text: "reservado", color: "blue" },
+  { text: "COMPLETADA", color: "green" },
+  { text: "NO SHOW", color: "amber" },
+  { text: "CANCELADA", color: "red" },
 ];
 
 const totalPax = computed(() => {

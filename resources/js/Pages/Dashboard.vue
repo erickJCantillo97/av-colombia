@@ -206,9 +206,12 @@ const handleEventClick = (event) => {
             <strong class="uppercase"> {{ $page.props.auth.user.name }} </strong>,
             Bienvenido a tu panel de control
           </h1>
-          <Link :href="route('portafolio')">
+          <a
+            target="_blank"
+            :href="`https://vendedores-site.netlify.app/${$page.props.auth.user.id}`"
+          >
             <Button label="Ver Portafolio" />
-          </Link>
+          </a>
         </div>
         <div class="flex w-full justify-between font-bold text-xl items-center">
           <p>Actividades</p>
