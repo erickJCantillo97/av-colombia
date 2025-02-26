@@ -1,6 +1,6 @@
 <template>
   <AppLayout title="Reservas">
-    <div class="hidden bg-amber-200"></div>
+    <div class="hidden bg-amber-200 bg-orange-200"></div>
     <div class="h-[92vh]">
       <div class="flex py-2 px-4 justify-between items-center">
         <h1 class="text-2xl font-bold">Reservas</h1>

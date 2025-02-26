@@ -198,6 +198,8 @@ const rowClass = (data) => {
         return "!bg-green-100";
       case "NO SHOW":
         return "!bg-yellow-200";
+      case "REUBICADO":
+        return "!bg-orange-200";
       default:
         return "!bg-blue-100";
     }
