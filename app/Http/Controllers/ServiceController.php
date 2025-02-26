@@ -19,6 +19,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ServiceController extends Controller
@@ -285,19 +286,30 @@ class ServiceController extends Controller
                 'date' => Carbon::parse(request('date'))->format('Y-m-d'),
             ]);
         }
+        if (request('state') == 'REUBICADO') {
+            $proveedorService = DB::table('booking_proveedors')
+                ->where('booking_service_id', request('service'))
+                ->where('proveedor_id', request('current_id'))
+                ->delete();
+            // dd($proveedorService);
+            $service->proveedors()->create([
+                'proveedor_id' => request('new_id'),
+                'cost' => request('value'),
+            ]);
+            if (request('note')) {
+                Note::create([
+                    'booking_service_id' => $service->id,
+                    'note' => request('note'),
+                    'user_id' => auth()->user()->id,
+                ]);
+            };
+        }
         // dd($service);
         storeState($service, request('state'), request('terminated'));
         return back()->with('message', 'Estado actualizado');
     }
 
-    public function getProveedors()
-    {
-        dd('aqui');
-        // $proveedors = Proveedor::with('services')->get();
-        // return response()->json([
-        //     'proveedors' => $proveedors
-        // ]);
-    }
+
 
     public function updateStart(Service $service, Request $request)
     {

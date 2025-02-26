@@ -119,14 +119,13 @@ const actions = [
   },
   {
     label: "Notas",
-    text: false,
+    severity: "secondary",
     action: (data) => {
       serviceSelected.value = data;
       todayActivity.value = true;
     },
     badge: (data) => {
-      if (data.notes.length == 0) return null;
-      return data.notes.length;
+      return data.notes;
     },
     icon: "fa-solid fa-note-sticky text-sm",
   },
@@ -146,7 +145,7 @@ const columns = [
     sortable: true,
   },
   {
-    field: "service.title",
+    field: "service",
     header: "Actividad",
     filter: true,
     sortable: true,

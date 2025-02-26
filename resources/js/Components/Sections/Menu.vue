@@ -110,7 +110,7 @@
                 }"
                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
               >
-                <i class="pi pi-calendar mr-2"></i>
+                <i class="pi pi-dollar mr-2"></i>
                 <span class="font-medium">Contabilidad</span>
                 <i class="pi pi-chevron-down ml-auto"></i>
               </a>
@@ -132,7 +132,7 @@
                     class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
                   >
                     <i class="fa-solid fa-money-bill-transfer text-green-500 mr-2"></i>
-                    <span class="font-medium">Salidas</span>
+                    <span class="font-medium">Pagos</span>
                   </Link>
                   <Link
                     :href="route('BookingServices.index')"

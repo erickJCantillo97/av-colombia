@@ -550,7 +550,9 @@ const mensaje =
                   ? $emit(button.event, $event, data)
                   : button.action(data, $event)
               "
-              :text="button.text == undefined ? true : button.text"
+              :text="
+                typeof button.badge === 'function' ? !button.badge(data, $event) : true
+              "
               :severity="button.severity == undefined ? 'primary' : button.severity"
               :outlined="button.outlined == undefined ? false : button.outlined"
               :badge="

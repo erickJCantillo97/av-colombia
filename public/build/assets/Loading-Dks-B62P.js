@@ -1,0 +1,1 @@
+import{_ as o}from"./logo-DkuUvIbf.js";import{o as a,f as t,a as e,b as i}from"./app-B8yMTZn-.js";const c={class:"flex mt-4 flex-col"},d={class:""},m={__name:"Loading",setup(r){return(_,s)=>(a(),t("div",c,[e("div",d,[i(o)]),s[0]||(s[0]=e("div",{class:"loaderRectangle"},[e("div"),e("div"),e("div"),e("div"),e("div")],-1))]))}};export{m as _};

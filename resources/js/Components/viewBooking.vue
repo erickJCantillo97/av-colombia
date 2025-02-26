@@ -7,7 +7,7 @@
   >
     <template #header>
       <div class="flex items-center gap-2">
-        <span class="font-bold text-lg">{{ service.service.title }}</span>
+        <span class="font-bold text-lg">{{ service.service }}</span>
       </div>
     </template>
     <div class="flex flex-col gap-y-1.5 text-sm">
@@ -59,10 +59,7 @@
         <strong>Niños:</strong>
         <p>{{ service.boys }}</p>
       </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Mascota:</strong>
-        <p>{{ service.mascota }}</p>
-      </div>
+
       <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Total:</strong>
         <p>{{ COP.format(service.total) }}</p>
@@ -98,139 +95,159 @@
         <p>{{ service.observations }}</p>
       </div>
 
-      <div
-        class="text-lg flex w-full justify-between mt-2"
-        v-if="$page.props.auth.user.rol == 'admin'"
-      >
+      <div class="text-lg flex w-full justify-between items-center mt-2">
         <p class="font-bold">Proveedores</p>
-        <p class="rounded-full bg-black text-white px-2">
+        <p
+          class="rounded-full bg-green-800 text-white px-1.5 py-0.5 text-xs fles items-center justify-center"
+        >
           {{ service.proveedors.length }}
         </p>
         <!-- {{ service.proveedors }} -->
       </div>
       <div
         v-for="proveedor in service.proveedors"
-        v-if="$page.props.auth.user.rol == 'admin'"
         class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
       >
         <p>
-          {{ proveedor.proveedor.nombre }}
+          {{ proveedor.proveedor }}
         </p>
         <p>
           {{ COP.format(proveedor.cost) }}
         </p>
       </div>
-      <!-- <div class="flex flex-col gap-y-2 mt-2">
-        <div class="flex justify-between">
-          <h2 class="text-xl font-bold">Pagos Realizados</h2>
-          <div class="bg-blue-600 text-white p-1 rounded-lg">
-            {{ COP.format(service.payments.reduce((a, b) => a + b.amount, 0)) }}
-          </div>
-        </div>
-        <div
-          class="flex items-center text-xs justify-between border shadow-xl rounded-md p-1 bg-white"
-          v-for="payment in service.payments"
-        >
-          <div>
-            <div class="uppercase font-bold">
-              {{ payment.type }} {{ COP.format(payment.amount) }}
-            </div>
-            <div>
-              {{ new Date(payment.created_at).toLocaleDateString("es-CO") }}
-              {{ payment.metohd_payment.name }}
-            </div>
-          </div>
-          <div
-            class="uppercase"
-            :class="
-              payment.status == 'pendiente'
-                ? 'bg-red-500 p-1 text-white rounded-lg shadow-md shadow-red-500'
-                : ''
-            "
-          >
-            {{ payment.status }}
-            <div></div>
-          </div>
-        </div>
-      </div> -->
     </div>
 
     <template #footer>
-      <div class="flex flex-col items-center gap-2">
-        <!-- <h1 class="font-bold text-center">
-          Saldo:
-          {{
-            COP.format(
-              service.total_price - service.payments.reduce((a, b) => a + b.amount, 0)
-            )
-          }}
-        </h1> -->
-        <!-- v-if="$page.props.auth.user.rol == 'admin'" -->
-        <div class="flex gap-x-2">
+      <div class="flex flex-col items-center">
+        <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
           <Button
             @click="setState('COMPLETADA', true)"
             icon="fa-solid fa-circle-check"
-            text
-            size="large"
             v-tooltip.top="'Completar Servicio'"
-            class="flex-auto"
             severity="success"
           />
           <Button
             @click="setState('NO SHOW', true)"
             icon="fa-solid fa-eye-slash"
-            text
-            size="large"
             v-tooltip.top="'Servicio No show'"
-            class="flex-auto"
-            severity="warn"
+            class="!text-white !bg-yellow-600"
           />
           <Button
             @click="dateChange()"
             icon="fa-solid fa-calendar-week"
-            text
-            size="large"
             v-tooltip.top="'Cambio de Fecha'"
-            class="flex-auto"
-            severity="info"
+            class="!bg-gray-600 !text-white"
+          />
+          <Button
+            @click="reubicarServicio()"
+            icon="fa-solid fa-people-arrows"
+            v-tooltip.top="'Reubicar Servicio'"
+            severity="warn"
           />
           <Button
             @click="cancelarServicio()"
             icon="fa-solid fa-xmark-circle"
-            text
-            size="large"
             v-tooltip.top="'Cancelar Servicio'"
-            class="flex-auto"
             severity="danger"
           />
           <Button
             @click="setState('PROBLEMATICA', false)"
             icon="fa-solid fa-person-dress-burst"
-            text
-            size="large"
             v-tooltip.top="'Servicio Problematico'"
             class="flex-auto"
             severity="danger"
           />
-          <!-- <Button label="Registrar Pago" icon="pi pi-sign-out" class="flex-auto" severity="success"  /> -->
         </div>
       </div>
     </template>
   </Drawer>
+
+  <Modal v-model="reubicar" title="Reubicar Servicio" close-on-escape>
+    <div class="flex flex-col gap-y-2">
+      <span class="flex flex-col gap-y-1">
+        <label for="" class="font-bold"> Proveedor Actual</label>
+        <Select
+          placeholder="Proveedor Actual"
+          :options="service.proveedors"
+          label="Proveedor Actual"
+          v-model="current_proveedors"
+          option-label="proveedor"
+        >
+          <template #value="slotProps">
+            <div v-if="slotProps.value" class="flex items-center gap-x-2">
+              <div>{{ current_proveedors.proveedor }}</div>
+              <span>-</span>
+              <div>{{ COP.format(current_proveedors.cost) }}</div>
+            </div>
+            <span v-else>
+              {{ slotProps.placeholder }}
+            </span>
+          </template>
+          <template #option="{ option }">
+            <div class="flex items-center gap-2">
+              <span>{{ option.proveedor }}</span>
+              <span>-</span>
+              <span>{{ COP.format(option.cost) }}</span>
+            </div>
+          </template>
+        </Select>
+      </span>
+      <Input
+        option-label="nombre"
+        option-value="id"
+        type="dropdown"
+        label="Nuevo Proveedor"
+        v-model="formReu.new_id"
+        :options="proveedors"
+      ></Input>
+      <Input label="Valor" v-model="formReu.value" type="number" mode="currency"></Input>
+      <Input label="Nota" v-model="formReu.note" type="textarea" mode="currency"></Input>
+
+      <div class="flex justify-end gap-2">
+        <Button
+          @click="reubicar = false"
+          label="Cancelar"
+          severity="danger"
+          icon="fa-solid fa-xmark"
+        />
+        <Button
+          @click="sendReubicar()"
+          label="Guardar"
+          severity="success"
+          icon="fa-solid fa-save"
+        />
+      </div>
+    </div>
+  </Modal>
 </template>
 
 <script setup>
 import Swal from "sweetalert2";
-import { router } from "@inertiajs/vue3";
+import { router, useForm } from "@inertiajs/vue3";
 import { alerts } from "@/composable/toasts";
+import { ref } from "vue";
+import Modal from "./Customs/Modal.vue";
+import Input from "./Customs/Input.vue";
 
 const { toast } = alerts();
-
 const props = defineProps({
   service: Object,
+  proveedors: Array,
 });
 
+const current_proveedors = ref(null);
+
 const show = defineModel();
+const reubicar = ref(false);
+const formReu = useForm({
+  service: props.service.id,
+  current_id: "",
+  new_id: "",
+  state: "",
+  note: "",
+  terminated: true,
+  value: "",
+});
 
 const COP = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -334,5 +351,28 @@ const formatDate = (date) => {
     });
     return fecha == "30/11/2" ? "INDEFINIDO" : fecha;
   }
+};
+
+const sendReubicar = () => {
+  if (!current_proveedors.value || !formReu.new_id || !formReu.value) {
+    toast("error", "Rellene todos los Campos");
+    return 0;
+  }
+  formReu.current_id = current_proveedors.value.proveedor_id;
+  formReu.state = "REUBICADO";
+  formReu.terminated = true;
+  formReu.post(route("set.states"), {
+    onSuccess: () => {
+      reubicar.value = false;
+      formReu.reset();
+      toast("success", "Servicio REUBICADO");
+    },
+  });
+  console.log(formReu.current_id);
+};
+
+const reubicarServicio = () => {
+  formReu.reset();
+  reubicar.value = true;
 };
 </script>

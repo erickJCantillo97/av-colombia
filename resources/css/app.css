@@ -59,7 +59,7 @@ Puedes agregar estilos adicionales para otros navegadores según sea necesario. 
 
 .colored-toast.swal2-icon-success {
     background-color: #a5dc86 !important;
-    
+
 }
 
 .colored-toast.swal2-icon-error {
@@ -91,3 +91,6 @@ Puedes agregar estilos adicionales para otros navegadores según sea necesario. 
     z-index: 1000000 !important;
 }
 
+.swal2-container {
+    z-index: 1000000 !important;
+}

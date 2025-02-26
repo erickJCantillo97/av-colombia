@@ -19,11 +19,51 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
+        $booking = BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->get()->map(function ($booking) {
+            return [
+                'id' => $booking->id,
+                'method_id' => $booking->method_id,
+                'service_id' => $booking->service_id,
+                'channel_id' => $booking->channel_id,
+                'service' => $booking->service,
+                'user' => $booking->user,
+                'channel' => $booking->channel,
+                'date' => $booking->date,
+                'hour' => $booking->hour,
+                'adults' => $booking->adults,
+                'boys' => $booking->boys,
+                'status' => $booking->status,
+                'cliente_name' => $booking->cliente_name,
+                'created_at' => $booking->created_at,
+                'cliente_email' => $booking->cliente_email,
+                'cliente_phone' => $booking->cliente_phone,
+                'cliente_building' => $booking->cliente_building,
+                'cliente_city' => $booking->cliente_city,
+                'notes' => $booking->notes->count(),
+                'time_service' => $booking->time_service,
+                'observations' => $booking->observations,
+                'total_real' => $booking->total_real,
+                'total' => $booking->total,
+                'channel' => $booking->channel,
+                'total_price_sales' => $booking->total_price_sales,
+                'proveedors_names' => $booking->proveedors->map(function ($proveedor) {
+                    return $proveedor->proveedor->nombre;
+                })->implode(', '),
+                'problematic' => $booking->problematic,
+                'proveedors' => $booking->proveedors->map(function ($proveedor) {
+                    return [
+                        'proveedor_id' => $proveedor->proveedor->id,
+                        'proveedor' => $proveedor->proveedor->nombre,
+                        'cost' => $proveedor->cost,
+                    ];
+                }),
+            ];
+        });
         if (request()->expectsJson()) {
-            return response()->json(['bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->get()], 200);
+            return response()->json(['bookingServices' => $booking], 200);
         }
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel')->get()
+            'bookingServices' => $booking,
         ]);
     }
 
@@ -129,7 +169,6 @@ class BookingServiceController extends Controller
         $bookingNoPayment = BookingService::with('payments')->get()->filter(function ($booking) {
             return $booking->payments->count() == 0 || $booking->payments->sum('amount') < $booking->total_price;
         });
-
         return response()->json(['bookingNoPayment' => $bookingNoPayment], 200);
     }
 

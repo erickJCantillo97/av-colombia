@@ -1,6 +1,6 @@
 <template>
   asndlands
-  <Modal v-model="show" close-on-escape="true" title="Notas" width="60vw">
+  <Modal v-model="show" close-on-escape title="Notas" width="60vw">
     <div class="w-full flex flex-col gap-y-5 p-2">
       <h3 class="text-xl font-bold">Notas de la Actividad</h3>
       <div class="h-[30vh] overflow-y-auto flex flex-col gap-y-2">
@@ -13,7 +13,7 @@
           <div class="flex w-full" v-if="n.user_id == $page.props.auth.user.id">
             <div class="w-1/2"></div>
             <div
-              class="w-1/2 flex py-1 px-3 rounded-md items-center border justify-between bg-sky-300"
+              class="w-1/2 flex py-1 px-3 rounded-md items-center justify-between bg-sky-100"
             >
               <span class="flex flex-col">
                 <p class="text-lg font-bold first-letter:uppercase">{{ n.note }}</p>
@@ -58,7 +58,14 @@
             </div>
           </div> -->
         </div>
-        <div class="flex justify-center flex-col items-center" v-if="notas.length == 0">
+        <div v-if="loading" class="flex justify-center items-center">
+          <Loading />
+        </div>
+        <div
+          class="flex justify-center flex-col items-center"
+          v-else
+          v-if="notas.length == 0"
+        >
           <Logo></Logo>
           <p class="font-semibold text-xl">Serivicio sin notas</p>
         </div>
@@ -91,6 +98,8 @@ import { onMounted, ref } from "vue";
 import Modal from "./Modal.vue";
 import Input from "./Input.vue";
 import axios from "axios";
+import Logo from "../logo.vue";
+import Loading from "../Loading.vue";
 
 const show = defineModel();
 
@@ -104,6 +113,7 @@ const props = defineProps({
 const notas = ref(props.notes);
 const noteEditMode = ref(false);
 const noteSelected = ref(null);
+const loading = ref(false);
 const note = ref("");
 
 const sendNote = () => {
@@ -138,10 +148,12 @@ const edit = () => {
 };
 
 const getNotes = () => {
+  loading.value = true;
   axios
     .get(route("notes.index", { booking_service_id: props.service.id }))
     .then((response) => {
       notas.value = response.data.notes;
+      loading.value = false;
     });
 };
 

@@ -1,7 +1,7 @@
 <template>
   <AppLayout title="Reservas">
     <div class="hidden bg-amber-200"></div>
-    <div class="h-[95vh]">
+    <div class="h-[92vh]">
       <div class="flex py-2 px-4 justify-between items-center">
         <h1 class="text-2xl font-bold">Reservas</h1>
         <div class="flex gap-x-2">
@@ -272,7 +272,12 @@
       </template>
     </Modal>
     <Toast></Toast>
-    <ViewBooking v-model="info" :service="service" v-if="service"></ViewBooking>
+    <ViewBooking
+      v-model="info"
+      :service="service"
+      v-if="service"
+      :proveedors="proveedors"
+    ></ViewBooking>
   </AppLayout>
   <Modal v-model="todayActivity" close-on-escape="true" title="Notas" width="90vw">
     <div class="w-full flex flex-col gap-y-5 p-2">
@@ -305,6 +310,7 @@ import Datatable from "@/Components/Customs/Datatable.vue";
 import Input from "@/Components/Customs/Input.vue";
 import Modal from "@/Components/Customs/Modal.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
+1;
 import { Link, router, useForm, usePage } from "@inertiajs/vue3";
 import { computed, ref, watch } from "vue";
 import Toast from "primevue/toast";
@@ -503,6 +509,7 @@ const buttons = [
       form.channel_id = data.channel_id;
       form.percent_descuento = data.percent_descuento;
       form.proveedors = data.proveedors;
+      form.time_service = data.time_service;
 
       proveedorsAdd.value = data.proveedors.map((prov) => {
         return {
@@ -616,7 +623,7 @@ const columns = [
     sortable: true,
   },
   {
-    field: "service.title",
+    field: "service",
     header: "Actividad",
     filter: true,
     sortable: true,
@@ -635,6 +642,12 @@ const columns = [
     sortable: true,
   },
   {
+    field: "proveedors_names",
+    header: "proveedores",
+    class: "text-center font-semibold text-sm",
+    filter: true,
+  },
+  {
     field: "status",
     header: "Estado",
     filter: true,
@@ -647,28 +660,18 @@ const columns = [
       { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
       { text: "COMPLETADA", severity: "success", class: "" },
       { text: "NO SHOW", severity: "warn", class: "" },
+      { text: "REUBICADO", severity: "warn", class: "" },
       { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
     ],
   },
-  // {
-  //     field: 'payment',
-  //     header: 'Pago',
-  //     sortable: true,
-  //     filter: true,
-  //     type: 'tag', filtertype: 'EQUALS',
-  //     class: 'text-center uppercase',
-  //     severitys: [
-  //         { text: 'pendiente', severity: 'danger', class: '' },
-  //     ]
-  // },
 ];
 
 const statues = [
   { text: "reservado", color: "blue" },
   { text: "CAMBIO DE FECHA", color: "gray" },
-  { text: "COMPLETADA", color: "green" },
   { text: "NO SHOW", color: "amber" },
-  { text: "CANCELADA", color: "red" },
+  { text: "REUBICADO", color: "orange" },
+  { text: "CANCELADA", color: "green" },
 ];
 
 const totalPax = computed(() => {
