@@ -688,6 +688,10 @@ const loading = ref(false);
 
 const reservar = (event) => {
   event.preventDefault();
+  if (!form.cliente_building) {
+    toast("error", "Rellene Todos los Campos");
+    return 0;
+  }
   form.total_real = valorReal.value;
   form.percent_channel = channels.value.find(
     (channel) => channel.id == form.channel_id
