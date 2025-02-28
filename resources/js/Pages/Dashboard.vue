@@ -85,13 +85,7 @@ const getServicesSelectedDate = () => {
 
 const getReservas = () => {
   axios.get(route("BookingServices.index")).then((response) => {
-    reservas.value = response.data.bookingServices.filter(
-      (item) =>
-        item.status == "reservado" ||
-        item.status == "CAMBIO DE FECHA" ||
-        item.status == "REUBICADO" ||
-        item.status == "PROBLEMATICA"
-    );
+    reservas.value = response.data.bookingServices;
     getServicesSelectedDate();
     reservas.value.forEach((item) => {
       calendarApp.eventsService.add({
@@ -182,6 +176,24 @@ const columns = [
     header: "Hora",
     filter: true,
     sortable: true,
+  },
+  {
+    field: "status",
+    header: "Estado",
+    filter: true,
+    sortable: true,
+    type: "tag",
+    filtertype: "EQUALS",
+    class: "text-center uppercase",
+    severitys: [
+      { text: "reservado", severity: "info", class: "" },
+      { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
+      { text: "COMPLETADA", severity: "success", class: "" },
+      { text: "NO SHOW", severity: "warn", class: "" },
+      { text: "REUBICADO", severity: "warn", class: "" },
+      { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
+      { text: "PROBLEMATICA", severity: "danger", class: "animate-pulse" },
+    ],
   },
 ];
 
