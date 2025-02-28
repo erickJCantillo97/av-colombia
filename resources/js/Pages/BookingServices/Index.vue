@@ -662,6 +662,7 @@ const columns = [
       { text: "NO SHOW", severity: "warn", class: "" },
       { text: "REUBICADO", severity: "warn", class: "" },
       { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
+      { text: "PROBLEMATICA", severity: "danger", class: "animate-pulse" },
     ],
   },
 ];

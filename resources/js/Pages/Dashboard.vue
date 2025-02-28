@@ -86,7 +86,11 @@ const getServicesSelectedDate = () => {
 const getReservas = () => {
   axios.get(route("BookingServices.index")).then((response) => {
     reservas.value = response.data.bookingServices.filter(
-      (item) => item.status == "reservado" || item.status == "CAMBIO DE FECHA"
+      (item) =>
+        item.status == "reservado" ||
+        item.status == "CAMBIO DE FECHA" ||
+        item.status == "REUBICADO" ||
+        item.status == "PROBLEMATICA"
     );
     getServicesSelectedDate();
     reservas.value.forEach((item) => {
