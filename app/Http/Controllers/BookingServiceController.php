@@ -19,7 +19,7 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
-        $booking = BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->get()->map(function ($booking) {
+        $booking = BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->orderBy('created_at', 'DESC')->get()->map(function ($booking) {
             return [
                 'id' => $booking->id,
                 'method_id' => $booking->method_id,
