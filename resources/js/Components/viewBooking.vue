@@ -121,10 +121,10 @@
       <div class="flex flex-col items-center">
         <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
           <Button
-            @click="setState('COMPLETADA', true)"
+            @click="setState('reservado', true)"
             icon="fa-solid fa-circle-check"
-            v-tooltip.top="'Completar Servicio'"
-            severity="success"
+            v-tooltip.top="'Reservada'"
+            severity="info"
           />
           <Button
             @click="setState('NO SHOW', true)"
@@ -305,7 +305,6 @@ const setState = (state, terminated) => {
         },
         {
           onSuccess: () => {
-            info.value = false;
             toast("success", "Reserva " + state);
           },
         }
