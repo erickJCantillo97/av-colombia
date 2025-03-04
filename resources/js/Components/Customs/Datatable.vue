@@ -93,7 +93,7 @@ const props = defineProps({
   },
   rowsDefault: {
     type: Number,
-    default: 10,
+    default: 100,
   },
   showHeader: {
     type: Boolean,
@@ -519,9 +519,7 @@ const mensaje =
           <span
             v-else-if="col.type == 'html-custom'"
             v-html="
-              typeof col.renderer === 'function'
-                ? col.renderer(data[col.field])
-                : col.renderer
+              typeof col.renderer === 'function' ? col.renderer(data) : col.renderer
             "
           >
           </span>

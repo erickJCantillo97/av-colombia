@@ -141,7 +141,7 @@
           <Button
             @click="reubicarServicio()"
             icon="fa-solid fa-people-arrows"
-            v-tooltip.top="'Reubicar Servicio'"
+            v-tooltip.top="'Cambio de proveedor'"
             severity="warn"
           />
           <Button
@@ -162,7 +162,7 @@
     </template>
   </Drawer>
 
-  <Modal v-model="reubicar" title="Reubicar Servicio" close-on-escape>
+  <Modal v-model="reubicar" title="Cambio de proveedor" close-on-escape>
     <div class="flex flex-col gap-y-2">
       <span class="flex flex-col gap-y-1">
         <label for="" class="font-bold"> Proveedor Actual</label>

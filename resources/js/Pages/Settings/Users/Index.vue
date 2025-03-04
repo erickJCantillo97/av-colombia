@@ -10,36 +10,40 @@
     </Datatable>
   </div>
 
-  <Modal v-model:visible="visible">
+  <Modal v-model:visible="visible" width="90vw">
     <template #title>
       <span class="text-xl font-bold white-space-nowrap"> Agregar Usuario</span>
     </template>
     <template #icon>
       <i class="fa-solid fa-plus" />
     </template>
-    <div class="space-y-3">
-      <Input label="Nombre" v-model="form.name" :error-message="form.errors.name" />
-      <Input label="Email" v-model="form.email" />
-      {{ $page.props.auth.user.rol }}
-      <Input
-        label="Rol"
-        type="dropdown"
-        :options="[
-          'SUPER ADMINISTRADOR',
-          'ADMINISTRADOR',
-          'VENDEDOR',
-          'VISITANTE',
-          'SIN ROL',
-        ]"
-        v-model="form.rol"
-      />
-      <Input label="Contraseña" type="password" v-model="form.password" />
-      <Input
-        label="Confirmar contraseña"
-        type="password"
-        v-model="form.password_confirmation"
-      />
+    <div class="flex gap-x-3 py-2">
+      <div class="space-y-3 w-full shadow-lg p-2 rounded-md">
+        <h3 class="text-center font-semibold text-lg">Datos del usuario</h3>
+        <Input label="Nombre" v-model="form.name" :error-message="form.errors.name" />
+        <Input label="Email" v-model="form.email" />
+
+        <Input label="Contraseña" type="password" v-model="form.password" />
+        <Input
+          label="Confirmar contraseña"
+          type="password"
+          v-model="form.password_confirmation"
+        />
+      </div>
+      <div class="w-full shadow-md rounded-md p-2">
+        <h3 class="text-center font-semibold text-lg">Permisos</h3>
+        <Input class="my-1" v-model="search"></Input>
+        <div class="grid grid-cols-3 gap-2">
+          <span
+            class="border p-1 rounded-md cursor-pointer bg-gray-100 text-center uppercase"
+            :class="'bg-gray-800 text-white'"
+            v-for="permiso in filterPermissions"
+            >{{ permiso.name }}</span
+          >
+        </div>
+      </div>
     </div>
+
     <template #footer>
       <Button
         @click="submit"
@@ -70,7 +74,7 @@ import Datatable from "@/Components/Customs/Datatable.vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import ConfirmPopup from "primevue/confirmpopup";
 import Modal from "@/Components/Customs/Modal.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Input from "@/Components/Customs/Input.vue";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
@@ -103,6 +107,12 @@ const toast = useToast();
 const confirm = useConfirm();
 
 const editor = ref(false);
+
+const search = ref();
+
+const filterPermissions = computed(() => {
+  return props.permisos.filter((x) => !search.value || x.name.includes(search.value));
+});
 
 const form = useForm({
   id: null,
@@ -172,6 +182,7 @@ const buttons = [
 
 const props = defineProps({
   users: Array,
+  permisos: Array,
 });
 
 const submit = () => {

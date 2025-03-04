@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
 use App\Models\Channel;
 use App\Models\Service;
+use App\Models\State;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -214,5 +215,16 @@ class BookingServiceController extends Controller
             return $booking['proveedors'];
         })->flatten(1)->unique('proveedor_id')->values();
         return response()->json(['bookingTimeRange' => $bookingTimeRange, 'proveedores' => $proveedores], 200);
+    }
+
+    public function getStatesChange(Request $request)
+    {
+        $date = $request->date ?? now();
+
+        $statues = State::whereDate('created_at', $date)->orderByDesc('created_at')->with('user', 'statable')->get();
+
+        return response()->json([
+            'status' => $statues
+        ]);
     }
 }

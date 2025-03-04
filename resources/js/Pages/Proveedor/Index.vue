@@ -3,51 +3,115 @@
     <Datatable :data="proveedores" :actions="buttons" :columnas :add title="proveedores">
     </Datatable>
   </AppLayout>
-  <Modal v-model:visible="visible" close-on-escape="true" title="Añadir Proveedor">
-    <div class="flex gap-x-4 w-full">
-      <Input label="Nombre" class="w-full" v-model="form.nombre" />
-      <!-- <Input label="Direccion" v-model="form.direccion" /> -->
-      <Input label="Telefono" class="w-full" v-model="form.telefono" />
-    </div>
-    <div
-      class="mt-4 w-full col-sapn-1 md:col-span-3 border rounded-lg"
-      v-if="$page.props.auth.user.rol == 'admin'"
-    >
-      <h1
-        class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
-      >
-        Servicios
-        <Button
-          icon="fa-solid fa-plus"
-          outlined=""
-          severity="success"
-          class="size-6"
-          @click="addService()"
-        />
-      </h1>
-      <div class="flex justify-between w-full font-bold px-2">
-        <label for="">Servicio</label>
-        <label for="">Tarifa</label>
-        <label for="">.</label>
-      </div>
-      <div v-for="(p, index) in form.services" class="flex justify-between gap-x-4 px-2">
+  <Modal
+    v-model:visible="visible"
+    close-on-escape="true"
+    title="Añadir Proveedor"
+    width="80vw"
+  >
+    <div class="flex gap-4">
+      <div class="flex flex-col w-1/3 gap-y-4">
+        <h1
+          class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
+        >
+          Datos del Proveedor
+        </h1>
+        <Input label="Nombre" class="w-full" v-model="form.nombre" />
+        <!-- <Input label="Direccion" v-model="form.direccion" /> -->
+        <Input label="Telefono" class="w-full" v-model="form.telefono" />
+        <div class="flex flex-wrap gap-4 w-full justify-between">
+          <label for="">Politicas</label>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="politicas"
+              inputId="Dinero"
+              name="Dinero"
+              value="Dinero"
+            />
+            <label for="Dinero">Dinero</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <RadioButton
+              v-model="politicas"
+              inputId="Porcentaje"
+              name="Porcentaje"
+              value="Porcentaje"
+              size="Normal"
+            />
+            <label for="Porcentaje" class="text-sm">Porcentaje</label>
+          </div>
+        </div>
         <Input
-          type="dropdown"
-          v-model="p.service_id"
-          option-label="title"
-          option-value="id"
-          class="w-full"
-          :options="services"
+          label="Penalización por NO SHOW"
+          type="number"
+          :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
+          :suffix="politicas == 'Dinero' ? '' : '%'"
+          min="0"
+          :max="politicas == 'Dinero' ? 100000 : 100"
+          :step="0.25"
+          :minFractionDigits="0"
+          :max-fraction-digits="2"
         ></Input>
-        <Input type="number" mode="currency" class="w-full" v-model="p.value"></Input>
-        <Button
-          icon="fa-solid fa-xmark-circle"
-          class="w-full"
-          v-tooltip="`Quitar`"
-          text
-          severity="danger"
-          @click="removeService(index)"
-        />
+        <Input
+          label="Penalización por CANCELACIÓN"
+          type="number"
+          :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
+          :suffix="politicas == 'Dinero' ? '' : '%'"
+          min="0"
+          :max="politicas == 'Dinero' ? 100000 : 100"
+          :step="0.25"
+          :minFractionDigits="0"
+          :max-fraction-digits="2"
+        ></Input>
+      </div>
+      <div
+        class="w-2/3 col-sapn-1 md:col-span-3 border rounded-lg"
+        v-if="
+          $page.props.auth.user.rol == 'admin' ||
+          $page.props.auth.user.rol == 'SUPER ADMINISTRADOR'
+        "
+      >
+        <h1
+          class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
+        >
+          Servicios
+          <Button
+            icon="fa-solid fa-plus"
+            outlined=""
+            severity="success"
+            class="size-6"
+            @click="addService()"
+          />
+        </h1>
+        <div class="grid grid-cols-8 w-full font-bold px-2 text-left">
+          <div class="col-span-3 w-full">Servicio</div>
+          <div class="col-span-3">Concepto</div>
+          <div class="">Tarifa</div>
+          <div class=""></div>
+        </div>
+        <div
+          v-for="(p, index) in form.services"
+          class="justify-between w-full px-2 gap-x-2 grid grid-cols-8"
+        >
+          <Input
+            type="dropdown"
+            class="col-span-3"
+            v-model="p.service_id"
+            option-label="title"
+            option-value="id"
+            :options="services"
+          ></Input>
+          <Input class="w-full col-span-3" v-model="p.concepto"></Input>
+          <Input type="number" mode="currency" class="w-full" v-model="p.value"></Input>
+          <Button
+            icon="fa-solid fa-xmark-circle"
+            class="w-full"
+            v-tooltip="`Quitar`"
+            text
+            severity="danger"
+            @click="removeService(index)"
+          />
+        </div>
       </div>
     </div>
 
@@ -80,6 +144,8 @@ const add = {
     form.reset();
   },
 };
+
+const politicas = ref("Dinero");
 
 const buttons = [
   {
@@ -150,12 +216,14 @@ const form = useForm({
   nombre: "",
   direccion: "a.",
   telefono: "",
+
   services: [],
 });
 
 const addService = () => {
   form.services.push({
     service_id: "",
+    concepto: "",
     value: "",
   });
 };

@@ -3,7 +3,10 @@
     <div class="hidden bg-amber-200 bg-orange-200"></div>
     <div class="h-[92vh]">
       <div class="flex py-2 px-4 justify-between items-center">
-        <h1 class="text-2xl font-bold">Reservas</h1>
+        <div class="italic flex flex-col">
+          <h1 class="text-2xl font-bold">Reservas</h1>
+          <Changes />
+        </div>
         <div class="flex gap-x-2">
           <div
             class="p-2 bg-black text-white text-center rounded-lg cursor-pointer transition-all duration-300 scale-95 hover:scale-100"
@@ -52,7 +55,6 @@
           dateFormat="dd/mm/yy"
           v-tooltip.bottom="`Filtrar fecha de Actividad`"
           :manualInput="false"
-          butt
         />
       </div>
       <Datatable
@@ -69,6 +71,7 @@
     <Modal v-model="show" title="Añadir Reserva" width="70vw">
       <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center" novalidate>
         <Input
+          class="col-span-4"
           type="dropdown"
           v-model="form.service_id"
           :error-message="form.errors.service_id"
@@ -249,6 +252,48 @@
             />
           </div>
         </div>
+        <div class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg">
+          <h1
+            class="text-2xl font-mono font-semibold text-center bg-green-800 rounded-t-lg text-white gap-x-3 p-2"
+          >
+            Cargos Extras
+            <Button
+              icon="fa-solid fa-plus"
+              outlined=""
+              severity="success"
+              class="size-6"
+              @click="addProveedor()"
+            />
+          </h1>
+          <div class="flex justify-between w-full font-bold px-2">
+            <label for="">Proveedor</label>
+            <label for="">Costo</label>
+            <label for="">.</label>
+          </div>
+          <div
+            v-for="(p, index) in proveedorsAdd"
+            class="flex justify-between gap-x-4 px-2"
+          >
+            <Input
+              type="dropdown"
+              v-model="p.proveedor"
+              @value-change="selectedProveedor(p)"
+              option-label="nombre"
+              option-value="id"
+              class="w-full"
+              :options="proveedors"
+            ></Input>
+            <Input type="number" mode="currency" class="w-full" v-model="p.costo"></Input>
+            <Button
+              icon="fa-solid fa-xmark-circle"
+              class="w-full"
+              v-tooltip="`Quitar`"
+              text
+              severity="danger"
+              @click="removeProveedor(index)"
+            />
+          </div>
+        </div>
       </form>
       <template #footer>
         <div class="flex justify-end gap-x-2 mt-4 w-full">
@@ -279,31 +324,13 @@
       :proveedors="proveedors"
     ></ViewBooking>
   </AppLayout>
-  <Modal v-model="todayActivity" close-on-escape="true" title="Notas" width="90vw">
-    <div class="w-full flex flex-col gap-y-5 p-2">
-      <h3 class="text-xl font-bold">Notas de la Actividad</h3>
-      <div class="h-[30vh] overflow-y-auto flex flex-col gap-y-2">
-        <div class="flex border shadow-md p-2 rounded-md" v-for="n in notes" :key="n.id">
-          <img :src="n.user.profile_photo_url" class="size-12 rounded-full" alt="" />
-          <div class="ml-4 flex flex-col gap-y-2 w-full">
-            <h2 class="font-bold text-2xl">{{ n.user.name }}</h2>
-            <div class="w-full flex justify-between">
-              <p>{{ n.note }}</p>
-              <p>{{ new Date(n.created_at).toISOString().split("T")[0] }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="flex justify-center flex-col items-center" v-if="notes.length == 0">
-          <Logo></Logo>
-          <p class="font-semibold text-xl">Serivicio sin notas</p>
-        </div>
-      </div>
-      <div class="flex gap-x-2">
-        <Input type="textarea" class="w-full shadow-xl" v-model="note"></Input>
-        <Button label="Guardar" severity="info" icon="pi pi-send" @click="sendNote" />
-      </div>
-    </div>
-  </Modal>
+  <Notas
+    v-model="todayActivity"
+    :notes="notes"
+    v-if="todayActivity"
+    :note="note"
+    :service="serviceSelected"
+  ></Notas>
 </template>
 <script setup>
 import Datatable from "@/Components/Customs/Datatable.vue";
@@ -317,6 +344,8 @@ import Toast from "primevue/toast";
 import { alerts } from "@/composable/toasts";
 import Swal from "sweetalert2";
 import ViewBooking from "@/Components/viewBooking.vue";
+import Changes from "@/Components/Customs/Changes.vue";
+import Notas from "@/Components/Customs/Notas.vue";
 
 const props = defineProps({
   bookingServices: Array,
@@ -528,14 +557,13 @@ const buttons = [
   },
   {
     label: "Notas",
+    severity: "secondary",
     action: (data) => {
       serviceSelected.value = data;
-      axios
-        .get(route("notes.index", { booking_service_id: data.id }))
-        .then((response) => {
-          notes.value = response.data.notes;
-          todayActivity.value = true;
-        });
+      todayActivity.value = true;
+    },
+    badge: (data) => {
+      return data.notes;
     },
     icon: "fa-solid fa-note-sticky text-sm",
   },

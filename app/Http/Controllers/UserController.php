@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -14,8 +15,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        $permisos = Permission::get();
         return Inertia::render('Users/Index', [
-            'users' => User::all()
+            'users' => User::all(),
+            'permisos' => $permisos
         ]);
     }
 

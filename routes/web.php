@@ -13,6 +13,7 @@ use App\Http\Controllers\PaymentProveedorController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Models\BookingService;
 use App\Models\PaymentProveedor;
 use App\Models\Service;
 use Illuminate\Foundation\Application;
@@ -93,6 +94,7 @@ Route::middleware([
 
     Route::get('getTotalReservas', [ContabilidadController::class, 'getTotalReservas'])->name('get.total.reservas');
 
+    Route::get('getStatesChange', [BookingServiceController::class, 'getStatesChange'])->name('get.states.change');
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });
 

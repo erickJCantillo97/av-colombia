@@ -320,7 +320,7 @@ defineEmits(["valueChange"]);
           :placeholder
           :minFractionDigits
           :maxFractionDigits
-          class="w-full"
+          class="w-full !h-9"
           :class="invalid ? 'p-invalid' : ''"
           v-model="input"
           :aria-describedby="id + '-help'"
@@ -500,12 +500,6 @@ defineEmits(["valueChange"]);
             timezone="America/Bogota"
           >
           </VueDatePicker>
-          <!-- <Calendar :manualInput :disabled :id  :minDate :maxDate :placeholder :required
-                        showIcon :disabledDays :selectionMode @date-select="$emit('valueChange', $event)"
-                        dateFormat="yy-mm-dd" :pt="{
-                            root: '!w-full',
-                            input: '!h-8 !text-center '
-                        }" /> -->
         </span>
         <span v-else-if="type == 'date'">
           <VueDatePicker
@@ -514,6 +508,7 @@ defineEmits(["valueChange"]);
             :name
             hide-offset-dates
             :min-date="minDate"
+            :max-date="maxDate"
             v-model="input"
             :teleport="true"
             model-type="yyyy-MM-dd"
