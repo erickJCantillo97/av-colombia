@@ -221,7 +221,7 @@ class BookingServiceController extends Controller
     {
         $date = $request->date ?? now();
 
-        $statues = State::whereDate('created_at', $date)->orderByDesc('created_at')->with('user', 'statable')->get();
+        $statues = State::where('user_id', 5)->whereDate('created_at', $date)->orderByDesc('created_at')->with('user', 'statable')->get();
 
         return response()->json([
             'status' => $statues
