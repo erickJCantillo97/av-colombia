@@ -18,6 +18,7 @@
         </h1>
         <Input label="Nombre" class="w-full" v-model="form.nombre" />
         <!-- <Input label="Direccion" v-model="form.direccion" /> -->
+        <Input label="NIT" class="w-full" v-model="form.nit" />
         <Input label="Telefono" class="w-full" v-model="form.telefono" />
         <div class="flex flex-wrap gap-4 w-full justify-between">
           <label for="">Politicas</label>
@@ -44,6 +45,7 @@
         <Input
           label="Penalización por NO SHOW"
           type="number"
+          v-model="form.penalidad_no_show"
           :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
           :suffix="politicas == 'Dinero' ? '' : '%'"
           min="0"
@@ -55,6 +57,7 @@
         <Input
           label="Penalización por CANCELACIÓN"
           type="number"
+          v-model="form.penalidad_cancelacion"
           :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
           :suffix="politicas == 'Dinero' ? '' : '%'"
           min="0"
@@ -65,7 +68,7 @@
         ></Input>
       </div>
       <div
-        class="w-2/3 col-sapn-1 md:col-span-3 border rounded-lg"
+        class="w-2/3 col-sapn-1 md:col-span-3 border rounded-lg "
         v-if="
           $page.props.auth.user.rol == 'admin' ||
           $page.props.auth.user.rol == 'SUPER ADMINISTRADOR'
@@ -83,34 +86,36 @@
             @click="addService()"
           />
         </h1>
-        <div class="grid grid-cols-8 w-full font-bold px-2 text-left">
+        <div class="grid grid-cols-8 w-full font-bold px-2 text-left ">
           <div class="col-span-3 w-full">Servicio</div>
-          <div class="col-span-3">Concepto</div>
+          <div class="col-span-2">Concepto</div>
           <div class="">Tarifa</div>
           <div class=""></div>
         </div>
-        <div
-          v-for="(p, index) in form.services"
-          class="justify-between w-full px-2 gap-x-2 grid grid-cols-8"
-        >
-          <Input
-            type="dropdown"
-            class="col-span-3"
-            v-model="p.service_id"
-            option-label="title"
-            option-value="id"
-            :options="services"
-          ></Input>
-          <Input class="w-full col-span-3" v-model="p.concepto"></Input>
-          <Input type="number" mode="currency" class="w-full" v-model="p.value"></Input>
-          <Button
-            icon="fa-solid fa-xmark-circle"
-            class="w-full"
-            v-tooltip="`Quitar`"
-            text
-            severity="danger"
-            @click="removeService(index)"
-          />
+        <div class="h-[50vh] overflow-y-auto">
+          <div
+            v-for="(p, index) in form.services"
+            class="justify-between w-full px-2 gap-x-2 grid grid-cols-8"
+          >
+            <Input
+              type="dropdown"
+              class="col-span-3"
+              v-model="p.service_id"
+              option-label="title"
+              option-value="id"
+              :options="services"
+            ></Input>
+            <Input class="w-full col-span-2" v-model="p.concept"></Input>
+            <input type="number"  class="w-full rounded-md h-10 col-span-2" v-model="p.value"></input>
+            <Button
+              icon="fa-solid fa-xmark-circle"
+              class="w-full"
+              v-tooltip="`Quitar`"
+              text
+              severity="danger"
+              @click="removeService(index)"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -153,7 +158,11 @@ const buttons = [
       visible.value = true;
       form.services = data.services.map((x) => x.pivot);
       form.id = data.id;
+      form.nit = data.nit;
       form.nombre = data.nombre;
+      form.penalidad_no_show = data.penalidad_no_show;
+      form.penalidad_cancelacion = data.penalidad_cancelacion;
+      politicas.value = data.type_penalidad_cost;
       form.direccion = data.direccion;
       form.telefono = data.telefono;
     },
@@ -195,6 +204,11 @@ const columnas = [
     header: "Nombre",
     filter: true,
   },
+  {
+    field: "nit",
+    header: "NIT",
+    filter: true,
+  },
 
   {
     field: "telefono",
@@ -215,8 +229,11 @@ const form = useForm({
   id: null,
   nombre: "",
   direccion: "a.",
+  nit: "",
   telefono: "",
-
+  type_penalidad_cost: "",
+  penalidad_no_show: '',
+  penalidad_cancelacion: '',
   services: [],
 });
 
@@ -233,6 +250,7 @@ const removeService = (index) => {
 };
 
 const submit = () => {
+  form.type_penalidad_cost = politicas.value;
   if (form.id) {
     form.put(route("proveedors.update", form.id), {
       onSuccess: () => {

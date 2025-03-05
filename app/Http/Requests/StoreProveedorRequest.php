@@ -25,6 +25,10 @@ class StoreProveedorRequest extends FormRequest
             'nombre' => 'required',
             'direccion' => 'nullable|string',
             'telefono' => 'nullable',
+            'nit' => 'nullable|unique:proveedors,nit',
+            'penalidad_no_show' => 'nullable',
+            'penalidad_cancelacion' => 'nullable',
+            'type_penalidad_cost' => 'nullable',
         ];
     }
 }

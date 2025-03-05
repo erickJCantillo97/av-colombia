@@ -189,6 +189,7 @@ class ServiceController extends Controller
     {
         $validate = $request->validate([
             'service_id' => 'required|exists:services,id',
+            'code_booking' => 'nullable|string|unique:booking_services',
             'adults' => 'required|numeric',
             'boys' => 'nullable|numeric',
             'cliente_name' => 'required|string',
@@ -246,6 +247,16 @@ class ServiceController extends Controller
                     'booking_service_id' => $booking->id,
                     'proveedor_id' => $proveedor['proveedor'],
                     'cost' => $proveedor['costo'],
+                ]);
+        }
+        foreach (request('extras') as $extra) {
+            if ($extra['cantidad'])
+                $booking->extras()->create([
+                    'booking_service_id' => $booking->id,
+                    'cantidad' => $extra['cantidad'],
+                    'description' => $extra['description'],
+                    'unit_price' => $extra['unit_price'],
+                    'total_price' => $extra['cantidad'] * $extra['unit_price'],
                 ]);
         }
         if (request('abono'))

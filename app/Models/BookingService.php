@@ -82,4 +82,9 @@ class BookingService extends Model
     {
         return $this->belongsTo(Channel::class);
     }
+
+    public function extras()
+    {
+        return $this->hasMany(BookingExtras::class, 'booking_service_id');
+    }
 }

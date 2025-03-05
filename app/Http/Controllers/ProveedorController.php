@@ -42,7 +42,11 @@ class ProveedorController extends Controller
 
         $proveedor = Proveedor::create($request->validated());
         foreach (request('services') as $service) {
-            $proveedor->services()->attach($service['service_id'], ['value' => $service['value']]);
+            $proveedor->services()->attach(
+                $service['service_id'],
+                ['value' => $service['value']],
+                ['concept' => $service['concept']]
+            );
         }
         return back()->with('Proveedor Creado');
     }
@@ -72,10 +76,11 @@ class ProveedorController extends Controller
             $proveedor->update($request->validated());
             $proveedor->services()->detach();
             foreach (request('services') as $service) {
-                $proveedor->services()->attach($service['service_id'], ['value' => $service['value']]);
+                $proveedor->services()->attach($service['service_id'], ['value' => $service['value'], 'concept' => $service['concept']]);
             }
             return back()->with('Proveedor Actualizado');
         } catch (\Throwable $th) {
+            dd($th);
             return back()->withErrors(['message' => 'Error Al actualizar el proveedor']);
         }
     }
@@ -97,5 +102,16 @@ class ProveedorController extends Controller
     {
 
         Excel::import(new ProveedorImport(), $request->docs);
+    }
+
+    public function addConcept()
+    {
+        $proveedors = Proveedor::all();
+        foreach ($proveedors as $proveedor) {
+            $services = $proveedor->services;
+            foreach ($services as $service) {
+                $service->pivot->update(['concept' => trim($service->title)]);
+            }
+        }
     }
 }

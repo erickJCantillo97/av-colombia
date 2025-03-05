@@ -15,6 +15,7 @@ import Datatable from "@/Components/Customs/Datatable.vue";
 import Scheduler from "./Dashboards/Scheduler.vue";
 import ViewBooking from "@/Components/viewBooking.vue";
 import Notas from "@/Components/Customs/Notas.vue";
+import Completar from "@/Components/Customs/Completar.vue";
 // #endregion
 
 // #region CalendarPlugins
@@ -35,6 +36,7 @@ const totalToPay = ref(0);
 const dateActivities = ref([]);
 const reservas = ref();
 const todayActivity = ref(false);
+const completar = ref(false);
 const serviceSelected = ref({});
 const configCalendar = reactive({
   defaultView: viewMonthGrid.name,
@@ -107,6 +109,15 @@ const editBooking = (data) => {
 getReservas();
 
 const actions = [
+  // {
+  //   label: "Compeltar Servicio",
+  //   action: (data) => {
+  //     serviceSelected.value = data;
+  //     completar.value = true;
+  //   },
+  //   icon: "fa-solid fa-circle-check text-sm",
+  //   severity: "success",
+  // },
   {
     label: "Detalles",
     action: (data) => {
@@ -197,8 +208,9 @@ const columns = [
     class: "text-center uppercase",
     severitys: [
       { text: "reservado", severity: "info", class: "" },
+      { text: "reservado", severity: "info", class: "" },
       { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
-      { text: "COMPLETADA", severity: "success", class: "" },
+      { text: "COMPLETADA", class: "" },
       { text: "NO SHOW", severity: "warn", class: "" },
       { text: "REUBICADO", severity: "warn", class: "" },
       { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
@@ -277,4 +289,5 @@ const handleEventClick = (event) => {
     :note="note"
     :service="serviceSelected"
   ></Notas>
+  <Completar v-if="completar" v-model="completar" :service="serviceSelected"> </Completar>
 </template>

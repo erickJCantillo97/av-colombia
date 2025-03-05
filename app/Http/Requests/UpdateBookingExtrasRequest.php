@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProveedorRequest extends FormRequest
+class UpdateBookingExtrasRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,13 +22,7 @@ class UpdateProveedorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'required',
-            'direccion' => 'nullable|string',
-            'telefono' => 'nullable',
-            'nit' => 'nullable|unique:proveedors,nit,' . $this->proveedor->id,
-            'penalidad_no_show' => 'nullable',
-            'penalidad_cancelacion' => 'nullable',
-            'type_penalidad_cost' => 'nullable',
+            //
         ];
     }
 }

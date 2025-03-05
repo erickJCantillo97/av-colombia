@@ -95,6 +95,12 @@ Route::middleware([
     Route::get('getTotalReservas', [ContabilidadController::class, 'getTotalReservas'])->name('get.total.reservas');
 
     Route::get('getStatesChange', [BookingServiceController::class, 'getStatesChange'])->name('get.states.change');
+
+    Route::post('completarReserva', [BookingServiceController::class, 'completarReserva'])->name('completar.reserva');
+
+    Route::get('addConcept', [ProveedorController::class, 'addConcept'])->name('add.concept');
+
+    // route::get()
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BookingService;
 use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
+use App\Models\BookingExtras;
 use App\Models\Channel;
 use App\Models\Service;
 use App\Models\State;
@@ -20,7 +21,7 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
-        $booking = BookingService::with('service', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->orderBy('created_at', 'DESC')->get()->map(function ($booking) {
+        $booking = BookingService::with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->orderBy('created_at', 'DESC')->get()->map(function ($booking) {
             return [
                 'id' => $booking->id,
                 'method_id' => $booking->method_id,
@@ -44,6 +45,7 @@ class BookingServiceController extends Controller
                 'time_service' => $booking->time_service,
                 'observations' => $booking->observations,
                 'total_real' => $booking->total_real,
+                'saldo' => $booking->saldo,
                 'total' => $booking->total,
                 'channel' => $booking->channel,
                 'total_price_sales' => $booking->total_price_sales,
@@ -58,6 +60,7 @@ class BookingServiceController extends Controller
                         'cost' => $proveedor->cost,
                     ];
                 }),
+                'extras' => $booking->extras,
             ];
         });
         if (request()->expectsJson()) {
@@ -226,5 +229,21 @@ class BookingServiceController extends Controller
         return response()->json([
             'status' => $statues
         ]);
+    }
+
+    public function completarReserva(Request $request)
+    {
+        $booking = BookingService::find($request->service_id);
+        if (isset($booking->extra)) {
+            foreach ($booking->extras as $extra) {
+                BookingExtras::find($extra->id)->update([
+                    'unit_cost' => $extra->unit_cost,
+                    'total_cost' => $extra->unit_cost * $extra->cantidad,
+                ]);
+            }
+        }
+
+        storeState($booking, request('status'), 1);
+        return back()->with('message', 'Reservación completada correctamente');
     }
 }

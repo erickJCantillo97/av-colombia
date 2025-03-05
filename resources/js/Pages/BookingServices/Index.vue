@@ -71,7 +71,7 @@
     <Modal v-model="show" title="Añadir Reserva" width="70vw">
       <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center" novalidate>
         <Input
-          class="col-span-4"
+          class="col-span-3"
           type="dropdown"
           v-model="form.service_id"
           :error-message="form.errors.service_id"
@@ -80,6 +80,11 @@
           option-value="id"
           :options="services"
         ></Input>
+        <Input
+          label="Codigo de Reserva"
+          v-model="form.code_booking"
+          :error-message="form.errors.code_booking"
+        />
         <Input
           label="Fecha de Reserva"
           :enableTimePicker="true"
@@ -160,13 +165,12 @@
         />
         <Input
           class="w-full"
-          label="Descuento"
-          v-model="form.percent_descuento"
-          :error-message="form.errors.percent_descuento"
+          label="Saldo"
+          v-model="form.saldo"
+          :error-message="form.errors.saldo"
           min="0"
-          max="100"
           type="number"
-          suffix=" %"
+          mode="currency"
         />
         <Input
           class="w-full col-span-1 md:col-span-4"
@@ -192,11 +196,11 @@
             <p class="italic text-md">Valor Real</p>
           </div>
         </div>
-        <div
+        <!-- <div
           class="mt-4 w-full col-span-1 md:col-span-4 rounded-lg"
           v-if="form.service_id"
         >
-          <!-- && services.find(x => x.id == form.service_id).type == 'Transfer' -->
+       
           <div class="flex gap-x-2">
             <Input
               label="Placa del Vehiculo"
@@ -209,7 +213,7 @@
               class="w-full"
             />
           </div>
-        </div>
+        </div> -->
         <div class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg">
           <h1
             class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
@@ -262,35 +266,31 @@
               outlined=""
               severity="success"
               class="size-6"
-              @click="addProveedor()"
+              @click="addExtra()"
             />
           </h1>
-          <div class="flex justify-between w-full font-bold px-2">
-            <label for="">Proveedor</label>
-            <label for="">Costo</label>
-            <label for="">.</label>
+          <div class="grid grid-cols-6 w-full font-bold px-2 gap-x-4">
+            <label for="" class="col-span-1">Cantidad</label>
+            <label for="" class="col-span-2">Descripción</label>
+            <label for="" class="col-span-2">Precio Unitario</label>
+            <label for=""></label>
           </div>
-          <div
-            v-for="(p, index) in proveedorsAdd"
-            class="flex justify-between gap-x-4 px-2"
-          >
+          <div v-for="(p, index) in extrasAdd" class="grid grid-cols-6 gap-x-4 px-2">
+            <Input type="number" v-model="p.cantidad" class="w-full col-span-1"></Input>
+            <Input type="text" class="w-full col-span-2" v-model="p.description"></Input>
             <Input
-              type="dropdown"
-              v-model="p.proveedor"
-              @value-change="selectedProveedor(p)"
-              option-label="nombre"
-              option-value="id"
-              class="w-full"
-              :options="proveedors"
+              type="number"
+              mode="currency"
+              class="w-full col-span-2"
+              v-model="p.unit_price"
             ></Input>
-            <Input type="number" mode="currency" class="w-full" v-model="p.costo"></Input>
             <Button
               icon="fa-solid fa-xmark-circle"
               class="w-full"
               v-tooltip="`Quitar`"
               text
               severity="danger"
-              @click="removeProveedor(index)"
+              @click="removeExtra(index)"
             />
           </div>
         </div>
@@ -337,7 +337,6 @@ import Datatable from "@/Components/Customs/Datatable.vue";
 import Input from "@/Components/Customs/Input.vue";
 import Modal from "@/Components/Customs/Modal.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-1;
 import { Link, router, useForm, usePage } from "@inertiajs/vue3";
 import { computed, ref, watch } from "vue";
 import Toast from "primevue/toast";
@@ -421,18 +420,28 @@ const form = useForm({
   abono: 0,
   method_id: "",
   channel_id: "9d99a95f-6c3d-48fd-aa7d-6ef4e6860123",
-  percent_descuento: 0,
+  saldo: 0,
   proveedors: [],
   total: 0,
   total_real: 0,
   percent_channel: 0,
   observations: "",
+  code_booking: "",
+  extras: [],
 });
 
 const proveedorsAdd = ref([
   {
     proveedor: null,
     costo: "",
+  },
+]);
+
+const extrasAdd = ref([
+  {
+    cantidad: 0,
+    description: "",
+    unit_price: 0,
   },
 ]);
 
@@ -455,6 +464,20 @@ const addProveedor = () => {
 const removeProveedor = (index) => {
   if (index == 0) return;
   proveedorsAdd.value.splice(index, 1);
+};
+
+const addExtra = () => {
+  extrasAdd.value.push({
+    cantidad: 0,
+    description: "",
+    total_cost: 0,
+    unit_price: 0,
+  });
+};
+
+const removeExtra = (index) => {
+  if (index == 0) return;
+  extrasAdd.value.splice(index, 1);
 };
 
 const proveedors = ref([]);
@@ -536,10 +559,10 @@ const buttons = [
       form.total = data.total;
       form.method_id = data.method_id;
       form.channel_id = data.channel_id;
-      form.percent_descuento = data.percent_descuento;
+      form.saldo = data.saldo;
       form.proveedors = data.proveedors;
+      form.code_booking = data.code_booking;
       form.time_service = data.time_service;
-
       proveedorsAdd.value = data.proveedors.map((prov) => {
         return {
           proveedor: prov.proveedor_id,
@@ -729,6 +752,7 @@ const reservar = (event) => {
   ).percent;
   loading.value = true;
   form.proveedors = proveedorsAdd.value;
+  form.extras = extrasAdd.value;
   form.post(route("reservar"), {
     onSuccess: () => {
       form.reset();

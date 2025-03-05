@@ -193,7 +193,7 @@ const rowClass = (data) => {
       case "CAMBIO DE FECHA":
         return "!bg-gray-100";
       case "COMPLETADA":
-        return "!bg-teal-100";
+        return "";
       case "CANCELADA":
         return "!bg-green-100";
       case "NO SHOW":
