@@ -144,8 +144,9 @@ class BookingServiceController extends Controller
             if ($proveedor['costo'] && $proveedor['proveedor'])
                 $booking->proveedors()->create([
                     'booking_service_id' => $booking->id,
-                    'proveedor_id' => $proveedor['proveedor'],
+                    'proveedor_id' => $proveedor['proveedor']['id'],
                     'cost' => $proveedor['costo'],
+                    'concept' => $proveedor['proveedor']['pivot']['concept'],
                 ]);
         }
     }

@@ -621,7 +621,7 @@ const removeExtra = (index) => {
   extrasAdd.value.splice(index, 1);
 };
 
-const getProveedors = () => {
+const getProveedors = async () => {
   var servicio = services.value.find((service) => service.id == form.service_id);
   serviceSelected.value = servicio;
   proveedorsAdd.value = [
@@ -630,7 +630,7 @@ const getProveedors = () => {
       costo: "",
     },
   ];
-  axios
+  await axios
     .get(route("get.provedors.service", servicio.slug))
     .then((response) => {
       proveedors.value = response.data.proveedors;
@@ -673,7 +673,7 @@ const buttons = [
   },
   {
     label: "Editar",
-    action: (data) => {
+    action: async (data) => {
       // form.date = data.date + ',' + data.hour;
       form.id = data.id;
       const formatDateTime = (date, time) => {
@@ -699,9 +699,10 @@ const buttons = [
       form.proveedors = data.proveedors;
       form.code_booking = data.code_booking;
       form.time_service = data.time_service;
+      await getProveedors();
       proveedorsAdd.value = data.proveedors.map((prov) => {
         return {
-          proveedor: prov.proveedor_id,
+          proveedor: proveedors.value.find((p) => p.id == prov.id),
           costo: prov.cost,
         };
       });
