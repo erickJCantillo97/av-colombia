@@ -701,8 +701,9 @@ const buttons = [
       form.time_service = data.time_service;
       await getProveedors();
       proveedorsAdd.value = data.proveedors.map((prov) => {
+        console.log(prov);
         return {
-          proveedor: proveedors.value.find((p) => p.id == prov.id),
+          proveedor: proveedors.value.find((p) => p.proveedor_id == prov.id),
           costo: prov.cost,
         };
       });
