@@ -565,6 +565,47 @@ const getDataFilter = () => {
         </template>
       </Column>
     </span>
+    <Column
+      frozen
+      alignFrozen="right"
+      class="w-[8%]"
+      v-if="props.actions.length > 0 || routes?.update || routes?.delete || showItem"
+    >
+      <template #body="{ data }">
+        <div
+          class="flex items-center justify-center bg-white rounded-md shadow-sm gap-0.5"
+        >
+          <span v-for="button in props.actions">
+            {{ button.event ? console.log(mensaje) : undefined }}
+            <Button
+              @click="
+                button.event
+                  ? $emit(button.event, $event, data)
+                  : button.action(data, $event)
+              "
+              :text="button.text == undefined ? true : button.text"
+              :severity="button.severity == undefined ? 'primary' : button.severity"
+              :outlined="button.outlined == undefined ? false : button.outlined"
+              :rounded="button.rounded == undefined ? false : button.rounded"
+              :icon="
+                typeof button.icon === 'function'
+                  ? button.icon(data, $event)
+                  : button.icon
+              "
+              v-tooltip.left="{ pt: { root: 'text-center' }, value: button.label }"
+              :class="button.class"
+              v-if="
+                typeof button.show === 'function'
+                  ? button.show(data, $event)
+                  : button.show == undefined
+                  ? true
+                  : button.show
+              "
+            />
+          </span>
+        </div>
+      </template>
+    </Column>
 
     <!-- #endregion -->
   </DataTable>
