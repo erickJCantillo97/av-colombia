@@ -11,6 +11,11 @@ import axios from "axios";
 const show = ref(false);
 
 const { toast } = alerts();
+const value = ref(1);
+const options = [
+  { name: "Agrupados", value: 1 },
+  { name: "Detalles", value: 2 },
+];
 
 const props = defineProps({
   payments: Array,
@@ -84,7 +89,6 @@ const columns = [
     field: "comprobante",
     type: "html-custom",
     renderer: (row) => {
-      console.log(row)
       return `<a href="${row.comprobante}" class="text-sky-600 underline" target="_blank">Ver Comprobante</a>`;
     },
   },
@@ -132,9 +136,21 @@ const getReservas = () => {
 
 const op = ref();
 const members = ref([]);
+const groupReservas = ref([]);
 
 const toggle = (event, item) => {
-  console.log(item);
+  groupReservas.value = item.value.reduce((acc, curr) => {
+    const title = curr.title;
+    if (!acc[title]) {
+      acc[title] = { count: 0, pasajeros: 0, total: 0 };
+    }
+    acc[title].count += 1;
+    acc[title].pasajeros += curr.adults;
+    acc[title].total += curr.proveedors
+      .filter((x) => x.proveedor_id == proveedor.value)
+      .reduce((a, c) => a + c.cost, 0);
+    return acc;
+  }, {});
   members.value = item;
   op.value.toggle(event);
 };
@@ -274,30 +290,62 @@ const store = () => {
     <div class="flex flex-col gap-4">
       <div>
         <span class="font-medium block mb-2">{{ members.name }} </span>
-        <div class="flex flex-col gap-y-2 h-64 overflow-auto">
+        <div
+          class="w-full bg-gray-200 rounded-md p-2 grid grid-cols-2 divide-y-2 md:flex space-x-2"
+        >
           <div
-            v-tooltip="renderNotas(member.notas)"
-            class="flex items-center gap-x-8 border-b shadow-md justify-between p-3 rounded-md hover:bg-gray-300"
-            v-for="member in members.value"
+            @click="value = op.value"
+            v-for="op in options"
+            class="w-full rounded-lg text-center py-2 text-sm md:text-md cursor-pointer"
+            :class="value == op.value ? 'bg-white' : 'hover:bg-white/30'"
           >
-            <div class="flex flex-col">
-              <span class="font-bold flex items-center gap-x-2">
-                <p>
-                  {{ member.title }}
-                </p>
-              </span>
-              <span class="text-xs">{{ member.cliente_name }}</span>
-              <span class="text-xs">{{ member.fecha }}</span>
+            {{ op.name }}
+          </div>
+        </div>
+        <div class="flex flex-col gap-y-2 h-64 overflow-auto">
+          <div v-if="value == 1">
+            <div
+              class="flex items-center gap-x-8 border-b shadow-md justify-between p-3 rounded-md hover:bg-gray-300"
+              v-for="(grupo, index) in groupReservas"
+            >
+              <div class="flex flex-col">
+                <span class="font-bold flex items-center gap-x-2">
+                  <p>
+                    {{ index }}
+                  </p>
+                </span>
+                <span class="text-xs">{{ grupo.count }} Reservas</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm">{{ grupo.pasajeros }} Pasajeros</span>
+                <span class="font-bold">{{ COP.format(grupo.total) }}</span>
+              </div>
             </div>
-            <div class="flex flex-col">
-              <span class="text-sm">{{ member.adults }} Pasajeros</span>
-              <span class="font-bold">{{
-                COP.format(
-                  member.proveedors
-                    .filter((x) => x.proveedor_id == proveedor)
-                    .reduce((a, c) => a + c.cost, 0)
-                )
-              }}</span>
+          </div>
+          <div v-if="value == 2">
+            <div
+              class="flex items-center gap-x-8 border-b shadow-md justify-between p-3 rounded-md hover:bg-gray-300"
+              v-for="member in members.value"
+            >
+              <div class="flex flex-col">
+                <span class="font-bold flex items-center gap-x-2">
+                  <p>
+                    {{ member.title }}
+                  </p>
+                </span>
+                <span class="text-xs">{{ member.cliente_name }}</span>
+                <span class="text-xs">{{ member.fecha }}</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm">{{ member.adults }} Pasajeros</span>
+                <span class="font-bold">{{
+                  COP.format(
+                    member.proveedors
+                      .filter((x) => x.proveedor_id == proveedor)
+                      .reduce((a, c) => a + c.cost, 0)
+                  )
+                }}</span>
+              </div>
             </div>
           </div>
         </div>
