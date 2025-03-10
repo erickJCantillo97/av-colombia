@@ -109,7 +109,7 @@
         class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
       >
         <p>
-          {{ proveedor.proveedor }}
+          {{ proveedor.proveedor.proveedor.nombre }}
         </p>
         <p>
           {{ COP.format(proveedor.cost) }}
@@ -171,11 +171,11 @@
           :options="service.proveedors"
           label="Proveedor Actual"
           v-model="current_proveedors"
-          option-label="proveedor"
+          option-label="proveedor.name"
         >
           <template #value="slotProps">
             <div v-if="slotProps.value" class="flex items-center gap-x-2">
-              <div>{{ current_proveedors.proveedor }}</div>
+              <div>{{ current_proveedors.proveedor.proveedor.nombre }}</div>
               <span>-</span>
               <div>{{ COP.format(current_proveedors.cost) }}</div>
             </div>
@@ -185,7 +185,7 @@
           </template>
           <template #option="{ option }">
             <div class="flex items-center gap-2">
-              <span>{{ option.proveedor }}</span>
+              <span>{{ option.proveedor.proveedor.nombre }}</span>
               <span>-</span>
               <span>{{ COP.format(option.cost) }}</span>
             </div>

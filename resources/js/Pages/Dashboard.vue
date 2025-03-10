@@ -105,15 +105,15 @@ const editBooking = (data) => {
 getReservas();
 
 const actions = [
-  // {
-  //   label: "Compeltar Servicio",
-  //   action: (data) => {
-  //     serviceSelected.value = data;
-  //     completar.value = true;
-  //   },
-  //   icon: "fa-solid fa-circle-check text-sm",
-  //   severity: "success",
-  // },
+  {
+    label: "Compeltar Servicio",
+    action: (data) => {
+      serviceSelected.value = data;
+      completar.value = true;
+    },
+    icon: "fa-solid fa-circle-check text-sm",
+    severity: "success",
+  },
   {
     label: "Detalles",
     action: (data) => {
@@ -295,5 +295,5 @@ const dataFilter = ref([]);
     :note="note"
     :service="serviceSelected"
   ></Notas>
-  <Completar v-if="completar" v-model="completar" :service="serviceSelected"> </Completar>
+  <!-- <Completar v-if="completar" v-model="completar" :service="serviceSelected"> </Completar> -->
 </template>

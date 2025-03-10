@@ -197,24 +197,6 @@
             <p class="italic text-md">Valor Real</p>
           </div>
         </div>
-        <!-- <div
-          class="mt-4 w-full col-span-1 md:col-span-4 rounded-lg"
-          v-if="form.service_id"
-        >
-       
-          <div class="flex gap-x-2">
-            <Input
-              label="Placa del Vehiculo"
-              v-model="form.vehicle_plate"
-              class="w-full"
-            />
-            <Input
-              label="Nombre del Conductor"
-              v-model="form.driver_name"
-              class="w-full"
-            />
-          </div>
-        </div> -->
         <div
           class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg"
           v-if="serviceSelected"
@@ -701,9 +683,10 @@ const buttons = [
       form.time_service = data.time_service;
       await getProveedors();
       proveedorsAdd.value = data.proveedors.map((prov) => {
-        console.log(prov);
         return {
-          proveedor: proveedors.value.find((p) => p.proveedor_id == prov.id),
+          proveedor: proveedors.value.find(
+            (p) => p.proveedor_id == prov.id && p.pivot.concept == prov.concept
+          ),
           costo: prov.cost,
         };
       });

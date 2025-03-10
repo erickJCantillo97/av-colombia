@@ -29,9 +29,9 @@
         </p>
       </div>
     </div>
-    <div v-if="status == 'completado'">
-      <div class="flex flex-col">
-        <div class="flex justify-between" v-if="service.saldo > 0">
+    <div>
+      <div class="flex flex-col gap-y-4">
+        <div class="flex justify-between my-4" v-if="service.saldo > 0">
           <label for="" class="w-full font-bold"
             >Saldo Pagado ({{ COP.format(service.saldo) }})</label
           >
@@ -58,38 +58,58 @@
               />
               <label for="proveedor" class="cursor-pointer uppercase">Proveedor</label>
             </div>
+            <div class="flex items-center gap-2">
+              <RadioButton
+                v-model="form.saldoPagado"
+                inputId="NoPagado"
+                class="cursor-pointer text-red-500"
+                name="NoPagado"
+                value="NoPagado"
+                size="small"
+              />
+              <label
+                for="NoPagado"
+                class="cursor-pointer uppercase text-nowrap text-red-500"
+                >No Pagado</label
+              >
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else-if="status == 'NO SHOW'" class="flex flex-col gap-y-2">
-      <Input label="Cuantos no se presentaron?"></Input>
-      <Input label="Pago por penalidad al proveedor por PAX"></Input>
-      <div>
-        <p class="text-red-600 font-bold">¿Por qué el cliente no se presentó?</p>
+
+      <Input label="Cuantos no se presentaron?" v-if="status == 'NO SHOW'"></Input>
+      <!-- <Input label="Pago por penalidad al proveedor por PAX"></Input> -->
+      <div v-if="status == 'CANCELADO' || status == 'NO SHOW'">
+        <p class="text-red-600 font-bold">
+          {{
+            status == "CANCELADO"
+              ? "¿Por qué se canceló el servicio?"
+              : "¿Por qué el cliente no se presentó?"
+          }}
+        </p>
         <textarea
           v-model="service.no_show_reason"
           class="w-full border p-2 rounded-md"
         ></textarea>
       </div>
-    </div>
-    <div v-if="service.extras.length > 0" class="flex flex-col gap-y-2">
-      <h1 class="text-lg font-bold text-center">Servicio Extras</h1>
-      <div class="grid grid-cols-4 font-semibold gap-x-6 border-b-4">
-        <p>Cantidad</p>
-        <p>Nombre</p>
-        <p v-tooltip.top="`Cuanto pagaste`">Costo Unitario</p>
-        <p>Total</p>
-      </div>
-      <div
-        v-for="extra in form.extras"
-        :key="extra.id"
-        class="grid grid-cols-4 border-b justify-center items-center gap-x-6"
-      >
-        <p>{{ extra.cantidad }}</p>
-        <p>{{ extra.description }}</p>
-        <Input type="number" v-model="extra.unit_cost" mode="currency"></Input>
-        <span>{{ COP.format(extra.cantidad * extra.unit_cost) }}</span>
+      <div v-if="service.extras.length > 0" class="flex flex-col gap-y-2 my-4">
+        <h1 class="text-lg font-bold text-center">Servicio Extras</h1>
+        <div class="grid grid-cols-4 font-semibold gap-x-6 border-b-4">
+          <p>Cantidad</p>
+          <p>Nombre</p>
+          <p v-tooltip.top="`Cuanto pagaste`">Costo Unitario</p>
+          <p>Total</p>
+        </div>
+        <div
+          v-for="extra in form.extras"
+          :key="extra.id"
+          class="grid grid-cols-4 border-b justify-center items-center gap-x-6"
+        >
+          <p>{{ extra.cantidad }}</p>
+          <p>{{ extra.description }}</p>
+          <Input type="number" v-model="extra.unit_cost" mode="currency"></Input>
+          <span>{{ COP.format(extra.cantidad * extra.unit_cost) }}</span>
+        </div>
       </div>
     </div>
     <!-- {{ service.extras }} -->

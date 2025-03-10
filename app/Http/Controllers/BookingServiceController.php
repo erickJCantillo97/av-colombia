@@ -56,8 +56,9 @@ class BookingServiceController extends Controller
                 'proveedors' => $booking->proveedors->map(function ($proveedor) {
                     return [
                         'proveedor_id' => $proveedor->proveedor->id,
-                        'proveedor' => $proveedor->proveedor->nombre,
+                        'proveedor' => $proveedor,
                         'cost' => $proveedor->cost,
+                        'concept' => $proveedor->concept,
                     ];
                 }),
                 'extras' => $booking->extras,
