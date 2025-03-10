@@ -6,6 +6,7 @@ use App\Models\Proveedor;
 use App\Http\Requests\StoreProveedorRequest;
 use App\Http\Requests\UpdateProveedorRequest;
 use App\Imports\ProveedorImport;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -113,5 +114,13 @@ class ProveedorController extends Controller
                 $service->pivot->update(['concept' => trim($service->title)]);
             }
         }
+    }
+
+    public function getProvedorsService(Service $service)
+    {
+        $proveedors = $service->proveedors;
+        return response()->json([
+            'proveedors' => $proveedors
+        ]);
     }
 }

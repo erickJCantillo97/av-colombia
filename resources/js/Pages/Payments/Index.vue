@@ -84,7 +84,8 @@ const columns = [
     field: "comprobante",
     type: "html-custom",
     renderer: (row) => {
-      return `<a href="${row}" class="text-sky-600 underline" target="_blank">Ver Comprobante</a>`;
+      console.log(row)
+      return `<a href="${row.comprobante}" class="text-sky-600 underline" target="_blank">Ver Comprobante</a>`;
     },
   },
 ];

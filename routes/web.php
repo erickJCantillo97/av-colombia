@@ -99,7 +99,8 @@ Route::middleware([
     Route::post('completarReserva', [BookingServiceController::class, 'completarReserva'])->name('completar.reserva');
 
     Route::get('addConcept', [ProveedorController::class, 'addConcept'])->name('add.concept');
-
+    // 9d9b2742-4af6-4c64-8511-4c9c7eb9c1fd
+    Route::get('getProvedorsService/{service}', [ProveedorController::class, 'getProvedorsService'])->name('get.provedors.service');
     // route::get()
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });

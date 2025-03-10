@@ -65,15 +65,11 @@ const configCalendar = reactive({
   plugins: [eventsServicePlugin],
 });
 const calendarApp = createCalendar(configCalendar);
-
 const visible = ref(false);
 // #endregion
-
 // #region Methods
 const totalPasajeros = ref(0);
-
 const selectDate = ref([new Date(), new Date()]);
-
 const getServicesSelectedDate = () => {
   dateActivities.value = reservas.value.filter((item) => {
     var fecha = new Date(item.date).toISOString().split("T")[0];

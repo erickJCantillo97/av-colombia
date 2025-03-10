@@ -28,10 +28,7 @@ const props = defineProps({
     type: Array,
     default: [],
   },
-  routecreate: {
-    type: Object,
-    required: false,
-  },
+
   parameterData: {
     default: null,
   },
@@ -552,22 +549,16 @@ const mensaje =
                   ? $emit(button.event, $event, data)
                   : button.action(data, $event)
               "
-              :text="
-                typeof button.badge === 'function' ? !button.badge(data, $event) : true
-              "
+              :text="typeof button.badge === 'function' ? !button.badge(data) : true"
               :severity="button.severity == undefined ? 'primary' : button.severity"
               :outlined="button.outlined == undefined ? false : button.outlined"
               :badge="
                 typeof button.badge === 'function'
-                  ? button.badge(data, $event)
+                  ? button.badge(data) + ''
                   : button.badge
               "
               :rounded="button.rounded == undefined ? false : button.rounded"
-              :icon="
-                typeof button.icon === 'function'
-                  ? button.icon(data, $event)
-                  : button.icon
-              "
+              :icon="typeof button.icon === 'function' ? button.icon(data) : button.icon"
               v-tooltip.left="{ pt: { root: 'text-center' }, value: button.label }"
               :class="button.class"
               v-if="
@@ -587,25 +578,10 @@ const mensaje =
             icon="fa-solid fa-eye"
             severity="success"
           />
-          <Button
-            v-if="routes?.update"
-            v-tooltip.left="'Editar'"
-            @click="open($event, data, 'edit')"
-            text
-            icon="fa-solid fa-pencil"
-            severity="warning"
-          />
-          <Button
-            v-if="routes?.delete"
-            v-tooltip.left="'Eliminar'"
-            @click="deleteItem($event, data)"
-            text
-            icon="fa-solid fa-trash-can"
-            severity="danger"
-          />
         </div>
       </template>
     </Column>
+
     <!-- #endregion -->
   </DataTable>
 </template>

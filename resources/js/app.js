@@ -39,7 +39,7 @@ import frNumberData from '@syncfusion/ej2-cldr-data/main/fr-CH/numbers.json';
 import frtimeZoneData from '@syncfusion/ej2-cldr-data/main/fr-CH/timeZoneNames.json';
 import frGregorian from '@syncfusion/ej2-cldr-data/main/fr-CH/ca-gregorian.json';
 import frNumberingSystem from '@syncfusion/ej2-cldr-data/supplemental/numberingSystems.json';
-
+import { VueQueryPlugin } from '@tanstack/vue-query'
 // loadCldr(frNumberData, frtimeZoneData, frGregorian, frNumberingSystem);
 
 loadCldr(esNumberData, estimeZoneData, esGregorian);
@@ -146,6 +146,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(ConfirmationService)
             .use(ToastService)
+            .use(VueQueryPlugin)
             .use(VueSweetalert2)
             .use(SchedulePlugin)
             .use(VueTailwindDatepicker)
