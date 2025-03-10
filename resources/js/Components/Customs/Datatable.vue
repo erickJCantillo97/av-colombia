@@ -28,10 +28,7 @@ const props = defineProps({
     type: Array,
     default: [],
   },
-  routecreate: {
-    type: Object,
-    required: false,
-  },
+
   parameterData: {
     default: null,
   },
@@ -118,9 +115,15 @@ const dataResponse = defineModel("dataResponse", {
   type: Array,
   default: [],
 });
+
+const dataFilter = defineModel("dataFilter", {
+  required: false,
+  type: Array,
+  default: [],
+});
 const selectAll = defineModel("selectAll");
 
-defineEmits(["rowClick", "buttonRowClick", "addClick", "buttonClick"]);
+defineEmits(["rowClick", "buttonRowClick", "addClick", "buttonClick", "filter"]);
 
 const dataLoading = ref(false);
 
@@ -211,6 +214,33 @@ const rowClass = (data) => {
 // #endregion
 const mensaje =
   "Funcion en desuso, se recomienda no usar el event dentro de button. Lea mas en la documentacion...Que hare algun dia : v";
+
+const getDataFilter = () => {
+  // dataFilter.value = filters;
+  var f = Object.keys(filters.value).map((key) => ({ key, value: filters.value[key] }));
+  f = f.filter((item) => item.value.value);
+
+  dataFilter.value = props.data;
+  if (f.find((item) => item.key == "global")) {
+    var global = f.find((item) => item.key == "global").value.value.toLowerCase();
+    dataFilter.value = props.data.filter((item) => {
+      return (
+        item.cliente_name.toLowerCase().includes(global) ||
+        item.cliente_phone.toLowerCase().includes(global) ||
+        item.cliente_building.toLowerCase().includes(global) ||
+        item.service.toLowerCase().includes(global) ||
+        item.proveedors_names.toLowerCase().includes(global)
+      );
+    });
+  }
+  f.forEach((item) => {
+    if (item.key != "global") {
+      dataFilter.value = dataFilter.value.filter((itemData) => {
+        return itemData[item.key].toLowerCase().includes(item.value.value.toLowerCase());
+      });
+    }
+  });
+};
 </script>
 
 <template>
@@ -223,6 +253,7 @@ const mensaje =
     :rows
     sortMode="multiple"
     scrollable
+    @filter="getDataFilter"
     scrollHeight="flex"
     :loading="props.routes == null ? props.loading : dataLoading"
     currentPageReportTemplate="{first} al {last} de un total de {totalRecords}"
@@ -534,78 +565,7 @@ const mensaje =
         </template>
       </Column>
     </span>
-    <Column
-      frozen
-      alignFrozen="right"
-      class="w-[8%]"
-      v-if="props.actions.length > 0 || routes?.update || routes?.delete || showItem"
-    >
-      <template #body="{ data }">
-        <div
-          class="flex items-center justify-center bg-white rounded-md shadow-sm gap-0.5"
-        >
-          <span v-for="button in props.actions">
-            {{ button.event ? console.log(mensaje) : undefined }}
-            <Button
-              @click="
-                button.event
-                  ? $emit(button.event, $event, data)
-                  : button.action(data, $event)
-              "
-              :text="
-                typeof button.badge === 'function' ? !button.badge(data, $event) : true
-              "
-              :severity="button.severity == undefined ? 'primary' : button.severity"
-              :outlined="button.outlined == undefined ? false : button.outlined"
-              :badge="
-                typeof button.badge === 'function'
-                  ? button.badge(data, $event)
-                  : button.badge
-              "
-              :rounded="button.rounded == undefined ? false : button.rounded"
-              :icon="
-                typeof button.icon === 'function'
-                  ? button.icon(data, $event)
-                  : button.icon
-              "
-              v-tooltip.left="{ pt: { root: 'text-center' }, value: button.label }"
-              :class="button.class"
-              v-if="
-                typeof button.show === 'function'
-                  ? button.show(data, $event)
-                  : button.show == undefined
-                  ? true
-                  : button.show
-              "
-            />
-          </span>
-          <Button
-            v-if="showItem"
-            v-tooltip.left="'Ver'"
-            @click="open($event, data, 'show')"
-            text
-            icon="fa-solid fa-eye"
-            severity="success"
-          />
-          <Button
-            v-if="routes?.update"
-            v-tooltip.left="'Editar'"
-            @click="open($event, data, 'edit')"
-            text
-            icon="fa-solid fa-pencil"
-            severity="warning"
-          />
-          <Button
-            v-if="routes?.delete"
-            v-tooltip.left="'Eliminar'"
-            @click="deleteItem($event, data)"
-            text
-            icon="fa-solid fa-trash-can"
-            severity="danger"
-          />
-        </div>
-      </template>
-    </Column>
+
     <!-- #endregion -->
   </DataTable>
 </template>

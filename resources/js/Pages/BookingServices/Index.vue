@@ -79,6 +79,7 @@
           option-label="title"
           option-value="id"
           :options="services"
+          @value-change="getProveedors"
         ></Input>
         <Input
           label="Codigo de Reserva"
@@ -214,7 +215,10 @@
             />
           </div>
         </div> -->
-        <div class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg">
+        <div
+          class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg"
+          v-if="serviceSelected"
+        >
           <h1
             class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
           >
@@ -236,7 +240,31 @@
             v-for="(p, index) in proveedorsAdd"
             class="flex justify-between gap-x-4 px-2"
           >
-            <Input
+            <Select
+              :options="proveedors"
+              @value-change="selectedProveedor(p)"
+              v-model="p.proveedor"
+              placeholder="Selecciona un proveedor"
+              class="w-full"
+              option-label="nombre"
+            >
+              <template #value="slotProps">
+                <span v-if="slotProps.value">
+                  {{ slotProps.value.nombre }} - {{ slotProps.value.pivot.concept }}</span
+                >
+                <span v-else>
+                  {{ slotProps.placeholder }}
+                </span>
+              </template>
+              <template #option="slotProps">
+                <div class="flex gap-x-2">
+                  <span>{{ slotProps.option.nombre }} - </span>
+                  <span>{{ slotProps.option.pivot.concept }} - </span>
+                  <span>{{ slotProps.option.pivot.value }}</span>
+                </div>
+              </template>
+            </Select>
+            <!-- <Input
               type="dropdown"
               v-model="p.proveedor"
               @value-change="selectedProveedor(p)"
@@ -244,7 +272,7 @@
               option-value="id"
               class="w-full"
               :options="proveedors"
-            ></Input>
+            ></Input> -->
             <Input type="number" mode="currency" class="w-full" v-model="p.costo"></Input>
             <Button
               icon="fa-solid fa-xmark-circle"
@@ -349,13 +377,132 @@ import Notas from "@/Components/Customs/Notas.vue";
 const props = defineProps({
   bookingServices: Array,
 });
+
+// #region Variables
+
 const { toast } = alerts();
+const proveedors = ref([]);
+const notes = ref([]);
+const note = ref("");
+const serviceSelected = ref(null);
+const channels = ref([]);
 const info = ref(false);
 const service = ref(null);
 const selectDate = ref([]);
-
+const methods = ref([]);
+const services = ref([]);
+const show = ref(false);
 const statusFilter = ref(null);
+const COP = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  maximumFractionDigits: 0,
+});
 
+const todayActivity = ref(false);
+const columns = [
+  {
+    field: "created_at",
+    header: "Fecha Entrada",
+    filter: true,
+    sortable: true,
+    type: "date",
+  },
+  {
+    field: "cliente_name",
+    header: "Nombre del pasajero",
+    filter: true,
+    sortable: true,
+  },
+  {
+    field: "adults",
+    header: "Pasajeros",
+    filter: true,
+    sortable: true,
+  },
+  {
+    field: "cliente_building",
+    header: "Edificio u Hotel",
+    filter: true,
+    sortable: true,
+  },
+  {
+    field: "service",
+    header: "Actividad",
+    filter: true,
+    sortable: true,
+  },
+  {
+    field: "date",
+    header: "Fecha de la Actividad",
+    filter: false,
+    type: "date",
+    sortable: true,
+  },
+  {
+    field: "channel.name",
+    header: "Canal de venta",
+    filter: true,
+    sortable: true,
+  },
+  {
+    field: "proveedors_names",
+    header: "proveedores",
+    class: "text-center font-semibold text-sm",
+    filter: true,
+  },
+  {
+    field: "status",
+    header: "Estado",
+    filter: true,
+    sortable: true,
+    type: "tag",
+    filtertype: "EQUALS",
+    class: "text-center uppercase",
+    severitys: [
+      { text: "reservado", severity: "info", class: "" },
+      { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
+      { text: "COMPLETADA", severity: "success", class: "" },
+      { text: "NO SHOW", severity: "warn", class: "" },
+      { text: "REUBICADO", severity: "warn", class: "" },
+      { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
+      { text: "PROBLEMATICA", severity: "danger", class: "animate-pulse" },
+    ],
+  },
+];
+
+const statues = [
+  { text: "reservado", color: "blue" },
+  { text: "CAMBIO DE FECHA", color: "gray" },
+  { text: "NO SHOW", color: "amber" },
+  { text: "REUBICADO", color: "orange" },
+  { text: "CANCELADA", color: "green" },
+];
+
+const add = {
+  action: () => {
+    form.reset();
+    show.value = true;
+  },
+};
+const proveedorsAdd = ref([
+  {
+    proveedor: null,
+    costo: "",
+  },
+]);
+
+const extrasAdd = ref([
+  {
+    cantidad: 0,
+    description: "",
+    unit_price: 0,
+  },
+]);
+
+// #endregion
+
+// #region Computed
 const bookings = computed(() => {
   return props.bookingServices.filter((item) => {
     if (selectDate.value[0] == null) {
@@ -381,24 +528,33 @@ const bookingFecha = computed(() => {
   });
 });
 
-const todayActivity = ref(false);
-
-const COP = new Intl.NumberFormat("es-CO", {
-  style: "currency",
-  currency: "COP",
-  maximumFractionDigits: 0,
+const totalPax = computed(() => {
+  return form.total / form.adults;
 });
 
-const show = ref(false);
-const add = {
-  action: () => {
-    form.reset();
-    show.value = true;
-  },
-};
-const methods = ref([]);
+const valorReal = computed(() => {
+  let chanel = channels.value.find((channel) => channel.id == form.channel_id);
+  let chanelValue = chanel ? chanel.percent / 100 : 0;
+  return form.total - form.total * chanelValue;
+});
 
-// #region Validates
+const disabledDates = computed(() => {
+  var dates = [];
+  var selectedProduct = services.value.find((service) => service.id == form.service_id);
+  if (!selectedProduct) return [];
+  for (var lock of selectedProduct.locks) {
+    var start = parseDate(lock.start_date);
+    var end = parseDate(lock.end_date);
+    for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
+      dates.push(new Date(d));
+    }
+  }
+  return dates;
+});
+
+// #endregion
+
+// #region Formularios
 
 const form = useForm({
   id: "",
@@ -430,26 +586,11 @@ const form = useForm({
   extras: [],
 });
 
-const proveedorsAdd = ref([
-  {
-    proveedor: null,
-    costo: "",
-  },
-]);
-
-const extrasAdd = ref([
-  {
-    cantidad: 0,
-    description: "",
-    unit_price: 0,
-  },
-]);
-
 // #endregion
 
-const services = ref([]);
+// #region Metodos
 const getServices = () => {
-  axios.get(route("get.services")).then((response) => {
+  axios.get(route("services.index")).then((response) => {
     services.value = response.data.services;
   });
 };
@@ -480,14 +621,20 @@ const removeExtra = (index) => {
   extrasAdd.value.splice(index, 1);
 };
 
-const proveedors = ref([]);
-const channels = ref([]);
-
 const getProveedors = () => {
+  var servicio = services.value.find((service) => service.id == form.service_id);
+  serviceSelected.value = servicio;
+  proveedorsAdd.value = [
+    {
+      proveedor: null,
+      costo: "",
+    },
+  ];
   axios
-    .get(route("proveedors.index"))
+    .get(route("get.provedors.service", servicio.slug))
     .then((response) => {
       proveedors.value = response.data.proveedors;
+      console.log(proveedors.value);
     })
     .catch((error) => {
       console.log(error);
@@ -495,17 +642,8 @@ const getProveedors = () => {
 };
 
 const selectedProveedor = (proveedor) => {
-  proveedor.costo =
-    proveedors.value
-      .find((p) => p.id == proveedor.proveedor)
-      .services.find((s) => s.id == form.service_id) === undefined
-      ? 0
-      : proveedors.value
-          .find((p) => p.id == proveedor.proveedor)
-          .services.find((s) => s.id == form.service_id)?.pivot.value * form.adults;
-  // console.log(proveedor, proveedors.value.find(p => p.id == proveedor.proveedor));
   console.log(proveedor);
-  // proveedor.costo = proveedors.value.find(p => p.id == proveedor.proveedor).pivot.value * form.adults;
+  proveedor.costo = proveedor.proveedor.pivot.value * form.adults;
 };
 
 const getChannels = () => {
@@ -521,11 +659,7 @@ const getChannels = () => {
 
 getServices();
 getChannels();
-getProveedors();
-const serviceSelected = ref(null);
 
-const notes = ref([]);
-const note = ref("");
 const buttons = [
   {
     label: "Detalles",
@@ -549,7 +683,9 @@ const buttons = [
       };
 
       form.date = formatDateTime(data.date, data.hour);
-
+      serviceSelected.value = services.value.find(
+        (service) => service.id == data.service_id
+      );
       form.service_id = data.service_id;
       form.cliente_name = data.cliente_name;
       form.cliente_phone = data.cliente_phone;
@@ -649,95 +785,6 @@ const buttons = [
   },
 ];
 
-const columns = [
-  {
-    field: "created_at",
-    header: "Fecha Entrada",
-    filter: true,
-    sortable: true,
-    type: "date",
-  },
-  {
-    field: "cliente_name",
-    header: "Nombre del pasajero",
-    filter: true,
-    sortable: true,
-  },
-  {
-    field: "adults",
-    header: "Pasajeros",
-    filter: true,
-    sortable: true,
-  },
-  {
-    field: "cliente_building",
-    header: "Edificio u Hotel",
-    filter: true,
-    sortable: true,
-  },
-  {
-    field: "service",
-    header: "Actividad",
-    filter: true,
-    sortable: true,
-  },
-  {
-    field: "date",
-    header: "Fecha de la Actividad",
-    filter: false,
-    type: "date",
-    sortable: true,
-  },
-  {
-    field: "channel.name",
-    header: "Canal de venta",
-    filter: true,
-    sortable: true,
-  },
-  {
-    field: "proveedors_names",
-    header: "proveedores",
-    class: "text-center font-semibold text-sm",
-    filter: true,
-  },
-  {
-    field: "status",
-    header: "Estado",
-    filter: true,
-    sortable: true,
-    type: "tag",
-    filtertype: "EQUALS",
-    class: "text-center uppercase",
-    severitys: [
-      { text: "reservado", severity: "info", class: "" },
-      { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
-      { text: "COMPLETADA", severity: "success", class: "" },
-      { text: "NO SHOW", severity: "warn", class: "" },
-      { text: "REUBICADO", severity: "warn", class: "" },
-      { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
-      { text: "PROBLEMATICA", severity: "danger", class: "animate-pulse" },
-    ],
-  },
-];
-
-const statues = [
-  { text: "reservado", color: "blue" },
-  { text: "CAMBIO DE FECHA", color: "gray" },
-  { text: "NO SHOW", color: "amber" },
-  { text: "REUBICADO", color: "orange" },
-  { text: "CANCELADA", color: "green" },
-];
-
-const totalPax = computed(() => {
-  return form.total / form.adults;
-});
-
-const valorReal = computed(() => {
-  let chanel = channels.value.find((channel) => channel.id == form.channel_id);
-  let chanelValue = chanel ? chanel.percent / 100 : 0;
-  return form.total - form.total * chanelValue;
-});
-
 const loading = ref(false);
 
 const reservar = (event) => {
@@ -796,44 +843,5 @@ getMethos();
 const parseDate = (dateString) => {
   const [year, month, day] = dateString.split("-");
   return new Date(year, month - 1, day);
-};
-
-const disabledDates = computed(() => {
-  var dates = [];
-  var selectedProduct = services.value.find((service) => service.id == form.service_id);
-  if (!selectedProduct) return [];
-  for (var lock of selectedProduct.locks) {
-    var start = parseDate(lock.start_date);
-    var end = parseDate(lock.end_date);
-    for (var d = start; d <= end; d.setDate(d.getDate() + 1)) {
-      dates.push(new Date(d));
-    }
-  }
-  return dates;
-});
-
-watch(form.adults, (newAdults) => {
-  for (var p of proveedorsAdd.value) {
-    if (p.proveedor) {
-      p.costo =
-        proveedors.value.find((prov) => prov.id == p.proveedor).pivot.value * newAdults;
-    }
-  }
-});
-
-const sendNote = () => {
-  axios
-    .post(route("notes.store"), {
-      note: note.value,
-      booking_service_id: serviceSelected.value.id,
-    })
-    .then((response) => {
-      axios
-        .get(route("notes.index", { booking_service_id: serviceSelected.value.id }))
-        .then((response) => {
-          notes.value = response.data.notes;
-          note.value = "";
-        });
-    });
 };
 </script>

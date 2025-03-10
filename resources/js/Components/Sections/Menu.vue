@@ -6,13 +6,7 @@
         <span class="font-semibold text-2xl text-primary">AV Colombia</span>
       </span>
       <span class="flex lg:hidden">
-        <Button
-          type="button"
-          @click="closeCallback"
-          icon="pi pi-times"
-          rounded
-          outlined
-        ></Button>
+        <Button type="button" icon="pi pi-times" rounded outlined></Button>
       </span>
     </div>
     <div class="overflow-y-auto">

@@ -208,7 +208,6 @@ const columns = [
     class: "text-center uppercase",
     severitys: [
       { text: "reservado", severity: "info", class: "" },
-      { text: "reservado", severity: "info", class: "" },
       { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
       { text: "COMPLETADA", class: "" },
       { text: "NO SHOW", severity: "warn", class: "" },
@@ -224,6 +223,8 @@ const handleEventClick = (event) => {
   editBooking(serviceSelected);
   // Manejar el evento aquí
 };
+
+const dataFilter = ref([]);
 
 // #endregion
 </script>
@@ -258,7 +259,14 @@ const handleEventClick = (event) => {
           />
         </div>
         <div class="shadow-xl rounded-lg p-1">
-          <Datatable :columnas="columns" :rowClass="true" :data="dateActivities" :actions>
+          <Datatable
+            :columnas="columns"
+            v-model:dataFilter="dataFilter"
+            :rowClass="true"
+            :data="dateActivities"
+            :actions
+            @filter="getDataFilter"
+          >
             <template #groupRows>
               <ColumnGroup type="footer">
                 <Row>
@@ -267,7 +275,9 @@ const handleEventClick = (event) => {
                     :colspan="0"
                     footerStyle="text-align:right"
                   />
-                  <Column :footer="totalPasajeros" />
+                  <Column
+                    :footer="dataFilter.reduce((acc, item) => acc + item.adults, 0)"
+                  />
                 </Row>
               </ColumnGroup>
             </template>
