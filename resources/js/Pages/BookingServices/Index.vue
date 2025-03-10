@@ -218,9 +218,8 @@
         <div
           class="mt-4 w-full col-span-1 md:col-span-4 border rounded-lg"
           v-if="
-            serviceSelected & (serviceSelected.type == 'TOUR') ||
-            serviceSelected.type == 'EMBARCACION' ||
-            serviceSelected.type == 'ALQUILER'
+            serviceSelected &&
+            (serviceSelected.type == 'TOUR' || serviceSelected.type == 'EMBARCACION')
           "
         >
           <h1
