@@ -645,9 +645,11 @@ getChannels();
 const buttons = [
   {
     label: "Detalles",
-    action: (data) => {
+    action: async (data) => {
       service.value = data;
+      form.service_id = data.service_id;
       info.value = true;
+      await getProveedors();
     },
     icon: "fa-solid fa-circle-info text-sm",
     severity: "info",

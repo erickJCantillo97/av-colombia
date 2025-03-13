@@ -257,7 +257,6 @@ const dataFilter = ref([]);
         <div class="shadow-xl rounded-lg p-1">
           <Datatable
             :columnas="columns"
-            v-model:dataFilter="dataFilter"
             :rowClass="true"
             :data="dateActivities"
             :actions

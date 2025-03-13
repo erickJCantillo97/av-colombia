@@ -300,14 +300,13 @@ class ServiceController extends Controller
         }
         if (request('state') == 'REUBICADO') {
             $proveedorService = DB::table('booking_proveedors')
-                ->where('booking_service_id', request('service'))
-                ->where('proveedor_id', request('current_id'))
-                ->delete();
+                ->where('id', request('current_id'))
+                ->update([
+                    'proveedor_id' => request('new_id')['id'],
+                    'cost' => request('value'),
+                ]);
             // dd($proveedorService);
-            $service->proveedors()->create([
-                'proveedor_id' => request('new_id'),
-                'cost' => request('value'),
-            ]);
+           
             if (request('note')) {
                 Note::create([
                     'booking_service_id' => $service->id,

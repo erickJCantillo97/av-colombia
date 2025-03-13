@@ -116,11 +116,11 @@ const dataResponse = defineModel("dataResponse", {
   default: [],
 });
 
-const dataFilter = defineModel("dataFilter", {
-  required: false,
-  type: Array,
-  default: [],
-});
+// const dataFilter = defineModel("dataFilter", {
+//   required: false,
+//   type: Array,
+//   default: [],
+// });
 const selectAll = defineModel("selectAll");
 
 defineEmits(["rowClick", "buttonRowClick", "addClick", "buttonClick", "filter"]);
@@ -215,32 +215,32 @@ const rowClass = (data) => {
 const mensaje =
   "Funcion en desuso, se recomienda no usar el event dentro de button. Lea mas en la documentacion...Que hare algun dia : v";
 
-const getDataFilter = () => {
-  // dataFilter.value = filters;
-  var f = Object.keys(filters.value).map((key) => ({ key, value: filters.value[key] }));
-  f = f.filter((item) => item.value.value);
+// const getDataFilter = () => {
+//   // dataFilter.value = filters;
+//   var f = Object.keys(filters.value).map((key) => ({ key, value: filters.value[key] }));
+//   f = f.filter((item) => item.value.value);
 
-  dataFilter.value = props.data;
-  if (f.find((item) => item.key == "global")) {
-    var global = f.find((item) => item.key == "global").value.value.toLowerCase();
-    dataFilter.value = props.data.filter((item) => {
-      return (
-        item.cliente_name.toLowerCase().includes(global) ||
-        item.cliente_phone.toLowerCase().includes(global) ||
-        item.cliente_building.toLowerCase().includes(global) ||
-        item.service.toLowerCase().includes(global) ||
-        item.proveedors_names.toLowerCase().includes(global)
-      );
-    });
-  }
-  f.forEach((item) => {
-    if (item.key != "global") {
-      dataFilter.value = dataFilter.value.filter((itemData) => {
-        return itemData[item.key].toLowerCase().includes(item.value.value.toLowerCase());
-      });
-    }
-  });
-};
+//   dataFilter.value = props.data;
+//   if (f.find((item) => item.key == "global")) {
+//     var global = f.find((item) => item.key == "global").value.value.toLowerCase();
+//     dataFilter.value = props.data.filter((item) => {
+//       return (
+//         item.cliente_name.toLowerCase().includes(global) ||
+//         item.cliente_phone.toLowerCase().includes(global) ||
+//         item.cliente_building.toLowerCase().includes(global) ||
+//         item.service.toLowerCase().includes(global) ||
+//         item.proveedors_names.toLowerCase().includes(global)
+//       );
+//     });
+//   }
+//   f.forEach((item) => {
+//     if (item.key != "global") {
+//       dataFilter.value = dataFilter.value.filter((itemData) => {
+//         return itemData[item.key].toLowerCase().includes(item.value.value.toLowerCase());
+//       });
+//     }
+//   });
+// };
 </script>
 
 <template>
@@ -253,7 +253,6 @@ const getDataFilter = () => {
     :rows
     sortMode="multiple"
     scrollable
-    @filter="getDataFilter"
     scrollHeight="flex"
     :loading="props.routes == null ? props.loading : dataLoading"
     currentPageReportTemplate="{first} al {last} de un total de {totalRecords}"

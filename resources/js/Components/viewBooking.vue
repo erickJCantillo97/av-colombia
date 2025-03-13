@@ -194,7 +194,6 @@
       </span>
       <Input
         option-label="nombre"
-        option-value="id"
         type="dropdown"
         label="Nuevo Proveedor"
         v-model="formReu.new_id"
@@ -243,7 +242,7 @@ const formReu = useForm({
   service: props.service.id,
   current_id: "",
   new_id: "",
-  state: "",
+  state: "REUBICAR",
   note: "",
   terminated: true,
   value: "",
@@ -357,7 +356,8 @@ const sendReubicar = () => {
     toast("error", "Rellene todos los Campos");
     return 0;
   }
-  formReu.current_id = current_proveedors.value.proveedor_id;
+  formReu.current_id = current_proveedors.value.id;
+
   formReu.state = "REUBICADO";
   formReu.terminated = true;
   formReu.post(route("set.states"), {

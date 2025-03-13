@@ -25,6 +25,7 @@ class BookingServiceController extends Controller
             return [
                 'id' => $booking->id,
                 'method_id' => $booking->method_id,
+                // 'slug' => $booking->service->slug,
                 'service_id' => $booking->service_id,
                 'channel_id' => $booking->channel_id,
                 'service' => $booking->service,
@@ -55,6 +56,7 @@ class BookingServiceController extends Controller
                 'problematic' => $booking->problematic,
                 'proveedors' => $booking->proveedors->map(function ($proveedor) {
                     return [
+                        'id' => $proveedor->id,
                         'proveedor_id' => $proveedor->proveedor->id,
                         'proveedor' => $proveedor,
                         'cost' => $proveedor->cost,
@@ -165,13 +167,11 @@ class BookingServiceController extends Controller
             return back()->withErrors('message', 'Error al eliminar la reservación');
             // return response()->json(['message' => 'Error al eliminar la reservación'], 500);
         }
-        // BookingService::find($bookingService)->delete();
-        // $bookingService->delete();
+        
     }
 
     public function getBookingServicesNoPayment()
     {
-        // $bookingNoPayment = BookingService::where('payment', 'pendiente')->get();
         $bookingNoPayment = BookingService::with('payments')->get()->filter(function ($booking) {
             return $booking->payments->count() == 0 || $booking->payments->sum('amount') < $booking->total_price;
         });
