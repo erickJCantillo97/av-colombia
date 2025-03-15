@@ -128,6 +128,12 @@ const sendNote = () => {
     });
 };
 
+const eliminar = (n) => {
+  axios.delete(route("notes.destroy", n.id)).then((response) => {
+    getNotes();
+  });
+};
+
 const editMode = (n) => {
   note.value = n.note;
   noteEditMode.value = true;

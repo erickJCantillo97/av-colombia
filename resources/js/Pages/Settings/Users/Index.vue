@@ -35,8 +35,7 @@
         <Input class="my-1" v-model="search"></Input>
         <div class="grid grid-cols-3 gap-2">
           <span
-            class="border p-1 rounded-md cursor-pointer bg-gray-100 text-center uppercase"
-            :class="'bg-gray-800 text-white'"
+            class="p-1 rounded-md cursor-pointer border border-black bg-gray-100 text-center uppercase hover:bg-black hover:text-white"
             v-for="permiso in filterPermissions"
             >{{ permiso.name }}</span
           >
