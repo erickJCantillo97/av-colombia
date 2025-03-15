@@ -36,7 +36,7 @@ class PaymentProveedorController extends Controller
         }
         PaymentProveedor::create($data);
         // return redirect()->route('proveedors.index');
-        return response()->json(['message' => 'Pago registrado correctamente']);
+        return back();
     }
 
     /**
@@ -60,7 +60,13 @@ class PaymentProveedorController extends Controller
      */
     public function update(UpdatePaymentProveedorRequest $request, PaymentProveedor $paymentProveedor)
     {
-        //
+        
+        $data = $request->validated();
+        if (request()->file('comprobante')) {
+            $data['comprobante'] = request()->file('comprobante')->store('payment_proveedors');
+        }
+        $paymentProveedor->update($data);
+       return back();
     }
 
     /**

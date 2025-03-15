@@ -88,7 +88,7 @@
         class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
       >
         <strong>Fecha de Cancelación:</strong>
-        <p>{{ service.fecha_cancelacion }}</p>
+        <p>{{ new Date(service.fecha_cancelacion).toLocaleDateString("es-CO") }}</p>
       </div>
       <div class="flex flex-col border py-1 bg-white/30 rounded-md px-2">
         <strong>Observacion:</strong>
@@ -218,6 +218,7 @@
       </div>
     </div>
   </Modal>
+  <ServiceCancel v-model="showCancel" :service="service" v-if="showCancel" />
 </template>
 
 <script setup>
@@ -227,6 +228,7 @@ import { alerts } from "@/composable/toasts";
 import { ref } from "vue";
 import Modal from "./Customs/Modal.vue";
 import Input from "./Customs/Input.vue";
+import ServiceCancel from "./ServiceCancel.vue";
 
 const { toast } = alerts();
 const props = defineProps({
@@ -237,6 +239,7 @@ const props = defineProps({
 const current_proveedors = ref(null);
 
 const show = defineModel();
+const showCancel = ref(false);
 const reubicar = ref(false);
 const formReu = useForm({
   service: props.service.id,
@@ -255,27 +258,28 @@ const COP = new Intl.NumberFormat("es-CO", {
 });
 
 const cancelarServicio = () => {
-  Swal.fire({
-    title: "Cancelar Servicio",
-    input: "date",
-    inputLabel: "Fecha de Cancelación",
-    showCancelButton: true,
-    confirmButtonText: "Cancelar Servicio",
-    showLoaderOnConfirm: true,
-    preConfirm: async (date) => {
-      await router.post(route("set.states"), {
-        service: props.service.id,
-        state: "CANCELADA",
-        date: date,
-        terminated: true,
-      });
-    },
-    allowOutsideClick: () => !Swal.isLoading(),
-  }).then((result) => {
-    if (result.isConfirmed) {
-      toast("success", "Reserva Cancelada");
-    }
-  });
+  showCancel.value = true;
+  // Swal.fire({
+  //   title: "Cancelar Servicio",
+  //   input: "date",
+  //   inputLabel: "Fecha de Cancelación",
+  //   showCancelButton: true,
+  //   confirmButtonText: "Cancelar Servicio",
+  //   showLoaderOnConfirm: true,
+  //   preConfirm: async (date) => {
+  //     await router.post(route("set.states"), {
+  //       service: props.service.id,
+  //       state: "CANCELADA",
+  //       date: date,
+  //       terminated: true,
+  //     });
+  //   },
+  //   allowOutsideClick: () => !Swal.isLoading(),
+  // }).then((result) => {
+  //   if (result.isConfirmed) {
+  //     toast("success", "Reserva Cancelada");
+  //   }
+  // });
 };
 
 const setState = (state, terminated) => {

@@ -106,7 +106,7 @@ class ContabilidadController extends Controller
     {
 
         $payments = PaymentProveedor::with('user', 'proveedor')->get();
-
+        
         return Inertia::render('Payments/Index', [
             'payments' => $payments
         ]);

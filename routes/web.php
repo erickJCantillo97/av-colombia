@@ -87,8 +87,10 @@ Route::middleware([
     Route::resource('notes', NoteController::class);
 
     Route::get('getBookingTimeRange', [BookingServiceController::class, 'getBookingTimeRange'])->name('get.booking.time.range');
+    
+    Route::post('paymentProveedors/{paymentProveedor}/update', [PaymentProveedorController::class, 'update'])->name('paymentProveedors.update');
 
-    Route::resource('paymentProveedors', PaymentProveedorController::class);
+    Route::resource('paymentProveedors', PaymentProveedorController::class)->except(['update']);
 
     Route::get('getVentas', [ContabilidadController::class, 'getVentas'])->name('get.ventas');
 
@@ -103,6 +105,8 @@ Route::middleware([
     Route::get('getProvedorsService/{service}', [ProveedorController::class, 'getProvedorsService'])->name('get.provedors.service');
     // route::get()
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
+
+    ROute::post('cancelarServico/{service}', [BookingServiceController::class , 'cancelarServicio'])->name('cancelar.servicio');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

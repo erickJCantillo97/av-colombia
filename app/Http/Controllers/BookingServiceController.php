@@ -12,6 +12,7 @@ use App\Models\State;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class BookingServiceController extends Controller
@@ -25,7 +26,6 @@ class BookingServiceController extends Controller
             return [
                 'id' => $booking->id,
                 'method_id' => $booking->method_id,
-                // 'slug' => $booking->service->slug,
                 'service_id' => $booking->service_id,
                 'channel_id' => $booking->channel_id,
                 'service' => $booking->service,
@@ -43,6 +43,7 @@ class BookingServiceController extends Controller
                 'cliente_building' => $booking->cliente_building,
                 'cliente_city' => $booking->cliente_city,
                 'notes' => $booking->notes->count(),
+                'fecha_cancelacion' => $booking->fecha_cancelacion,
                 'time_service' => $booking->time_service,
                 'observations' => $booking->observations,
                 'total_real' => $booking->total_real,
@@ -247,5 +248,23 @@ class BookingServiceController extends Controller
 
         storeState($booking, request('status'), 1);
         return back()->with('message', 'Reservación completada correctamente');
+    }
+
+    public function cancelarServicio(BookingService $service, Request $request)
+    {
+        
+        foreach($request->proveedors as $proveedor) {
+            $proveedorService = DB::table('booking_proveedors')
+            ->where('id', $proveedor['proveedor_id'] )
+            ->update([
+                'cost' => $proveedor['costo_penalidad'],
+            ]);
+        }
+        $service->update([
+            'fecha_cancelacion' => $request->date
+        ]);
+
+        storeState($service, 'CANCELADA', 1);
+        return back()->with('message', 'Reservación cancelada correctamente');
     }
 }

@@ -22,7 +22,11 @@ class UpdatePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'payable_id' => ['required', 'uuid'],
+            'payable_type' => ['required', 'string'],
+            'method' => ['required', 'string'],
+            'amount' => ['required', 'numeric'],
+            'currency' => ['required', 'string'],
         ];
     }
 }

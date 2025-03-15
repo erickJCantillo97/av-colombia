@@ -45,13 +45,34 @@ const selectDate = ref([new Date(), new Date()]);
 const reservas = ref();
 const reservasType = ref([]);
 const proveedor = ref();
-
+const payment_id = ref(null);
 const add = {
   action: () => {
+    payment_id.value = null;
+    selectDate.value = [new Date(), new Date()];
+    form.reset();
+    getReservas();
     show.value = true;
     // router.visit(route('services.create'))
   },
 };
+
+const actions = [
+  {
+    name: "Ver",
+    icon: "fa-solid fa-pencil",
+    severity: "info",
+    action: (row) => {
+      show.value = true;
+      payment_id.value = row.id;
+      form.date = row.date;
+      selectDate.value = [row.startDate, row.endDate];
+      form.amount = row.amount;
+      proveedor.value = row.proveedor_id;
+      getReservas();
+    },
+  },
+];
 
 const columns = [
   {
@@ -167,7 +188,7 @@ function previewFiles(event) {
   form.file = event.target.files[0];
 }
 
-const store = () => {
+const save = () => {
   loading.value = true;
   let formData = new FormData();
   formData.append("proveedor_id", proveedor.value);
@@ -177,24 +198,33 @@ const store = () => {
   formData.append("startDate", new Date(selectDate.value[0]).toISOString().split("T")[0]);
   formData.append("endDate", new Date(selectDate.value[1]).toISOString().split("T")[0]);
   formData.append("description", form.description);
-  axios
-    .post(route("paymentProveedors.store"), formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+
+  if (payment_id.value) {
+    router.post(route("paymentProveedors.update", payment_id.value), formData, {
+      onSuccess: () => {
+        toast("success", "Pago Actualizado con exito");
+        loading.value = false;
+        show.value = false;
       },
-    })
-    .then((response) => {
-      toast("success", "Pago Guardado con exito");
+    });
+
+    return;
+  }
+  router.post(route("paymentProveedors.store"), formData, {
+    onSuccess: () => {
+      toast("success", "Pago Actualizado con exito");
       loading.value = false;
       show.value = false;
-    });
+    },
+  });
 };
 </script>
 
 <template>
   <AppLayout title="Pagos">
     <div class="h-[99vh]">
-      <Datatable :add :columnas="columns" :data="payments" title="Pagos"> </Datatable>
+      <Datatable :add :columnas="columns" :data="payments" :actions title="Pagos">
+      </Datatable>
     </div>
     <Modal v-model="show" title="Añadir Pagos">
       <div class="gap-y-2 flex flex-col">
@@ -276,7 +306,7 @@ const store = () => {
           <button
             :loading
             v-if="proveedor"
-            @click="store"
+            @click="save"
             class="bg-green-500 text-white px-4 py-2 rounded-md"
           >
             Guardar

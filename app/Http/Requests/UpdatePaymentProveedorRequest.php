@@ -11,7 +11,7 @@ class UpdatePaymentProveedorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class UpdatePaymentProveedorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'proveedor_id' => ['nullable', 'exists:proveedors,id'],
+            'amount' => ['required', 'numeric'],
+            'date' => ['required', 'date'],
+            'startDate' => ['required', 'date'],
+            'endDate' => ['required', 'date'],
+            'description' => ['nullable'],
         ];
     }
 }

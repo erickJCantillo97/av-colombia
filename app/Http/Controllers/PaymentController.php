@@ -16,7 +16,7 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = PaymentProveedor::all();
-        dd($payments);
+        
         return inertia('Payments/Index', [
             'payments' => $payments
         ]);
@@ -55,7 +55,7 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
-        //
+        
     }
 
     /**
@@ -71,7 +71,7 @@ class PaymentController extends Controller
      */
     public function update(UpdatePaymentRequest $request, Payment $payment)
     {
-        //
+        
     }
 
     /**
