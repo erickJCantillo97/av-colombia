@@ -1,7 +1,7 @@
 <template>
   <Drawer
     v-model:visible="show"
-    pt:root:class="!bg-blue-100"
+    :pt:root:class="`!bg-${statues[service.status]}-200`"
     header="Detalles de la actividad"
     position="right"
   >
@@ -118,7 +118,15 @@
     </div>
 
     <template #footer>
-      <div class="flex flex-col items-center">
+      <div
+        class="flex flex-col items-center"
+        v-if="
+          service.status == 'reservado' ||
+          service.status == 'PROBLEMATICA' ||
+          service.status == 'REUBICADO' ||
+          service.status == 'CAMBIO DE FECHA'
+        "
+      >
         <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
           <Button
             @click="setState('reservado', true)"
@@ -127,7 +135,7 @@
             severity="info"
           />
           <Button
-            @click="setState('NO SHOW', true)"
+            @click="showNoShow = true"
             icon="fa-solid fa-eye-slash"
             v-tooltip.top="'Servicio No show'"
             class="!text-white !bg-yellow-600"
@@ -157,6 +165,11 @@
             class="flex-auto"
             severity="danger"
           />
+        </div>
+      </div>
+      <div v-else class="flex items-center w-full justify-center">
+        <div class="bg-black text-white rounded-lg p-4 uppercase shadow-2xl">
+          Reserva {{ service.status }}
         </div>
       </div>
     </template>
@@ -219,6 +232,7 @@
     </div>
   </Modal>
   <ServiceCancel v-model="showCancel" :service="service" v-if="showCancel" />
+  <ServiceNoShow v-model="showNoShow" :service="service" v-if="showNoShow" />
 </template>
 
 <script setup>
@@ -229,6 +243,7 @@ import { ref } from "vue";
 import Modal from "./Customs/Modal.vue";
 import Input from "./Customs/Input.vue";
 import ServiceCancel from "./ServiceCancel.vue";
+import ServiceNoShow from "./ServiceNoShow.vue";
 
 const { toast } = alerts();
 const props = defineProps({
@@ -240,6 +255,7 @@ const current_proveedors = ref(null);
 
 const show = defineModel();
 const showCancel = ref(false);
+const showNoShow = ref(false);
 const reubicar = ref(false);
 const formReu = useForm({
   service: props.service.id,
@@ -259,27 +275,6 @@ const COP = new Intl.NumberFormat("es-CO", {
 
 const cancelarServicio = () => {
   showCancel.value = true;
-  // Swal.fire({
-  //   title: "Cancelar Servicio",
-  //   input: "date",
-  //   inputLabel: "Fecha de Cancelación",
-  //   showCancelButton: true,
-  //   confirmButtonText: "Cancelar Servicio",
-  //   showLoaderOnConfirm: true,
-  //   preConfirm: async (date) => {
-  //     await router.post(route("set.states"), {
-  //       service: props.service.id,
-  //       state: "CANCELADA",
-  //       date: date,
-  //       terminated: true,
-  //     });
-  //   },
-  //   allowOutsideClick: () => !Swal.isLoading(),
-  // }).then((result) => {
-  //   if (result.isConfirmed) {
-  //     toast("success", "Reserva Cancelada");
-  //   }
-  // });
 };
 
 const setState = (state, terminated) => {
@@ -377,5 +372,13 @@ const sendReubicar = () => {
 const reubicarServicio = () => {
   formReu.reset();
   reubicar.value = true;
+};
+
+const statues = {
+  reservado: "blue",
+  "CAMBIO DE FECHA": "gray",
+  "NO SHOW": "amber",
+  REUBICADO: "orange",
+  CANCELADA: "green",
 };
 </script>

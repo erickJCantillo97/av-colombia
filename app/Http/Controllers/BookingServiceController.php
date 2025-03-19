@@ -267,4 +267,14 @@ class BookingServiceController extends Controller
         storeState($service, 'CANCELADA', 1);
         return back()->with('message', 'Reservación cancelada correctamente');
     }
+
+    public function noShowServicio(BookingService $service, Request $request)
+    {
+        
+        $service->update([
+            'fecha_cancelacion' => $request->date
+        ]);
+        storeState($service, 'NO SHOW', 1);
+        return back()->with('message', 'Reservación marcada como no show correctamente');
+    }
 }

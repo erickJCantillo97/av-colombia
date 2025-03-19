@@ -22,7 +22,15 @@
         <h3 class="text-center font-semibold text-lg">Datos del usuario</h3>
         <Input label="Nombre" v-model="form.name" :error-message="form.errors.name" />
         <Input label="Email" v-model="form.email" />
-
+        <Input
+          label="Rol"
+          v-model="form.rol"
+          @value-change="selectedRol"
+          type="dropdown"
+          option-value="value"
+          option-label="label"
+          :options="roles"
+        />
         <Input label="Contraseña" type="password" v-model="form.password" />
         <Input
           label="Confirmar contraseña"
@@ -35,7 +43,11 @@
         <Input class="my-1" v-model="search"></Input>
         <div class="grid grid-cols-3 gap-2">
           <span
-            class="p-1 rounded-md cursor-pointer border border-black bg-gray-100 text-center uppercase hover:bg-black hover:text-white"
+            :class="{
+              'bg-black text-white': form.permissions.includes(permiso.name),
+              'bg-gray-100': !form.permissions.includes(permiso.name),
+            }"
+            class="p-1 rounded-md cursor-pointer border border-black text-center uppercase hover:bg-black hover:text-white"
             v-for="permiso in filterPermissions"
             >{{ permiso.name }}</span
           >
@@ -77,6 +89,7 @@ import { computed, ref } from "vue";
 import Input from "@/Components/Customs/Input.vue";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
+import { Select } from "primevue";
 
 const columns = [
   {
@@ -120,6 +133,7 @@ const form = useForm({
   password: "",
   rol: "",
   password_confirmation: "",
+  permissions: ["crear experiencas"],
 });
 
 const visible = ref(false);
@@ -199,4 +213,44 @@ const submit = () => {
     });
   }
 };
+
+const roles = [
+  { label: "Super Administrador", value: "superadmin" },
+  { label: "Administrador", value: "admin" },
+  { label: "Cordinador", value: "cordinador" },
+  { label: "Cliente", value: "cliente" },
+];
+
+function selectedRol() {
+  if (form.rol == "superadmin") {
+    form.permissions = props.permisos.map((x) => x.name);
+  } else if (form.rol == "admin") {
+    form.permissions = [
+      "ver experiencas",
+      "crear experiencas",
+      "editar experiencas",
+      "eliminar experiencas",
+      "ver servicios",
+      "crear servicios",
+      "editar servicios",
+      "eliminar servicios",
+      "ver usuarios",
+      "crear usuarios",
+      "editar usuarios",
+      "eliminar usuarios",
+      "ver proveedores",
+      "crear proveedores",
+      "editar proveedores",
+      "eliminar proveedores",
+      "ver canales",
+      "crear canales",
+      "editar canales",
+      "eliminar canales",
+      "ver metodos",
+      "crear metodos",
+      "editar metodos",
+      "eliminar metodos",
+    ];
+  }
+}
 </script>

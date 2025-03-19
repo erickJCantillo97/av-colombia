@@ -1,6 +1,8 @@
 <template>
   <AppLayout title="Reservas">
-    <div class="hidden bg-amber-200 bg-orange-200"></div>
+    <div
+      class="hidden bg-amber-200 bg-orange-200 !bg-blue-200 !bg-green-200 !bg-gray-200 !bg-orange-200 !bg-amber-200"
+    ></div>
     <div class="h-[92vh]">
       <div class="flex py-2 px-4 justify-between items-center">
         <div class="italic flex flex-col">
@@ -213,11 +215,13 @@
               @click="addProveedor()"
             />
           </h1>
+
           <div class="flex justify-between w-full font-bold px-2">
             <label for="">Proveedor</label>
             <label for="">Costo</label>
             <label for="">.</label>
           </div>
+
           <div
             v-for="(p, index) in proveedorsAdd"
             class="flex justify-between gap-x-4 px-2"
@@ -616,7 +620,6 @@ const getProveedors = async () => {
     .get(route("get.provedors.service", servicio.slug))
     .then((response) => {
       proveedors.value = response.data.proveedors;
-      console.log(proveedors.value);
     })
     .catch((error) => {
       console.log(error);
@@ -624,7 +627,6 @@ const getProveedors = async () => {
 };
 
 const selectedProveedor = (proveedor) => {
-  console.log(proveedor);
   proveedor.costo = proveedor.proveedor.pivot.value * form.adults;
 };
 
@@ -686,12 +688,14 @@ const buttons = [
       await getProveedors();
       proveedorsAdd.value = data.proveedors.map((prov) => {
         return {
-          proveedor: proveedors.value.find(
-            (p) => p.proveedor_id == prov.id && p.pivot.concept == prov.concept
-          ),
+          proveedor: proveedors.value.filter((p) => {
+            console.log(p.id, prov.proveedor_id, p.pivot.concept, prov.concept);
+            return p.id == prov.proveedor_id && p.pivot.concept == prov.concept;
+          })[0],
           costo: prov.cost,
         };
       });
+      // console.log(proveedorsAdd.value);
       form.observations = data.observations;
 
       service.value = data;

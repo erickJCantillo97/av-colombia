@@ -1,8 +1,8 @@
 import "./bootstrap";
 import "../css/app.css";
 import "../css/transitions.css";
-
 import "../css/customs.css";
+import 'flatpickr/dist/flatpickr.css';
 import "preline";
 import 'aos/dist/aos.css'
 import { createApp, h } from "vue";
@@ -22,25 +22,19 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { es } from 'yup-locales';
-import 'primeicons/primeicons.css'
+import 'primeicons/primeicons.css';
 import VueTailwindDatepicker from "vue-tailwind-datepicker";
 import { setLocale } from 'yup';
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { registerLicense } from '@syncfusion/ej2-base';
 import { SchedulePlugin } from '@syncfusion/ej2-vue-schedule';
-import { setCulture, setCurrencyCode } from '@syncfusion/ej2-base';
+import { setCulture } from '@syncfusion/ej2-base';
 import { loadCldr } from '@syncfusion/ej2-base';
 import esNumberData from "@syncfusion/ej2-cldr-data/main/es/numbers.json";
 import estimeZoneData from "@syncfusion/ej2-cldr-data/main/es/timeZoneNames.json";
 import esGregorian from '@syncfusion/ej2-cldr-data/main/es/ca-gregorian.json'
-
-import frNumberData from '@syncfusion/ej2-cldr-data/main/fr-CH/numbers.json';
-import frtimeZoneData from '@syncfusion/ej2-cldr-data/main/fr-CH/timeZoneNames.json';
-import frGregorian from '@syncfusion/ej2-cldr-data/main/fr-CH/ca-gregorian.json';
-import frNumberingSystem from '@syncfusion/ej2-cldr-data/supplemental/numberingSystems.json';
 import { VueQueryPlugin } from '@tanstack/vue-query'
-// loadCldr(frNumberData, frtimeZoneData, frGregorian, frNumberingSystem);
 
 loadCldr(esNumberData, estimeZoneData, esGregorian);
 setCulture('es');
