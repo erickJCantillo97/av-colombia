@@ -124,7 +124,8 @@
           service.status == 'reservado' ||
           service.status == 'PROBLEMATICA' ||
           service.status == 'REUBICADO' ||
-          service.status == 'CAMBIO DE FECHA'
+          service.status == 'CAMBIO DE FECHA' ||
+          service.status == 'NO SHOW'
         "
       >
         <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
