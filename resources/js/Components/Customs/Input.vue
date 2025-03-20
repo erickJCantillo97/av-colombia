@@ -330,6 +330,7 @@ defineEmits(["valueChange"]);
           :mode="mode"
           :suffix
           :prefix
+          @change="$emit('valueChange', $event)"
           :showButtons
           :step
         />

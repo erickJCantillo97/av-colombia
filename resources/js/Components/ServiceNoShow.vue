@@ -12,33 +12,41 @@
           {{ service.cliente_name }}
         </h1>
         <label for="" class="font-bold">Cuantos no se presentaron?</label>
-        <Input
+        <input
           type="number"
-          min="1"
+          :min="1"
+          @input="noShowPaymente"
           :max="service.adults"
           class="rounded-lg border-gray-300"
           v-model="form.cantidad"
         />
       </div>
-      <Input type="textarea" label="¿Porque no se presentaron?" class="text-red-500" />
-      <div class="grid grid-cols-5 font-bold uppercase bg-gray-300 p-2 text-center">
+      <Input
+        type="textarea"
+        v-model="form.notes"
+        label="¿Porque no se presentaron?"
+        class="text-red-500"
+      />
+      <div class="grid grid-cols-6 font-bold uppercase bg-gray-300 p-2 text-center">
         <div class="col-span-1">Proveedor</div>
         <div class="col-span-1">Concepto</div>
         <div class="col-span-1">Pasajeros</div>
-        <div class="col-span-1">Costo</div>
-        <div class="col-span-1">Pago Total</div>
+        <div class="col-span-1">Costo Servicio</div>
+        <div class="col-span-1">Pago Sugerido No Show</div>
+        <div class="col-span-1">Pago Total al proveedor</div>
       </div>
       <div
-        class="grid grid-cols-5 border-y items-center border text-right gap-x-4"
+        class="grid grid-cols-6 border-y items-center border text-right gap-x-4"
         v-for="proveedor in proveedorsCostos"
       >
         <div class="col-span-1">{{ proveedor.proveedor_name }}</div>
         <div class="col-span-1 text-nowrap truncate">{{ proveedor.concept }}</div>
         <div class="col-span-1">{{ proveedor.pasajeros }}</div>
         <div class="col-span-1">{{ COP.format(proveedor.cost) }}</div>
+        <div class="col-span-1">{{ COP.format(proveedor.total_no_show) }}</div>
         <Input
           class="col-span-1 rounded-md border-gray-300 p-2"
-          v-model="proveedor.costo_penalidad"
+          v-model="proveedor.totalpayment"
           type="number"
           mode="currency"
         />
@@ -46,12 +54,12 @@
     </div>
     <div class="flex justify-end p-6 space-x-4">
       <Button @click="showModal = false">No, Cerrar</Button>
-      <Button severity="danger" @click="submit">Si, Cancelar Servicio</Button>
+      <Button severity="warn" @click="submit">Si, Servicio No show</Button>
     </div>
   </Modal>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import Modal from "./Customs/Modal.vue";
 import { useForm } from "@inertiajs/vue3";
 import Input from "./Customs/Input.vue";
@@ -69,7 +77,8 @@ const props = defineProps({
 });
 
 const form = useForm({
-  cantidad: "",
+  cantidad: props.service.adults,
+  notes: "",
   proveedors: [],
 });
 
@@ -85,12 +94,15 @@ onMounted(() => {
       pasajeros: props.service.adults,
       cost: proveedor.cost,
       proveedor_name: p.proveedor.nombre,
+      totalpayment: 0,
       costo_penalidad:
         p.proveedor.type_penalidad_cost == "Porcentaje"
-          ? (p.proveedor.penalidad_noshow / 100) * proveedor.cost
-          : p.proveedor.penalidad_noshow * props.service.adults,
+          ? ((p.proveedor.penalidad_no_show / 100) * proveedor.cost) /
+            props.service.adults
+          : p.proveedor.penalidad_no_show,
     };
   });
+  noShowPaymente();
 });
 
 const submit = () => {
@@ -98,8 +110,14 @@ const submit = () => {
   form.post(route("noshow.servicio", props.service.id), {
     onSuccess: () => {
       showModal.value = false;
-      console.log("Cancelado");
+      console.log("No show");
     },
+  });
+};
+
+const noShowPaymente = () => {
+  proveedorsCostos.value.forEach((proveedor) => {
+    proveedor.total_no_show = proveedor.costo_penalidad * form.cantidad;
   });
 };
 </script>

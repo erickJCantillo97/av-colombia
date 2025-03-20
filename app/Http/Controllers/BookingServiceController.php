@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
 use App\Models\BookingExtras;
 use App\Models\Channel;
+use App\Models\Note;
 use App\Models\Service;
 use App\Models\State;
 use Carbon\Carbon;
@@ -270,10 +271,25 @@ class BookingServiceController extends Controller
 
     public function noShowServicio(BookingService $service, Request $request)
     {
-        
-        $service->update([
-            'fecha_cancelacion' => $request->date
-        ]);
+       
+        foreach($request->proveedors as $proveedor) {
+            $proveedorService = DB::table('booking_proveedors')
+            ->where('id', $proveedor['proveedor_id'] )
+            ->update([
+                'cost' => $proveedor['totalpayment'],
+            ]);
+        }
+        if ($request['notes']) {
+            Note::create([
+                'booking_service_id' => $service->id,
+                'note' => $request['notes'],
+                'user_id' => auth()->user()->id,
+            ]);
+        };
+
+        // $service->update([
+        //     'fecha_cancelacion' => $request->date
+        // ]);
         storeState($service, 'NO SHOW', 1);
         return back()->with('message', 'Reservación marcada como no show correctamente');
     }

@@ -107,7 +107,7 @@ Route::middleware([
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 
     ROute::post('cancelarServico/{service}', [BookingServiceController::class , 'cancelarServicio'])->name('cancelar.servicio');
-    ROute::post('noShowServico/{service}', [BookingServiceController::class , 'noShowServicio'])->name('noshow.servicio.servicio');
+    ROute::post('noShowServico/{service}', [BookingServiceController::class , 'noShowServicio'])->name('noshow.servicio');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
