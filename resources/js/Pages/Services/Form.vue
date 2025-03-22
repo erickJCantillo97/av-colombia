@@ -203,7 +203,9 @@ const removeImage = (id) => {
 <template>
   <AppLayout>
     <div class="p-4 space-y-4 h-full overflow-y-auto">
-      <h1 class="text-3xl font-extrabold">Crear nuevo servicio</h1>
+      <h1 class="text-3xl font-extrabold">
+        {{ service ? `Editar Servicio ${service.title}` : "Crear nuevo servicio" }}
+      </h1>
       <Tabs value="0">
         <TabList>
           <Tab value="0">Datos del Servicio</Tab>

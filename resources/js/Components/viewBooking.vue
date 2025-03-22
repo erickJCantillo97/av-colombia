@@ -118,16 +118,7 @@
     </div>
 
     <template #footer>
-      <div
-        class="flex flex-col items-center"
-        v-if="
-          service.status == 'reservado' ||
-          service.status == 'PROBLEMATICA' ||
-          service.status == 'REUBICADO' ||
-          service.status == 'CAMBIO DE FECHA' ||
-          service.status == 'NO SHOW'
-        "
-      >
+      <div class="flex flex-col items-center">
         <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
           <Button
             @click="setState('reservado', true)"
@@ -168,11 +159,11 @@
           />
         </div>
       </div>
-      <div v-else class="flex items-center w-full justify-center">
+      <!-- <div v-else class="flex items-center w-full justify-center">
         <div class="bg-black text-white rounded-lg p-4 uppercase shadow-2xl">
           Reserva {{ service.status }}
         </div>
-      </div>
+      </div> -->
     </template>
   </Drawer>
 

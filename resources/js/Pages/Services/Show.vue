@@ -40,95 +40,6 @@ const product = {
   ],
 };
 
-const responsiveOptions = ref([
-  {
-    breakpoint: "1300px",
-    numVisible: 4,
-  },
-  {
-    breakpoint: "575px",
-    numVisible: 1,
-  },
-]);
-
-const op = ref();
-const members = ref([
-  { name: "Amy Elsner", image: "amyelsner.png", email: "amy@email.com", role: "Owner" },
-  {
-    name: "Bernardo Dominic",
-    image: "bernardodominic.png",
-    email: "bernardo@email.com",
-    role: "Editor",
-  },
-  {
-    name: "Ioni Bowcher",
-    image: "ionibowcher.png",
-    email: "ioni@email.com",
-    role: "Viewer",
-  },
-]);
-
-const toggle = (event) => {
-  op.value.toggle(event);
-};
-
-const galleria = ref();
-const images = ref();
-const activeIndex = ref(0);
-const showThumbnails = ref(false);
-const fullScreen = ref(false);
-
-const onThumbnailButtonClick = () => {
-  showThumbnails.value = !showThumbnails.value;
-};
-
-const toggleFullScreen = () => {
-  if (fullScreen.value) {
-    closeFullScreen();
-  } else {
-    openFullScreen();
-  }
-};
-const onFullScreenChange = () => {
-  fullScreen.value = !fullScreen.value;
-};
-const openFullScreen = () => {
-  let elem = galleria.value.$el;
-
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.mozRequestFullScreen) {
-    /* Firefox */
-    elem.mozRequestFullScreen();
-  } else if (elem.webkitRequestFullscreen) {
-    /* Chrome, Safari & Opera */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) {
-    /* IE/Edge */
-    elem.msRequestFullscreen();
-  }
-};
-const closeFullScreen = () => {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen();
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) {
-    document.msExitFullscreen();
-  }
-};
-
-const fullScreenIcon = computed(() => {
-  return `pi ${fullScreen.value ? "pi-window-minimize" : "pi-window-maximize"}`;
-});
-
-const formatter = ref({
-  date: "DD/MM/YYYY",
-  month: "MM",
-});
-
 const date = ref();
 
 const allowedDates = computed(() => {
@@ -169,7 +80,7 @@ const times = computed(() => {
         <Gallery></Gallery>
         <div class="flex flex-col gap-y-4" v-html="product.description"></div>
       </div>
-      <LargeBooking></LargeBooking>
+      <LargeBooking :product="service" :availabilities></LargeBooking>
     </div>
   </div>
 </template>
