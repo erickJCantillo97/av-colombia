@@ -307,6 +307,18 @@ const removeImage = (id) => {
                   v-model="form.capacidad_max"
                   :min="form.capacidad_min"
                 />
+                <Input
+                  type="number"
+                  label="Tarifa de Adultos para Vendedores"
+                  v-model="form.adults_price"
+                  :min="form.capacidad_min"
+                />
+                <Input
+                  type="number"
+                  label="Tarifa de Niños para Vendedores"
+                  v-model="form.boys_price"
+                  :min="form.capacidad_min"
+                />
               </div>
               <div class="w-full">
                 <Input
