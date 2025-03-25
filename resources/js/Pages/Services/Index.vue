@@ -209,6 +209,11 @@ const columns = [
     filter: true,
   },
   {
+    header: "Tarifa Neta",
+    field: "adults_price",
+    type: "currency",
+  },
+  {
     header: "Tipo de Servicio",
     field: "type",
     filter: true,
