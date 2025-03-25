@@ -36,6 +36,8 @@ import estimeZoneData from "@syncfusion/ej2-cldr-data/main/es/timeZoneNames.json
 import esGregorian from '@syncfusion/ej2-cldr-data/main/es/ca-gregorian.json'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 
+
+
 loadCldr(esNumberData, estimeZoneData, esGregorian);
 setCulture('es');
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWH1ccHVWR2ZdU0Z2WUo=');

@@ -39,6 +39,7 @@
             </li>
             <li>
               <Link
+                v-show="hasPermissionTo('ver servicios')"
                 :href="route('services.index')"
                 v-ripple
                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
@@ -82,6 +83,7 @@
               >
                 <li>
                   <Link
+                    v-if="hasPermissionTo('ver experiencas')"
                     :href="route('BookingServices.index')"
                     v-ripple
                     class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
@@ -92,7 +94,7 @@
                 </li>
               </ul>
             </li>
-            <li v-if="$page.props.auth.user.rol == 'SUPER ADMINISTRADOR'">
+            <li>
               <a
                 v-ripple
                 v-styleclass="{
@@ -113,6 +115,7 @@
               >
                 <li>
                   <Link
+                    v-if="hasPermissionTo('ver pagos')"
                     :href="route('contabilidad')"
                     v-ripple
                     class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
@@ -121,6 +124,7 @@
                     <span class="font-medium">Informe</span>
                   </Link>
                   <Link
+                    v-if="hasPermissionTo('ver pagos')"
                     :href="route('pagos')"
                     v-ripple
                     class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
@@ -129,6 +133,7 @@
                     <span class="font-medium">Pagos</span>
                   </Link>
                   <Link
+                    v-if="hasPermissionTo('ver entradas')"
                     :href="route('BookingServices.index')"
                     v-ripple
                     class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
@@ -141,10 +146,7 @@
             </li>
             <li>
               <Link
-                v-if="
-                  $page.props.auth.user.rol == 'admin' ||
-                  $page.props.auth.user.rol == 'SUPER ADMINISTRADOR'
-                "
+                v-if="hasPermissionTo('ver proveedores')"
                 :href="route('proveedors.index')"
                 v-ripple
                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
@@ -153,20 +155,9 @@
                 <span class="font-pago">Proveedores</span>
               </Link>
             </li>
-            <!-- <li>
-                            <a v-ripple class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                                <i class="pi pi-comments mr-2"></i>
-                                <span class="font-medium">Messages</span>
-                                <span class="inline-flex items-center justify-center ml-auto bg-primary text-primary-contrast rounded-full" style="min-width: 1.5rem; height: 1.5rem">3</span>
-                            </a>
-                        </li> -->
-
             <li>
               <Link
-                v-if="
-                  $page.props.auth.user.rol == 'admin' ||
-                  $page.props.auth.user.rol == 'SUPER ADMINISTRADOR'
-                "
+                v-if="hasPermissionTo('ver usuarios')"
                 :href="route('settings')"
                 v-ripple
                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
@@ -202,4 +193,7 @@
 </template>
 <script setup>
 import { Link } from "@inertiajs/vue3";
+import { usePermissions } from "@/composable/Auth";
+
+const { hasPermissionTo } = usePermissions();
 </script>

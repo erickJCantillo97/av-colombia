@@ -82,11 +82,10 @@ const props = defineProps(["product", "availabilities"]);
 
 const config = {
   minDate: "today",
-  defaultDate: "today",
   locale: Spanish,
 };
 
-const date = ref(new Date());
+const date = ref();
 
 const COP = new Intl.NumberFormat("es-CO", {
   style: "currency",

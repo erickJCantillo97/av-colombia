@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $permisos = Permission::get();
         return Inertia::render('Users/Index', [
-            'users' => User::all(),
+            'users' => User::with('permissions')->get(),
             'permisos' => $permisos
         ]);
     }
@@ -39,14 +39,29 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'rol' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string',  'confirmed'],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'password' => ['required', 'string', 'confirmed'],
         ]);
+
+        if (request()->file('camara_comercio')) {
+            $request['camara_comercio'] = request()->file('camara_comercio')->store('users/files');
+        }
+        if (request()->file('rut')) {
+            $request['rut'] = request()->file('rut')->store('users/files');
+        }
+        if (request()->file('cuenta')) {
+            $request['cuenta'] = request()->file('cuenta')->store('users/files');
+        }
 
         User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'rol' => $request['rol'],
             'password' => Hash::make($request['password']),
+            'phone' => $request['phone'],
+            'camara_comercio' => $request['camara_comercio'],
+            'rut' => $request['rut'],
+            'cuenta' => $request['cuenta'],
         ]);
     }
 
@@ -77,13 +92,34 @@ class UserController extends Controller
             'rol' => ['required', 'string', 'max:255'],
             // 'password' => ['nullable', 'string', 'confirmed'],
         ]);
+        $camara_comercio = $user->camara_comercio;
+        $rut = $user->rut;
+        $cuenta = $user->cuenta;
         if ($request->filled('password')) {
             $validateData['password'] = Hash::make($request['password']);
         }
-
+        if (request()->file('camara_comercio')) {
+            $camara_comercio = request()->file('camara_comercio')->store('users');
+        }
+        if (request()->file('rut')) {
+            $rut = request()->file('rut')->store('users');
+        }
+        if (request()->file('cuenta')) {
+            $cuenta = request()->file('cuenta')->store('users');
+        }
         try {
-
-            $user->update($validateData);
+            $user->update([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'rol' => $request['rol'],
+                'password' => Hash::make($request['password']),
+                'phone' => $request['phone'],
+                'camara_comercio' => $camara_comercio,
+                'rut' => $rut,
+                'cuenta' => $cuenta,
+            ]);
+            $permisos = json_decode($request->permissions);
+            $user->syncPermissions($permisos);
             return back()->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             dd($e);

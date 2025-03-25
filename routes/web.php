@@ -7,9 +7,9 @@ use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentProveedorController;
+use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -38,38 +38,51 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    // Routes for services
     Route::resource('services', ServiceController::class)->except(['update']);
-    Route::post('services/{service}/update', [ServiceController::class, 'update'])->name('services.update');
-    Route::post('services/{service}/lock', [ServiceController::class, 'lock'])->name('services.lock');
+    Route::controller(ServiceController::class)->group(function () {
+        Route::post('services/{service}/update', 'update')->name('services.update');
+        Route::post('services/{service}/lock', 'lock')->name('services.lock');
+        Route::put('updateServiceStart/{service}', 'updateStart')->name('update.start');
+        Route::post('reservar', 'reservar')->name('reservar');
+        Route::post('uploadFile/{service}', 'uploadImage')->name('upload.images');
+        Route::delete('deleteFile/{image}', 'deleteImage')->name('delete.images');
+        Route::post('services/{lock}/unlock', 'unlock')->name('services.unlock');
+        Route::post('services/setStatus', 'setStatus')->name('set.states');
+        Route::get('services/proveedors', 'getProveedors')->name('get.proveedors');
+    });
 
-    Route::resource('users', UserController::class);
+    // Routes for bookings services
+    Route::resource('BookingServices', BookingServiceController::class);
+    Route::controller(BookingServiceController::class)->group(function () {
+        Route::get('getBookingServicesNoPayment', 'getBookingServicesNoPayment')->name('get.services.no.payment');
+        Route::post('BookingServices/{bookingService}/problematic', 'problematic')->name('booking.problematic');
+        Route::get('getBookingTimeRange', 'getBookingTimeRange')->name('get.booking.time.range');
+        Route::get('getStatesChange', 'getStatesChange')->name('get.states.change');
+        Route::post('cancelarServico/{service}', 'cancelarServicio')->name('cancelar.servicio');
+        Route::post('noShowServico/{service}', 'noShowServicio')->name('noshow.servicio');
+        Route::post('completarReserva', 'completarReserva')->name('completar.reserva');
+    });
+    Route::resource('users', UserController::class)->except(['update']);
+
+    Route::controller(UserController::class)->group(function () {
+        Route::post('users/{user}/update', 'update')->name('users.update');
+    });
 
     Route::get('portafolio', function () {
         return Inertia::render('Portafolio/Index');
     })->name('portafolio');
 
-    Route::post('reservar', [ServiceController::class, 'reservar'])->name('reservar');
-    Route::resource('BookingServices', BookingServiceController::class);
-    Route::put('updateServiceStart/{service}', [ServiceController::class, 'updateStart'])->name('update.start');
-
-    Route::get('getBookingServicesNoPayment', [BookingServiceController::class, 'getBookingServicesNoPayment'])->name('get.services.no.payment');
-    Route::post('BookingServices/{bookingService}/problematic', [BookingServiceController::class, 'problematic'])->name('booking.problematic');
     Route::resource('paymentMethods', PaymentMethodController::class);
 
     Route::post('custom-product-price', [CustomProductControlle::class, 'store'])->name('custom.product');
 
     Route::resource('proveedors', ProveedorController::class);
     Route::get('settings', [SettingController::class, 'index'])->name('settings');
-    Route::post('uploadFile/{service}', [ServiceController::class, 'uploadImage'])->name('upload.images');
-    Route::delete('deleteFile/{image}', [ServiceController::class, 'deleteImage'])->name('delete.images');
 
     Route::resource('payments', PaymentController::class);
     Route::put('payments/{payment}/setState', [PaymentController::class, 'setState'])->name('payment.set.state');
-    Route::post('services/{lock}/unlock', [ServiceController::class, 'unlock'])->name('services.unlock');
-    Route::post('services/setStatus', [ServiceController::class, 'setStatus'])->name('set.states');
 
-
-    Route::get('services/proveedors', [ServiceController::class, 'getProveedors'])->name('get.proveedors');
     Route::resource('channels', ChannelController::class);
 
     Route::post('availability', [AvailabilityController::class, 'store'])->name('availability.store');
@@ -86,8 +99,6 @@ Route::middleware([
 
     Route::resource('notes', NoteController::class);
 
-    Route::get('getBookingTimeRange', [BookingServiceController::class, 'getBookingTimeRange'])->name('get.booking.time.range');
-    
     Route::post('paymentProveedors/{paymentProveedor}/update', [PaymentProveedorController::class, 'update'])->name('paymentProveedors.update');
 
     Route::resource('paymentProveedors', PaymentProveedorController::class)->except(['update']);
@@ -96,18 +107,11 @@ Route::middleware([
 
     Route::get('getTotalReservas', [ContabilidadController::class, 'getTotalReservas'])->name('get.total.reservas');
 
-    Route::get('getStatesChange', [BookingServiceController::class, 'getStatesChange'])->name('get.states.change');
-
-    Route::post('completarReserva', [BookingServiceController::class, 'completarReserva'])->name('completar.reserva');
-
     Route::get('addConcept', [ProveedorController::class, 'addConcept'])->name('add.concept');
     // 9d9b2742-4af6-4c64-8511-4c9c7eb9c1fd
     Route::get('getProvedorsService/{service}', [ProveedorController::class, 'getProvedorsService'])->name('get.provedors.service');
     // route::get()
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
-
-    ROute::post('cancelarServico/{service}', [BookingServiceController::class , 'cancelarServicio'])->name('cancelar.servicio');
-    ROute::post('noShowServico/{service}', [BookingServiceController::class , 'noShowServicio'])->name('noshow.servicio');
 });
 
 Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');

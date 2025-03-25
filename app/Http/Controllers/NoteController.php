@@ -35,11 +35,13 @@ class NoteController extends Controller
             'booking_service_id' => 'required',
         ]);
         try {
-            $validated['user_id'] = auth()->id();
-            Note::create($validated);
+            $bookingService = BookingService::find($validated['booking_service_id']);
+
+            createNote($bookingService, $validated['note']);
+
             return response()->json(['message' => 'Note created successfully'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error creating note'], 500);
+            return response()->json(['message' => 'Error creating note: ' . $e], 500);
         }
     }
 

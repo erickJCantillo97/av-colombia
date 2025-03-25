@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Availability;
@@ -15,12 +14,13 @@ use App\Models\Lock;
 use App\Models\Note;
 use App\Models\Precie;
 use App\Models\Proveedor;
+use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Exception;
 
 class ServiceController extends Controller
 {
@@ -29,14 +29,14 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
-
         if ($request->expectsJson()) {
             $search = '%' . $request->search . '%';
             $service = Service::with('locks')
                 ->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies');
             if ($request->date) {
                 $service->whereHas('availabilities', function ($query) use ($request) {
-                    $query->where('start_date', '<=', $request->date)
+                    $query
+                        ->where('start_date', '<=', $request->date)
                         ->where('end_date', '>=', $request->date);
                 });
             }
@@ -49,7 +49,6 @@ class ServiceController extends Controller
                     'title_en',
                     'description',
                     'description_en',
-
                 ], 'LIKE', $search);
             }
             return response()->json([
@@ -63,7 +62,6 @@ class ServiceController extends Controller
 
     public function home(Request $request)
     {
-
         // dd($request->all());
         return Inertia::render('Home/Services', [
             'search' => $request->search,
@@ -138,7 +136,6 @@ class ServiceController extends Controller
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
-
         $includes = json_decode($request->includes) ?? [];
         $notIncludes = json_decode($request->notIncludes) ?? [];
         $included = array_merge($includes, $notIncludes);
@@ -187,52 +184,8 @@ class ServiceController extends Controller
 
     public function reservar(Request $request)
     {
-        $validate = $request->validate([
-            'service_id' => 'required|exists:services,id',
-            'code_booking' => 'nullable|string|unique:booking_services',
-            'adults' => 'required|numeric',
-            'boys' => 'nullable|numeric',
-            'cliente_name' => 'required|string',
-            'cliente_phone' => 'required|numeric',
-            'cliente_city' => 'required|string',
-            'cliente_building' => 'required|string',
-            'channel_id' => ['required', 'uuid'],
-            'mascota' => 'nullable|numeric',
-            'persona_adicional' => 'nullable|numeric',
-            'cobre_transaccion' => 'nullable|numeric',
-            'cobro_extra_cliente' => 'nullable|numeric',
-            'reserva' => 'nullable|numeric',
-            'saldo' => 'nullable|numeric',
-            'percent_descuento' => 'nullable|numeric',
-            // 'payment_type' => 'nullable|numeric',
-            'mascota' =>  'nullable|numeric',
-            'persona_adicional' =>  'nullable|numeric',
-            'cobre_transaccion' =>  'nullable|numeric',
-            'cobro_extra_cliente' =>  'nullable|numeric',
-            'alimentacion' =>  'nullable|numeric',
-            'reserva' =>  'nullable|numeric',
-            'saldo' =>  'nullable|numeric',
-            'percent_descuento' =>  'nullable|numeric',
-            'date' => 'required',
-            'total_real' => 'nullable|numeric',
-            'percent_channel' => 'nullable|numeric',
-            'total' => 'nullable|numeric',
-            'observations' => 'nullable|string',
-            'method_id' => 'nullable|uuid',
-            'time_service' => 'nullable|string',
-        ]);
+        $validate = $request->validate([]);
 
-        $validate['date'] = Carbon::parse($validate['date'])->format('Y-m-d');
-        $service = Service::find($validate['service_id']);
-        $validate['boys'] = $validate['boys'] ?? 0;
-        $validate['hour'] = explode(',', request('date'))[1];
-        $validate['user_id'] = request('user_id') ?? auth()->user()->id;
-        $validate['service'] = $service->title;
-        $validate['adults_price'] = $service->adults_price;
-        $validate['adult_tarifa'] = $service->adult_tarifa;
-        $validate['boys_price'] = $service->boys_price;
-        $validate['boys_tarifa'] = $service->boy_tarifa;
-        $booking = BookingService::create($validate);
         // $booking->proveedors()->attach(request('proveedors'));
         if ($validate['observations']) {
             Note::create([
@@ -286,7 +239,6 @@ class ServiceController extends Controller
 
     public function setStatus()
     {
-
         $service = BookingService::where('id', request('service'))->first();
         $service->update(['fecha_cancelacion' => null]);
         if (request('state') == 'CANCELADA') {
@@ -306,7 +258,7 @@ class ServiceController extends Controller
                     'cost' => request('value'),
                 ]);
             // dd($proveedorService);
-           
+
             if (request('note')) {
                 Note::create([
                     'booking_service_id' => $service->id,
@@ -319,8 +271,6 @@ class ServiceController extends Controller
         storeState($service, request('state'), request('terminated'));
         return back()->with('message', 'Estado actualizado');
     }
-
-
 
     public function updateStart(Service $service, Request $request)
     {

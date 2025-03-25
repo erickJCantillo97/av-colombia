@@ -791,7 +791,7 @@ const reservar = (event) => {
   loading.value = true;
   form.proveedors = proveedorsAdd.value;
   form.extras = extrasAdd.value;
-  form.post(route("reservar"), {
+  form.post(route("BookingServices.store"), {
     onSuccess: () => {
       form.reset();
       loading.value = false;

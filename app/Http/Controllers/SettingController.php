@@ -11,7 +11,7 @@ class SettingController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::with('permissions')->get();
         $permisos = Permission::orderBy('name')->get();
         return Inertia::render('Settings/Index', compact('users', 'permisos'));
     }

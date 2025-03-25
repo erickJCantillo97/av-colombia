@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BookingService;
 use App\Http\Requests\StoreBookingServiceRequest;
 use App\Http\Requests\UpdateBookingServiceRequest;
 use App\Models\BookingExtras;
+use App\Models\BookingService;
 use App\Models\Channel;
 use App\Models\Note;
 use App\Models\Service;
 use App\Models\State;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Exception;
 
 class BookingServiceController extends Controller
 {
@@ -91,19 +91,18 @@ class BookingServiceController extends Controller
     {
         $validateData = $request->validated();
         try {
-            $service = Service::find($validateData['service_id']);
-
-            $validateData['boys'] = $validateData['boys'] ?? 0;
-            $validateData['service'] = $service->title;
-            $validateData['adults_price'] = $service->adult_price;
-            $validateData['adult_tarifa'] = $service->adult_tarifa;
-            $validateData['boys_tarifa']  = $service->boys_tarifa;
-            $validateData['boys_price'] = $service->boys_price;
-            $validateData['channel_id'] = $validateData['channel_id'] ?? Channel::where('name', 'Pagina Web')->first()->id;
-            $validateData['user_id'] = auth()->user()->id;
-            $bookingService = BookingService::create($validateData);
-
-            return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $bookingService], 201);
+            $booking = reservar($validateData);
+            createNote($booking, $validateData['observations']);
+            addBookingServiceProveedors($booking, request('proveedors'));
+            addBookingServiceExtras($booking, request('extras'));
+            storeState(
+                $booking,
+                'reservado',
+            );
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $booking], 201);
+            }
+            return back()->with('message', 'Reservación guardada correctamente');
         } catch (Exception $e) {
             return response()->json(['message' => 'Error al guardar la reservación'], 500);
         }
@@ -128,7 +127,7 @@ class BookingServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookingServiceRequest $request,  $bookingService)
+    public function update(UpdateBookingServiceRequest $request, $bookingService)
     {
         $booking = BookingService::find($bookingService);
         $validate = $request->validated();
@@ -169,7 +168,6 @@ class BookingServiceController extends Controller
             return back()->withErrors('message', 'Error al eliminar la reservación');
             // return response()->json(['message' => 'Error al eliminar la reservación'], 500);
         }
-        
     }
 
     public function getBookingServicesNoPayment()
@@ -184,11 +182,10 @@ class BookingServiceController extends Controller
     {
         // $problematic = $bookingService->problematic == '1' ? 1 : 0;
         $bookingService->update(['problematic' => !$bookingService->problematic]);
-        return  back()->with('message', 'Estado actualizado correctamente');
+        return back()->with('message', 'Estado actualizado correctamente');
     }
 
-
-    public function  getBookingTimeRange(Request $request)
+    public function getBookingTimeRange(Request $request)
     {
         $startDate = Carbon::parse($request->start_date) ?? Carbon::now();
         $endDate = Carbon::parse($request->end_date) ?? Carbon::now();
@@ -253,13 +250,12 @@ class BookingServiceController extends Controller
 
     public function cancelarServicio(BookingService $service, Request $request)
     {
-        
-        foreach($request->proveedors as $proveedor) {
+        foreach ($request->proveedors as $proveedor) {
             $proveedorService = DB::table('booking_proveedors')
-            ->where('id', $proveedor['proveedor_id'] )
-            ->update([
-                'cost' => $proveedor['costo_penalidad'],
-            ]);
+                ->where('id', $proveedor['proveedor_id'])
+                ->update([
+                    'cost' => $proveedor['costo_penalidad'],
+                ]);
         }
         $service->update([
             'fecha_cancelacion' => $request->date
@@ -271,13 +267,12 @@ class BookingServiceController extends Controller
 
     public function noShowServicio(BookingService $service, Request $request)
     {
-       
-        foreach($request->proveedors as $proveedor) {
+        foreach ($request->proveedors as $proveedor) {
             $proveedorService = DB::table('booking_proveedors')
-            ->where('id', $proveedor['proveedor_id'] )
-            ->update([
-                'cost' => $proveedor['totalpayment'],
-            ]);
+                ->where('id', $proveedor['proveedor_id'])
+                ->update([
+                    'cost' => $proveedor['totalpayment'],
+                ]);
         }
         if ($request['notes']) {
             Note::create([

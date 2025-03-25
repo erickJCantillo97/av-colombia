@@ -2,7 +2,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
@@ -34,7 +37,9 @@
         },
         "files": [
             "app/Helpers/PaymentHelper.php",
-            "app/Helpers/StatesHelper.php"
+            "app/Helpers/StatesHelper.php",
+            "app/Helpers/BookingHelper.php",
+            "app/Helpers/NotesHelper.php"
         ]
     },
     "autoload-dev": {

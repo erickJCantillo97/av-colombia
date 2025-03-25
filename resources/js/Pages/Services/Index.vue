@@ -2,7 +2,7 @@
   <AppLayout title="Services">
     <div class="h-[90vh] md:h-[99vh] overflow-y-auto">
       <Datatable
-        :add
+        :add="hasPermissionTo('crear experiencas') ? add : null"
         :columnas="columns"
         :data="services"
         routecreate="services.create"
@@ -192,6 +192,9 @@ import { ref } from "vue";
 import Input from "@/Components/Customs/Input.vue";
 import { useConfirm } from "primevue/useconfirm";
 import { alerts } from "@/composable/toasts";
+import { usePermissions } from "@/composable/Auth";
+
+const { hasPermissionTo } = usePermissions();
 const { toast } = alerts();
 const files = ref([]);
 const add = {
@@ -241,33 +244,6 @@ const columns = [
     type: "html",
     filter: true,
   },
-
-  // {
-  //     header: 'Precio Adultos',
-  //     field: 'adults_price',
-  //     type: 'currency',
-  //     filter: true,
-  // },
-  // {
-  //     header: 'Tarifa Adultos',
-  //     field: 'adult_tarifa',
-  //     type: 'currency',
-  //     filter: true,
-  //     // visible: false
-  // },
-  // {
-  //     header: 'Precio Niños',
-  //     field: 'boys_price',
-  //     type: 'currency',
-  //     filter: true,
-  // },
-  // {
-  //     header: 'Tarifa Niños',
-  //     field: 'boy_tarifa',
-  //     type: 'currency',
-  //     filter: true,
-  //     // visible: false
-  // },
 ];
 
 const confirm = useConfirm();
@@ -288,7 +264,7 @@ const buttons = [
     action: (data) => {
       router.visit(route("services.show", data.slug));
     },
-    show: usePage().props.auth.user.rol == "admin",
+
     severity: "primary",
     icon: "fa-solid fa-eye text-sm",
     label: "Ver",
@@ -306,10 +282,7 @@ const buttons = [
   },
   {
     action: (data) => {
-      if (
-        usePage().props.auth.user.rol == "admin" ||
-        usePage().props.auth.user.rol == "SUPER ADMINISTRADOR"
-      ) {
+      if (hasPermissionTo("editar experiencas")) {
         router.visit(route("services.edit", data.slug));
       } else {
         visible.value = true;
@@ -342,7 +315,7 @@ const buttons = [
         },
       });
     },
-    show: usePage().props.auth.user.rol == "admin",
+    show: hasPermissionTo("eliminar experiencas"),
     severity: "danger",
     icon: "fa-regular fa-trash-can text-sm",
   },

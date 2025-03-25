@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,6 +32,10 @@ class User extends Authenticatable
         'email',
         'password',
         'rol',
+        'phone',
+        'camara_comercio',
+        'rut',
+        'cuenta',
     ];
 
     /**
@@ -70,5 +76,29 @@ class User extends Authenticatable
     public function getUrlAttribute(): string
     {
         return 'https://vendedores-site.netlify.app/' . $this->id;
+    }
+
+    protected function camaraComercio(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
+            set: fn($value) => $value,
+        );
+    }
+
+    protected function rut(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
+            set: fn($value) => $value,
+        );
+    }
+
+    protected function cuenta(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
+            set: fn($value) => $value,
+        );
     }
 }
