@@ -23,6 +23,18 @@
     <h3 class="text-2xl font-bold my-4">
       Agregar Tarifa a <strong>{{ service.title }}</strong>
     </h3>
+    <div class="flex justify-between w-full my-4 text-lg px-8">
+      <div>
+        <label for="" class="font-bold">Tarifa Neta a Pagar AV</label>
+        <div class="text-gray-500 text-center">
+          {{ COP.format(service.adults_price) }}
+        </div>
+      </div>
+      <div>
+        <label for="" class="font-bold">Tarifa Maxima a Cobrar</label>
+        <div class="text-gray-500 text-center">-</div>
+      </div>
+    </div>
     <Input
       label="Tarifa para Adultos"
       type="number"
