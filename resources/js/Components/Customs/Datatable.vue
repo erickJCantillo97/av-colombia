@@ -176,7 +176,7 @@ const formatDate = (date) => {
       month: "2-digit",
       year: "numeric",
     });
-    return fecha == "30/11/2" ? "INDEFINIDO" : fecha;
+    return fecha;
   }
 };
 const formatDateTime = (date) => {

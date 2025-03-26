@@ -26,6 +26,18 @@ const COP = new Intl.NumberFormat("es-CO", {
   currency: "COP",
   maximumFractionDigits: 0,
 });
+
+const formatDate = (date) => {
+  if (date == undefined || date == null) {
+    return "Sin definir";
+  } else {
+    var fecha = new Date(
+      new Date(date).getTime() + new Date(date).getTimezoneOffset() * 60000
+    );
+    return fecha;
+  }
+};
+
 const loading = ref(false);
 
 const form = useForm({
@@ -66,7 +78,7 @@ const actions = [
       show.value = true;
       payment_id.value = row.id;
       form.date = row.date;
-      selectDate.value = [row.startDate, row.endDate];
+      selectDate.value = [formatDate(row.startDate), formatDate(row.endDate)];
       form.amount = row.amount;
       proveedor.value = row.proveedor_id;
       getReservas();
@@ -94,14 +106,12 @@ const columns = [
   {
     header: "Fecha Inicio",
     field: "startDate",
-    field: "date",
     type: "date",
     filter: true,
   },
   {
     header: "Fecha Fin",
     field: "endDate",
-    field: "date",
     type: "date",
     filter: true,
   },
@@ -176,14 +186,6 @@ const toggle = (event, item) => {
   op.value.toggle(event);
 };
 
-const renderNotas = (notas) => {
-  var info = ``;
-  var nota = notas.map((item) => {
-    info += `${item.note} - (${item.user})\n`;
-  });
-  return info;
-};
-
 function previewFiles(event) {
   form.file = event.target.files[0];
 }
@@ -195,6 +197,10 @@ const save = () => {
   formData.append("amount", form.amount);
   formData.append("comprobante", form.file);
   formData.append("date", new Date(form.date).toISOString().split("T")[0]);
+  console.log(
+    new Date(selectDate.value[0]).toISOString().split("T")[0],
+    new Date(selectDate.value[1]).toISOString().split("T")[0]
+  );
   formData.append("startDate", new Date(selectDate.value[0]).toISOString().split("T")[0]);
   formData.append("endDate", new Date(selectDate.value[1]).toISOString().split("T")[0]);
   formData.append("description", form.description);
