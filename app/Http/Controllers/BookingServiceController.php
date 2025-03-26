@@ -104,6 +104,7 @@ class BookingServiceController extends Controller
             }
             return back()->with('message', 'Reservación guardada correctamente');
         } catch (Exception $e) {
+            dd($e);
             return response()->json(['message' => 'Error al guardar la reservación'], 500);
         }
     }

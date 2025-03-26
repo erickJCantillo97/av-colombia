@@ -15,7 +15,7 @@
       >
     </div>
     <Datatable
-      :columnas="columns"
+      :columnas="filterColumns"
       :add
       :data
       routecreate="services.create"
@@ -220,7 +220,7 @@ const usersType = [
 
 const typeSelected = ref("vendedor");
 
-const columns = [
+const columns = ref([
   {
     header: "Nombre",
     field: "name",
@@ -247,14 +247,35 @@ const columns = [
     filter: true,
     type: "html-custom",
     renderer: (row) => {
-      return `<a href="${row.cuenta}" class="text-sky-600 underline" target="_blank">Ver Comprobante</a>`;
+      if (row.cuenta == "/laravel/public/") return "No tiene Certificado";
+      return `<a href="${row.cuenta}" class="text-sky-600 underline" target="_blank">Ver</a>`;
+    },
+  },
+  {
+    header: "RUT",
+    field: "rut",
+    filter: true,
+    type: "html-custom",
+    renderer: (row) => {
+      if (row.rut == "/laravel/public/") return "No tiene RUT";
+      return `<a href="${row.rut}" class="text-sky-600 underline" target="_blank">Ver</a>`;
+    },
+  },
+  {
+    header: "camara de comercio",
+    field: "camara_comercio",
+    filter: true,
+    type: "html-custom",
+    renderer: (row) => {
+      if (row.camara_comercio == "/laravel/public/") return "No tiene camara comercio";
+      return `<a href="${row.camara_comercio}" class="text-sky-600 underline" target="_blank">Ver</a>`;
     },
   },
   {
     header: "URL Portafolio",
     field: "url",
   },
-];
+]);
 
 const toast = useToast();
 
@@ -305,6 +326,7 @@ const buttons = [
       form.id = data.id;
       form.url = data.url;
       form.permissions = data.permissions.map((x) => x.name);
+      form.phone = data.phone;
     },
     severity: "secondary",
     icon: "fa-solid fa-pencil text-sm",
@@ -453,6 +475,19 @@ const data = computed(() => {
     );
   }
   return props.users.filter((user) => user.rol == typeSelected.value);
+});
+
+const filterColumns = computed(() => {
+  if (typeSelected.value == "av") {
+    return columns.value.filter(
+      (x) =>
+        x.field != "camara_comercio" &&
+        x.field != "rut" &&
+        x.field != "cuenta" &&
+        x.field != "url"
+    );
+  }
+  return columns.value;
 });
 
 const subirCamara = (e) => {

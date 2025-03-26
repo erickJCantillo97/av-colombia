@@ -92,34 +92,37 @@ class UserController extends Controller
             'rol' => ['required', 'string', 'max:255'],
             // 'password' => ['nullable', 'string', 'confirmed'],
         ]);
-        $camara_comercio = $user->camara_comercio;
-        $rut = $user->rut;
-        $cuenta = $user->cuenta;
-        if ($request->filled('password')) {
-            $validateData['password'] = Hash::make($request['password']);
-        }
-        if (request()->file('camara_comercio')) {
-            $camara_comercio = request()->file('camara_comercio')->store('users');
-        }
-        if (request()->file('rut')) {
-            $rut = request()->file('rut')->store('users');
-        }
-        if (request()->file('cuenta')) {
-            $cuenta = request()->file('cuenta')->store('users');
-        }
         try {
+            $fileFields = ['camara_comercio', 'rut', 'cuenta'];
+
+            // Update password if provided
+            if ($request->filled('password')) {
+                $user->update(['password' => Hash::make($request->password)]);
+            }
+
+            // Handle file uploads
+            foreach ($fileFields as $fileField) {
+                if ($request->hasFile($fileField)) {
+                    $user->{$fileField} = $request->file($fileField)->store('users/files');
+                }
+            }
+
+            // Update user details
             $user->update([
-                'name' => $request['name'],
-                'email' => $request['email'],
-                'rol' => $request['rol'],
-                'password' => Hash::make($request['password']),
-                'phone' => $request['phone'],
-                'camara_comercio' => $camara_comercio,
-                'rut' => $rut,
-                'cuenta' => $cuenta,
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'rol' => $request->input('rol'),
+                'phone' => $request->input('phone'),
+                'camara_comercio' => $user->camara_comercio == '/laravel/public/' ? null : $user->camara_comercio,
+                'rut' => $user->rut == '/laravel/public/' ? null : $user->rut,
+                'cuenta' => $user->cuenta == '/laravel/public/' ? null : $user->cuenta,
             ]);
-            $permisos = json_decode($request->permissions);
-            $user->syncPermissions($permisos);
+
+            // Sync permissions
+            if ($request->filled('permissions')) {
+                $permissions = explode(',', $request->input('permissions'));
+                $user->syncPermissions($permissions);
+            }
             return back()->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             dd($e);
