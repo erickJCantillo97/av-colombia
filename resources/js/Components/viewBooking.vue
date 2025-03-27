@@ -223,7 +223,12 @@
       </div>
     </div>
   </Modal>
-  <ServiceCancel v-model="showCancel" :service="service" v-if="showCancel" />
+  <ServiceCancel
+    v-model="showCancel"
+    v-model:view="show"
+    :service="service"
+    v-if="showCancel"
+  />
   <ServiceNoShow v-model="showNoShow" :service="service" v-if="showNoShow" />
 </template>
 

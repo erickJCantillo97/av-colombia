@@ -58,6 +58,10 @@ const COP = new Intl.NumberFormat("es-CO", {
 
 const showModal = defineModel();
 
+const showview = defineModel("view", {
+  default: false,
+});
+
 const props = defineProps({
   service: Object,
 });
@@ -92,6 +96,7 @@ const submit = () => {
   form.post(route("cancelar.servicio", props.service.id), {
     onSuccess: () => {
       showModal.value = false;
+      showview.value = false;
       console.log("Cancelado");
     },
   });
