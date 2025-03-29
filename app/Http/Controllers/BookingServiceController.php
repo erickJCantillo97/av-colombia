@@ -11,7 +11,9 @@ use App\Models\Note;
 use App\Models\Service;
 use App\Models\State;
 use Carbon\Carbon;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Exception;
@@ -21,64 +23,73 @@ class BookingServiceController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function mapBooking($booking)
+    {
+        return [
+            'id' => $booking->id,
+            'method_id' => $booking->method_id,
+            'service_id' => $booking->service_id,
+            'channel_id' => $booking->channel_id,
+            'service' => $booking->service,
+            'user' => $booking->user,
+            'channel' => $booking->channel,
+            'date' => $booking->date,
+            'hour' => $booking->hour,
+            'adults' => $booking->adults,
+            'boys' => $booking->boys,
+            'status' => $booking->status,
+            'cliente_name' => $booking->cliente_name,
+            'created_at' => $booking->created_at,
+            'cliente_email' => $booking->cliente_email,
+            'cliente_phone' => $booking->cliente_phone,
+            'cliente_building' => $booking->cliente_building,
+            'cliente_city' => $booking->cliente_city,
+            'notes' => $booking->notes->count(),
+            'fecha_cancelacion' => $booking->fecha_cancelacion,
+            'time_service' => $booking->time_service,
+            'observations' => $booking->observations,
+            'total_real' => $booking->total_real,
+            'saldo' => $booking->saldo,
+            'total' => $booking->total,
+            'channel' => $booking->channel,
+            'total_price_sales' => $booking->total_price_sales,
+            'proveedors_names' => $booking->proveedors->map(function ($proveedor) {
+                return $proveedor->proveedor->nombre;
+            })->implode(', '),
+            'problematic' => $booking->problematic,
+            'proveedors' => $booking->proveedors->map(function ($proveedor) {
+                return [
+                    'id' => $proveedor->id,
+                    'proveedor_id' => $proveedor->proveedor->id,
+                    'proveedor' => $proveedor,
+                    'cost' => $proveedor->cost,
+                    'concept' => $proveedor->concept,
+                ];
+            }),
+            'extras' => $booking->extras,
+        ];
+    }
+
     public function index()
     {
-        $status = State::where('state', 'CANCELADA')->pluck('statable_id')->toArray();
-
-        // return $status;
-
-        $booking = BookingService::whereIn('id', $status)->get();
-
-        $booking = BookingService::with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->orderBy('created_at', 'DESC')->get()->map(function ($booking) {
-            return [
-                'id' => $booking->id,
-                'method_id' => $booking->method_id,
-                'service_id' => $booking->service_id,
-                'channel_id' => $booking->channel_id,
-                'service' => $booking->service,
-                'user' => $booking->user,
-                'channel' => $booking->channel,
-                'date' => $booking->date,
-                'hour' => $booking->hour,
-                'adults' => $booking->adults,
-                'boys' => $booking->boys,
-                'status' => $booking->status,
-                'cliente_name' => $booking->cliente_name,
-                'created_at' => $booking->created_at,
-                'cliente_email' => $booking->cliente_email,
-                'cliente_phone' => $booking->cliente_phone,
-                'cliente_building' => $booking->cliente_building,
-                'cliente_city' => $booking->cliente_city,
-                'notes' => $booking->notes->count(),
-                'fecha_cancelacion' => $booking->fecha_cancelacion,
-                'time_service' => $booking->time_service,
-                'observations' => $booking->observations,
-                'total_real' => $booking->total_real,
-                'saldo' => $booking->saldo,
-                'total' => $booking->total,
-                'channel' => $booking->channel,
-                'total_price_sales' => $booking->total_price_sales,
-                'proveedors_names' => $booking->proveedors->map(function ($proveedor) {
-                    return $proveedor->proveedor->nombre;
-                })->implode(', '),
-                'problematic' => $booking->problematic,
-                'proveedors' => $booking->proveedors->map(function ($proveedor) {
-                    return [
-                        'id' => $proveedor->id,
-                        'proveedor_id' => $proveedor->proveedor->id,
-                        'proveedor' => $proveedor,
-                        'cost' => $proveedor->cost,
-                        'concept' => $proveedor->concept,
-                    ];
-                }),
-                'extras' => $booking->extras,
-            ];
-        });
+        $booking = BookingService::with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
+            ->orderBy('created_at', 'DESC');
         if (request()->expectsJson()) {
-            return response()->json(['bookingServices' => $booking], 200);
+            return response()->json(['bookingServices' => $booking
+                ->get()
+                ->map(function ($booking) {
+                    return $this->mapBooking($booking);
+                })], 200);
+        }
+        if (FacadesAuth::user()->rol == 'vendedor') {
+            $booking->where('user_id', auth()->user()->id);
         }
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => $booking,
+            'bookingServices' => $booking
+                ->get()
+                ->map(function ($booking) {
+                    return $this->mapBooking($booking);
+                }),
         ]);
     }
 

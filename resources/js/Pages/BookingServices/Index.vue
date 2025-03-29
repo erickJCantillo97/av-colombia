@@ -750,7 +750,9 @@ const buttons = [
     label: "Eliminar",
     icon: "fa-solid fa-trash text-sm",
     severity: "danger",
-
+    show:
+      usePage().props.auth.user.rol == "admin" ||
+      usePage().props.auth.user.rol == "superadmin",
     action: (data) => {
       Swal.fire({
         title: "Estas Seguro?",
