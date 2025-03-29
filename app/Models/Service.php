@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-
     use Sluggable;
     use HasFactory;
     use HasUuids;
@@ -62,7 +61,6 @@ class Service extends Model
         ];
     }
 
-
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable');
@@ -85,9 +83,12 @@ class Service extends Model
         } else if (auth()->user()->role == 'admin') {
             return $this->adults_price;
         }
+        // dd(auth()->user()->id, $this->id);
+        // dd(CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->adult_tarifa);
 
         return CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->adult_tarifa ?? $this->adults_price;
     }
+
     public function getBoyTarifaAttribute()
     {
         if (auth()->user() == null) {
@@ -113,7 +114,7 @@ class Service extends Model
     public function getIsLockedAttribute()
     {
         // dd(now());
-        return $this->locks()->where('end_date', '>=', now()->format("Y-m-d"))->exists();
+        return $this->locks()->where('end_date', '>=', now()->format('Y-m-d'))->exists();
     }
 
     public function getCurrentStateAttribute()
@@ -143,6 +144,7 @@ class Service extends Model
             set: fn($value) => $value,
         );
     }
+
     public function availabilities(): HasMany
     {
         return $this->hasMany(Availability::class);

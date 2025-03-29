@@ -225,7 +225,7 @@ const columns = [
   },
   {
     header: "Tarifa Neta",
-    field: "adults_price",
+    field: "adult_tarifa",
     type: "currency",
   },
   {

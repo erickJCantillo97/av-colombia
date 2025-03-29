@@ -33,17 +33,26 @@ class CustomProductControlle extends Controller
             'adult_tarifa' => 'required',
             'service_id' => 'required',
         ]);
-        try{
+        try {
             $validateData['user_id'] = auth()->user()->id;
-            $customProduct = CustomProductUser::firstOrNew([
-                'user_id' => auth()->user()->id
-            ],
-            ['service_id' => $validateData['service_id']]
-        );
-            $customProduct->boys_tarifa =  $validateData['boys_tarifa'];
-            $customProduct->adult_tarifa =  $validateData['adult_tarifa'];
+
+            $customProduct = CustomProductUser::where(
+                'user_id', auth()->user()->id
+            )->where(
+                'service_id', $validateData['service_id']
+            );
+            if ($customProduct->exists()) {
+                $customProduct = $customProduct->first();
+            } else {
+                $customProduct = new CustomProductUser();
+                $customProduct->user_id = auth()->user()->id;
+                $customProduct->service_id = $validateData['service_id'];
+            }
+
+            $customProduct->boys_tarifa = $validateData['boys_tarifa'];
+            $customProduct->adult_tarifa = $validateData['adult_tarifa'];
             $customProduct->save();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['message' => 'Error al guardar el producto personalizado'], 500);
         }
     }
