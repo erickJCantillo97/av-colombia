@@ -216,6 +216,8 @@ const usersType = [
   { label: "Usuarios AV Colombia", value: "av", color: "green" },
   { label: "Vendedores", value: "vendedor", color: "blue" },
   { label: "Proveedores", value: "proveedor", color: "yellow" },
+  { label: "Hoteles", value: "hotel", color: "orange" },
+  { label: "Agencias", value: "agencia", color: "gray" },
 ];
 
 const typeSelected = ref("vendedor");

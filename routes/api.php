@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->get('/user', function () {
-    return Auth::user();
+Route::get('/user/{user}', function (User $user) {
+    return $user;
 });
 
 Route::controller(AuthController::class)->group(function () {

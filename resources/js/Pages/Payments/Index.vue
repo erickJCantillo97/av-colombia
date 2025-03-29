@@ -161,6 +161,16 @@ const getReservas = () => {
           value: reservas.value.filter((item) => item.status == "NO SHOW"),
           color: "bg-yellow-200",
         },
+        {
+          name: "CAMBIO DE FECHA",
+          value: reservas.value.filter((item) => item.status == "CAMBIO DE FECHA"),
+          color: "bg-gray-200",
+        },
+        {
+          name: "REUBICADO",
+          value: reservas.value.filter((item) => item.status == "CAMBIO DE FECHA"),
+          color: "bg-yellow-200",
+        },
       ];
     });
 };
