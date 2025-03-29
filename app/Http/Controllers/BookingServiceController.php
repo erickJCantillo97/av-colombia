@@ -74,6 +74,10 @@ class BookingServiceController extends Controller
     {
         $booking = BookingService::with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
             ->orderBy('created_at', 'DESC');
+
+        if (FacadesAuth::user()->rol == 'vendedor') {
+            $booking->where('user_id', auth()->user()->id);
+        }
         if (request()->expectsJson()) {
             return response()->json(['bookingServices' => $booking
                 ->get()
@@ -81,9 +85,7 @@ class BookingServiceController extends Controller
                     return $this->mapBooking($booking);
                 })], 200);
         }
-        if (FacadesAuth::user()->rol == 'vendedor') {
-            $booking->where('user_id', auth()->user()->id);
-        }
+
         return Inertia::render('BookingServices/Index', [
             'bookingServices' => $booking
                 ->get()
