@@ -282,7 +282,10 @@ const buttons = [
   },
   {
     action: (data) => {
-      if (hasPermissionTo("editar experiencas")) {
+      if (
+        usePage().props.auth.user.rol == "admin" ||
+        usePage().props.auth.user.rol == "superadmin"
+      ) {
         router.visit(route("services.edit", data.slug));
       } else {
         visible.value = true;

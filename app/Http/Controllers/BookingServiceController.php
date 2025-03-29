@@ -23,6 +23,12 @@ class BookingServiceController extends Controller
      */
     public function index()
     {
+        $status = State::where('state', 'CANCELADA')->pluck('statable_id')->toArray();
+
+        // return $status;
+
+        $booking = BookingService::whereIn('id', $status)->get();
+
         $booking = BookingService::with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')->orderBy('created_at', 'DESC')->get()->map(function ($booking) {
             return [
                 'id' => $booking->id,
