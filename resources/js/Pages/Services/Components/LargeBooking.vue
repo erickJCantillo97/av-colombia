@@ -70,6 +70,10 @@
           {{ COP.format(costoTotal) }}</span
         >
       </div>
+      <Button
+        label="Reservar"
+        class="w-full bg-green-500 text-white font-bold rounded-lg shadow-xl"
+      />
     </div>
     <div v-else class="flex flex-col items-center justify-center gap-y-4">
       <Logo></Logo>
