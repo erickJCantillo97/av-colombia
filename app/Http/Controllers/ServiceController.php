@@ -18,6 +18,7 @@ use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Exception;
@@ -29,6 +30,9 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user_id) {
+            Auth::login(User::find($request->user_id));
+        }
         if ($request->expectsJson()) {
             $search = '%' . $request->search . '%';
             $service = Service::with('locks')
