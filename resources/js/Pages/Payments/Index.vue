@@ -168,7 +168,7 @@ const getReservas = () => {
         },
         {
           name: "REUBICADO",
-          value: reservas.value.filter((item) => item.status == "CAMBIO DE FECHA"),
+          value: reservas.value.filter((item) => item.status == "REUBICADO"),
           color: "bg-yellow-200",
         },
       ];
