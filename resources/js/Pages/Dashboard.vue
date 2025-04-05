@@ -221,7 +221,9 @@ const handleEventClick = (event) => {
 };
 
 const dataFilter = ref([]);
-
+const getDataFilter = (data) => {
+  dataFilter.value = data;
+};
 // #endregion
 </script>
 
@@ -260,7 +262,7 @@ const dataFilter = ref([]);
             :rowClass="true"
             :data="dateActivities"
             :actions
-            @filter="getDataFilter"
+            @filterApply="getDataFilter"
           >
             <template #groupRows>
               <ColumnGroup type="footer">

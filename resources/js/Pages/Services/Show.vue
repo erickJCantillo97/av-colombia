@@ -77,7 +77,7 @@ const times = computed(() => {
         <h1 class="text-3xl font-bold text-gray-800">
           {{ product.name }}
         </h1>
-        <Gallery></Gallery>
+        <Gallery :images="product.images"></Gallery>
         <div class="flex flex-col gap-y-4" v-html="product.description"></div>
       </div>
       <LargeBooking :product="service" :availabilities></LargeBooking>

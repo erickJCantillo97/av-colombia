@@ -123,7 +123,13 @@ const dataResponse = defineModel("dataResponse", {
 // });
 const selectAll = defineModel("selectAll");
 
-defineEmits(["rowClick", "buttonRowClick", "addClick", "buttonClick", "filter"]);
+const emit = defineEmits([
+  "rowClick",
+  "buttonRowClick",
+  "addClick",
+  "buttonClick",
+  "filterApply",
+]);
 
 const dataLoading = ref(false);
 
@@ -215,32 +221,16 @@ const rowClass = (data) => {
 const mensaje =
   "Funcion en desuso, se recomienda no usar el event dentro de button. Lea mas en la documentacion...Que hare algun dia : v";
 
-// const getDataFilter = () => {
-//   // dataFilter.value = filters;
-//   var f = Object.keys(filters.value).map((key) => ({ key, value: filters.value[key] }));
-//   f = f.filter((item) => item.value.value);
+const registrosFiltrados = ref([]);
 
-//   dataFilter.value = props.data;
-//   if (f.find((item) => item.key == "global")) {
-//     var global = f.find((item) => item.key == "global").value.value.toLowerCase();
-//     dataFilter.value = props.data.filter((item) => {
-//       return (
-//         item.cliente_name.toLowerCase().includes(global) ||
-//         item.cliente_phone.toLowerCase().includes(global) ||
-//         item.cliente_building.toLowerCase().includes(global) ||
-//         item.service.toLowerCase().includes(global) ||
-//         item.proveedors_names.toLowerCase().includes(global)
-//       );
-//     });
-//   }
-//   f.forEach((item) => {
-//     if (item.key != "global") {
-//       dataFilter.value = dataFilter.value.filter((itemData) => {
-//         return itemData[item.key].toLowerCase().includes(item.value.value.toLowerCase());
-//       });
-//     }
-//   });
-// };
+const onFilter = (event) => {
+  registrosFiltrados.value = event.filteredValue;
+  getDataFilter(event.filteredValue);
+};
+
+const getDataFilter = (data) => {
+  emit("filterApply", data);
+};
 </script>
 
 <template>
@@ -259,6 +249,7 @@ const mensaje =
     removableSort
     v-model:filters="filters"
     stripedRows
+    @filter="onFilter"
     filterDisplay="menu"
     class="p-datatable-sm p-1 rounded-md"
     stateStorage="session"

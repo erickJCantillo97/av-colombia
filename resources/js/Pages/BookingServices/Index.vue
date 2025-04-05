@@ -16,8 +16,8 @@
           >
             <p class="text-sm font-bold uppercase">Todos</p>
             <p class="text-xs italic">
-              {{ bookingFecha.length }} Reservas |
-              {{ bookingFecha.reduce((acc, item) => acc + item.adults, 0) }}
+              {{ dataFilter.length }} Reservas |
+              {{ dataFilter.reduce((acc, item) => acc + item.adults, 0) }}
               Pasajeros
             </p>
           </div>
@@ -41,9 +41,9 @@
           >
             <p class="text-sm font-bold uppercase">{{ status.text }}</p>
             <p class="text-xs italic">
-              {{ bookingFecha.filter((x) => x.status == status.text).length }} Reservas |
+              {{ dataFilter.filter((x) => x.status == status.text).length }} Reservas |
               {{
-                bookingFecha
+                dataFilter
                   .filter((x) => x.status == status.text)
                   .reduce((acc, item) => acc + item.adults, 0)
               }}
@@ -67,6 +67,7 @@
         :data="bookings"
         routecreate="services.create"
         :rowClass="true"
+        @filterApply="getDataFilter"
       >
       </Datatable>
     </div>
@@ -834,5 +835,11 @@ getMethos();
 const parseDate = (dateString) => {
   const [year, month, day] = dateString.split("-");
   return new Date(year, month - 1, day);
+};
+
+const dataFilter = ref([]);
+
+const getDataFilter = (data) => {
+  dataFilter.value = data;
 };
 </script>

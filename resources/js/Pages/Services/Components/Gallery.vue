@@ -1,20 +1,31 @@
 <template>
   <div class="w-full flex justify-start rounded-xl gap-4 py-2 text-sm">
-    <img
-      src="/images/productos/baru-1.webp"
-      class="h-[30vh] w-2/3 rounded-xl object-cover"
+    <!-- {{ images }} -->
+    <Image
+      :src="'https://avcolombia.net/' + images[0]"
+      :pt="{
+        root: '!w-2/3',
+        image: '!h-[30vh] !w-full !rounded-xl !object-cover',
+      }"
       alt=""
     />
     <div class="flex flex-col gap-y-2 w-1/3">
-      <img
-        src="/images/productos/baru-2.webp"
-        class="h-[15vh] rounded-xl w-full"
+      <Image
+        :pt="{
+          root: '!w-full',
+          image: '!h-[15vh] !rounded-xl !w-full',
+        }"
+        :src="'https://avcolombia.net/' + images[1]"
+        class=""
         alt=""
       />
       <div>
-        <img
-          src="/images/productos/baru-1.webp"
-          class="h-[14vh] rounded-xl w-full"
+        <Image
+          :pt="{
+            root: '!w-full',
+            image: '!h-[15vh] !rounded-xl !w-full',
+          }"
+          :src="'https://avcolombia.net/' + images[2]"
           alt=""
         />
         <span
@@ -26,4 +37,11 @@
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+defineProps({
+  images: {
+    type: Array,
+    required: true,
+  },
+});
+</script>
