@@ -404,6 +404,8 @@ const roles = [
   { label: "Vendedor", value: "vendedor" },
   // { label: "Cliente", value: "cliente" },
   { label: "Proveedor", value: "proveedor" },
+  { label: "Hotel", value: "Hotel" },
+  { label: "Agencia", value: "agencia" },
 ];
 
 function selectedRol() {
@@ -445,6 +447,34 @@ function selectedRol() {
       })
       .map((x) => x.name);
   } else if (form.rol == "proveedor") {
+    form.permissions = props.permisos
+      .filter((x) => {
+        x = x.name;
+        return (
+          !(
+            x.includes("usuarios") ||
+            x.includes("pagos") ||
+            x.includes("entradas") ||
+            x.includes("eliminar")
+          ) && x != "crear experiencas"
+        );
+      })
+      .map((x) => x.name);
+  } else if (form.rol == "hotel") {
+    form.permissions = props.permisos
+      .filter((x) => {
+        x = x.name;
+        return (
+          !(
+            x.includes("usuarios") ||
+            x.includes("pagos") ||
+            x.includes("entradas") ||
+            x.includes("eliminar")
+          ) && x != "crear experiencas"
+        );
+      })
+      .map((x) => x.name);
+  } else if (form.rol == "agencia") {
     form.permissions = props.permisos
       .filter((x) => {
         x = x.name;

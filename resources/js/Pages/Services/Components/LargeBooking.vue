@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-4 shadow-xl w-[20%] rounded-lg fixed right-52 -mt-32 bg-white space-y-4 overflow-y-auto h-[60vh]"
+    class="p-4 shadow-xl w-[20%] rounded-lg fixed right-52 -mt-32 bg-white space-y-4 overflow-y-auto"
   >
     <p class="font-extrabold text-center text-3xl uppercase text-green-700">
       Reservar tour
@@ -14,34 +14,38 @@
       />
     </div>
     <hr />
-    <div v-if="date" class="flex flex-col gap-y-4">
-      <p class="font-bold">¿Para cuantos?</p>
+    <div v-if="date" class="flex flex-col gap-y-2">
+      <div>
+        <p class="font-bold">¿Para cuantos?</p>
+        <p class="text-xs italic">Seleccione la cantidad de personas</p>
+      </div>
       <div class="flex flex-col gap-y-1">
         <div
-          v-for="person in formReserva.persons"
+          v-for="(person, index) in formReserva.persons"
           :key="person.id"
-          class="p-3 flex items-center justify-between font-bold rounded-lg w-full shadow-xl"
+          class="p-3 flex items-center justify-between font-bold rounded-lg w-full border-b"
         >
           <div class="flex flex-col text-md w-full">
-            <span>Adultos</span>
-            <span class="text-xs">({{ person.min ?? 0 }} - {{ person.max }} Años)</span>
+            <span class="text-xs">{{ person.min ?? 0 }} - {{ person.max }} Años</span>
+            <span class="text-xs italic">Valor: {{ COP.format(person.value) }}</span>
           </div>
-          <div class="flex items-center gap-x-4 w-full justify-end text-center">
+          <div class="flex items-center w-full justify-end text-center">
             <button
               class="text-red-500 border border-red-400 font-bold rounded-full px-2.5 py-1"
-              @click="person.cant = person.cant - 1"
+              @click="modifyCantPerson(index, -1)"
             >
               -
             </button>
             <input
               type="text"
               v-model="person.cant"
+              disabled
               min="0"
               class="w-full rounded-xl right-0 border-0 focus:ring-0 text-center"
             />
             <button
               class="text-green-500 border border-green-500 font-bold rounded-full px-2.5 py-1"
-              @click="person.cant += 1"
+              @click="modifyCantPerson(index, 1)"
             >
               +
             </button>
@@ -65,15 +69,19 @@
       <div class="text-2xl font-bold text-green-500 flex items-center gap-x-4">
         <span class="text-xl font-bold text-green-500">
           <i class="fa-solid fa-tag rotate-90"></i>
+          Total a pagar:
         </span>
         <span class="text-xl font-bold text-green-500">
           {{ COP.format(costoTotal) }}</span
         >
       </div>
-      <Button
-        label="Reservar"
-        class="w-full bg-green-500 text-white font-bold rounded-lg shadow-xl"
-      />
+      <Link :href="route('check.out', formReserva)">
+        <Button
+          v-if="costoTotal > 0 && formReserva.time != ''"
+          label="Reservar"
+          class="w-full bg-green-500 text-white font-bold rounded-lg shadow-xl"
+        />
+      </Link>
     </div>
     <div v-else class="flex flex-col items-center justify-center gap-y-4">
       <Logo></Logo>
@@ -86,7 +94,7 @@ import { computed, ref } from "vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/themes/material_blue.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
-import { useForm } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import { Button } from "primevue";
 import { data } from "autoprefixer";
 import Logo from "@/Components/logo.vue";
@@ -156,4 +164,10 @@ const costoTotal = computed(() => {
   });
   return total;
 });
+
+const modifyCantPerson = (index, sum) => {
+  var person = formReserva.persons[index];
+  if (sum == -1 && person.cant > 0) person.cant -= 1;
+  else if (sum == 1 && person.cant < person.max) person.cant += 1;
+};
 </script>

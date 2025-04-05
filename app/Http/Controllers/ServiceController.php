@@ -302,4 +302,9 @@ class ServiceController extends Controller
         $service->update($validate);
         return back()->with('message', 'Servicio iniciado');
     }
+
+    public function checkOut(Request $request)
+    {
+        return Inertia::render('Home/CheckOut');
+    }
 }
