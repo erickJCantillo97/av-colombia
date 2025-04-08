@@ -186,42 +186,6 @@ class ServiceController extends Controller
         }
     }
 
-    public function reservar(Request $request)
-    {
-        $validate = $request->validate([]);
-
-        // $booking->proveedors()->attach(request('proveedors'));
-        if ($validate['observations']) {
-            Note::create([
-                'booking_service_id' => $booking->id,
-                'note' => $validate['observations'],
-                'user_id' => auth()->user()->id,
-            ]);
-        };
-        foreach (request('proveedors') as $proveedor) {
-            if ($proveedor['costo'] && $proveedor['proveedor'])
-                $booking->proveedors()->create([
-                    'booking_service_id' => $booking->id,
-                    'proveedor_id' => $proveedor['proveedor']['id'],
-                    'cost' => $proveedor['costo'],
-                    'concept' => $proveedor['proveedor']['pivot']['concept'],
-                ]);
-        }
-        foreach (request('extras') as $extra) {
-            if ($extra['cantidad'])
-                $booking->extras()->create([
-                    'booking_service_id' => $booking->id,
-                    'cantidad' => $extra['cantidad'],
-                    'description' => $extra['description'],
-                    'unit_price' => $extra['unit_price'],
-                    'total_price' => $extra['cantidad'] * $extra['unit_price'],
-                ]);
-        }
-        if (request('abono'))
-            paymentStore(request('abono'), request('method'), $booking);
-        storeState($booking, 'reservado');
-    }
-
     public function lock(Service $service, Request $request)
     {
         $validate = $request->validate([

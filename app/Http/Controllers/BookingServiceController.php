@@ -7,13 +7,13 @@ use App\Http\Requests\UpdateBookingServiceRequest;
 use App\Models\BookingExtras;
 use App\Models\BookingService;
 use App\Models\Channel;
+use App\Models\Horario;
 use App\Models\Note;
 use App\Models\Service;
 use App\Models\State;
 use Carbon\Carbon;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Exception;
@@ -75,8 +75,8 @@ class BookingServiceController extends Controller
         $booking = BookingService::with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
             ->orderBy('created_at', 'DESC');
 
-        if (FacadesAuth::user()->rol == 'vendedor') {
-            $booking->where('user_id', auth()->user()->id);
+        if (Auth::user()->rol == 'vendedor') {
+            $booking->where('user_id', Auth::user()->id);
         }
         if (request()->expectsJson()) {
             return response()->json(['bookingServices' => $booking
@@ -309,5 +309,39 @@ class BookingServiceController extends Controller
         // ]);
         storeState($service, 'NO SHOW', 1);
         return back()->with('message', 'Reservación marcada como no show correctamente');
+    }
+
+    public function reservarByApi(Request $request)
+    {
+        $data = $request->validate([
+            'adults' => 'required|numeric',
+            'boys' => 'required|numeric',
+            'service_id' => 'required|uuid',
+            'user_id' => 'required|numeric',
+            'date' => 'required|date',
+            'adult_tarifa' => 'required|numeric',
+            'total' => 'required|numeric',
+            'cliente_name' => 'required|string',
+            'cliente_phone' => 'required',
+            'cliente_building' => 'required|string',
+            'cliente_city' => 'required|string',
+        ]);
+        $data['hour'] = Horario::find($request->time)->start;
+        $data['channel_id'] = Channel::where('name', 'Vendedor')->first()->id;
+        $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
+        $service = Service::find($data['service_id']);
+        $data['boys_tarifa'] = $service->boy_tarifa;
+        $data['boys_price'] = $service->boys_price;
+        $data['adults_price'] = $service->adults_price;
+
+        $data['service'] = $service->title;
+        $data['total_real'] = $service->adults_price * $data['adults'];
+
+        $booking = BookingService::create($data);
+        storeState(
+            $booking,
+            'reservado',
+        );
+        return $booking;
     }
 }

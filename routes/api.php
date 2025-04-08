@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\ServiceController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,4 +18,4 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::get('get-services/', [ServiceController::class, 'index']);
-Route::post('reservar', [ServiceController::class, 'reservar']);
+Route::post('reservar', [BookingServiceController::class, 'reservarByApi']);
