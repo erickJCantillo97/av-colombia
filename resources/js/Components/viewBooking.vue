@@ -72,7 +72,7 @@
         v-if="service.user"
         class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
       >
-        <strong>Usuario:</strong>
+        <strong>{{ service.user.rol == "vendedor" ? "Vendedor" : "Usuario" }}:</strong>
         <p>{{ service.user?.name }}</p>
       </div>
       <div
@@ -98,7 +98,7 @@
         <p>{{ service.placa }}</p>
       </div>
       <div
-        v-if="service.placa"
+        v-if="service.total_pago_proveedor"
         class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
       >
         <strong>Valor del Servicio:</strong>
@@ -117,7 +117,7 @@
       </div>
       <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Soporte:</strong>
-        <a :href="service.file">Ver Archivo</a>
+        <a target="_blank" :href="service.file">Ver Archivo</a>
       </div>
       <div class="flex flex-col border py-1 bg-white/30 rounded-md px-2">
         <strong>Observacion:</strong>
