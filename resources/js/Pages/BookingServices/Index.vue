@@ -352,7 +352,7 @@ import Datatable from "@/Components/Customs/Datatable.vue";
 import Input from "@/Components/Customs/Input.vue";
 import Modal from "@/Components/Customs/Modal.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { Link, router, useForm, usePage } from "@inertiajs/vue3";
+import { Link, router, useForm, usePage, usePoll } from "@inertiajs/vue3";
 import { computed, ref, watch } from "vue";
 import Toast from "primevue/toast";
 import { alerts } from "@/composable/toasts";
@@ -365,6 +365,7 @@ const props = defineProps({
   bookingServices: Array,
 });
 
+usePoll(1000 * 20);
 // #region Variables
 
 const { toast } = alerts();
