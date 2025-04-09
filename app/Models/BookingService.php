@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class BookingService extends Model
@@ -24,7 +24,7 @@ class BookingService extends Model
     protected static function booted(): void
     {
         static::addGlobalScope('ancient', function (Builder $builder) {
-            if (auth()->user() != null && auth()->user()->rol ==  'hotel') {
+            if (auth()->user() != null && auth()->user()->rol == 'hotel') {
                 $builder->where('user_id', auth()->user()->id);
             }
         });
@@ -86,5 +86,13 @@ class BookingService extends Model
     public function extras()
     {
         return $this->hasMany(BookingExtras::class, 'booking_service_id');
+    }
+
+    protected function file(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
+            set: fn($value) => $value,
+        );
     }
 }

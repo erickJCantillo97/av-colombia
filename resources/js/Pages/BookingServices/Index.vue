@@ -454,6 +454,7 @@ const columns = [
       { text: "REUBICADO", severity: "warn", class: "" },
       { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
       { text: "PROBLEMATICA", severity: "danger", class: "animate-pulse" },
+      { text: "SIN CONFIRMAR", severity: "danger" },
     ],
   },
 ];
@@ -464,6 +465,7 @@ const statues = [
   { text: "NO SHOW", color: "amber" },
   { text: "REUBICADO", color: "orange" },
   { text: "CANCELADA", color: "green" },
+  { text: "SIN CONFIRMAR", color: "red" },
 ];
 
 const add = {

@@ -84,11 +84,40 @@
       </div>
 
       <div
+        v-if="service.conductor"
+        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
+      >
+        <strong>conductor:</strong>
+        <p>{{ service.conductor }}</p>
+      </div>
+      <div
+        v-if="service.placa"
+        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
+      >
+        <strong>conductor:</strong>
+        <p>{{ service.placa }}</p>
+      </div>
+      <div
+        v-if="service.placa"
+        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
+      >
+        <strong>Valor del Servicio:</strong>
+        <p>{{ COP.format(service.total_pago_proveedor) }}</p>
+      </div>
+      <div
         v-if="service.fecha_cancelacion"
         class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
       >
         <strong>Fecha de Cancelación:</strong>
-        <p>{{ new Date(service.fecha_cancelacion).toLocaleDateString("es-CO") }}</p>
+        <p>{{ new Date(service.fecha_cancelacion).toLocaleDateStrinSDg("es-CO") }}</p>
+      </div>
+      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+        <strong>Saldo:</strong>
+        <p>{{ COP.format(service.saldo) }}</p>
+      </div>
+      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
+        <strong>Soporte:</strong>
+        <a :href="service.file">Ver Archivo</a>
       </div>
       <div class="flex flex-col border py-1 bg-white/30 rounded-md px-2">
         <strong>Observacion:</strong>
@@ -363,7 +392,6 @@ const sendReubicar = () => {
       toast("success", "Servicio REUBICADO");
     },
   });
-  console.log(formReu.current_id);
 };
 
 const reubicarServicio = () => {

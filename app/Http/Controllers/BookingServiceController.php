@@ -50,9 +50,14 @@ class BookingServiceController extends Controller
             'observations' => $booking->observations,
             'total_real' => $booking->total_real,
             'saldo' => $booking->saldo,
+            'file' => $booking->file,
+            'conductor' => $booking->conductor,
+            'placa' => $booking->placa,
+            'total_pago_proveedor' => $booking->total_pago_proveedor,
             'total' => $booking->total,
             'channel' => $booking->channel,
             'total_price_sales' => $booking->total_price_sales,
+            'service_type' => $booking->service()->get()->first()->type,
             'proveedors_names' => $booking->proveedors->map(function ($proveedor) {
                 return $proveedor->proveedor->nombre;
             })->implode(', '),
@@ -135,7 +140,7 @@ class BookingServiceController extends Controller
      */
     public function show(BookingService $bookingService)
     {
-        //
+        return response()->json(['booking_service' => $bookingService], 200);
     }
 
     /**
@@ -265,7 +270,13 @@ class BookingServiceController extends Controller
                 ]);
             }
         }
-
+        if ($request->conductor) {
+            $booking->update([
+                'conductor' => $request->conductor,
+                'placa' => $request->placa,
+                'total_pago_proveedor' => $request->value,
+            ]);
+        }
         storeState($booking, request('status'), 1);
         return back()->with('message', 'Reservación completada correctamente');
     }
@@ -326,6 +337,7 @@ class BookingServiceController extends Controller
             'cliente_building' => 'required|string',
             'cliente_city' => 'required|string',
         ]);
+        $data['saldo'] = $data['total'] - $request->abono;
         $data['hour'] = Horario::find($request->time)->start;
         $data['channel_id'] = Channel::where('name', 'Vendedor')->first()->id;
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
@@ -336,12 +348,18 @@ class BookingServiceController extends Controller
 
         $data['service'] = $service->title;
         $data['total_real'] = $service->adults_price * $data['adults'];
-
+        if (request()->file('soporte')) {
+            $data['file'] = request()->file('soporte')->store('soportes');
+        }
         $booking = BookingService::create($data);
         storeState(
             $booking,
-            'reservado',
+            'SIN CONFIRMAR',
         );
-        return $booking;
+        return response()->json([
+            'message' => 'Reservación guardada correctamente',
+            'bookingService' => $booking,
+            'status' => true,
+        ], 201);
     }
 }

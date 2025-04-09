@@ -19,3 +19,4 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::get('get-services/', [ServiceController::class, 'index']);
 Route::post('reservar', [BookingServiceController::class, 'reservarByApi']);
+Route::get('getBookingServices/{bookingService}', [BookingServiceController::class, 'show'])->name('bookingServices.show');

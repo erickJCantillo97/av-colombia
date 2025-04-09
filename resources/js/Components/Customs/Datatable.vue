@@ -211,6 +211,8 @@ const rowClass = (data) => {
         return "!bg-orange-200";
       case "PROBLEMATICA":
         return "!bg-red-500";
+      case "SIN CONFIRMAR":
+        return "!bg-purple-100";
       default:
         return "!bg-blue-100";
     }

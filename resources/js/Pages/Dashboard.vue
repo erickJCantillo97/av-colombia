@@ -210,6 +210,7 @@ const columns = [
       { text: "REUBICADO", severity: "warn", class: "" },
       { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
       { text: "PROBLEMATICA", severity: "danger", class: "animate-pulse" },
+      { text: "SIN CONFIRMAR", severity: "danger" },
     ],
   },
 ];
@@ -296,5 +297,5 @@ const getDataFilter = (data) => {
     :note="note"
     :service="serviceSelected"
   ></Notas>
-  <!-- <Completar v-if="completar" v-model="completar" :service="serviceSelected"> </Completar> -->
+  <Completar v-if="completar" v-model="completar" :service="serviceSelected"> </Completar>
 </template>
