@@ -109,7 +109,19 @@
         class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
       >
         <strong>Fecha de Cancelación:</strong>
-        <p>{{ new Date(service.fecha_cancelacion).toLocaleDateStrinSDg("es-CO") }}</p>
+        <p>
+          {{
+            new Date(
+              new Date(service.fecha_cancelacion).setDate(
+                new Date(service.fecha_cancelacion).getDate() + 1
+              )
+            ).toLocaleDateString("es-CO", {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+            })
+          }}
+        </p>
       </div>
       <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Saldo:</strong>
