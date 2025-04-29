@@ -82,7 +82,7 @@ const getServicesSelectedDate = () => {
 };
 
 const getReservas = () => {
-  axios.get(route("BookingServices.index")).then((response) => {
+  axios.get(route("get.all.booking.services")).then((response) => {
     reservas.value = response.data.bookingServices;
     getServicesSelectedDate();
     reservas.value.forEach((item) => {
@@ -203,7 +203,7 @@ const columns = [
     filtertype: "EQUALS",
     class: "text-center uppercase",
     severitys: [
-      { text: "reservado", severity: "info", class: "" },
+      { text: "RESERVADO", severity: "info", class: "" },
       { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
       { text: "COMPLETADA", class: "" },
       { text: "NO SHOW", severity: "warn", class: "" },

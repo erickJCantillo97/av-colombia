@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AvailabilityController;
-use App\Http\Controllers\BookingServiceController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\CustomProductControlle;
@@ -41,6 +40,7 @@ Route::middleware([
     // Routes for services
     Route::resource('services', ServiceController::class)->except(['update']);
     Route::controller(ServiceController::class)->group(function () {
+        Route::get('getAllServices', 'getServices')->name('get.all.services');
         Route::post('services/{service}/update', 'update')->name('services.update');
         Route::post('services/{service}/lock', 'lock')->name('services.lock');
         Route::put('updateServiceStart/{service}', 'updateStart')->name('update.start');
@@ -49,20 +49,11 @@ Route::middleware([
         Route::delete('deleteFile/{image}', 'deleteImage')->name('delete.images');
         Route::post('services/{lock}/unlock', 'unlock')->name('services.unlock');
         Route::post('services/setStatus', 'setStatus')->name('set.states');
-        Route::get('services/proveedors', 'getProveedors')->name('get.proveedors');
+        Route::get('services/proveedors/{id}', 'getProveedorsByService')->name('get.proveedors.by.service');
     });
 
     // Routes for bookings services
-    Route::resource('BookingServices', BookingServiceController::class);
-    Route::controller(BookingServiceController::class)->group(function () {
-        Route::get('getBookingServicesNoPayment', 'getBookingServicesNoPayment')->name('get.services.no.payment');
-        Route::post('BookingServices/{bookingService}/problematic', 'problematic')->name('booking.problematic');
-        Route::get('getBookingTimeRange', 'getBookingTimeRange')->name('get.booking.time.range');
-        Route::get('getStatesChange', 'getStatesChange')->name('get.states.change');
-        Route::post('cancelarServico/{service}', 'cancelarServicio')->name('cancelar.servicio');
-        Route::post('noShowServico/{service}', 'noShowServicio')->name('noshow.servicio');
-        Route::post('completarReserva', 'completarReserva')->name('completar.reserva');
-    });
+
     Route::resource('users', UserController::class)->except(['update']);
 
     Route::controller(UserController::class)->group(function () {

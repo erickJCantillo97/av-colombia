@@ -1,21 +1,14 @@
 
-import Moment from "moment";
-
+const COP = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0,
+});
 /**
  * This function exports common utilities in JavaScript.
  */
 export function useCommonUtilities() {
-    /**
-     * The `autoTruncateString` function truncates a string to a maximum length of 20 characters and
-     * appends "..." if the string exceeds that length.
-     * @param string - The `autoTruncateString` function takes a string as input and truncates it to a
-     * maximum length of 20 characters. If the input string is longer than 20 characters, it will
-     * truncate the string and append "..." at the end. If the input string is 20 characters or shorter
-     * @returns The `autoTruncateString` function is returning a truncated version of the input string
-     * if its length exceeds 20 characters. If the input string is longer than 20 characters, the
-     * function will return the first 20 characters followed by "...". If the input string is 20
-     * characters or shorter, the function will return the original string.
-     */
+
     const autoTruncateString = (string) => {
         const maxLength = 20;
         return string.length > maxLength
@@ -96,29 +89,9 @@ export function useCommonUtilities() {
         return percentage.toFixed(0) > 100 ? 0 : percentage.toFixed(0);
     };
 
-    /**
-     * The `currencyFormat` function formats a numerical value as currency in Colombian Pesos (COP)
-     * with no decimal places.
-     * @param value - The `value` parameter represents the numerical value that you want to format as a
-     * currency.
-     * @param currency - The `currency` parameter in the `currencyFormat` function represents the currency
-     * code that specifies the currency to be used for formatting the value. If the `currency` parameter
-     * is not provided or is `null`, the default currency used is "COP" (Colombian Peso).
-     * @returns The `currencyFormat` function returns a formatted currency string based on the input
-     * `value` and `currency` parameters. If `value` is undefined or null, it returns "Sin definir".
-     * Otherwise, it formats the `value` as a currency value using the `toLocaleString` method with the
-     * specified options, including the currency symbol based on the `currency` parameter (defaulting
-     */
-    const currencyFormat = (value, currency) => {
-        if (value == null) {
-            return "Sin definir";
-        }
-        const formattedValue = new Intl.NumberFormat("es-CO", {
-            style: "currency",
-            currency: currency ?? "COP",
-            maximumFractionDigits: 0,
-        }).format(value);
-        return formattedValue; // Elimina los espacios en blanco
+
+    const currencyFormat = (value) => {
+       return COP.format(value);
     };
 
     /**

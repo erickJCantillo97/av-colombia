@@ -349,6 +349,7 @@ defineEmits(["valueChange"]);
         <Select
           v-else-if="type == 'dropdown'"
           :virtualScrollerOptions="{ itemSize: 38 }"
+          :required
           :optionValue
           :id
           :disabled

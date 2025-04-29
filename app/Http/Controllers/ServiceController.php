@@ -2,71 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreServiceRequest;
-use App\Http\Requests\UpdateServiceRequest;
+use App\Http\Requests\Service\StoreServiceRequest;
+use App\Http\Requests\Service\UpdateServiceRequest;
+use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\Availability;
-use App\Models\BookingService;
 use App\Models\Feature;
 use App\Models\Horario;
 use App\Models\Image;
 use App\Models\Included;
-use App\Models\Lock;
-use App\Models\Note;
-use App\Models\Precie;
-use App\Models\Proveedor;
 use App\Models\Service;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Exception;
 
+
 class ServiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(
+        private ServiceRepositoryInterface $serviceRepository
+    ) {}
+
     public function index(Request $request)
     {
-        if ($request->user_id) {
-            Auth::login(User::find($request->user_id));
-        }
-        if ($request->expectsJson()) {
-            $search = '%' . $request->search . '%';
-            $service = Service::with('locks')
-                ->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies');
-            if ($request->date) {
-                $service->whereHas('availabilities', function ($query) use ($request) {
-                    $query
-                        ->where('start_date', '<=', $request->date)
-                        ->where('end_date', '>=', $request->date);
-                });
-            }
-            if ($request->type) {
-                $service->where('type', $request->type);
-            }
-            if ($request->search) {
-                $service->whereAny([
-                    'title',
-                    'title_en',
-                    'description',
-                    'description_en',
-                ], 'LIKE', $search);
-            }
-            return response()->json([
-                'services' => $service->get(),
-            ]);
-        }
         return Inertia::render('Services/Index', [
-            'services' => Service::with('locks')->get(),
+            'services' => $this->serviceRepository->getAll(),
+        ]);
+    }
+
+    public function getServices(Request $request)
+    {
+        return response()->json([
+            'services' => $this->serviceRepository->search($request->all()),
         ]);
     }
 
     public function home(Request $request)
     {
-        // dd($request->all());
         return Inertia::render('Home/Services', [
             'search' => $request->search,
             'date' => $request->date,
@@ -74,40 +45,21 @@ class ServiceController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $features = Feature::orderBy('name')->get();
-
         return Inertia::render('Services/Form', [
             'features' => $features,
             'included' => Included::orderBy('name')->pluck('name')->toArray()
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreServiceRequest $request)
     {
-        $included = array_merge(json_decode($request->includes), json_decode($request->notIncludes));
-        foreach ($included as $i) {
-            Included::firstOrCreate(['name' => $i]);
-        }
-        $validated = $request->validated();
-        if ($request->hasFile('portada')) {
-            $validated['portada'] = $request->file('portada')->store('public/images');
-        }
-        $service = Service::create($validated);
-
+        $service = $this->serviceRepository->create($request->validated());
         return redirect()->route('services.edit', $service->slug)->with('message', 'Servicio creado');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Service $service)
     {
         return Inertia::render('Services/Show', [
@@ -118,9 +70,6 @@ class ServiceController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Service $service)
     {
         $features = Feature::orderBy('name')->get();
@@ -135,21 +84,9 @@ class ServiceController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateServiceRequest $request, Service $service)
+    public function update(UpdateServiceRequest $request, $service)
     {
-        $includes = json_decode($request->includes) ?? [];
-        $notIncludes = json_decode($request->notIncludes) ?? [];
-        $included = array_merge($includes, $notIncludes);
-        foreach ($included as $i) {
-            Included::firstOrCreate(['name' => $i]);
-        }
-        if ($request->hasFile('portada')) {
-            $service->portada = $request->file('portada')->store('public/images');
-        }
-        $service->update($request->validated());
+        $this->serviceRepository->update($service, $request->validated());
     }
 
     public function uploadImage(Request $request, Service $service)
@@ -171,104 +108,25 @@ class ServiceController extends Controller
     public function deleteImage(Image $image)
     {
         $image->delete();
-        // $service->images()->where('id', request('image'))->delete();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $uuid)
     {
         try {
-            Service::where('id', $uuid)->first()->delete();
+            $this->serviceRepository->delete($uuid);
         } catch (Exception $e) {
             return Back()->withErrors(['message' => 'No se puedo Eliminar']);
         }
     }
 
-    public function lock(Service $service, Request $request)
-    {
-        $validate = $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'description' => 'required|string',
-        ]);
-        $validate['start_date'] = Carbon::parse($validate['start_date'])->format('Y-m-d');
-        $validate['end_date'] = Carbon::parse($validate['end_date'])->format('Y-m-d');
-        $validate['user_id'] = auth()->user()->id;
-        $service->locks()->create($validate);
-    }
-
-    public function unlock(Lock $lock)
-    {
-        $lock->delete();
-        return back()->with('message', 'Lock eliminado');
-    }
-
-    public function setStatus()
-    {
-        $service = BookingService::where('id', request('service'))->first();
-        $service->update(['fecha_cancelacion' => null]);
-        if (request('state') == 'CANCELADA') {
-            // $service->proveedors()->delete();
-            $service->update(['fecha_cancelacion' => request('date')]);
-        }
-        if (request('state') == 'CAMBIO DE FECHA') {
-            $service->update([
-                'date' => Carbon::parse(request('date'))->format('Y-m-d'),
-            ]);
-        }
-        if (request('state') == 'REUBICADO') {
-            $proveedorService = DB::table('booking_proveedors')
-                ->where('id', request('current_id'))
-                ->update([
-                    'proveedor_id' => request('new_id')['id'],
-                    'cost' => request('value'),
-                ]);
-            // dd($proveedorService);
-
-            if (request('note')) {
-                Note::create([
-                    'booking_service_id' => $service->id,
-                    'note' => request('note'),
-                    'user_id' => auth()->user()->id,
-                ]);
-            };
-        }
-        // dd($service);
-        storeState($service, request('state'), request('terminated'));
-        return back()->with('message', 'Estado actualizado');
-    }
-
-    public function updateStart(Service $service, Request $request)
-    {
-        $validate = $request->validate([
-            'availability_type' => 'required|string',
-            'price_type' => 'required|string',
-            'horarios' => 'required|array',
-        ]);
-        // dd($validate['horarios']);
-        foreach ($validate['horarios'] as $horario) {
-            Horario::where('availability_id', $horario['id'])->delete();
-            foreach ($horario['days'] as $index => $day) {
-                foreach ($day['times'] as $time)
-                    Horario::create([
-                        'availability_id' => $horario['id'],
-                        'day' => $day['day'],
-                        'day_number' => $index + 1,
-                        'start' => $time['start']['hours'] . ':' . $time['start']['minutes'],
-                        'end' => $time['end'] ? $time['end']['hours'] . ':' . $time['end']['minutes'] : null,
-                    ]);
-            }
-        }
-
-        unset($validate['horarios']);
-        $service->update($validate);
-        return back()->with('message', 'Servicio iniciado');
-    }
-
     public function checkOut(Request $request)
     {
         return Inertia::render('Home/CheckOut');
+    }
+
+    public function getProveedorsByService($id){
+        return  response()->json([
+            'proveedors' => $this->serviceRepository->getProveedors($id),
+        ]);
     }
 }

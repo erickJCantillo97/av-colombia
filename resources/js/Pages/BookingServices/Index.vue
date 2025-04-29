@@ -1,7 +1,7 @@
 <template>
   <AppLayout title="Reservas">
     <div
-      class="hidden bg-amber-200 bg-orange-200 !bg-blue-200 !bg-green-200 !bg-gray-200 !bg-orange-200 !bg-amber-200"
+      class="hidden bg-amber-200 bg-orange-200 bg-blue-200 !bg-green-200 !bg-gray-200 !bg-orange-200 !bg-amber-200"
     ></div>
     <div class="h-[92vh]">
       <div class="flex py-2 px-4 justify-between items-center">
@@ -325,7 +325,6 @@
             v-else
             severity="success"
             label="Guardar"
-            :loading
             @click="reservar"
           />
         </div>
@@ -448,7 +447,7 @@ const columns = [
     filtertype: "EQUALS",
     class: "text-center uppercase",
     severitys: [
-      { text: "reservado", severity: "info", class: "" },
+      { text: "RESERVADO", severity: "info", class: "" },
       { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
       { text: "COMPLETADA", severity: "success", class: "" },
       { text: "NO SHOW", severity: "warn", class: "" },
@@ -461,7 +460,7 @@ const columns = [
 ];
 
 const statues = [
-  { text: "reservado", color: "blue" },
+  { text: "RESERVADO", color: "blue" },
   { text: "CAMBIO DE FECHA", color: "gray" },
   { text: "NO SHOW", color: "amber" },
   { text: "REUBICADO", color: "orange" },
@@ -471,8 +470,9 @@ const statues = [
 
 const add = {
   action: () => {
-    form.reset();
-    show.value = true;
+    router.get(route("BookingServices.create"));
+    // form.reset();
+    // show.value = true;
   },
 };
 const proveedorsAdd = ref([
@@ -522,11 +522,6 @@ const totalPax = computed(() => {
   return form.total / form.adults;
 });
 
-const valorReal = computed(() => {
-  let chanel = channels.value.find((channel) => channel.id == form.channel_id);
-  let chanelValue = chanel ? chanel.percent / 100 : 0;
-  return form.total - form.total * chanelValue;
-});
 
 const disabledDates = computed(() => {
   var dates = [];
@@ -557,7 +552,6 @@ const form = useForm({
   cliente_phone: "",
   cliente_city: "",
   cliente_building: "",
-  // hour: '',
   mascota: 0,
   persona_adicional: 0,
   cobre_transaccion: 0,
@@ -578,12 +572,7 @@ const form = useForm({
 
 // #endregion
 
-// #region Metodos
-const getServices = () => {
-  axios.get(route("services.index")).then((response) => {
-    services.value = response.data.services;
-  });
-};
+
 
 const addProveedor = () => {
   proveedorsAdd.value.push({
@@ -634,19 +623,7 @@ const selectedProveedor = (proveedor) => {
   proveedor.costo = proveedor.proveedor.pivot.value * form.adults;
 };
 
-const getChannels = () => {
-  axios
-    .get(route("channels.index"))
-    .then((response) => {
-      channels.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
 
-getServices();
-getChannels();
 
 const buttons = [
   {
@@ -664,6 +641,7 @@ const buttons = [
   {
     label: "Editar",
     action: async (data) => {
+        router.get(route("BookingServices.edit", data.id));
       // form.date = data.date + ',' + data.hour;
       form.id = data.id;
       const formatDateTime = (date, time) => {
@@ -782,63 +760,6 @@ const buttons = [
 
 const loading = ref(false);
 
-const reservar = (event) => {
-  event.preventDefault();
-  if (!form.cliente_building) {
-    toast("error", "Rellene Todos los Campos");
-    return 0;
-  }
-  form.total_real = valorReal.value;
-  form.percent_channel = channels.value.find(
-    (channel) => channel.id == form.channel_id
-  ).percent;
-  loading.value = true;
-  form.proveedors = proveedorsAdd.value;
-  form.extras = extrasAdd.value;
-  form.post(route("BookingServices.store"), {
-    onSuccess: () => {
-      form.reset();
-      loading.value = false;
-      show.value = false;
-      toast("success", "Reserva creada con exito");
-    },
-    onError: () => {
-      loading.value = false;
-      toast("error", "Error al crear la reserva");
-    },
-  });
-};
-
-const update = () => {
-  form.total_real = valorReal.value;
-  form.percent_channel = channels.value.find(
-    (channel) => channel.id == form.channel_id
-  ).percent;
-  form.proveedors = proveedorsAdd.value;
-  form.put(route("BookingServices.update", form.id), {
-    onSuccess: () => {
-      show.value = false;
-      toast("success", "Reserva actualizada con exito");
-    },
-  });
-};
-
-const getMethos = () => {
-  axios
-    .get(route("paymentMethods.index"))
-    .then((response) => {
-      methods.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-getMethos();
-
-const parseDate = (dateString) => {
-  const [year, month, day] = dateString.split("-");
-  return new Date(year, month - 1, day);
-};
 
 const dataFilter = ref([]);
 

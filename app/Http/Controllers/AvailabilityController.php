@@ -69,16 +69,5 @@ class AvailabilityController extends Controller
             ]);
         }
 
-        // $table->uuid('id')->primary();
-        // $table->foreignUuid('availability_id')->constrained()->cascadeOnDelete();
-        // $table->integer('min')->nullable();
-        // $table->integer('max')->nullable();
-        // $table->integer('duration')->nullable();
-        // $table->string('duration_type')->nullable();
-        // $table->double('value')->nullable();
-        // foreach ($availabilities as $availability) {
-        //     $availability->syncPrices();
-        // }
-        // return response()->json(null, 200);
     }
 }

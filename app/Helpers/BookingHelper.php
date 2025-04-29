@@ -18,9 +18,7 @@ function reservar(
     $dataReserva['adult_tarifa'] = $service->adult_tarifa;
     $dataReserva['boys_price'] = $service->boys_price;
     $dataReserva['boys_tarifa'] = $service->boy_tarifa;
-    $booking = BookingService::create($dataReserva);
-
-    return $booking;
+    return BookingService::create($dataReserva);
 }
 
 function addBookingServiceProveedors(BookingService $bookingService, $proveedors)

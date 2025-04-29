@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class BookingService extends Model
 {
@@ -24,8 +26,8 @@ class BookingService extends Model
     protected static function booted(): void
     {
         static::addGlobalScope('ancient', function (Builder $builder) {
-            if (auth()->user() != null && auth()->user()->rol == 'hotel') {
-                $builder->where('user_id', auth()->user()->id);
+            if (Auth::user() != null && Auth::user()->rol == 'hotel') {
+                $builder->where('user_id', Auth::user()->id);
             }
         });
     }

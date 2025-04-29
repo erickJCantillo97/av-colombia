@@ -5,62 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Lock;
 use App\Http\Requests\StoreLockRequest;
 use App\Http\Requests\UpdateLockRequest;
+use App\Interfaces\LockRepositoryInterface;
 
 class LockController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+    public function __construct(
+        private LockRepositoryInterface $lockRepository
+    ) {}
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreLockRequest $request)
     {
-        //
+        $this->lockRepository->create($request->validated());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Lock $lock)
+    public function update(UpdateLockRequest $request, $lock)
     {
-        //
+        $this->lockRepository->update($lock, $request->validated());
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Lock $lock)
+    public function destroy($lock)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateLockRequest $request, Lock $lock)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Lock $lock)
-    {
-        //
+        $this->lockRepository->delete($lock);
     }
 }

@@ -565,7 +565,7 @@ const getDataFilter = (data) => {
     >
       <template #body="{ data }">
         <div
-          class="flex items-center justify-center bg-white rounded-md shadow-sm gap-0.5"
+          class="flex items-center justify-center  rounded-md shadow-sm gap-0.5"
         >
           <span v-for="button in props.actions">
             {{ button.event ? console.log(mensaje) : undefined }}

@@ -1,0 +1,1 @@
+import{fi as o,C as r,d as s}from"./app-D29pFDmz.js";const a=o("HomeStore",()=>{const e=r({type:"Tour",ciudad:"",search:"",date:""}),t=s({icon:"pi pi-th-large",value:"grid"});return{form:e,typeList:t}},{persist:{storage:sessionStorage,paths:["form","typeList"]}});export{a as u};
