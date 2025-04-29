@@ -64,6 +64,6 @@ const options = [
     { name: "Datos de la Reserva", value: 1 },
     { name: "Proveedores", value: 2, label: props.bookingService.proveedors.length },
     { name: "Extras", value: 3, label: props.bookingService.extras.length  },
-    { name: "Historial de Cambios", value: 4 },
+    { name: "Historial de Cambios", value: 4, label: props.bookingService.changes.length   },
 ];
 </script>
