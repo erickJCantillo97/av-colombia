@@ -52,7 +52,7 @@ import Index from './Components/Proveedor/Index.vue';
 import IndexExtra from './Components/Extra/Index.vue';
 import Changes from './Components/Changes/Changes.vue';
 
-const value = ref(4);
+const value = ref(1);
 
 const props = defineProps({
     bookingService: Object
