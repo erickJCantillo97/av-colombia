@@ -32,7 +32,7 @@ class ServiceController extends Controller
     public function getServices(Request $request)
     {
         return response()->json([
-            'services' => $this->serviceRepository->search($request->all()),
+            'services' => $this->serviceRepository->getAll(),
         ]);
     }
 

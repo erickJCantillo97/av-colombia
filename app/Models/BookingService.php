@@ -97,4 +97,8 @@ class BookingService extends Model
             set: fn($value) => $value,
         );
     }
+    public function changes()
+    {
+        return $this->hasMany(Change::class, 'booking_service_id');
+    }
 }

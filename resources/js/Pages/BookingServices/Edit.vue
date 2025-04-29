@@ -34,6 +34,11 @@
                 <IndexExtra class="mx-4" :bookingService></IndexExtra>
             </div>
 
+            <div v-if="value == 4" class="p-4">
+                <Changes class="mx-4" :bookingService></Changes>
+            </div>
+
+
         </div>
     </AppLayout>
 </template>
@@ -45,8 +50,9 @@ import BookingServices from '@/Models/BookingServices/BookingServices'
 import { Link } from '@inertiajs/vue3';
 import Index from './Components/Proveedor/Index.vue';
 import IndexExtra from './Components/Extra/Index.vue';
+import Changes from './Components/Changes/Changes.vue';
 
-const value = ref(1);
+const value = ref(4);
 
 const props = defineProps({
     bookingService: Object

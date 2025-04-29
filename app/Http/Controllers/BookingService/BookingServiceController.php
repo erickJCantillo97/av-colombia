@@ -72,6 +72,7 @@ class BookingServiceController extends Controller
             'bookingService' => $bookingService,
             'bookingServiceProveedors' => $bookingService->proveedors->load('proveedor'),
             'bookingServiceExtras' => $bookingService->extras,
+            'changes' => $bookingService->changes->load('user'),
         ]);
 
     }

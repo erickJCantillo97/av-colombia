@@ -31,7 +31,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
 
     public function getRecentAll()
     {
-        $booking = $this->model->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
+        $booking = $this->model->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes', 'changes')
             ->orderBy('created_at', 'DESC')->where('created_at', '>=', now()->subDays(90));
 
         if (Auth::user()->rol == 'vendedor') {
@@ -76,6 +76,12 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             'statable_id' => $bookingService->id,
             'state' => 'reservado',
         ]);
+        $this->addChange(
+            $bookingService,
+            [
+                'description' => 'Reserva creada',
+            ]
+        );
         return $bookingService;
     }
 
@@ -91,7 +97,23 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $data['adult_tarifa'] = $service->adult_tarifa;
         $data['boys_price'] = $service->boys_price;
         $data['boys_tarifa'] = $service->boy_tarifa;
-        return  $this->getById($id)->update($data);
+        $bookingService =  $this->getById($id);
+        $bookingService->fill($data);
+        $changes = $bookingService->getDirty();
+        $original = $bookingService->getOriginal();
+        foreach ($changes as $key => $newValue) {
+            $oldValue = $original[$key] ?? null;
+            $this->addChange(
+                $bookingService,
+                [
+                    'field' => $key,
+                    'before' => $oldValue,
+                    'after' => $newValue,
+                ]
+                );
+        }
+
+        return $bookingService->save();
     }
 
 
@@ -155,5 +177,11 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             }),
             'extras' => $booking->extras,
         ];
+    }
+
+    private function addChange(BookingService $bookingService, $data)
+    {
+
+        addChanges($bookingService, $data);
     }
 }

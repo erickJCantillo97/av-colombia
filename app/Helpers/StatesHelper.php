@@ -12,4 +12,10 @@ function storeState($statable, $state = 'RESERVADO', $terminated = false)
         'statable_type' => get_class($statable),
         'terminated' => $terminated
     ]);
+
+    addChanges($statable,
+    [
+        'description' => 'Estado actualizado a ' . $state,
+    ]
+    );
 }

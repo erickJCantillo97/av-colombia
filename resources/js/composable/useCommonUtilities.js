@@ -64,17 +64,6 @@ export function useCommonUtilities() {
         return `${differenceHours} H`;
     };
 
-    /**
-     * The function `calculatePercentage` calculates the percentage of a given data value in relation
-     * to a total value, ensuring the result is between 0 and 100.
-     * @param data - The `data` parameter represents the value for which you want to calculate the
-     * percentage. It is the part of the total for which you want to find the percentage.
-     * @param total - The `total` parameter in the `calculatePercentage` function represents the total
-     * value or total amount that you want to calculate the percentage of.
-     * @returns The function `calculatePercentage` returns the calculated percentage value as a whole
-     * number (rounded down) between 0 and 100. If the calculated percentage is greater than 100, it
-     * returns 100. If the calculated percentage is less than 0, it returns 0.
-     */
     const calculatePercentage = (data, total) => {
         let percentage = (data / total) * 100;
 
@@ -143,16 +132,7 @@ export function useCommonUtilities() {
         }
     }
 
-    /**
-     * The `format_ES_Date` function formats a given date into a string with Spanish (Colombian) locale
-     * including day, month, year, and weekday.
-     * @param date - The `date` parameter in the `format_ES_Date` function is the date that you want to
-     * format. It should be a valid date string or a Date object that you want to convert into a
-     * formatted date string in Spanish (Colombia) locale.
-     * @returns The `format_ES_Date` function returns a formatted date string in Spanish (Colombia)
-     * locale with the day in 2-digit format, the month in long format, the year in numeric format, and
-     * the weekday in long format.
-     */
+
     const format_ES_Date = (date) => {
         return new Date(date).toLocaleString("es-CO", {
             day: "2-digit",
@@ -182,37 +162,27 @@ export function useCommonUtilities() {
         return day === "00" ? "Indefinido" : `${day}/${month}/${year}`;
     }
 
-    /**
-     * The function `formatDateTime24h` converts a given date and time to a 24-hour format in the
-     * Spanish (Colombia) locale.
-     * @param dateTime - The `dateTime` parameter in the `formatDateTime24h` function should be a valid
-     * date and time string that can be parsed by the `Date` constructor in JavaScript. This can be in
-     * various formats such as ISO 8601 format (e.g., "2022-10-31T
-     * @returns The `formatDateTime24h` function takes a `dateTime` parameter, converts it to a Date
-     * object, and then returns the date and time in a specific format using the `toLocaleString`
-     * method with the locale set to "es-CO" (Spanish - Colombia). The returned value includes the
-     * year, month, day, hour (in 24-hour format), and minute in a 2
-     */
     function formatDateTime24h(dateTime, options = {}) {
+        const date = new Date(dateTime);
+        // Obtener las opciones de formato personalizadas o usar valores predeterminados
         const {
             year = "numeric",
             month = "2-digit",
             day = "2-digit",
+            hour = "2-digit",
+            minute = "2-digit",
+            second = "2-digit",
+        } = options;
+        // Formatear la fecha y hora en el formato deseado
+        const formattedDate = date.toLocaleString("es-CO", {
+            year,
+            month,
+            day,
             hour,
             minute,
-            hour12 = false,
-        } = options;
-
-        // Crear un objeto de opciones omitiendo las propiedades que son undefined
-        const formatOptions = {};
-        if (year !== undefined) formatOptions.year = year;
-        if (month !== undefined) formatOptions.month = month;
-        if (day !== undefined) formatOptions.day = day;
-        if (hour !== undefined) formatOptions.hour = hour;
-        if (minute !== undefined) formatOptions.minute = minute;
-        if (hour12 !== undefined) formatOptions.hour12 = hour12;
-
-        return new Date(dateTime).toLocaleString("es-CO", formatOptions);
+            hour12: false
+        });
+        return formattedDate;
     }
 
     // function formatDateTime24h(dateTime) {

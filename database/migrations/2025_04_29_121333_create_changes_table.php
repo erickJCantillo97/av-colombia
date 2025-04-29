@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('changes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users');
-            $table->morphs('changeable');
-            $table->string('change');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignUuid('booking_service_id')->constrained('booking_services');
+            $table->string('description')->nullable();
+            $table->string('field')->nullable();
+            $table->string('before')->nullable();
+            $table->string('after')->nullable();
             $table->timestamps();
         });
     }

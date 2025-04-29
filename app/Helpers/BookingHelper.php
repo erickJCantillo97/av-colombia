@@ -49,3 +49,9 @@ function addBookingServiceExtras(BookingService $bookingService, $extras)
         }
     }
 }
+
+function addChanges(BookingService $bookingService, $data)
+{
+    $data['user_id'] = Auth::id();
+    $bookingService->changes()->create($data);
+}
