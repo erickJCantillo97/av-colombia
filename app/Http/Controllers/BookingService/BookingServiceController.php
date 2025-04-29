@@ -37,9 +37,15 @@ class BookingServiceController extends Controller
         return Inertia::render('BookingServices/Create');
     }
 
-    public function getAllBookingServices()
+    public function getAllBookingServices(Request $request)
     {
-        $booking = $this->bookingServiceRepository->getAll();
+        $validated = $request->validate([
+            'dates' => 'required|array',
+            'dates.0' => 'required|date',
+            'dates.1' => 'required|date',
+        ]);
+
+        $booking = $this->bookingServiceRepository->getAllByDate($validated['dates']);
         return response()->json(['bookingServices' => $booking], 200);
     }
 
