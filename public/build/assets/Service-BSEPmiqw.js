@@ -1,0 +1,1 @@
+import{y as r}from"./app-Dhq-tOD0.js";class a{constructor(){}async getProveedorsByService(e){const{data:t}=await r.get(route("get.proveedors.by.service",e));return t.proveedors}async getServices(){const{data:e}=await r.get(route("get.all.services"));return e.services}}export{a as S};
