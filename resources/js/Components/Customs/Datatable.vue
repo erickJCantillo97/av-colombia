@@ -116,11 +116,6 @@ const dataResponse = defineModel("dataResponse", {
   default: [],
 });
 
-// const dataFilter = defineModel("dataFilter", {
-//   required: false,
-//   type: Array,
-//   default: [],
-// });
 const selectAll = defineModel("selectAll");
 
 const emit = defineEmits([
@@ -139,7 +134,6 @@ onMounted(() => {
   rows.value = props.rowsDefault;
 });
 
-//#region Filtros de tabla y visor columnas
 const rows = ref();
 const filters = ref({});
 const globalFilterFields = ref([]);

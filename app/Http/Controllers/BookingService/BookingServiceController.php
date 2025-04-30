@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class BookingServiceController extends Controller
 {
@@ -30,6 +31,11 @@ class BookingServiceController extends Controller
         return Inertia::render('BookingServices/Index', [
             'bookingServices' => $this->bookingServiceRepository->getRecentAll(),
         ]);
+    }
+
+    public function getAll(){
+        $booking = $this->bookingServiceRepository->getAll();
+        return response()->json(['bookingServices' => $booking], 200);
     }
 
     public function create()
@@ -224,7 +230,7 @@ class BookingServiceController extends Controller
             Note::create([
                 'booking_service_id' => $service->id,
                 'note' => $request['notes'],
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
             ]);
         };
 

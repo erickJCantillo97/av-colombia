@@ -67,22 +67,12 @@ const configCalendar = reactive({
 const calendarApp = createCalendar(configCalendar);
 const visible = ref(false);
 // #endregion
-// #region Methods
-const totalPasajeros = ref(0);
+// #region Method
 const selectDate = ref([new Date(), new Date()]);
-const getServicesSelectedDate = () => {
-  dateActivities.value = reservas.value.filter((item) => {
-    var fecha = new Date(item.date).toISOString().split("T")[0];
-    return (
-      fecha >= new Date(selectDate.value[0]).toISOString().split("T")[0] &&
-      fecha <= new Date(selectDate.value[1]).toISOString().split("T")[0]
-    );
-  });
-  totalPasajeros.value = dateActivities.value.reduce((acc, item) => acc + item.adults, 0);
-};
+
 
 const getReservas = () => {
-  axios.get(route("get.all.booking.services", {
+  axios.get(route("get.all.booking.services.dates", {
     dates: selectDate.value
   })).then((response) => {
     dateActivities.value = response.data.bookingServices;

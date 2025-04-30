@@ -16,7 +16,8 @@ Route::middleware([
     Route::resource('BookingServiceExtras', BookingExtrasController::class);
     Route::get('getProveedorByBookingService/{bookingServiceId}', [BookingServiceProveedorController::class, 'getProveedorByBookingService'])->name('get.proveedor.by.booking.service');
     Route::controller(BookingServiceController::class)->group(function () {
-        Route::get('getAllBookingServices', 'getAllBookingServices')->name('get.all.booking.services');
+        Route::get('getAllBookingServicesByDates', 'getAllBookingServices')->name('get.all.booking.services.dates');
+        Route::get('getAllBookingServices', 'getAll')->name('get.all.booking');
         Route::get('getBookingServicesNoPayment', 'getBookingServicesNoPayment')->name('get.services.no.payment');
         Route::post('BookingServices/{bookingService}/problematic', 'problematic')->name('booking.problematic');
         Route::get('getBookingTimeRange', 'getBookingTimeRange')->name('get.booking.time.range');

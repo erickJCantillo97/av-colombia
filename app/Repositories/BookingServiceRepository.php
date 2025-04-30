@@ -32,11 +32,21 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
     public function getRecentAll()
     {
         $booking = $this->model->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes', 'changes')
-            ->orderBy('created_at', 'DESC')->where('created_at', '>=', now()->subDays(90));
+            ->orderBy('created_at', 'DESC')->where('created_at', '>=', now()->subDays(15));
 
         if (Auth::user()->rol == 'vendedor') {
             $booking = $booking->where('user_id', Auth::user()->id);
         }
+
+        return $booking->get()->map(function ($booking) {
+            return $this->map($booking);
+        });
+    }
+
+    public function getAll()
+    {
+        $booking = $this->model->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes', 'changes')
+            ->orderBy('created_at', 'DESC');
 
         return $booking->get()->map(function ($booking) {
             return $this->map($booking);
@@ -52,7 +62,6 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             $end_date
         ])->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
             ->orderBy('created_at', 'DESC');
-
         if (Auth::user()->rol == 'vendedor') {
             $booking = $booking->where('user_id', Auth::user()->id);
         }
