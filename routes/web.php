@@ -40,7 +40,7 @@ Route::middleware([
     // Routes for services
     Route::resource('services', ServiceController::class)->except(['update']);
     Route::controller(ServiceController::class)->group(function () {
-        Route::get('getAllServices', 'getServices')->name('get.all.services');
+
         Route::post('services/{service}/update', 'update')->name('services.update');
         Route::post('services/{service}/lock', 'lock')->name('services.lock');
         Route::put('updateServiceStart/{service}', 'updateStart')->name('update.start');
@@ -105,7 +105,7 @@ Route::middleware([
     // Route::post('uploadProveedors', [ProveedorController::class, 'upload'])->name('upload.proveedors');
 });
 
-Route::get('get-services', [ServiceController::class, 'index'])->name('get.services');
+Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('get.all.services');
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
 Route::get('check-out', [ServiceController::class, 'checkOut'])->name('check.out');

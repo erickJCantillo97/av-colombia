@@ -58,9 +58,13 @@ import Product from "./Product.vue";
 import Loading from "@/Components/Loading.vue";
 import { useHomeStore } from "@/stores/HomeStore";
 import { storeToRefs } from "pinia";
+import Service from "@/Models/Services/Service";
+
 
 const store = useHomeStore();
 const { typeList } = storeToRefs(store);
+
+const seriveModel = new Service();
 
 const services = ref([]);
 
@@ -74,30 +78,11 @@ const search = ref(props.search);
 const date = ref(props.date);
 const type = ref(props.type);
 
-onMounted(() => {
-  getServices();
+onMounted( async () => {
+  services.value = await seriveModel.getServices();
 });
 
 const searching = ref(false);
-const getServices = () => {
-  searching.value = true;
-  axios
-    .get(
-      route("get.services", {
-        search: search.value,
-        date: date.value,
-        type: type.value,
-      })
-    )
-    .then((response) => {
-      searching.value = false;
-      services.value = response.data.services;
-    });
-};
-
-watch([search, date, type], () => {
-  getServices();
-});
 
 const op = ref();
 

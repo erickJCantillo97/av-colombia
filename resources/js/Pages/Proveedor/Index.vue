@@ -71,7 +71,7 @@
         class="w-2/3 col-sapn-1 md:col-span-3 border rounded-lg "
         v-if="
           $page.props.auth.user.rol == 'admin' ||
-          $page.props.auth.user.rol == 'SUPER ADMINISTRADOR'
+          $page.props.auth.user.rol == 'superadmin'
         "
       >
         <h1
@@ -135,13 +135,20 @@ import Input from "@/Components/Customs/Input.vue";
 import Modal from "@/Components/Customs/Modal.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { alerts } from "@/composable/toasts";
 import Swal from "sweetalert2";
 import CustomUpload from "@/Components/CustomUpload.vue";
+import Service from "@/Models/Services/Service";
 
 const { toast } = alerts();
+const services = ref([]);
 
+
+const serviceModel = new Service();
+onMounted(async () => {
+  services.value = await serviceModel.getServices();
+});
 const visible = ref(false);
 const add = {
   action: () => {
@@ -217,13 +224,7 @@ const columnas = [
   },
 ];
 
-const services = ref([]);
-const getServices = () => {
-  axios.get(route("get.services")).then((response) => {
-    services.value = response.data.services;
-  });
-};
-getServices();
+
 
 const form = useForm({
   id: null,
