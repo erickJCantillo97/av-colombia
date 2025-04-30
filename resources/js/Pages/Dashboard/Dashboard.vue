@@ -3,23 +3,23 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import axios from "axios";
 import { reactive, ref } from "vue";
-import { createEventsServicePlugin } from "@schedule-x/events-service";
-import {
-  createCalendar,
-  createViewMonthGrid,
-  createViewWeek,
-} from "@schedule-x/calendar";
-import "@schedule-x/theme-default/dist/index.css";
-import { viewMonthGrid } from "@schedule-x/calendar";
-import Datatable from "@/Components/Customs/Datatable.vue";
+// import { createEventsServicePlugin } from "@schedule-x/events-service";
+// import {
+//   createCalendar,
+//   createViewMonthGrid,
+//   createViewWeek,
+// } from "@schedule-x/calendar";
+// import "@schedule-x/theme-default/dist/index.css";
+// import { viewMonthGrid } from "@schedule-x/calendar";
 import Scheduler from "./Scheduler.vue";
+import Datatable from "@/Components/Customs/Datatable.vue";
 import ViewBooking from "@/Components/viewBooking.vue";
 import Notas from "@/Components/Customs/Notas.vue";
 import Completar from "@/Components/Customs/Completar.vue";
 // #endregion
 
 // #region CalendarPlugins
-const eventsServicePlugin = createEventsServicePlugin();
+// const eventsServicePlugin = createEventsServicePlugin();
 
 // #endregion
 
@@ -38,54 +38,57 @@ const reservas = ref();
 const todayActivity = ref(false);
 const completar = ref(false);
 const serviceSelected = ref({});
-const configCalendar = reactive({
-  defaultView: viewMonthGrid.name,
-  dayBoundaries: {
-    start: "06:00",
-    end: "19:00",
-  },
-  isResponsive: false,
-  weekOptions: {
-    gridHeight: 500,
-    nDays: 7,
-    timeAxisFormatOptions: { hour: "2-digit", minute: "2-digit" },
-  },
-  dayOptions: {
-    gridHeight: 400,
-  },
-  locale: "es-ES",
-  selectedDate: new Date().toISOString().split("T")[0],
-  views: [createViewMonthGrid(), createViewWeek()],
-  callbacks: {
-    onEventClick(calendarEvent) {
-      editBooking(calendarEvent);
-    },
-  },
-  events: [],
-  plugins: [eventsServicePlugin],
-});
-const calendarApp = createCalendar(configCalendar);
+// const configCalendar = reactive({
+//   defaultView: viewMonthGrid.name,
+//   dayBoundaries: {
+//     start: "06:00",
+//     end: "19:00",
+//   },
+//   isResponsive: false,
+//   weekOptions: {
+//     gridHeight: 500,
+//     nDays: 7,
+//     timeAxisFormatOptions: { hour: "2-digit", minute: "2-digit" },
+//   },
+//   dayOptions: {
+//     gridHeight: 400,
+//   },
+//   locale: "es-ES",
+//   selectedDate: new Date().toISOString().split("T")[0],
+//   views: [createViewMonthGrid(), createViewWeek()],
+//   callbacks: {
+//     onEventClick(calendarEvent) {
+//       editBooking(calendarEvent);
+//     },
+//   },
+//   events: [],
+//   plugins: [eventsServicePlugin],
+// });
+// const calendarApp = createCalendar(configCalendar);
 const visible = ref(false);
 // #endregion
 // #region Method
 const selectDate = ref([new Date(), new Date()]);
 
 
-const getReservas = () => {
-  axios.get(route("get.all.booking.services.dates", {
+const getReservas = async () => {
+  const {data} = await axios.get(route("get.all.booking.services.dates", {
     dates: selectDate.value
-  })).then((response) => {
-    dateActivities.value = response.data.bookingServices;
-    dateActivities.value.forEach((item) => {
-      calendarApp.eventsService.add({
-        title: item.service.title,
-        start: item.date + " " + item.hour.substring(0, 5),
-        description: item.total_price,
-        end: item.date + " " + (parseInt(item.hour[1]) + 5) + item.hour.substring(2, 5),
-        id: item.id,
-      });
-    });
-  });
+  }))
+
+  dateActivities.value = data.bookingServices;
+//   .then((response) => {
+//     dateActivities.value = response.data.bookingServices;
+//     // dateActivities.value.forEach((item) => {
+//     //   calendarApp.eventsService.add({
+//     //     title: item.service.title,
+//     //     start: item.date + " " + item.hour.substring(0, 5),
+//     //     description: item.total_price,
+//     //     end: item.date + " " + (parseInt(item.hour[1]) + 5) + item.hour.substring(2, 5),
+//     //     id: item.id,
+//     //   });
+//     // });
+//   });
 };
 
 const editBooking = (data) => {
@@ -206,11 +209,11 @@ const columns = [
   },
 ];
 
-const handleEventClick = (event) => {
-  let serviceSelected = reservas.value.find((item) => item.id == event.Id);
-  editBooking(serviceSelected);
+// const handleEventClick = (event) => {
+//   let serviceSelected = reservas.value.find((item) => item.id == event.Id);
+//   editBooking(serviceSelected);
 
-};
+// };
 
 const dataFilter = ref([]);
 const getDataFilter = (data) => {
@@ -248,7 +251,7 @@ const getDataFilter = (data) => {
             @value-change="getReservas"
           />
         </div>
-        <div class="shadow-xl rounded-lg p-1">
+        <div class="shadow-xl rounded-lg p-1 h-[85vh]">
           <Datatable
             :columnas="columns"
             :rowClass="true"
@@ -272,7 +275,7 @@ const getDataFilter = (data) => {
             </template>
           </Datatable>
         </div>
-        <Scheduler v-if="reservas" :reservas @event-click="handleEventClick"></Scheduler>
+        <!-- <Scheduler v-if="reservas" :reservas @event-click="handleEventClick"></Scheduler> -->
       </div>
     </div>
   </AppLayout>
