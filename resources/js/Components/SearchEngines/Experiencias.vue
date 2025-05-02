@@ -15,7 +15,7 @@ const searchRef = ref(null);
 
 const props = defineProps({
   type: {
-    type: Boolean,
+    type: String,
   },
 });
 

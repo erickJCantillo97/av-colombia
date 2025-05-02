@@ -40,7 +40,6 @@ Route::middleware([
     // Routes for services
     Route::resource('services', ServiceController::class)->except(['update']);
     Route::controller(ServiceController::class)->group(function () {
-
         Route::post('services/{service}/update', 'update')->name('services.update');
         Route::post('services/{service}/lock', 'lock')->name('services.lock');
         Route::put('updateServiceStart/{service}', 'updateStart')->name('update.start');

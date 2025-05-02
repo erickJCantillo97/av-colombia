@@ -1,1 +1,0 @@
-import{fd as o,C as r,d as s}from"./app-Ci2Q5IHV.js";const i=o("HomeStore",()=>{const e=r({type:"Tour",ciudad:"",search:"",date:""}),t=s({icon:"pi pi-th-large",value:"grid"});return{form:e,typeList:t}},{persist:{storage:sessionStorage,paths:["form","typeList"]}});export{i as u};

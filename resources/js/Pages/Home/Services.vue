@@ -86,28 +86,4 @@ const searching = ref(false);
 
 const op = ref();
 
-const serviceType = ref([
-  { name: "Experiencias", icon: "fa-umbrella-beach", value: "TOUR" },
-  { name: "Alojamiento", icon: "fa-hotel", value: "ALOJAMIENTO" },
-  { name: "Transporte", icon: "fa-car", value: "TRANSFER" },
-  { name: "Embarcaciones", icon: "fa-ship", value: "EMBARCACIONES" },
-]);
-
-const options = ref([
-  { icon: "pi pi-list", value: "list" },
-  { icon: "pi pi-th-large", value: "grid" },
-]);
-
-const toggle = (event) => {
-  op.value.toggle(event);
-};
-const selectMember = (member) => {
-  type.value = member.value;
-  op.value.hide();
-};
-
-const formatter = ref({
-  date: "DD/MM/YYYY",
-  month: "MM",
-});
 </script>
