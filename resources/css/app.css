@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --dp-border-radius: 100px; /*Configurable border-radius*/
+    --dp-cell-border-radius: 100px;
+}
 
 [x-cloak] {
     display: none;
@@ -40,7 +44,7 @@ html {
 }
 
 /* Estilo de la barra de desplazamiento (opcional) */
-/* Estos estilos son para navegadores basados en WebKit como Chrome y Safari. 
+/* Estos estilos son para navegadores basados en WebKit como Chrome y Safari.
 Puedes agregar estilos adicionales para otros navegadores según sea necesario. */
 .container::-webkit-scrollbar {
     width: 8px;

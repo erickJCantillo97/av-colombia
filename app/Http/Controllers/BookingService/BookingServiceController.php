@@ -109,12 +109,8 @@ class BookingServiceController extends Controller
      */
     public function destroy($bookingService)
     {
-        try {
             BookingService::find($bookingService)->delete();
-            return back()->with('message', 'Reservación eliminada correctamente');
-        } catch (Exception $e) {
-            return back()->withErrors('message', 'Error al eliminar la reservación');
-        }
+
     }
 
     public function getBookingServicesNoPayment()
