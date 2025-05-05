@@ -145,6 +145,10 @@ const initFilters = async () => {
   globalFilterFields.value = ["id"];
   for await (var columna of props.columnas) {
     if (columna.filter) {
+        filters.value[columna.field] = {
+        value: null,
+        matchMode: FilterMatchMode[columna.filtertype ? columna.filtertype : "CONTAINS"],
+      }
       globalFilterFields.value.push(columna.field);
     }
   }
