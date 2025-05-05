@@ -28,26 +28,9 @@
                     ">
                     <p class="text-xs font-bold uppercase">{{ status.text }}</p>
                     </div>
-                    <!-- <div   :class="[
-               ,
-                dataFilter == status.text
-                    ? 'border-2 border-gray-500 scale-105'
-                    : 'border-2 border-transparent scale-95',
-                    dataFilter.filter((x) => x.status == status.text).length == 0
-                    ? ''
-                    : 'cursor-pointer hover:scale-105 hover:border-2 hover:border-gray-500']">
-                        <p class="text-sm font-bold uppercase">{{ status.text }}</p>
-                        <p class="text-xs italic">
-                            {{ dataFilter.filter((x) => x.status == status.text).length}} Reservas |
-                            {{ dataFilter
-                                    .filter((x) => x.status == status.text)
-                                    .reduce((acc, item) => acc + item.adults, 0)
-                            }}
-                            Pasajeros
-                        </p>
-                    </div> -->
+
                 </div>
-                <DatePicker v-model="selectDate" selectionMode="range" dateFormat="dd/mm/yy"
+                <DatePicker v-model="selectDate" selectionMode="range"
                     v-tooltip.bottom="`Filtrar fecha de Actividad`" :manualInput="false" >
                 <template #footer>
                     <div class="w-full justify-between flex">
@@ -59,7 +42,7 @@
             </DatePicker>
             </div>
             <Datatable :actions="buttons" :add showButtonBar :columnas="columns" :data="bookings"
-                routecreate="services.create" :rowClass="true" @filterApply="getDataFilter">
+            cacheName="reservas" :rowClass="true" @filterApply="getDataFilter">
             </Datatable>
         </div>
         <ViewBooking v-model="info" :service="service" v-if="service" :proveedors="proveedors"></ViewBooking>
@@ -69,14 +52,17 @@
 <script setup>
 import Datatable from "@/Components/Customs/Datatable.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { Link, router, useForm, usePage, usePoll } from "@inertiajs/vue3";
-import { computed, ref, watch } from "vue";
+import {  router,  usePage, usePoll } from "@inertiajs/vue3";
+import {  ref, watch } from "vue";
 import { alerts } from "@/composable/toasts";
 import Swal from "sweetalert2";
 import ViewBooking from "@/Components/viewBooking.vue";
 import Changes from "@/Components/Customs/Changes.vue";
 import Notas from "@/Components/Customs/Notas.vue";
 import axios from "axios";
+import { storeToRefs } from "pinia";
+import { useBookingServiceStore } from "@/stores/BookingService";
+import { columns } from "./Columns";
 
 const props = defineProps({
     bookingServices: Array,
@@ -84,7 +70,6 @@ const props = defineProps({
 
 usePoll(1000 * 20);
 // #region Variables
-
 const { toast } = alerts();
 const proveedors = ref([]);
 const notes = ref([]);
@@ -93,82 +78,14 @@ const note = ref("");
 const serviceSelected = ref([]);
 const info = ref(false);
 const service = ref(null);
-const selectDate = ref([]);
-const statusFilter = ref(null);
-
+// const selectDate = ref([]);
 
 const todayActivity = ref(false);
-const columns = [
-    {
-        field: "created_at",
-        header: "Fecha Entrada",
-        filter: true,
-        sortable: true,
-        type: "date",
-    },
-    {
-        field: "cliente_name",
-        header: "Nombre del pasajero",
-        filter: true,
-        sortable: true,
-    },
-    {
-        field: "adults",
-        header: "Pasajeros",
-        filter: true,
-        sortable: true,
-    },
-    {
-        field: "cliente_building",
-        header: "Edificio u Hotel",
-        filter: true,
-        sortable: true,
-    },
-    {
-        field: "service",
-        header: "Actividad",
-        filter: true,
-        sortable: true,
-    },
-    {
-        field: "date",
-        header: "Fecha de la Actividad",
-        filter: false,
-        type: "date",
-        sortable: true,
-    },
-    {
-        field: "channel.name",
-        header: "Canal de venta",
-        filter: true,
-        sortable: true,
-    },
-    {
-        field: "proveedors_names",
-        header: "proveedores",
-        class: "text-center font-semibold text-sm",
-        filter: true,
-    },
-    {
-        field: "status",
-        header: "Estado",
-        filter: true,
-        sortable: true,
-        type: "tag",
-        filtertype: "EQUALS",
-        class: "text-center uppercase",
-        severitys: [
-            { text: "RESERVADO", severity: "info", class: "" },
-            { text: "CAMBIO DE FECHA", class: "bg-gray-200 font-bold" },
-            { text: "COMPLETADA", severity: "success", class: "" },
-            { text: "NO SHOW", severity: "warn", class: "" },
-            { text: "REUBICADO", severity: "warn", class: "" },
-            { text: "CANCELADA", severity: "danger", class: "animate-pulse" },
-            { text: "PROBLEMATICA", severity: "danger", class: "animate-pulse" },
-            { text: "SIN CONFIRMAR", severity: "danger" },
-        ],
-    },
-];
+const bookings = ref(props.bookingServices);
+
+const store = useBookingServiceStore();
+
+const { selectDate, statusFilter } = storeToRefs(store);
 
 const statues = [
     { text: "RESERVADO", color: "blue" },
@@ -185,10 +102,15 @@ const add = {
     },
 };
 
+const getReservas = async (dates) => {
+    const {data} = await axios.get(route("get.all.booking.services.dates", {
+        dates
+    }));
+    return data.bookingServices;
+};
 
-const bookings = ref(props.bookingServices);
 
-watch([selectDate, statusFilter,verTodos], async ([newValue, newValueStatusFilter, newVerTodos]) => {
+watch([selectDate, statusFilter, verTodos], async ([newValue, newValueStatusFilter, newVerTodos]) => {
     if(newVerTodos){
        selectDate.value = [
            new Date('2024-11-02'),
@@ -206,67 +128,17 @@ watch([selectDate, statusFilter,verTodos], async ([newValue, newValueStatusFilte
     if(newValueStatusFilter){
         bookings.value = bookings.value.filter((item) => item.status == newValueStatusFilter);
     }
-});
+}, { immediate: true }); // Add immediate:true to run on component mount
 
 const filteringByStatus = (status) => {
     statusFilter.value = status;
 };
-
-const bookingFecha = computed(() => {
-    if (!selectDate.value[0]) return props.bookingServices;
-    const [startDate, endDate] = selectDate.value.map(
-        (date) => new Date(date).toISOString().split("T")[0]
-    );
-    return props.bookingServices.filter((item) => {
-        const itemDate = new Date(item.date).toISOString().split("T")[0];
-        return itemDate >= startDate && itemDate <= endDate;
-    });
-});
-
-const getReservas = async (dates) => {
-    const {data} = await axios.get(route("get.all.booking.services.dates", {
-        dates
-    }));
-    return data.bookingServices;
-};
-
-
-const form = useForm({
-    id: "",
-    service_id: null,
-    date: "",
-    adults: 1,
-    time_service: "",
-    boys: 0,
-    cliente_name: "",
-    cliente_phone: "",
-    cliente_city: "",
-    cliente_building: "",
-    mascota: 0,
-    persona_adicional: 0,
-    cobre_transaccion: 0,
-    cobro_extra_cliente: 0,
-    reserva: 0,
-    abono: 0,
-    method_id: "",
-    channel_id: "9d99a95f-6c3d-48fd-aa7d-6ef4e6860123",
-    saldo: 0,
-    proveedors: [],
-    total: 0,
-    total_real: 0,
-    percent_channel: 0,
-    observations: "",
-    code_booking: "",
-    extras: [],
-});
-
 
 const buttons = [
     {
         label: "Detalles",
         action: async (data) => {
             service.value = data;
-            form.service_id = data.service_id;
             info.value = true;
             await getProveedors();
         },

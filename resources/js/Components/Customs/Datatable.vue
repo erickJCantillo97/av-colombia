@@ -135,19 +135,16 @@ onMounted(() => {
 });
 
 const rows = ref();
-const filters = ref({});
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
 const globalFilterFields = ref([]);
 const filterOK = ref(false);
 
 const initFilters = async () => {
   globalFilterFields.value = ["id"];
-  filters.value.global = { value: null, matchMode: FilterMatchMode.CONTAINS };
   for await (var columna of props.columnas) {
     if (columna.filter) {
-      filters.value[columna.field] = {
-        value: null,
-        matchMode: FilterMatchMode[columna.filtertype ? columna.filtertype : "CONTAINS"],
-      };
       globalFilterFields.value.push(columna.field);
     }
   }

@@ -198,4 +198,15 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
 
         addChanges($bookingService, $data);
     }
+
+    public function delete($id)
+    {
+        $bookingService = $this->getById($id);
+        $bookingService->notes()->delete();
+        $bookingService->changes()->delete();
+        $bookingService->payments()->delete();
+        $bookingService->extras()->delete();
+        $bookingService->proveedors()->delete();
+        $bookingService->delete();
+    }
 }
