@@ -6,25 +6,33 @@ use App\Models\Proveedor;
 use App\Http\Requests\StoreProveedorRequest;
 use App\Http\Requests\UpdateProveedorRequest;
 use App\Imports\ProveedorImport;
+use App\Interfaces\ProveedorRepositoryInterface;
 use App\Models\Service;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProveedorController extends Controller
 {
+
+    public function __construct(
+        private ProveedorRepositoryInterface $proveedorRepository
+    ){}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        $proveedors = Proveedor::with('services')->get();
-        if (request()->expectsJson()) {
-            return response()->json([
-                'proveedors' => $proveedors
-            ]);
-        }
+        $proveedors = $this->proveedorRepository->getAll();
         return inertia('Proveedor/Index', ['proveedores' => $proveedors]);
+    }
+
+    public function getAll(){
+        $proveedors = $this->proveedorRepository->getAll();
+        return response()->json([
+            'proveedors' => $proveedors
+        ]);
     }
 
     /**
@@ -40,16 +48,16 @@ class ProveedorController extends Controller
      */
     public function store(StoreProveedorRequest $request)
     {
-
-        $proveedor = Proveedor::create($request->validated());
-        foreach (request('services') as $service) {
-            $proveedor->services()->attach(
-                $service['service_id'],
-                ['value' => $service['value']],
-                ['concept' => $service['concept']]
-            );
+        try {
+            DB::beginTransaction();
+            $this->proveedorRepository->create($request->validated());
+            DB::commit();
+            return back()->with('Proveedor Creado');
+        } catch (Exception $th) {
+            DB::rollBack();
+            return back()->withErrors(['message' => 'Error Al crear el proveedor']);
         }
-        return back()->with('Proveedor Creado');
+
     }
 
     /**
@@ -71,19 +79,12 @@ class ProveedorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProveedorRequest $request, Proveedor $proveedor)
+    public function update(UpdateProveedorRequest $request, $proveedor)
     {
-        try {
-            $proveedor->update($request->validated());
-            $proveedor->services()->detach();
-            foreach (request('services') as $service) {
-                $proveedor->services()->attach($service['service_id'], ['value' => $service['value'], 'concept' => $service['concept']]);
-            }
+
+            $this->proveedorRepository->update($proveedor, $request->validated());
             return back()->with('Proveedor Actualizado');
-        } catch (\Throwable $th) {
-            dd($th);
-            return back()->withErrors(['message' => 'Error Al actualizar el proveedor']);
-        }
+
     }
 
     /**

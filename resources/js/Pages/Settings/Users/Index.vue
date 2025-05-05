@@ -402,7 +402,6 @@ const roles = [
   { label: "Administrador", value: "admin" },
   { label: "Cordinador", value: "cordinador" },
   { label: "Vendedor", value: "vendedor" },
-  // { label: "Cliente", value: "cliente" },
   { label: "Proveedor", value: "proveedor" },
   { label: "Hotel", value: "Hotel" },
   { label: "Agencia", value: "agencia" },

@@ -30,16 +30,22 @@
                     </div>
 
                 </div>
-                <DatePicker v-model="selectDate" selectionMode="range"
-                    v-tooltip.bottom="`Filtrar fecha de Actividad`" :manualInput="false" >
-                <template #footer>
-                    <div class="w-full justify-between flex">
-                        <Button @click="selectDate = []" label="Clear" size="small" severity="danger"></Button>
-                        <Button @click="verTodos = true" label="Ver Todos" size="small" severity="success"></Button>
-                    </div>
-                </template>
+                <div>
+                    <VueDatePicker
+                    hide-offset-dates
+                    v-model="selectDate"
+                    :teleport="true"
+                    :format="format"
+                    model-type="yyyy-MM-dd"
+                    range
+                    :enable-time-picker="false"
+                    locale="es"
+                    :multi-calendars="{ solo: true }"
+                    timezone="America/Bogota"
+                  >
+                  </VueDatePicker>
+                </div>
 
-            </DatePicker>
             </div>
             <Datatable :actions="buttons" :add showButtonBar :columnas="columns" :data="bookings"
             cacheName="reservas" :rowClass="true" @filterApply="getDataFilter">
@@ -119,7 +125,7 @@ watch([selectDate, statusFilter, verTodos], async ([newValue, newValueStatusFilt
        verTodos.value = false;
        return
     }
-    if (!newValue[0] || !newValue[1]) {
+    if (!newValue) {
         bookings.value = props.bookingServices;
     }else{
         const result = await getReservas(newValue);
@@ -201,5 +207,14 @@ const dataFilter = ref([]);
 
 const getDataFilter = (data) => {
     dataFilter.value = data;
+};
+
+const format = (date) => {
+  const day = date[0].getDate();
+  const month = date[0].getMonth() + 1;
+  const year = date[0].getFullYear();
+
+  const padZero = (num) => (num < 10 ? `0${num}` : num);
+  return `${padZero(day)}/${padZero(month)}/${year} - ${padZero(date[1].getDate())}/${padZero(date[1].getMonth() + 1)}/${date[1].getFullYear()}`;
 };
 </script>
