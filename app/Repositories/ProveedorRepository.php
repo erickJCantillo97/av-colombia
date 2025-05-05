@@ -41,12 +41,15 @@ class ProveedorRepository extends BaseRepository implements ProveedorRepositoryI
     }
 
     private function attachServices(Proveedor $proveedor, array $services){
+        // dd($services);
         $proveedor->services()->detach();
         foreach ($services as $service) {
             $proveedor->services()->attach(
                 $service['service_id'],
-                ['value' => $service['value']],
-                ['concept' => $service['concept']]
+                [
+                'value' => $service['value'],
+                'concept' => $service['concept']
+                ]
             );
         }
     }

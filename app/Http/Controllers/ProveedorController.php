@@ -81,9 +81,15 @@ class ProveedorController extends Controller
      */
     public function update(UpdateProveedorRequest $request, $proveedor)
     {
-
+        try {
+            DB::beginTransaction();
             $this->proveedorRepository->update($proveedor, $request->validated());
+            DB::commit();
             return back()->with('Proveedor Actualizado');
+        } catch (Exception $th) {
+            DB::rollBack();
+            return back()->withErrors(['message' => 'Error Al actualizar el proveedor']);
+        }
 
     }
 
