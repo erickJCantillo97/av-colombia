@@ -109,8 +109,7 @@ class BookingServiceController extends Controller
      */
     public function destroy($bookingService)
     {
-            BookingService::find($bookingService)->delete();
-
+        BookingService::find($bookingService)->delete();
     }
 
     public function getBookingServicesNoPayment()
@@ -276,5 +275,40 @@ class BookingServiceController extends Controller
             'bookingService' => $booking,
             'status' => true,
         ], 201);
+    }
+
+    public function setStatus()
+    {
+        $service = BookingService::where('id', request('service'))->first();
+        $service->update(['fecha_cancelacion' => null]);
+        if (request('state') == 'CANCELADA') {
+            // $service->proveedors()->delete();
+            $service->update(['fecha_cancelacion' => request('date')]);
+        }
+        if (request('state') == 'CAMBIO DE FECHA') {
+            $service->update([
+                'date' => Carbon::parse(request('date'))->format('Y-m-d'),
+            ]);
+        }
+        if (request('state') == 'REUBICADO') {
+            $proveedorService = DB::table('booking_proveedors')
+                ->where('id', request('current_id'))
+                ->update([
+                    'proveedor_id' => request('new_id')['id'],
+                    'cost' => request('value'),
+                ]);
+            // dd($proveedorService);
+
+            if (request('note')) {
+                Note::create([
+                    'booking_service_id' => $service->id,
+                    'note' => request('note'),
+                    'user_id' => Auth::user()->id,
+                ]);
+            };
+        }
+        // dd($service);
+        storeState($service, request('state'), request('terminated'));
+        return back()->with('message', 'Estado actualizado');
     }
 }

@@ -25,5 +25,6 @@ Route::middleware([
         Route::post('cancelarServico/{service}', 'cancelarServicio')->name('cancelar.servicio');
         Route::post('noShowServico/{service}', 'noShowServicio')->name('noshow.servicio');
         Route::post('completarReserva', 'completarReserva')->name('completar.reserva');
+        Route::post('BookingServices/setStatus', 'setStatus')->name('set.states');
     });
 });

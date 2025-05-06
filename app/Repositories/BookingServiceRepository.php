@@ -195,7 +195,6 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
 
     private function addChange(BookingService $bookingService, $data)
     {
-
         addChanges($bookingService, $data);
     }
 

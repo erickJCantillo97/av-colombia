@@ -129,4 +129,6 @@ class ServiceController extends Controller
             'proveedors' => $this->serviceRepository->getProveedors($id),
         ]);
     }
+
+
 }
