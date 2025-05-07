@@ -31,25 +31,28 @@
         <div class="col-span-1">Proveedor</div>
         <div class="col-span-1">Concepto</div>
         <div class="col-span-1">Pasajeros</div>
-        <div class="col-span-1">Costo Servicio</div>
-        <div class="col-span-1">Pago Sugerido No Show</div>
-        <div class="col-span-1">Pago Total al proveedor</div>
+        <div class="col-span-1">Costo total Servicio</div>
+        <div class="col-span-1">Pago por No Show</div>
+        <div class="col-span-1">Total a pagar</div>
       </div>
       <div
-        class="grid grid-cols-6 border-y items-center border text-right gap-x-4"
+        class="grid grid-cols-6 border-y items-center border text-right gap-x-4 py-1"
         v-for="proveedor in proveedorsCostos"
       >
         <div class="col-span-1">{{ proveedor.proveedor_name }}</div>
         <div class="col-span-1 text-nowrap truncate">{{ proveedor.concept }}</div>
         <div class="col-span-1">{{ proveedor.pasajeros }}</div>
+
         <div class="col-span-1">{{ COP.format(proveedor.cost) }}</div>
-        <div class="col-span-1">{{ COP.format(proveedor.total_no_show) }}</div>
-        <Input
+        <input
           class="col-span-1 rounded-md border-gray-300 p-2"
-          v-model="proveedor.totalpayment"
+          v-model="proveedor.costo_penalidad"
+          @input="calculateTotalPayment(proveedor)"
           type="number"
           mode="currency"
         />
+        <div class="col-span-1">{{ COP.format(proveedor.totalpayment) }}</div>
+
       </div>
     </div>
     <div class="flex justify-end p-6 space-x-4">
@@ -118,6 +121,13 @@ const submit = () => {
 const noShowPaymente = () => {
   proveedorsCostos.value.forEach((proveedor) => {
     proveedor.total_no_show = proveedor.costo_penalidad * form.cantidad;
+    calculateTotalPayment(proveedor);
   });
+};
+
+const calculateTotalPayment = (proveedor) => {
+    const totalPresentes = proveedor.pasajeros  - form.cantidad;
+    const valuePresentes = (proveedor.cost / proveedor.pasajeros) * totalPresentes;
+    proveedor.totalpayment = valuePresentes + proveedor.costo_penalidad*form.cantidad;
 };
 </script>
