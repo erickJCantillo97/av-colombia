@@ -152,7 +152,7 @@ const getReservas = () => {
           color: "bg-green-200",
         },
         {
-          name: "Cancelado",
+          name: "CANCELADA",
           value: reservas.value.filter((item) => item.status == "CANCELADA"),
           color: "bg-red-200",
         },
