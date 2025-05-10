@@ -146,7 +146,7 @@ class BookingServiceController extends Controller
                         'user' => $note->user->name,
                     ];
                 }),
-                'status' => $booking->status,
+                'status' => strtoupper($booking->status),
                 'proveedors' => $booking->proveedors->map(function ($proveedor) {
                     return [
                         'proveedor_id' => $proveedor->proveedor->id,

@@ -295,7 +295,6 @@ import { Head, Link } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { MinusIcon, PlusIcon } from '@heroicons/vue/20/solid';
-import FsLightbox from "fslightbox-vue/v3";
 import Card from './Card.vue';
 import axios from 'axios';
 import Toast from 'primevue/toast';

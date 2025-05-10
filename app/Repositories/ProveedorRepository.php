@@ -20,7 +20,7 @@ class ProveedorRepository extends BaseRepository implements ProveedorRepositoryI
     {
         $services = $data['services'];
         unset($data['services']);
-        if ($data('cuenta')) {
+        if ($data['cuenta']) {
             $data['cuenta'] = $data['cuenta']->store('proveedors/files');
         }
         $proveedor = $this->model->create($data);
