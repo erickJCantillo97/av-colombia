@@ -143,12 +143,12 @@ const getReservas = () => {
       reservasType.value = [
         {
           name: "RESERVADO",
-          value: reservas.value.filter((item) => item.status == "reservado"),
+          value: reservas.value.filter((item) => item.status == "RESERVADO"),
           color: "bg-blue-200",
         },
         {
           name: "COMPLETADA",
-          value: reservas.value.filter((item) => item.status == "completado"),
+          value: reservas.value.filter((item) => item.status == "COMPLETADA"),
           color: "bg-green-200",
         },
         {
