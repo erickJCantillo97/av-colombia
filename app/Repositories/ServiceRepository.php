@@ -68,12 +68,12 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
         if (isset($data['portada'])) {
             $data['portada'] = $data['portada']->store('public/images');
         }
-        return $this->model->find($id)->update($data);
+        return $this->model->where('slug', $id)->first()->update($data);
     }
 
     public function delete($id)
     {
-        return $this->model->find($id)->delete();
+        return $this->model->where('slug', $id)->first()->delete();
     }
 
     public function getProveedors($id)
