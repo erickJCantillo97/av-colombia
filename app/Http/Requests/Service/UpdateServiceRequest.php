@@ -44,8 +44,8 @@ class UpdateServiceRequest extends FormRequest
             'availability_type' => 'nullable|string',
             'price_type' => 'nullable|string',
             'images' => 'nullable|array',
-            'availability_type' => 'required|string',
-            'price_type' => 'required|string',
+            'availability_type' => 'nullable|string',
+            'price_type' => 'nullable|string',
         ];
     }
 }

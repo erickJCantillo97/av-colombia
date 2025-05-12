@@ -40,8 +40,8 @@ class StoreServiceRequest extends FormRequest
             'capacidad_min' => 'nullable|numeric',
             'capacidad_min' => 'nullable|numeric',
             'recogidas' => 'nullable|string',
-            'availability_type' => 'required|string',
-            'price_type' => 'required|string',
+            'availability_type' => 'nullable|string',
+            'price_type' => 'nullable|string',
             'puntos' => 'nullable|string',
         ];
     }
