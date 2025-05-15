@@ -168,14 +168,14 @@ const services = ref([]);
 const props = defineProps({
     proveedor: Object,
 })
-
 const serviceModel = new Service();
 onMounted(async () => {
   services.value = await serviceModel.getServices();
+  
 });
+const politicas = ref(props.proveedor?.type_penalidad_cost?? "Dinero");
 const visible = defineModel(false);
 
-const politicas = ref("Dinero");
 
 const form = useForm({
   id: props.proveedor?.id ?? "",
