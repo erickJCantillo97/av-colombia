@@ -73,7 +73,7 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
 
     public function delete($id)
     {
-        return $this->model->where('slug', $id)->first()->delete();
+        return $this->model->where('id', $id)->first()->delete();
     }
 
     public function getProveedors($id)
