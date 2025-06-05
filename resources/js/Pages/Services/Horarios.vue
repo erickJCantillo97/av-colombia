@@ -29,7 +29,7 @@ const formStart = useForm({
 const showPrice = ref(false);
 
 const form = useForm({
-  service_id: props.service.id,
+  service_id: props.service?.id,
   name: "",
   start_date: "",
   end_date: "",

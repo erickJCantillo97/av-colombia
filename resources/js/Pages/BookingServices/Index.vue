@@ -58,7 +58,7 @@
 <script setup>
 import Datatable from "@/Components/Customs/Datatable.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import {  router,  usePage, usePoll } from "@inertiajs/vue3";
+import {  router,  usePage } from "@inertiajs/vue3";
 import {  ref, watch } from "vue";
 import { alerts } from "@/composable/toasts";
 import Swal from "sweetalert2";
@@ -74,8 +74,6 @@ const props = defineProps({
     bookingServices: Array,
 });
 
-usePoll(1000 * 20);
-// #region Variables
 const { toast } = alerts();
 const proveedors = ref([]);
 const notes = ref([]);
