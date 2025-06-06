@@ -16,7 +16,8 @@ export default class BookingServices {
         { text: "NO SHOW", color: "amber" },
         { text: "REUBICADO", color: "orange" },
         { text: "CANCELADA", color: "green" },
-        { text: "SIN CONFIRMAR", color: "red" },
+        { text: "SIN CONFIRMAR", color: "purple" },
+        { text: "PROBLEMATICA", color: "red"}
       ];
 
     channels = ref([]);

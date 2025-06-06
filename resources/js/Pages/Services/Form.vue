@@ -330,10 +330,9 @@ const removeImage = (id) => {
                 ></Input>
               </div>
               <div class="w-full">
-                <label for="" class="text-md font-bold"
-                  >Descripción larga del Servicio</label
-                >
-                <Editor
+                <label for="" class="text-md font-bold">Descripción larga del Servicio</label>
+                <Input
+                  type="textarea"
                   v-model="form.description"
                   :key="editor"
                   editorStyle="height: 120px"
