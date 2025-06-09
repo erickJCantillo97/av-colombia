@@ -1,6 +1,7 @@
 <template>
   <AppLayout title="Services">
     <div class="h-[90vh] md:h-[99vh] overflow-y-auto">
+      
       <Datatable
         :add="hasPermissionTo('crear experiencas') ? add : null"
         :columnas="columns"
@@ -199,7 +200,7 @@ const { toast } = alerts();
 const files = ref([]);
 const add = {
   action: () => {
-    router.visit(route("services.create"));
+    router.visit(route("services.create", { serviceType: 'TOUR' }));
   },
 };
 
@@ -247,7 +248,6 @@ const columns = [
 ];
 
 const confirm = useConfirm();
-const editor = ref(false);
 
 const form = useForm({
   service_id: "",
@@ -258,7 +258,6 @@ const form = useForm({
 const service = ref({});
 
 const visible = ref(false);
-const subject = ref("");
 const buttons = [
   {
     action: (data) => {

@@ -10,14 +10,7 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'documentable_id',
-        'documentable_type',
-        'filepath',
-        'filename',
-        'extension',
-        'size',
-    ];
+    protected $guarded = [];
 
     public function imageable()
     {

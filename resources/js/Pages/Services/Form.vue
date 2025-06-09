@@ -6,7 +6,7 @@ import AutoComplete from "primevue/autocomplete";
 import { onMounted, ref } from "vue";
 import { alerts } from "@/composable/toasts";
 import Horarios from "./Horarios.vue";
-import FileSelection from "./FileSelection.vue";
+import FileSelection from "./Form/FileSelection.vue";
 const { toast } = alerts();
 
 const op = ref();
@@ -32,13 +32,7 @@ const feature = ref({
   color: "",
 });
 
-const assignMatchingKeys = (source, target) => {
-  Object.keys(source).forEach((key) => {
-    if (key in target) {
-      target[key] = source[key];
-    }
-  });
-};
+
 onMounted(() => {
   if (props.service) {
     assignMatchingKeys(props.service, form);
@@ -203,7 +197,7 @@ const removeImage = (id) => {
 <template>
   <AppLayout>
     <div class="p-4 space-y-4 h-full overflow-y-auto">
-      <h1 class="text-3xl font-extrabold">
+      <h1 class="text-xl font-extrabold">
         {{ service ? `Editar Servicio ${service.title}` : "Crear nuevo servicio" }}
       </h1>
       <Tabs value="0">

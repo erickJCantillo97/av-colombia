@@ -15,9 +15,10 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
         return Service::class;
     }
 
-    public function getAll()
+    public function getAll($type = 'TOUR')
     {
-        return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies')->get();
+        return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies')
+        ->where('type', $type)->get();
     }
 
     public function search(array $data)
@@ -65,10 +66,16 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
         foreach ($included as $i) {
             Included::firstOrCreate(['name' => $i]);
         }
-        if (isset($data['portada'])) {
-            $data['portada'] = $data['portada']->store('public/images');
-        }
-        return $this->model->where('slug', $id)->first()->update($data);
+        
+        return $this->find($id)->first()->update($data);
+    }
+
+    public function setPortada($id, $image)
+    {
+        $service = $this->model->where('slug', $id)->first();
+        $service->portada = $image->store('public/images');
+        $service->save();
+        return $service;
     }
 
     public function delete($id)

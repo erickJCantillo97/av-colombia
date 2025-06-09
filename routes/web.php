@@ -38,19 +38,7 @@ Route::middleware([
     })->name('dashboard');
 
     // Routes for services
-    Route::resource('services', ServiceController::class)->except(['update']);
-    Route::controller(ServiceController::class)->group(function () {
-        Route::post('services/{service}/update', 'update')->name('services.update');
-        Route::post('services/{service}/lock', 'lock')->name('services.lock');
-        Route::put('updateServiceStart/{service}', 'updateStart')->name('update.start');
-        Route::post('reservar', 'reservar')->name('reservar');
-        Route::post('uploadFile/{service}', 'uploadImage')->name('upload.images');
-        Route::delete('deleteFile/{image}', 'deleteImage')->name('delete.images');
-        Route::post('services/{lock}/unlock', 'unlock')->name('services.unlock');
-        Route::post('services/setStatus', 'setStatus')->name('set.states');
-        Route::get('services/proveedors/{id}', 'getProveedorsByService')->name('get.proveedors.by.service');
-    });
-
+  
     // Routes for bookings services
 
     Route::resource('users', UserController::class)->except(['update']);

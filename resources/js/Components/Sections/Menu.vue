@@ -23,7 +23,7 @@
             }"
             class="p-4 flex items-center justify-between text-surface-500 dark:text-surface-400 cursor-pointer p-ripple"
           >
-            <span class="font-medium">FAVORITES</span>
+            <span class="font-medium">Favoritos</span>
             <i class="pi pi-chevron-down"></i>
           </div>
           <ul class="list-none p-0 m-0 overflow-hidden">
@@ -65,7 +65,7 @@
             <li>
               <Link
                 v-show="hasPermissionTo('ver servicios')"
-                :href="route('services.index')"
+                :href="route('services.index', { type: 'EMBARCACION' })"
                 v-ripple
                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
               >

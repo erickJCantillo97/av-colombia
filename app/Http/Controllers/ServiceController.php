@@ -24,8 +24,9 @@ class ServiceController extends Controller
 
     public function index(Request $request)
     {
+        $type = $request->type ?? 'TOUR';
         return Inertia::render('Services/Index', [
-            'services' => $this->serviceRepository->getAll(),
+            'services' => $this->serviceRepository->getAll($type),
         ]);
     }
 
@@ -45,12 +46,15 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        $serviceType = $request->serviceType ?? 'TOUR';   
         $features = Feature::orderBy('name')->get();
-        return Inertia::render('Services/Form', [
+        $included = Included::orderBy('name')->pluck('name')->toArray();
+        return Inertia::render('Services/Form/Create', [
             'features' => $features,
-            'included' => Included::orderBy('name')->pluck('name')->toArray()
+            'serviceType' => $serviceType,
+            'included' => $included
         ]);
     }
 
@@ -73,20 +77,29 @@ class ServiceController extends Controller
     public function edit(Service $service)
     {
         $features = Feature::orderBy('name')->get();
+        $serviceType = $request->serviceType ?? 'TOUR';
 
-        return Inertia::render('Services/Form', [
+        return Inertia::render('Services/Form/Edit', [
             'features' => $features,
             'service' => $service,
+            'serviceType' => $serviceType,
             'images' => $service->images,
             'features' => $service->features,
             'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
             'included' => Included::orderBy('name')->pluck('name')->toArray()
         ]);
     }
-
     public function update(UpdateServiceRequest $request, $service)
     {
         $this->serviceRepository->update($service, $request->validated());
+    }
+
+    public function setPortada(Request $request, $service)
+    {
+        $request->validate([
+            'portada' => 'file|required|max:2048',
+        ]);
+       $this->serviceRepository->setPortada($service, $request->portada);
     }
 
     public function uploadImage(Request $request, Service $service)

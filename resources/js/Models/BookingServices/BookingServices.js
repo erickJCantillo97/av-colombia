@@ -6,7 +6,7 @@ import { useCommonUtilities } from "@/composable/useCommonUtilities";
 
 const { currencyFormat} = useCommonUtilities();
 
-export default class BookingServices {
+export default class BookingServices  {
 
     loading = ref(false);
     statuesOptions = [

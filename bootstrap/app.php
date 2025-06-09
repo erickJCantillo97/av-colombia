@@ -15,6 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('web')
                 ->name('dashboard.')
                 ->group(base_path('routes/customs/Dashboards.php'));
+            Route::middleware([
+                'auth:sanctum',
+                config('jetstream.auth_session'),
+                'verified',
+                'web',
+            ])
+                ->group(base_path('routes/customs/Services.php'));
             Route::middleware('web')
                 ->group(base_path('routes/customs/BookingService.php'));
         }

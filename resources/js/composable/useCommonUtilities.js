@@ -4,6 +4,13 @@ const COP = new Intl.NumberFormat('es-CO', {
     currency: 'COP',
     minimumFractionDigits: 0,
 });
+
+export function truncatedString(string, maxLength) {
+    return string.length > maxLength
+        ? string.substring(0, maxLength) + "..."
+        : string;
+}
+
 /**
  * This function exports common utilities in JavaScript.
  */
@@ -16,15 +23,7 @@ export function useCommonUtilities() {
             : string;
     };
 
-    /**
-     * The function `byteSizeFormatter` converts a given number of bytes into a human-readable format
-     * with appropriate units (B, KB, MB, GB).
-     * @param bytes - The `bytes` parameter in the `byteSizeFormatter` function represents the size of
-     * a file or data in bytes that you want to format into a human-readable format (e.g., KB, MB, GB).
-     * @returns The function `byteSizeFormatter` returns a formatted string representing the input
-     * `bytes` in a human-readable format, with the size type (bytes, KB, MB, GB) based on the
-     * magnitude of the input.
-     */
+   
     const byteSizeFormatter = (bytes) => {
         const k = 1024;
         const dm = 1;
@@ -40,16 +39,7 @@ export function useCommonUtilities() {
         return `${formattedSize} ${sizeType[i]}`;
     };
 
-    /**
-     * The function `calculateTimeDifference` calculates the time difference in hours between two given
-     * time strings.
-     * @param startTime - The `startTime` parameter should be a string representing the starting time
-     * in the format "HH:MM:SS.sssssss" where HH is the hour in 24-hour format and MM is the minutes. For example,
-     * "08:30" represents 8:30 AM and "15:45" represents 3
-     * @param endTime - endTime: "18:30"
-     * @returns The function `calculateTimeDifference` returns the difference in hours between the
-     * `endTime` and `startTime` provided as input.
-     */
+    
     const calculateTimeDifference = (startTime, endTime) => {
         const [startHours, startMinutes] = startTime.split(":").map(Number);
         const [endHours, endMinutes] = endTime.split(":").map(Number);
@@ -81,28 +71,6 @@ export function useCommonUtilities() {
 
     const currencyFormat = (value) => {
        return COP.format(value);
-    };
-
-    /**
-     * The `excelExport` function takes an HTML table, adds a timestamp to the data, and saves it as an
-     * XLSB file with the specified file name.
-     * @param fileName - The `fileName` parameter in the `excelExport` function is a string that
-     * represents the name of the file that will be generated when exporting the data to an Excel file.
-     * This parameter is used to specify the name of the output file with a `.xlsb` extension.
-     */
-    const excelExport = (fileName) => {
-        // Acquire Data (reference to the HTML table)
-        let table_elt = document.getElementById("tabla");
-
-        let workbook = XLSX.utils.table_to_book(table_elt);
-
-        let ws = workbook.Sheets["Sheet1"];
-        XLSX.utils.sheet_add_aoa(ws, [["Creado " + new Date().toISOString()]], {
-            origin: -1,
-        });
-
-        // Package and Release Data (`writeFile` tries to write and save an XLSB file)
-        XLSX.writeFile(workbook, fileName + ".xlsb");
     };
 
     function format24h(hora) {
@@ -142,16 +110,7 @@ export function useCommonUtilities() {
         });
     };
 
-    /**
-     * The function `formatDate` takes a date string in the format "yyyymmdd" and returns it in the
-     * format "dd/mm/yyyy", unless the day is "00" in which case it returns "Indefinido".
-     * @param date - The `formatDate` function takes a date string in the format "YYYYMMDD" and returns
-     * a formatted date string in the format "DD/MM/YYYY". If the day part of the date is "00", it
-     * returns "Indefinido" instead.
-     * @returns The `formatDate` function takes a date string in the format "yyyymmdd" and returns a
-     * formatted date string in the format "dd/mm/yyyy". If the day part of the date is "00", it
-     * returns "Indefinido".
-     */
+   
     function formatDate(date) {
         // Extraer año, mes y día
         var year = date.slice(0, 4);
@@ -184,28 +143,7 @@ export function useCommonUtilities() {
         });
         return formattedDate;
     }
-
-    // function formatDateTime24h(dateTime) {
-    //     return new Date(dateTime).toLocaleString("es-CO", {
-    //         year: "numeric",
-    //         month: "2-digit",
-    //         day: "2-digit",
-    //         hour: "2-digit",
-    //         minute: "2-digit",
-    //         hour12: false,
-    //     });
-    // }
-
-    /**
-     * The `formatTime` function in JavaScript ensures a valid time string of at least 5 characters and
-     * returns a formatted time string.
-     * @param timeString - The `formatTime` function takes a `timeString` as input and ensures that it
-     * is a string of at least 5 characters. If the `timeString` is not a string or its length is less
-     * than 5 characters, it will log an error and return "Invalid time". If
-     * @returns The `formatTime` function returns the first 5 characters of the `timeString` if its
-     * length is at least 5 characters. If the `timeString` is not a string or its length is less than
-     * 5 characters, it returns "Invalid time".
-     */
+ 
     function formatTime(timeString) {
         if (typeof timeString !== "string") {
             console.error("Invalid timeString:", timeString);
@@ -221,12 +159,6 @@ export function useCommonUtilities() {
         }
     }
 
-    /**
-     * Formats a number as a percentage.
-     *
-     * @param {number} value - The number to be formatted as a percentage.
-     * @returns {string} The formatted percentage string.
-     */
     function formatToPercentage(value) {
         const number = parseFloat(value);
         return `${(number * 100).toFixed(0)}%`;
@@ -269,43 +201,11 @@ export function useCommonUtilities() {
             : Math.round(diffMiliseconds / milisecondsPerDay);
     };
 
-
-    /**
-     * The `renderIcon` function takes an icon parameter and returns the corresponding HTML icon
-     * element.
-     * @param icon - The `icon` parameter in the `renderIcon` function can be either a function that
-     * returns an icon element or a string representing the class name of an icon.
-     * @returns The `renderIcon` function returns either the result of calling the `icon` function if
-     * `icon` is a function, or it returns an `<i>` element with the class name specified by the `icon`
-     * parameter.
-     */
     const renderIcon = (icon) => {
         if (typeof icon === "function") {
             return icon();
         }
         return `<i class="${icon}"></i>`;
-    };
-
-    /**
-     * The `truncateString` function takes a string and a maximum length as parameters, and returns a
-     * truncated version of the string with "..." appended if it exceeds the maximum length.
-     * @param string - The `string` parameter is the input string that you want to truncate if its
-     * length exceeds a certain `maxLength`.
-     * @param maxLength - The `maxLength` parameter in the `truncateString` function represents the
-     * maximum length that the input `string` should be truncated to. If the length of the input
-     * `string` is greater than `maxLength`, the function will truncate the `string` to `maxLength`
-     * characters and append "..." at
-     * @returns The `truncateString` function returns a truncated version of the input `string` if its
-     * length exceeds the `maxLength`. If the `string` is longer than `maxLength`, it will return the
-     * first `maxLength` characters followed by "...". If the `string` is equal to or shorter than
-     * `maxLength`, it will return the original `string` unchanged.
-     */
-    const truncateString = (string, maxLength) => {
-        let truncatedString =
-            string.length > maxLength
-                ? string.substring(0, maxLength) + "..."
-                : string;
-        return truncatedString;
     };
 
     function esMovil() {
@@ -372,7 +272,6 @@ export function useCommonUtilities() {
         currencyFormat,
         deepCopy,
         esMovil,
-        excelExport,
         format24h,
         format_ES_Date,
         formatDate,
@@ -383,6 +282,5 @@ export function useCommonUtilities() {
         getDays,
         getRandomInt,
         renderIcon,
-        truncateString,
     };
 }

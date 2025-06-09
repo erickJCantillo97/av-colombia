@@ -367,8 +367,8 @@ defineEmits(["valueChange"]);
           :aria-describedby="id + '-help'"
           class="w-full"
           :pt="{
-            root: '!h-10',
-            input: '!py-0 !flex !items-center !text-sm !font-normal',
+            root: '!h-9',
+            input: '!flex !items-center !text-sm !font-normal',
             item: '!py-1 !px-3 !text-sm !font-normal',
             filterInput: '!h-8',
           }"
@@ -580,8 +580,6 @@ defineEmits(["valueChange"]);
               class="shadow-md rounded-xl w-full h-32 object-contain"
             />
           </div>
-          <!-- <FileUpload mode="basic" :multiple :accept="acceptFile" :maxFileSize
-                        @input="input = $event.target.files[0]" class="w-full h-8" customUpload /> -->
         </span>
 
         <span v-else class="w-full">

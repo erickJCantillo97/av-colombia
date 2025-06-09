@@ -13,6 +13,7 @@
                         <Button label="Limpiar" @click="clearCallback()" icon="pi pi-times" size="small"
                             severity="danger" :disabled="!files || files.length === 0"></Button>
                     </div>
+                    <h1 class="text-lg font-bold">Subir Imagenes</h1>
                 </div>
             </template>
             <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">

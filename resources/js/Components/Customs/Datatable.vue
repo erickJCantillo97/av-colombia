@@ -2,6 +2,7 @@
 import { FilterMatchMode } from "@primevue/core/api";
 import { onMounted, ref } from "vue";
 import { useCommonUtilities } from "@/composable/useCommonUtilities";
+import { truncatedString } from "@/composable/useCommonUtilities";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import Modal from "../Modal.vue";
@@ -12,7 +13,6 @@ const {
   byteSizeFormatter,
   currencyFormat,
   formatTime,
-  truncateString,
 } = useCommonUtilities();
 
 const confirm = useConfirm();
@@ -532,7 +532,7 @@ const getDataFilter = (data) => {
           <div
             v-else-if="col.type == 'html'"
             class=""
-            v-html="truncateString(data[col.field] + ' ', 80)"
+            v-html="truncatedString(data[col.field] + ' ', 80)"
           ></div>
           <span
             v-else-if="col.type == 'html-custom'"
@@ -544,10 +544,10 @@ const getDataFilter = (data) => {
           <p v-else class="">
             {{
               col.format
-                ? col.format(truncateString(data[col.field] + " ", 80))
-                : truncateString(data[col.field] + " ", 80)
+                ? col.format(truncatedString(data[col.field] + " ", 80))
+                : truncatedString(data[col.field] + " ", 80)
             }}
-            <!-- {{ truncateString(data[col.field], 80) }} -->
+            <!-- {{ truncatedString(data[col.field], 80) }} -->
           </p>
         </template>
       </Column>
