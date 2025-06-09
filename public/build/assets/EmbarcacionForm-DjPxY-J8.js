@@ -1,1 +1,0 @@
-import{_ as r}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{f as e,o as a,a as n}from"./app-aA9nSitK.js";const c={};function t(s,o){return a(),e("div",null,o[0]||(o[0]=[n("h1",null,"Formulario de Embarcacion",-1)]))}const f=r(c,[["render",t]]);export{f as default};

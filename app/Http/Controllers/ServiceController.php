@@ -26,7 +26,7 @@ class ServiceController extends Controller
     {
         $type = $request->type ?? 'TOUR';
         return Inertia::render('Services/Index', [
-            'services' => $this->serviceRepository->getAll($type),
+            'services' => $this->serviceRepository->getAllByType($type),
         ]);
     }
 

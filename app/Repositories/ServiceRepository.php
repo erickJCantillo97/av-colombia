@@ -15,10 +15,16 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
         return Service::class;
     }
 
-    public function getAll($type = 'TOUR')
+    public function getAllByType($type = 'TOUR')
     {
         return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies')
         ->where('type', $type)->get();
+    }
+
+    public function getAll()
+    {
+        return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies')
+        ->get();
     }
 
     public function search(array $data)
