@@ -22,6 +22,14 @@
         <div v-if="isPanelOpen"
           class="absolute z-10 mt-2 w-full origin-top-right rounded-xl border border-gray-200 bg-white shadow-2xl">
           <div class="p-4">
+            <div class="py-2">
+            <h3 class="text-sm font-extrabold uppercase text-gray-400">Filtro por Servicio</h3>
+              <div class="flex gap-x-4 py-1">
+                <div v-for="type in servicesType" class="text-xs text-gray-700 rounded-lg border py-1 px-1.5 font-semibold cursor-pointer">
+                  {{ type.label }}
+                </div>
+              </div>
+            </div>
             <!-- ✨ Sección de IA (visible solo al escribir) -->
             <div v-if="searchQuery" class="mb-4">
               <h3 class="text-xs font-semibold uppercase text-gray-400">Acción Inteligente</h3>
@@ -63,7 +71,7 @@
           </div>
           <div class="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-4 py-2">
             <div class="flex items-center gap-4 text-xs text-gray-500"><span>↵ Buscar</span><span>Esc Salir</span></div>
-            <a href="#" class="text-xs font-medium text-indigo-600 hover:underline">Editar Acciones</a>
+            <a href="#" class="text-xs font-medium text-indigo-600 hover:underline"  v-if="searchQuery">Editar Acciones</a>
           </div>
         </div>
       </Transition>
@@ -90,7 +98,7 @@
             class="flex justify-end gap-2 border-t border-gray-200 bg-gray-50 px-6 py-3 rounded-b-xl">
 
             <button @click="closeModal"
-              class="rounded-md bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700">Cerrar</button>
+              class="rounded-md bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700">Buscaré yo mismo</button>
           </div>
         </div>
       </div>
@@ -163,6 +171,19 @@ const handleClickOutside = (event) => {
     closePanel();
   }
 };
+
+const servicesType = [
+  {
+    label: 'Tours',
+    value: 'TOUR',
+    icons: ''
+  },
+  {
+    label: 'Embarcaciones',
+    value: 'EMBARCACION',
+    icons: ''
+  }
+]
 
 onMounted(() => document.addEventListener('mousedown', handleClickOutside));
 onBeforeUnmount(() => document.removeEventListener('mousedown', handleClickOutside));

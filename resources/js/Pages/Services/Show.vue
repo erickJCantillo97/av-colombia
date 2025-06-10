@@ -56,7 +56,8 @@ const product = {
         </h1>
         <Gallery :images="product.images"></Gallery>
         <div class="flex flex-col gap-y-4" v-html="product.description"></div>
-        <Equipament :service="service" v-if="service.type ='EMBARCACION'" />
+        
+        <Equipament :service="service" v-if="service.type == 'EMBARCACION'" />
       </div>
       <LargeBooking :product="service" :availabilities></LargeBooking>
     </div>
