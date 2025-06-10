@@ -10,6 +10,8 @@
     "require": {
         "php": "^8.2",
         "cviebrock/eloquent-sluggable": "^11.0",
+        "google-gemini-php/client": "^2.3",
+        "google-gemini-php/laravel": "2.0",
         "inertiajs/inertia-laravel": "2.0",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.1",

@@ -44,7 +44,7 @@
           <div
             data-aos="flip-down"
             data-aos-duration="1000"
-            class="bg-white p-2 rounded-lg shadow-lg"
+            class="rounded-lg bg-white"
           >
             <Experiencias :type="value.name" />
           </div>

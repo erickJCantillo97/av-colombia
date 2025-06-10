@@ -2,10 +2,12 @@
     <AppLayout>
         <div class="p-1">
             <div class="flex items-center pb-1 border-b gap-x-4">
-                <Link :href="route('services.index')" class="btn btn-primary">
+                <Link :href="route('services.index' , {
+                    type: service.type
+                })" class="btn btn-primary">
                 <i class="fa-solid fa-arrow-left text-xl "></i>
                 </Link>
-                <h1 class="text-xl font-bold ">Editar {{ serviceType }} {{ service.title }}</h1>
+                <h1 class="text-xl font-bold ">Editar {{ service.type }} {{ service.title }}</h1>
             </div>
             <div class="rounded-md mt-2">
                 <div class="rounded-md flex">
@@ -20,7 +22,8 @@
                 </div>
 
                 <div v-if="value == 1" class="p-4">
-                    <ToursForm :service :included />
+                    <ToursForm :service :included v-if="service.type == 'TOUR'" />
+                    <EmbarcacionForm  :service  v-else-if="service.type == 'EMBARCACION'" />
                 </div>
                 <div v-if="value == 2" class="p-4">
                     <SelectImages :service="service" />

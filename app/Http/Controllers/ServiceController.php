@@ -14,6 +14,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Exception;
+use Gemini\Laravel\Facades\Gemini;
 
 
 class ServiceController extends Controller
@@ -27,6 +28,7 @@ class ServiceController extends Controller
         $type = $request->type ?? 'TOUR';
         return Inertia::render('Services/Index', [
             'services' => $this->serviceRepository->getAllByType($type),
+            'type' => $type
         ]);
     }
 
@@ -48,7 +50,7 @@ class ServiceController extends Controller
 
     public function create(Request $request)
     {
-        $serviceType = $request->serviceType ?? 'TOUR';   
+        $serviceType = $request->serviceType ?? 'TOUR';
         $features = Feature::orderBy('name')->get();
         $included = Included::orderBy('name')->pluck('name')->toArray();
         return Inertia::render('Services/Form/Create', [
@@ -99,7 +101,7 @@ class ServiceController extends Controller
         $request->validate([
             'portada' => 'file|required|max:2048',
         ]);
-       $this->serviceRepository->setPortada($service, $request->portada);
+        $this->serviceRepository->setPortada($service, $request->portada);
     }
 
     public function uploadImage(Request $request, Service $service)
@@ -137,11 +139,37 @@ class ServiceController extends Controller
         return Inertia::render('Home/CheckOut');
     }
 
-    public function getProveedorsByService($id){
+    public function getProveedorsByService($id)
+    {
         return  response()->json([
             'proveedors' => $this->serviceRepository->getProveedors($id),
         ]);
     }
 
+    public function getServiceRecommendation(Request $request)
+    {
+        $validated = $request->validate([
+            'prompt' => 'required|string|max:255',
+        ]);
+        $userQuery = $validated['prompt'];
 
+        $services = Service::where('title', 'like', "%{$userQuery}%")
+            ->orWhere('description', 'like', "%{$userQuery}%")
+            ->limit(5) // Limitar la cantidad de productos para no exceder el prompt
+            ->get(['slug','title', 'description']);
+
+            $productListForPrompt = $services->map(function ($product) {
+               return "- slug: {$product->slug}, Nombre: {$product->name}, Descripción: {$product->description}";
+            })->implode("\n");
+
+            $finalPrompt = "Un cliente está buscando: '{$userQuery}'.\n\n" .
+                           "Basado en la siguiente lista de productos de mi tienda, ¿cuál le recomendarías y por qué? Responde de forma amigable y conversacional.\n\n" .
+                           "**MUY IMPORTANTE**: Cuando menciones el nombre de un producto, formatéalo como un enlace Markdown usando su ID. Por ejemplo, si un producto tiene slug zapatilla-pro y se llama 'Zapatilla Pro', debes escribir '[Zapatilla Pro](zapatilla-pro)'. No uses URLs completas, solo el slug.\n\n" .
+                           "Lista de productos disponibles (con sus slugs):\n" .
+                           $productListForPrompt;
+             $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->generateContent($finalPrompt);
+             return response()->json([
+                'recommendation' => $result->text()
+            ]);
+    }
 }

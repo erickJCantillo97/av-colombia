@@ -73,7 +73,7 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
             Included::firstOrCreate(['name' => $i]);
         }
         
-        return $this->find($id)->first()->update($data);
+        return $this->find($id)->update($data);
     }
 
     public function setPortada($id, $image)

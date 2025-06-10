@@ -2,8 +2,8 @@
   <div
     class="p-4 shadow-xl w-[20%] rounded-lg fixed right-52 -mt-32 bg-white space-y-4 overflow-y-auto"
   >
-    <p class="font-extrabold text-center text-3xl uppercase text-green-700">
-      Reservar tour
+    <p class="font-extrabold text-center text-3xl capitalize text-green-700">
+      Reservar
     </p>
     <div class="flex flex-col gap-y-2">
       <label for="date" class="font-bold">Fecha</label>
@@ -103,6 +103,7 @@ const props = defineProps(["product", "availabilities"]);
 
 const config = {
   minDate: "today",
+  mode: 'single',
   locale: Spanish,
 };
 

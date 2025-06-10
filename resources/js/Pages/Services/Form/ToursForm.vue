@@ -104,9 +104,8 @@ const props = defineProps({
     service: Object,
 });
 
-
-
 const serviceModel = new Service(props.service);
+const form = serviceModel.form;
 
 const noIncludeName = ref("");
 const addincludes = () => {
@@ -140,7 +139,6 @@ const removeNotIncludes = (index) => {
     form.notIncludes.splice(index, 1);
 };
 
-const form = serviceModel.form;
 
 
 const includeLabel = ref("");

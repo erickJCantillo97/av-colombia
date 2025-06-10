@@ -93,6 +93,7 @@ Route::middleware([
 });
 
 Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('get.all.services');
+Route::post('get-service', [ServiceController::class, 'getServiceRecommendation']);
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
 Route::get('check-out', [ServiceController::class, 'checkOut'])->name('check.out');

@@ -9,6 +9,7 @@ import Portada from "./Components/Portada.vue";
 import Breadcrumb from "./Components/Breadcrumb.vue";
 import Gallery from "./Components/Gallery.vue";
 import LargeBooking from "./Components/LargeBooking.vue";
+import Equipament from "./Components/Equipament.vue";
 
 const props = defineProps({
   service: Object,
@@ -40,31 +41,7 @@ const product = {
   ],
 };
 
-const date = ref();
 
-const allowedDates = computed(() => {
-  let horarios = props.availabilities;
-  let dates = [];
-  // console.log(horarios);
-  horarios.forEach((element) => {
-    let fecha = new Date(element.start_date);
-    do {
-      // console.log(fecha);
-      dates.push(fecha);
-      fecha = new Date(fecha.setDate(fecha.getDate() + 1));
-    } while (fecha <= new Date(element.end_date));
-  });
-  // console.log(dates);
-  return dates;
-});
-
-const times = computed(() => {
-  let horarios = props.availabilities;
-  let times = horarios
-    .find((x) => x.start_date < date.value && x.end_date > date.value)
-    .horarios.filter((x) => x.day_number == new Date(date.value).getDay() + 1);
-  return times;
-});
 </script>
 
 <template>
@@ -79,6 +56,7 @@ const times = computed(() => {
         </h1>
         <Gallery :images="product.images"></Gallery>
         <div class="flex flex-col gap-y-4" v-html="product.description"></div>
+        <Equipament :service="service" v-if="service.type ='EMBARCACION'" />
       </div>
       <LargeBooking :product="service" :availabilities></LargeBooking>
     </div>

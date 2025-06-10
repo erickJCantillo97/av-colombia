@@ -4,7 +4,7 @@
       
       <Datatable
         :add="hasPermissionTo('crear experiencas') ? add : null"
-        :columnas="columns"
+        :columnas="Columns"
         :data="services"
         routecreate="services.create"
         :actions="buttons"
@@ -194,13 +194,19 @@ import Input from "@/Components/Customs/Input.vue";
 import { useConfirm } from "primevue/useconfirm";
 import { alerts } from "@/composable/toasts";
 import { usePermissions } from "@/composable/Auth";
-
+import Columns from "./Columns";
 const { hasPermissionTo } = usePermissions();
 const { toast } = alerts();
-const files = ref([]);
+
+const props = defineProps({
+  services: Array,
+  type: String
+});
+
+
 const add = {
   action: () => {
-    router.visit(route("services.create", { serviceType: 'TOUR' }));
+    router.visit(route("services.create", { serviceType: props.type }));
   },
 };
 
@@ -218,34 +224,6 @@ const COP = new Intl.NumberFormat("es-CO", {
   maximumFractionDigits: 0,
 });
 
-const columns = [
-  {
-    header: "Nombre",
-    field: "title",
-    filter: true,
-  },
-  {
-    header: "Tarifa Neta",
-    field: "adult_tarifa",
-    type: "currency",
-  },
-  {
-    header: "Tipo de Servicio",
-    field: "type",
-    filter: true,
-  },
-  {
-    header: "Ciudad",
-    field: "city",
-    filter: true,
-  },
-  {
-    header: "Descripción",
-    field: "description",
-    type: "html",
-    filter: true,
-  },
-];
 
 const confirm = useConfirm();
 
@@ -324,9 +302,7 @@ const buttons = [
   // { event: 'deleteClic', severity: 'danger', icon: 'fa-regular fa-trash-can', class: '!h-8', text: true, outlined: false, rounded: false, show: hasPermission('projects delete') },
 ];
 
-const props = defineProps({
-  services: Array,
-});
+
 
 const submit = () => {
   form.post(route("custom.product"), {
