@@ -333,7 +333,7 @@ const setState = (state, terminated) => {
       });
 
       router.post(
-        route("set.states"),
+        route("set.states.booking"),
         {
           service: props.service.id,
           state: state,
@@ -358,7 +358,7 @@ const dateChange = () => {
     confirmButtonText: "Cambiar Fecha",
     showLoaderOnConfirm: true,
     preConfirm: async (date) => {
-      await router.post(route("set.states"), {
+      await router.post(route("set.states.booking"), {
         service: props.service.id,
         state: "CAMBIO DE FECHA",
         date: date,
@@ -397,7 +397,7 @@ const sendReubicar = () => {
 
   formReu.state = "REUBICADO";
   formReu.terminated = true;
-  formReu.post(route("set.states"), {
+  formReu.post(route("set.states.booking"), {
     onSuccess: () => {
       reubicar.value = false;
       formReu.reset();

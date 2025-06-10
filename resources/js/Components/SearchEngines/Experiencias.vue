@@ -85,7 +85,7 @@
             <div class="flex items-start justify-between">
               <h2 class="text-lg font-semibold text-gray-900">✨ Recomendación de Servicio</h2>
               <button @click="closeModal"
-                class="p-1 leading-none text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">&times;</button>
+                class="p-1 leading-none text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 text-xl">&times;</button>
             </div>
             <div v-if="isLoading" class="mt-4 text-center py-8">
               <div class="animate-pulse-fast text-gray-500">Buscando el mejor Servicio para ti...</div>
