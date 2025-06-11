@@ -136,7 +136,9 @@ class ServiceController extends Controller
 
     public function checkOut(Request $request)
     {
-        return Inertia::render('Home/CheckOut');
+        return Inertia::render('Home/CheckOut/Index', [
+            'service' => $request->all(),
+        ]);
     }
 
     public function getProveedorsByService($id)
@@ -150,11 +152,12 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             'prompt' => 'required|string|max:255',
+            'type' => 'nullable'
         ]);
         $userQuery = $validated['prompt'];
 
-        $services = Service::where('title', 'like', "%{$userQuery}%")
-            ->orWhere('description', 'like', "%{$userQuery}%")
+        $services = Service::whereAny(['title','description'], 'like', "%{$userQuery}%")
+            ->where('type', 'like', "%".$validated['type']."%")
             ->limit(5) // Limitar la cantidad de productos para no exceder el prompt
             ->get(['slug','title', 'description']);
 
@@ -164,7 +167,7 @@ class ServiceController extends Controller
 
             $finalPrompt = "Un cliente está buscando: '{$userQuery}'.\n\n" .
                            "Basado en la siguiente lista de productos de mi tienda, ¿cuál le recomendarías y por qué? Responde de forma amigable y conversacional.\n\n" .
-                           "**MUY IMPORTANTE**: Cuando menciones el nombre de un producto, formatéalo como un enlace Markdown usando su ID. Por ejemplo, si un producto tiene slug zapatilla-pro y se llama 'Zapatilla Pro', debes escribir '[Zapatilla Pro](zapatilla-pro)'. No uses URLs completas, solo el slug.\n\n" .
+                           "**MUY IMPORTANTE**: Cuando menciones el nombre de un producto, formatéalo como un enlace Markdown usando su ID. Por ejemplo, si un producto tiene slug zapatilla-pro y se llama 'Zapatilla Pro', debes escribir '[Zapatilla Pro](zapatilla-pro)'. No uses URLs completas, solo el slug y por favor no des mas opciones de productos que no esten en la lista, ademas no trates de seguir la conversación solo agradece la busqueda en la pagina.\n\n" .
                            "Lista de productos disponibles (con sus slugs):\n" .
                            $productListForPrompt;
              $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->generateContent($finalPrompt);

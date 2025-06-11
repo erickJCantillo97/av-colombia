@@ -8,13 +8,13 @@
     <div class="flex flex-col gap-y-2">
       <label for="date" class="font-bold">Fecha</label>
       <flat-pickr
-        v-model="date"
+        v-model="formReserva.date"
         :config
         class="text-center rounded-lg shadow-lg border-2 border-black"
       />
     </div>
     <hr />
-    <div v-if="date" class="flex flex-col gap-y-2">
+    <div v-if="formReserva.date" class="flex flex-col gap-y-2">
       <div>
         <p class="font-bold">¿Para cuantos?</p>
         <p class="text-xs italic">Seleccione la cantidad de personas</p>
@@ -107,7 +107,7 @@ const config = {
   locale: Spanish,
 };
 
-const date = ref();
+
 
 const COP = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -119,17 +119,20 @@ const formReserva = useForm({
   date: "",
   persons: [],
   time: "",
+  service_id: props.product.id,
+  service_name: props.product.title,
+  price_type: props.product.price_type,
 });
 
 const filterAvailabilitiesHours = computed(() => {
   var availabilities =
     props.availabilities.find(
-      (x) => x.start_date <= date.value && x.end_date >= date.value
+      (x) => x.start_date <= formReserva.date && x.end_date >= formReserva.date
     ) ?? [];
   var horarios = [];
   if (availabilities.horarios) {
     horarios = availabilities.horarios
-      .filter((x) => x.day_number == new Date(date.value).getDay() + 1)
+      .filter((x) => x.day_number == new Date(formReserva.date ).getDay() + 1)
       .map((x) => {
         return {
           start: x.start,
@@ -145,7 +148,7 @@ const filterAvailabilitiesHours = computed(() => {
 const addPersons = () => {
   var availabilities =
     props.availabilities.find(
-      (x) => x.start_date <= date.value && x.end_date >= date.value
+      (x) => x.start_date <= formReserva.date  && x.end_date >= formReserva.date 
     )?.precies ?? [];
   formReserva.persons = availabilities.map((x) => {
     return {

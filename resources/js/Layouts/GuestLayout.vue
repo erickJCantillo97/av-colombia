@@ -46,7 +46,7 @@
             data-aos-duration="1000"
             class="rounded-lg bg-white"
           >
-            <Experiencias :type="value.name" />
+            <Experiencias  />
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
   <FooterSection></FooterSection>
 </template>
 <script setup>
-import Experiencias from "@/Components/SearchEngines/Experiencias.vue";
+import Experiencias from "@/Components/SearchEngines/Search.vue";
 import Header from "@/Components/Sections/Header.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import FooterSection from "@/Pages/Welcome/FooterSection.vue";
@@ -69,5 +69,4 @@ defineProps({
   },
 });
 
-const value = ref({ name: "Experiencias y Tours", value: 1 });
 </script>

@@ -11,6 +11,10 @@ export function truncatedString(string, maxLength) {
         : string;
 }
 
+export function currencyFormat(value) {
+       return COP.format(value);
+    };
+
 /**
  * This function exports common utilities in JavaScript.
  */

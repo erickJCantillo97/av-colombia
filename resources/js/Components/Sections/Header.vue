@@ -20,13 +20,7 @@
           >{{ item.name }}</Link
         >
       </div>
-      <input
-        v-model="search"
-        v-else
-        type="search"
-        placeholder="Busqueda Rapida"
-        class="rounded-md w-3/5"
-      />
+       <Experiencias v-else  class="rounded-md w-3/5" />
 
       <div class="flex lg:hidden w-1/5 justify-end">
         <button
@@ -86,6 +80,7 @@
 </template>
 
 <script setup>
+import Experiencias from "@/Components/SearchEngines/Search.vue";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { Dialog, DialogPanel } from "@headlessui/vue";
 import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
@@ -124,19 +119,25 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Estilo por defecto del header */
 header {
-  padding: 15px;
+  padding: 30px;
   position: fixed;
   width: 100%;
   top: 0;
-  transition: background-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s,
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 30;
+  transform: translateY(-20px); /* Por defecto, un poco arriba */
 }
 
 .scrolled {
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.384);
+  padding: 0px;
+  transform: translateY(0); /* Cuando scrolled, baja a su lugar */
 }
 
 /* Contenido principal */

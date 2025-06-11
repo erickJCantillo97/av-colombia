@@ -18,13 +18,14 @@
 </template>
 <script setup>
 import { Link } from "@inertiajs/vue3";
-import { Breadcrumb } from "primevue";
 import { ref } from "vue";
-defineProps({});
+const props = defineProps({
+  service: Object
+});
 
 const home = ref({
   icon: "pi pi-home",
   route: "/introduction",
 });
-const items = ref([{ label: "Tours" }, { label: "Cartagena" }, { label: "Erick" }]);
+const items = ref([{ label: props.service.type }, { label: props.service.city }, { label: props.service.title }]);
 </script>
