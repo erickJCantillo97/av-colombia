@@ -33,7 +33,7 @@
                                 <span class="sr-only">Address</span>
                                 <BuildingOffice2Icon class="h-7 w-6 text-gray-400" aria-hidden="true" />
                             </dt>
-                            <dd>Los Alpes transversal 71E  diagonal 32B 139 local 101<br /> Parque residencial los Alpes
+                            <dd>Av. Santander Cra 1 #46-50, Marbella<br /> Cartagena de Indias,  Colombia
                                </dd>
                         </div>
                         <div class="flex gap-x-4">
