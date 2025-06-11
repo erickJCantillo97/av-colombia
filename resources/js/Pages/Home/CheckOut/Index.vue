@@ -101,71 +101,9 @@
               </div>
             </fieldset>
 
-            <div class="mt-6 grid grid-cols-4 gap-x-4 gap-y-6">
-              <div class="col-span-4">
-                <label for="card-number" class="block text-sm/6 font-medium text-gray-700"
-                  >Card number</label
-                >
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    id="card-number"
-                    name="card-number"
-                    autocomplete="cc-number"
-                    class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div class="col-span-4">
-                <label
-                  for="name-on-card"
-                  class="block text-sm/6 font-medium text-gray-700"
-                  >Name on card</label
-                >
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    id="name-on-card"
-                    name="name-on-card"
-                    autocomplete="cc-name"
-                    class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div class="col-span-3">
-                <label
-                  for="expiration-date"
-                  class="block text-sm/6 font-medium text-gray-700"
-                  >Expiration date (MM/YY)</label
-                >
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    name="expiration-date"
-                    id="expiration-date"
-                    autocomplete="cc-exp"
-                    class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label for="cvc" class="block text-sm/6 font-medium text-gray-700"
-                  >CVC</label
-                >
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    name="cvc"
-                    id="cvc"
-                    autocomplete="csc"
-                    class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-            </div>
+            <p class="mt-4 text-sm text-gray-500">
+              Aqui van las instrucciones de pago para {{ selectedDeliveryMethod.title }}.
+            </p>
           </div>
         </div>
 
@@ -263,9 +201,9 @@ const deliveryMethods = [
   // { id: 2, title: "Online", turnaround: "El Pago se refleja de inmediato" },
 ];
 const paymentMethods = [
-  { id: "credit-card", title: "Credit card" },
-  { id: "paypal", title: "PayPal" },
-  { id: "etransfer", title: "eTransfer" },
+  { id: "credit-card", title: "Bancolombia" },
+  { id: "paypal", title: "Davivienda" },
+  { id: "etransfer", title: "Nequi" },
 ];
 const labelTypePrice = () => {
   switch (props.service.price_type) {
