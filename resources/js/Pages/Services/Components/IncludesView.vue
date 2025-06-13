@@ -12,7 +12,6 @@
                         </span>
                         </li>
                 </ul>
-                
             </div>
         </div>
         <div class="flex flex-col gap-y-2">
