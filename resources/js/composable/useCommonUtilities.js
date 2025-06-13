@@ -13,7 +13,14 @@ export function truncatedString(string, maxLength) {
 
 export function currencyFormat(value) {
        return COP.format(value);
-    };
+};
+export function getTotalPaxByReservas(reservas) {
+     return (reservas.reduce((total, reserva) => total + reserva.adults, 0));
+}
+export function getTotalCostByReservas(reservas) {
+    console.log(reservas);
+    return (reservas.reduce((total, reserva) => total + reserva.total_cost, 0));
+}
 
 /**
  * This function exports common utilities in JavaScript.

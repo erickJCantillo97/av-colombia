@@ -33,6 +33,10 @@
             <InputNumber  v-model="bookingServicesProveedors.form.cost"  inputId="price_input" mode="currency" currency="USD" locale="en-US" variant="filled" class="w-full" />
             <label for="price_input">Costo</label>
         </IftaLabel>
+        <IftaLabel class="w-full">
+            <InputNumber  v-model="bookingServicesProveedors.form.cost"  inputId="price_input" mode="currency" currency="USD" locale="en-US" variant="filled" class="w-full" />
+            <label for="price_input">Descuento</label>
+        </IftaLabel>
         <Button type="submit" severity="success"  class="w-full">
             <i class="fa-solid fa-plus"></i>
             Agregar

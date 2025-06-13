@@ -1,6 +1,6 @@
 <template>
-  <header class="bg-transparent w-full z-30" :class="{ scrolled: isScrolled }">
-    <nav class="flex items-center justify-between p-2 lg:px-8" aria-label="Global">
+  <header class="bg-transparent  z-30" :class="{ scrolled: isScrolled }">
+    <nav class="flex items-center justify-between p-2 lg:px-8 " aria-label="Global">
       <Link href="/" class="flex lg:flex-1 w-1/5 justify-start items-center">
         <Logo width="80" height="30"></Logo>
         <h1 class="text-sm md:text-lg font-bold hidden md:flex items-center space-x-2">
@@ -133,11 +133,22 @@ header {
 }
 
 .scrolled {
+  width: 80%;
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.384);
   padding: 0px;
   transform: translateY(0); /* Cuando scrolled, baja a su lugar */
+  margin: 10px 50px;
+  border-radius: 10px;
+}
+
+@media (max-width: 1024px) {
+  .scrolled {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
 }
 
 /* Contenido principal */

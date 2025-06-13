@@ -5,7 +5,7 @@
   ></div>
   <div class="">
     <div
-      class="justify-center w-full h-[60vh] flex flex-col items-center pb-5"
+      class="justify-center w-full h-[70vh] flex flex-col items-center pb-5"
       style="
         background-image: url('/images/cartagena.webp');
         background-size: cover;
@@ -14,10 +14,10 @@
     >
       <Header :isScrolled="isScrolled" />
       <div
-        class="shadow-xl mt-10 flex items-center justify-between rounded-lg px-10 md:px-12 h-full"
+        class="mt-10 flex items-center justify-between rounded-lg px-10 md:px-12 h-full"
       >
         <div class="py-10 space-y-10 mt-4 w-full">
-          <div class="flex justify-between items-center w-full">
+          <div class="flex gap-x-24 justify-between items-center w-full">
             <Link href="/" class="hidden md:flex">
               <Logo></Logo>
               <!-- <img src="/images/logo.svg" class="object-cover" alt=""> -->

@@ -1,7 +1,7 @@
 <script setup>
 import Datatable from "@/Components/Customs/Datatable.vue";
-import Input from "@/Components/Customs/Input.vue";
 import Modal from "@/Components/Customs/Modal.vue";
+import Form from "./Form.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
@@ -242,160 +242,10 @@ const save = () => {
       <Datatable :add :columnas="columns" :data="payments" :actions title="Pagos">
       </Datatable>
     </div>
-    <Modal v-model="show" title="Añadir Pagos">
-      <div class="gap-y-2 flex flex-col">
-        <div class="flex flex-col w-full justify-between font-bold">
-          <p>Fechas</p>
-          <DatePicker
-            v-model="selectDate"
-            selectionMode="range"
-            dateFormat="dd/mm/yy"
-            class="w-full"
-            :manualInput="false"
-            @value-change="getReservas"
-          />
-        </div>
-        <Input
-          label="Proveedor"
-          type="dropdown"
-          option-label="proveedor"
-          option-value="proveedor_id"
-          @value-change="getReservas"
-          v-model="proveedor"
-          :options="proveedores"
-        />
-
-        <div v-if="proveedor" class="flex flex-col gap-y-2">
-          <!-- {{ reservas }} -->
-          <div class="flex justify-between gap-x-4">
-            <div
-              v-for="item in reservasType"
-              :class="`${item.color} ${
-                item.value.length > 0 ? 'cursor-pointer' : 'hidden'
-              } `"
-              class="rounded-lg py-2 border w-full flex flex-col gap-y-1 items-center font-bold cursor-pointer scale-90 hover:scale-100 shadow-sm hover:shadow-lg transition-all duration-300"
-              @click="toggle($event, item)"
-            >
-              <h1>{{ item.name }}</h1>
-              <div class="flex gap-2 divide-x-4 divide-white items-center">
-                <p class="p-1">{{ item.value.length }} Reservas</p>
-                <p class="p-1 pl-3">
-                  {{ item.value.reduce((a, c) => a + c.adults, 0) }} Pasajeros
-                </p>
-              </div>
-              <p>
-                {{
-                  COP.format(
-                    item.value.reduce(
-                      (a, c) =>
-                        a +
-                        c.proveedors
-                          .filter((x) => x.proveedor_id == proveedor)
-                          .reduce((a, c) => a + c.cost, 0),
-                      0
-                    )
-                  )
-                }}
-              </p>
-            </div>
-          </div>
-          <div class="flex flex-col w-full justify-between font-bold">
-            <p>Fecha en que realizó el pago</p>
-            <DatePicker
-              v-model="form.date"
-              dateFormat="dd/mm/yy"
-              class="w-full"
-              :manualInput="false"
-            />
-          </div>
-          <Input label="Valor" type="number" mode="currency" v-model="form.amount" />
-          <input type="file" @change="previewFiles" label="Comprobante" />
-        </div>
-
-        <div class="flex justify-end gap-x-2">
-          <button
-            @click="show = false"
-            class="bg-red-500 text-white px-4 py-2 rounded-md"
-          >
-            Cancelar
-          </button>
-          <button
-            :loading
-            v-if="proveedor"
-            @click="save"
-            class="bg-green-500 text-white px-4 py-2 rounded-md"
-          >
-            Guardar
-          </button>
-        </div>
-      </div>
+    <Modal v-model="show" title="Añadir Pagos" width="80vw">
+      <Form></Form>
     </Modal>
   </AppLayout>
 
-  <Popover ref="op">
-    <div class="flex flex-col gap-4">
-      <div>
-        <span class="font-medium block mb-2">{{ members.name }} </span>
-        <div
-          class="w-full bg-gray-200 rounded-md p-2 grid grid-cols-2 divide-y-2 md:flex space-x-2"
-        >
-          <div
-            @click="value = op.value"
-            v-for="op in options"
-            class="w-full rounded-lg text-center py-2 text-sm md:text-md cursor-pointer"
-            :class="value == op.value ? 'bg-white' : 'hover:bg-white/30'"
-          >
-            {{ op.name }}
-          </div>
-        </div>
-        <div class="flex flex-col gap-y-2 h-64 overflow-auto">
-          <div v-if="value == 1">
-            <div
-              class="flex items-center gap-x-8 border-b shadow-md justify-between p-3 rounded-md hover:bg-gray-300"
-              v-for="(grupo, index) in groupReservas"
-            >
-              <div class="flex flex-col">
-                <span class="font-bold flex items-center gap-x-2">
-                  <p>
-                    {{ index }}
-                  </p>
-                </span>
-                <span class="text-xs">{{ grupo.count }} Reservas</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="text-sm">{{ grupo.pasajeros }} Pasajeros</span>
-                <span class="font-bold">{{ COP.format(grupo.total) }}</span>
-              </div>
-            </div>
-          </div>
-          <div v-if="value == 2">
-            <div
-              class="flex items-center gap-x-8 border-b shadow-md justify-between p-3 rounded-md hover:bg-gray-300"
-              v-for="member in members.value"
-            >
-              <div class="flex flex-col">
-                <span class="font-bold flex items-center gap-x-2">
-                  <p>
-                    {{ member.title }}
-                  </p>
-                </span>
-                <span class="text-xs">{{ member.cliente_name }}</span>
-                <span class="text-xs">{{ member.fecha }}</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="text-sm">{{ member.adults }} Pasajeros</span>
-                <span class="font-bold">{{
-                  COP.format(
-                    member.proveedors
-                      .filter((x) => x.proveedor_id == proveedor)
-                      .reduce((a, c) => a + c.cost, 0)
-                  )
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Popover>
+ 
 </template>
