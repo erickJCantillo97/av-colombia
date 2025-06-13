@@ -1,9 +1,7 @@
 <script setup>
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import { computed, ref } from "vue";
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { StarIcon } from "@heroicons/vue/20/solid";
-import { HeartIcon, MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
+import IncludesView from "./Components/IncludesView.vue";
 import Header from "@/Components/Sections/Header.vue";
 import Portada from "./Components/Portada.vue";
 import Breadcrumb from "./Components/Breadcrumb.vue";
@@ -49,7 +47,7 @@ const product = {
 
 <template>
   <Header />
-  <div class="px-4 py-16 md:p-28 bg-gray-100">
+  <div class="px-4 py-16 md:p-28 ">
     <Portada :images="product.images" :portada="product.images[0]" />
     <div class="flex md:flex-row flex-col gap-4">
       <div class="my-4 rounded-xl p-4 w-full md:w-[70%] flex flex-col gap-y-4">
@@ -80,7 +78,7 @@ const product = {
           </button>
         </div>
         <Equipament :service="service" v-if="service.type == 'EMBARCACION'"></Equipament>
-
+        <IncludesView :service="service" v-if="service.includes != '[]'"></IncludesView>
         <CollectionPoints :service="service" v-if="service.recogidas != '[]'"  />
       </div>
       <LargeBooking :product="service" :availabilities></LargeBooking>

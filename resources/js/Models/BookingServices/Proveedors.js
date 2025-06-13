@@ -22,6 +22,7 @@ export default class BookingServicesProveedors {
         proveedor_id: null,
         cost: 0,
         concept: "",
+        discount: 0,
     });
 
     async getProveedorByBookingService() {
@@ -32,7 +33,6 @@ export default class BookingServicesProveedors {
             )
         );
         this.proveedorsByBookingService.value = data.proveedors;
-        console.log(this.proveedorsByBookingService.value);
     }
 
     calculateCost(){

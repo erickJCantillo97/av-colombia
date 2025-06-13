@@ -92,7 +92,6 @@ const removeRecogidas = (index) => {
 
 const addPuntos = () => {
   if (!puntosName.value) return;
-  console.log(form.puntos);
   if (!form.puntos.includes(puntosName.value)) {
     form.puntos.push(puntosName.value);
   }
@@ -152,7 +151,6 @@ const submit = () => {
       onSuccess: (service) => {
         // form.reset();
         toast("success", "Servicio creado con exito");
-        console.log(service);
         // router.visit(route('services.edit',))
       },
       onError: (error) => {

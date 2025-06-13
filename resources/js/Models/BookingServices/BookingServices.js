@@ -110,7 +110,6 @@ export default class BookingServices  {
     }
 
     getColorStatus() {
-        console.log(this.bookingService.status);
         return this.statuesOptions.find((option) => option.text == this.bookingService.status.toUpperCase()).color;
     }
 

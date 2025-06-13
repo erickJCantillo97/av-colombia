@@ -113,7 +113,6 @@ const submit = () => {
   form.post(route("noshow.servicio", props.service.id), {
     onSuccess: () => {
       showModal.value = false;
-      console.log("No show");
     },
   });
 };

@@ -39,7 +39,6 @@ const confirm = useConfirm();
 const buttons = [
     {
         action: (data, event) => {
-            console.log(data);
             confirm.require({
                 target: event.currentTarget,
                 message: "Seguro de Eliminar el Proveedor " + data.proveedor.nombre + "?",

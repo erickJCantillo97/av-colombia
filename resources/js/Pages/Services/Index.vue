@@ -286,7 +286,7 @@ const buttons = [
         rejectLabel: "Cancelar",
         acceptLabel: "Eliminar",
         accept: () => {
-          console.log(data);
+          
           router.delete(route("services.destroy", data.id), {
             onSuccess: () => {
               toast("success", "Servicio eliminado con exito");

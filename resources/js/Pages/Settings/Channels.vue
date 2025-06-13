@@ -122,7 +122,6 @@ const buttons = [
                 rejectLabel: 'Cancelar',
                 acceptLabel: 'Eliminar',
                 accept: () => {
-                    console.log(data)
                     router.delete(route('users.destroy', data.id), {
                         onSuccess: () => {
                             toast.add({ severity: 'error', icon: 'fa-solid fa-trash-can', summary: '¡Accion realizada!', detail: 'Usuario eliminado con exito', group: 'customTooltipDataTable', life: 5000 });

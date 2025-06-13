@@ -97,7 +97,6 @@ import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref } from 'vue';
 
-
 const visible = ref(false);
 const title = ref('')
 const services = ref([]);
@@ -105,13 +104,11 @@ const services = ref([]);
 const openDrawer = (t) => {
     title.value = t;
     visible.value = true;
-    console.log(t);
     if (t == 'TOUR') {
         axios.get(route('get.services'), {
             type: 'TOUR'
         }).then((response) => {
             services.value = response.data.services;
-            console.log(response.data);
         });
     }
 }

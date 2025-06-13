@@ -73,7 +73,6 @@ const getTotalReservas = () => {
       },
     })
     .then((response) => {
-      console.log(response.data);
       seriesData.value = Object.values(response.data);
     });
 };

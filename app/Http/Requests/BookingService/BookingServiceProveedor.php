@@ -26,6 +26,7 @@ class BookingServiceProveedor extends FormRequest
             'proveedor_id' => 'required|exists:proveedors,id',
             'cost' => 'required|numeric',
             'concept' => 'required|string|max:255',
+            'discount' => 'nullable|numeric|min:0',
         ];
     }
 }

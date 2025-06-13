@@ -56,7 +56,6 @@ const changes = computedAsync(async () => {
       date: date.value,
     })
   );
-  console.log(data.status);
   return data.status;
 });
 

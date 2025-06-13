@@ -97,7 +97,6 @@ const submit = () => {
     onSuccess: () => {
       showModal.value = false;
       showview.value = false;
-      console.log("Cancelado");
     },
   });
 };

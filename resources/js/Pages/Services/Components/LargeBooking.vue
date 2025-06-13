@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-4 shadow-xl w-[20%] rounded-lg fixed right-52 -mt-32 bg-white space-y-4 overflow-y-auto"
+    class="p-4 shadow-xl w-[20%] rounded-lg fixed right-52 -mt-64 bg-white space-y-4 overflow-y-auto"
   >
     <p class="font-extrabold text-center text-3xl capitalize text-green-700">
       Reservar

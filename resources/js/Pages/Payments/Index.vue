@@ -207,10 +207,6 @@ const save = () => {
   formData.append("amount", form.amount);
   formData.append("comprobante", form.file);
   formData.append("date", new Date(form.date).toISOString().split("T")[0]);
-  console.log(
-    new Date(selectDate.value[0]).toISOString().split("T")[0],
-    new Date(selectDate.value[1]).toISOString().split("T")[0]
-  );
   formData.append("startDate", new Date(selectDate.value[0]).toISOString().split("T")[0]);
   formData.append("endDate", new Date(selectDate.value[1]).toISOString().split("T")[0]);
   formData.append("description", form.description);

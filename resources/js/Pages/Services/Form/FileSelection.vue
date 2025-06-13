@@ -83,12 +83,7 @@ const onSelectedFiles = (event) => {
 };
 
 const uploadEvent = (callback) => {
-    // console.log("Uploading...");
-    // console.log(files.value);
-    // axios.post(route('upload.images'), { images: files.value }).then((response) => {
     callback();
-    // });
-    // console.log("Uploaded");
 };
 
 const onTemplatedUpload = () => {

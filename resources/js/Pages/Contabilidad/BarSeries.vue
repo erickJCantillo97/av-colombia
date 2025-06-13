@@ -15,7 +15,6 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  console.log(props.data);
   chartData.value = setChartData();
   chartOptions.value = setChartOptions();
 });

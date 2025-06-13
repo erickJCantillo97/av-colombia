@@ -271,7 +271,7 @@ const copyTime = (day, index) => {
 const horarioSelect = ref(null);
 
 const pricesAdd = (horario) => {
-  console.log(horarios.value.find((h) => h.id == horario));
+
   precios.value = horarios.value.find((h) => h.id == horario)?.precios ?? [];
 
   horarioSelect.value = horario;

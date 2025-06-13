@@ -18,7 +18,7 @@ export function getTotalPaxByReservas(reservas) {
      return (reservas.reduce((total, reserva) => total + reserva.adults, 0));
 }
 export function getTotalCostByReservas(reservas) {
-    console.log(reservas);
+    
     return (reservas.reduce((total, reserva) => total + reserva.total_cost, 0));
 }
 
