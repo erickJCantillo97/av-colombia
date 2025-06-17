@@ -282,11 +282,12 @@ import Modal from "./Customs/Modal.vue";
 import Input from "./Customs/Input.vue";
 import ServiceCancel from "./ServiceCancel.vue";
 import ServiceNoShow from "./ServiceNoShow.vue";
+import Service from "@/Models/Services/Service";
 
+const serviceModel = new Service();
 const { toast } = alerts();
 const props = defineProps({
   service: Object,
-  proveedors: Array,
 });
 
 const current_proveedors = ref(null);
@@ -394,9 +395,9 @@ const sendReubicar = () => {
     return 0;
   }
   formReu.current_id = current_proveedors.value.id;
-
+  formReu.service = props.service.id;
   formReu.state = "REUBICADO";
-  formReu.terminated = true;
+  formReu.terminated = false;
   formReu.post(route("set.states.booking"), {
     onSuccess: () => {
       reubicar.value = false;
@@ -406,10 +407,7 @@ const sendReubicar = () => {
   });
 };
 
-const reubicarServicio = () => {
-  formReu.reset();
-  reubicar.value = true;
-};
+
 
 const statues = {
   reservado: "blue",
@@ -417,5 +415,21 @@ const statues = {
   "NO SHOW": "amber",
   REUBICADO: "orange",
   CANCELADA: "green",
+};
+
+const proveedors = ref([]);
+
+const getProveedorsByService = async () => {
+
+  proveedors.value = await serviceModel.getProveedorsByService(props.service.service_id);
+  
+};
+
+
+
+const reubicarServicio = () => {
+  formReu.reset();
+  reubicar.value = true;
+  getProveedorsByService();
 };
 </script>
