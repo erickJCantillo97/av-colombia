@@ -11,10 +11,10 @@
             </div>
 
         </div>
-        <div class="w-full flex flex-col md:flex-row items-start justify-start gap-2 md:gap-10 p-4 px-10 md:px-20">
+        <div class="w-full flex flex-col md:flex-row items-start justify-start gap-2 md:gap-10 p-4 px-10 md:px-10">
             <div v-for="(service, index) in servicesType" @click="openDrawer(service.type)" class="flex efect hover:scale-105 item flex-col w-full p-5 md:pt-10 shadow-xl hover:bg-gray-800
                 hover:text-white group">
-                <h3 class="font-bold text-4xl md:text-5xl">{{ service.name }}</h3>
+                <h3 class="font-bold text-2xl md:text-3xl">{{ service.name }}</h3>
                 <div class="size-2 border-2 mt-8 group-hover:bg-gray-100">
                 </div>
                 <p class="mt-4 text-justify">
@@ -34,7 +34,7 @@
         }" v-model:visible="visible" position="full">
             <div class="text-white flex flex-col items-center justify-center">
                 <!-- <h1 class="text-6xl font-bold">Experiencias</h1> -->
-                <div class="flex flex-col md:flex-row items-start justify-between w-full md:mt-10">
+                <div class="flex flex-col md:flex-row items-start justify-between w-full">
                     <div class="w-full p-10 flex flex-col items-start justify-start gap-10">
                         <h2 class="text-4xl md:text-5xl font-extrabold">Experiencias y tours</h2>
                         <p class="text-justify text-gray-100 text-lg md:pr-52">
@@ -46,17 +46,10 @@
                             cultura
                             y la gastronomía de nuestro país.
                         </p>
-                        <button
-                            class="p-3 hover:pr-8 bg-lime-300 text-black text-lg font-bold rounded-lg md:mt-10 flex items-center gap-x-5 group">
-                            <span>
-                                Contactar un Vendedor
-                            </span>
-                            <i class="fa-solid fa-right-long group-hover:translate-x-4"></i>
-                        </button>
-
+                        
                     </div>
                     <video loop autoplay class="rounded-lg h-[45vh] hidden md:block">
-                        <source src="https://avcolombia.net/videos/cartagena.mp4" type="video/mp4"> >
+                        <source src="https://avcolombia.net/videos/cartagena.mp4" type="video/mp4">
                     </video>
                 </div>
                 <div class="w-full space-x-2 py-2 justify-center mt-6 " v-if="services.length > 0">
@@ -105,10 +98,13 @@ const openDrawer = (t) => {
     title.value = t;
     visible.value = true;
     if (t == 'TOUR') {
-        axios.get(route('get.services'), {
-            type: 'TOUR'
-        }).then((response) => {
-            services.value = response.data.services;
+        axios.get(route('get.all.services')).then((response) => {
+            services.value = response.data.services.filter(service => service.type === 'TOUR');
+        });
+    }
+    if(t == 'BOAT') {
+        axios.get(route('get.all.services')).then((response) => {
+            services.value = response.data.services.filter(service => service.type === 'EMBARCACION');
         });
     }
 }
@@ -140,7 +136,7 @@ const responsiveOptions = ref([
 const servicesType = ref([
     {
         type: 'TOUR',
-        name: 'Experiencias',
+        name: 'Tours',
         text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
         textButton: 'Ir a Disfrutar'
 

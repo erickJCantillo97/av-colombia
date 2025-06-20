@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador Estilo Airbnb - Botones Compactos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .service-type-tab {
+            animation: slideInUp 0.3s ease-out forwards;
+            opacity: 0;
+        }
+
+        .service-type-tab:nth-child(1) { animation-delay: 0.05s; }
+        .service-type-tab:nth-child(2) { animation-delay: 0.1s; }
+        .service-type-tab:nth-child(3) { animation-delay: 0.15s; }
+        .service-type-tab:nth-child(4) { animation-delay: 0.2s; }
+        .service-type-tab:nth-child(5) { animation-delay: 0.25s; }
+        .service-type-tab:nth-child(6) { animation-delay: 0.3s; }
+
+        .service-type-tab:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-type-tab svg {
+            transition: all 0.2s ease;
+        }
+
+        .service-type-tab:hover svg {
+            transform: scale(1.1);
+        }
+
+        .search-section:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-center w-full">
+            <div class="relative w-full max-w-4xl">
+                
+                <!-- Service Types Section - Compact Style -->
+                <div class="mb-4">
+                    <div class="flex items-center justify-center space-x-2 px-4">
+                        
+                        <!-- Todos - Selected -->
+                        <div class="service-type-tab flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px] bg-gray-900 text-white shadow-md border-2 border-gray-900">
+                            <div class="w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10 text-white">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight text-white">Todos</span>
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-white rounded-full"></div>
+                        </div>
+
+                        <!-- Tours -->
+                        <div class="service-type-tab flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px] bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300">
+                            <div class="w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10 text-gray-600 group-hover:text-gray-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight text-gray-700 group-hover:text-gray-900">Tours</span>
+                        </div>
+
+                        <!-- Embarcaciones -->
+                        <div class="service-type-tab flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px] bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300">
+                            <div class="w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10 text-gray-600 group-hover:text-gray-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4a1 1 0 00-1-1H9a1 1 0 00-1 1v2M12 6l-3 0M12 6l3 0m-3 0v6m0 0l-3 3m3-3l3 3m-6-6h12a1 1 0 011 1v8a1 1 0 01-1 1H6a1 1 0 01-1-1v-8a1 1 0 011-1z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight text-gray-700 group-hover:text-gray-900">Embarcaciones</span>
+                        </div>
+
+                        <!-- Hospedaje -->
+                        <div class="service-type-tab flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px] bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300">
+                            <div class="w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10 text-gray-600 group-hover:text-gray-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4a4 4 0 714-4h10a4 4 0 714 4v4M7 7a4 4 0 118 0v1a3 3 0 01-3 3h-2a3 3 0 01-3-3V7z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight text-gray-700 group-hover:text-gray-900">Hospedaje</span>
+                        </div>
+
+                        <!-- Transporte -->
+                        <div class="service-type-tab flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px] bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300">
+                            <div class="w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10 text-gray-600 group-hover:text-gray-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m4 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7zM8 7h8M5 21h14"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight text-gray-700 group-hover:text-gray-900">Transporte</span>
+                        </div>
+
+                        <!-- Aventura -->
+                        <div class="service-type-tab flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px] bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300">
+                            <div class="w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10 text-gray-600 group-hover:text-gray-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight text-gray-700 group-hover:text-gray-900">Aventura</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Airbnb Style Search Bar -->
+                <div class="relative">
+                    <div class="flex items-center bg-white rounded-full shadow-lg border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+                        
+                        <!-- Dónde -->
+                        <div class="flex-1 relative search-section">
+                            <div class="px-6 py-4 cursor-pointer transition-all duration-200 rounded-l-full hover:bg-gray-50">
+                                <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Dónde</div>
+                                <div class="text-sm text-gray-500 mt-1">Explora destinos</div>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="w-px h-8 bg-gray-200"></div>
+
+                        <!-- Check-in -->
+                        <div class="flex-1 relative search-section">
+                            <div class="px-6 py-4 cursor-pointer transition-all duration-200 hover:bg-gray-50">
+                                <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Check-in</div>
+                                <div class="text-sm text-gray-500 mt-1">Agrega fecha</div>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="w-px h-8 bg-gray-200"></div>
+
+                        <!-- Check-out -->
+                        <div class="flex-1 relative search-section">
+                            <div class="px-6 py-4 cursor-pointer transition-all duration-200 hover:bg-gray-50">
+                                <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Check-out</div>
+                                <div class="text-sm text-gray-500 mt-1">Agrega fecha</div>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="w-px h-8 bg-gray-200"></div>
+
+                        <!-- Quién -->
+                        <div class="flex-1 relative search-section">
+                            <div class="px-6 py-4 cursor-pointer transition-all duration-200 hover:bg-gray-50">
+                                <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Quién</div>
+                                <div class="text-sm text-gray-500 mt-1">¿Cuántos?</div>
+                            </div>
+                        </div>
+
+                        <!-- Search Button -->
+                        <div class="px-2 py-2">
+                            <button class="bg-rose-500 hover:bg-rose-600 text-white p-4 rounded-full transition-all duration-200 shadow-lg hover:scale-105">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información sobre los cambios -->
+        <div class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-xl shadow-sm">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">🎨 Diseño Compacto - Estilo Airbnb</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2">✅ Mejoras Implementadas:</h3>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• <strong>Botones más pequeños y compactos</strong></li>
+                        <li>• Iconos reducidos (16px) más minimalistas</li>
+                        <li>• Padding reducido para mayor densidad</li>
+                        <li>• Eliminada la descripción para más simplicidad</li>
+                        <li>• Colores más sobrios (gris oscuro vs rosa)</li>
+                        <li>• Indicador de selección más sutil</li>
+                        <li>• Animaciones más rápidas y suaves</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2">🎯 Estilo Airbnb:</h3>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• Fondo gris oscuro para el elemento activo</li>
+                        <li>• Bordes sutiles y redondeados</li>
+                        <li>• Espaciado compacto entre elementos</li>
+                        <li>• Tipografía pequeña pero legible</li>
+                        <li>• Hover effects minimalistas</li>
+                        <li>• Responsive para todos los dispositivos</li>
+                        <li>• Layout horizontal optimizado</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                <h4 class="font-medium text-blue-900 mb-2">📱 Responsive Design:</h4>
+                <p class="text-sm text-blue-800">
+                    En pantallas pequeñas, los botones se reorganizan automáticamente en múltiples filas manteniendo la usabilidad y el diseño compacto.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

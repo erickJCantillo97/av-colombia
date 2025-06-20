@@ -46,7 +46,7 @@
             data-aos-duration="1000"
             class="rounded-lg bg-white"
           >
-            <Experiencias  />
+            <!-- <Experiencias  /> -->
           </div>
         </div>
       </div>
