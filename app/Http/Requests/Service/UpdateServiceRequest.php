@@ -40,6 +40,7 @@ class UpdateServiceRequest extends FormRequest
             'capacidad_min' => 'nullable|numeric',
             'capacidad_max' => 'nullable|numeric',
             'recogidas' => 'nullable|string',
+            'problematics' => 'nullable|numeric',
             'puntos' => 'nullable|string',
             'availability_type' => 'nullable|string',
             'price_type' => 'nullable|string',

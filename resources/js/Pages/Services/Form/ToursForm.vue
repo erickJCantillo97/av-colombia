@@ -26,8 +26,15 @@
             <Input type="number" label="Capacidad maxima" v-model="form.capacidad_max" :min="form.capacidad_min" />
             <Input type="number" label="Tarifa de Adultos para Vendedores" v-model="form.adults_price"
                 :min="form.capacidad_min" mode="currency" />
+                <Input
+                type="number"
+                label="Tarifa Maxima a Cobrar (Precio Vendedores)"
+                v-model="form.problematic"
+                mode="currency"
+                />
             <Input type="number" label="Tarifa de Niños para Vendedores" v-model="form.boys_price"
                 :min="form.capacidad_min" mode="currency" />
+                
         </div>   
             <Input label="Descripción del Servicio" type="textarea" :rowsTextarea="3" v-model="form.description"  :error-message="form.errors.description" />
         <div class="flex justify-between space-x-4 items-center">

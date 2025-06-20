@@ -33,7 +33,9 @@
       </div>
       <div>
         <label for="" class="font-bold">Tarifa Maxima a Cobrar</label>
-        <div class="text-gray-500 text-center">-</div>
+        <div class="text-gray-500 text-center">
+            {{ service.problematic != 0 ? COP.format(service.problematic) : '-' }}
+        </div>
       </div>
     </div>
     <Input

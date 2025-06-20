@@ -18,6 +18,7 @@ export default class Service extends GeneralService {
         notIncludes: [],
         type: "TOUR",
         city: "Cartagena",
+        problematic: 0,
         duration_type: "",
         destinations: "",
         duration: 0,

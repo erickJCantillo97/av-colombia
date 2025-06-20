@@ -38,6 +38,7 @@ class StoreServiceRequest extends FormRequest
             'adults_price' => 'nullable|numeric',
             'boys_price' => 'nullable|numeric',
             'capacidad_min' => 'nullable|numeric',
+            'problematics' => 'nullable|numeric',
             'capacidad_min' => 'nullable|numeric',
             'recogidas' => 'nullable|string',
             'availability_type' => 'nullable|string',

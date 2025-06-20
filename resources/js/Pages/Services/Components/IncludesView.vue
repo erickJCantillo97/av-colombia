@@ -22,15 +22,12 @@
                     <li v-for="(include, index) in notIncludes" :key="index">
                         <i class="fa-solid fa-xmark text-red-500"></i>
                         <span class="ml-2 font-semibold">
-                        {{ include }}
+                            {{ include }}
                         </span>
                     </li>
                 </ul>
             </div>
         </div>
-       
-
-        
     </div>
 </template>
 <script setup>
