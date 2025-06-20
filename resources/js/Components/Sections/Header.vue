@@ -1,28 +1,15 @@
 <template>
   <header class="bg-transparent  z-30" :class="{ scrolled: isScrolled }">
     <nav class="flex items-center justify-between p-2 lg:px-8 " aria-label="Global">
-      <Link href="/" class="flex lg:flex-1 w-1/5 justify-start items-center">
-        <Logo width="80" height="30"></Logo>
-        <h1 class="text-sm md:text-lg font-bold hidden md:flex items-center space-x-2">
-          AV Colombia
-        </h1>
-      </Link>
-
-      <div
-        class="hidden lg:flex lg:gap-x-12 w-3/5 items-center justify-center"
-        v-if="!isScrolled"
-      >
-        <Link
-          v-for="item in navigation"
-          :key="item.name"
-          :href="route(item.href)"
-          class="text-sm font-semibold leading-6 text-gray-900 w-full"
-          >{{ item.name }}</Link
-        >
+      <div class="flex  w-1/5 ">
+      <Link href="/" >
+          <Logo width="120" height="60"></Logo>
+        </Link>
       </div>
-       <Experiencias v-else  class="rounded-md w-3/5" />
-
-      <div class="flex lg:hidden w-1/5 justify-end">
+      <div class="rounded-md w-3/5">
+        <Experiencias   />
+      </div>
+      <div class="flex lg:hidden w-full justify-end">
         <button
           type="button"
           class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -32,8 +19,8 @@
           <Bars3Icon class="h-6 w-6" aria-hidden="true" />
         </button>
       </div>
-      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <Link :href="route('login')" class="text-sm font-semibold leading-6 text-gray-900"
+      <div class="hidden lg:flex w-1/5 justify-end">
+        <Link :href="route('login')" class="text-md flex font-semibold leading-6 text-gray-900 w-full justify-end"
           >Log in <span aria-hidden="true">&rarr;</span></Link
         >
       </div>
@@ -133,14 +120,11 @@ header {
 }
 
 .scrolled {
-  width: 80%;
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.384);
   padding: 0px;
   transform: translateY(0); /* Cuando scrolled, baja a su lugar */
-  margin: 10px 50px;
-  border-radius: 10px;
 }
 
 @media (max-width: 1024px) {
@@ -152,8 +136,5 @@ header {
 }
 
 /* Contenido principal */
-.content {
-  padding-top: 80px;
-  /* Asegurarse de que el header no cubra el contenido */
-}
+
 </style>

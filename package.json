@@ -40,7 +40,7 @@
         "@syncfusion/ej2-vue-splitbuttons": "^28.1.33",
         "@tanstack/vue-query": "^5.67.2",
         "@vee-validate/yup": "^4.14.6",
-        "@vuepic/vue-datepicker": "^9.0.2",
+        "@vuepic/vue-datepicker": "^9.0.3",
         "@vueuse/core": "^12.7.0",
         "aos": "^2.3.4",
         "chart.js": "^4.4.3",
@@ -62,11 +62,14 @@
         "sweetalert2": "^11.14.4",
         "tailwindcss-primeui": "^0.3.4",
         "vee-validate": "^4.14.6",
+        "vue-cal": "^4.10.2",
+        "vue-datepicker-next": "^1.0.3",
         "vue-filepond": "^7.0.4",
         "vue-flatpickr-component": "^11.0.5",
         "vue-sweetalert2": "^5.0.11",
         "vue-tailwind-datepicker": "^1.7.3",
         "vue3-carousel": "^0.3.3",
+        "vue3-date-time-picker": "^2.8.3",
         "yup": "^1.4.0",
         "yup-locales": "^1.2.28"
     }

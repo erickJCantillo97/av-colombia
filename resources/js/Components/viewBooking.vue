@@ -407,8 +407,6 @@ const sendReubicar = () => {
   });
 };
 
-
-
 const statues = {
   reservado: "blue",
   "CAMBIO DE FECHA": "gray",

@@ -1,402 +1,63 @@
 <template>
   <div class="flex justify-center w-full">
     <div class="relative w-full max-w-4xl" ref="searchContainer">
-      
-      <!-- Service Types Section - Always Visible -->
-      <div class="mb-4">
-        <div class="flex items-center justify-center space-x-2 service-types-container">
-          <div 
-            v-for="(serviceType, index) in servicesType" 
-            :key="serviceType.value"
-            @click="type = serviceType"
-            :class="[
-              'service-type-tab flex flex-col items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px]',
-              type.value === serviceType.value 
-                ? 'bg-gray-900 text-white shadow-md border-2 border-gray-900' 
-                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300'
-            ]"
-            :style="{ animationDelay: `${index * 0.1}s` }"
-          >
-            <!-- Icon -->
-            <div :class="[
-              'w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10',
-              type.value === serviceType.value 
-                ? 'text-white' 
-                : 'text-gray-600 group-hover:text-gray-800'
-            ]">
-              <div v-html="serviceType.icon" class="w-4 h-4"></div>
-            </div>
-            
-            <!-- Label -->
-            <span :class="[
-              'text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight',
-              type.value === serviceType.value 
-                ? 'text-white' 
-                : 'text-gray-700 group-hover:text-gray-900'
-            ]">
-              {{ serviceType.label }}
-            </span>
-            
-            <!-- Active indicator line -->
-            <div v-if="type.value === serviceType.value" 
-                 class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-white rounded-full">
-            </div>
-          </div>
-        </div>
+      <!-- Service Types Section -->
+      <div class="">
+        <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="type" />
       </div>
-
-      <!-- Airbnb Style Search Bar -->
+      <!-- Search Bar -->
       <div class="relative">
-        <div :class="[
-          'flex items-center bg-white rounded-full shadow-lg border border-gray-200 overflow-hidden transition-all duration-300',
-          isPanelOpen ? 'shadow-xl border-gray-300' : 'hover:shadow-md'
-        ]">
-          
-          <!-- Dónde -->
-          <div class="flex-1 relative search-section">
-            <div @click="setActiveTab('donde')" 
-                 :class="[
-                   'px-6 py-4 cursor-pointer transition-all duration-200 rounded-l-full modern-focus',
-                   activeTab === 'donde' ? 'bg-white shadow-md section-active' : 'hover:bg-gray-50'
-                 ]">
-              <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Dónde</div>
-              <div class="text-sm text-gray-500 mt-1">{{ selectedLocation || 'Explora destinos' }}</div>
-            </div>
-          </div>
-
-          <!-- Divider -->
-          <div class="w-px h-8 bg-gray-200 divider-animated"></div>
-
-          <!-- Check-in -->
-          <div class="flex-1 relative search-section">
-            <div @click="setActiveTab('checkin')" 
-                 :class="[
-                   'px-6 py-4 cursor-pointer transition-all duration-200 modern-focus',
-                   activeTab === 'checkin' ? 'bg-white shadow-md section-active' : 'hover:bg-gray-50'
-                 ]">
-              <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Check-in</div>
-              <div class="text-sm text-gray-500 mt-1">{{ selectedCheckin ? formatDate(selectedCheckin) : 'Agrega fecha' }}</div>
-            </div>
-          </div>
-
-          <!-- Divider -->
-          <div class="w-px h-8 bg-gray-200 divider-animated"></div>
-
-          <!-- Check-out -->
-          <div class="flex-1 relative search-section">
-            <div @click="setActiveTab('checkout')" 
-                 :class="[
-                   'px-6 py-4 cursor-pointer transition-all duration-200 modern-focus',
-                   activeTab === 'checkout' ? 'bg-white shadow-md section-active' : 'hover:bg-gray-50'
-                 ]">
-              <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Check-out</div>
-              <div class="text-sm text-gray-500 mt-1">{{ selectedCheckout ? formatDate(selectedCheckout) : 'Agrega fecha' }}</div>
-            </div>
-          </div>
-
-          <!-- Divider -->
-          <div class="w-px h-8 bg-gray-200 divider-animated"></div>
-
-          <!-- Quién -->
-          <div class="flex-1 relative search-section">
-            <div @click="setActiveTab('quien')" 
-                 :class="[
-                   'px-6 py-4 cursor-pointer transition-all duration-200 modern-focus',
-                   activeTab === 'quien' ? 'bg-white shadow-md section-active' : 'hover:bg-gray-50'
-                 ]">
-              <div class="text-xs font-semibold text-gray-900 uppercase tracking-wide">Quién</div>
-              <div class="text-sm text-gray-500 mt-1">{{ guestSummary || '¿Cuántos?' }}</div>
-            </div>
-          </div>
-
-          <!-- Search Button -->
-          <div class="px-2 py-2">
-            <button @click="performSearch"
-                    class="bg-rose-500 hover:bg-rose-600 text-white p-4 rounded-full transition-all duration-200 shadow-lg search-button btn-ripple scale-hover">
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
+        <SearchBar
+          :isPanelOpen="isPanelOpen"
+          :activeTab="activeTab"
+          :selectedLocation="selectedLocation"
+          :selectedCheckin="selectedCheckin"
+          :selectedCheckout="selectedCheckout"
+          :guestSummary="guestSummary"
+          :setActiveTab="setActiveTab"
+          :formatDate="formatDate"
+          :performSearch="performSearch"
+        />
       </div>
-
-      <!-- Airbnb Style Dropdown Panels -->
-      <Transition name="panel">
-        <div v-if="isPanelOpen"
-          class="absolute z-50 mt-4 w-full origin-top rounded-3xl border border-gray-200 bg-white shadow-2xl overflow-hidden dropdown-shadow">
-          
-          <!-- Dónde Panel -->
-          <div v-if="activeTab === 'donde'" class="p-8 panel-content">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">¿A dónde quieres ir?</h3>
-            
-            <!-- Search input -->
-            <div class="relative mb-6">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-              </div>
-              <input 
-                v-model="locationQuery" 
-                type="text" 
-                placeholder="Buscar destinos"
-                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 modern-focus"
-                @input="searchLocations"
-              >
-            </div>
-
-            <!-- Popular Destinations -->
-            <div>
-              <h4 class="text-sm font-medium text-gray-700 mb-3">Destinos populares</h4>
-              <div class="grid grid-cols-2 gap-3">
-                <div 
-                  v-for="(destination, index) in popularDestinations" 
-                  :key="destination.name"
-                  @click="selectLocation(destination.name)"
-                  class="destination-card flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200 scale-hover"
-                >
-                  <div class="w-12 h-12 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
-                    <span class="text-2xl">{{ destination.emoji }}</span>
-                  </div>
-                  <div>
-                    <p class="font-medium text-gray-900">{{ destination.name }}</p>
-                    <p class="text-sm text-gray-500">{{ destination.description }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Check-in Panel -->
-          <div v-if="activeTab === 'checkin'" class="p-8 panel-content">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">¿Cuándo es tu viaje?</h3>
-            <div class="grid grid-cols-2 gap-8">
-              <div>
-                <h4 class="text-sm font-medium text-gray-700 mb-3">Check-in</h4>
-                <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-all duration-200 scale-hover modern-focus"
-                     @click="openDatePicker('checkin')">
-                  <div class="text-center">
-                    <div v-if="selectedCheckin" class="text-gray-900 font-medium">{{ formatDate(selectedCheckin) }}</div>
-                    <div v-else class="text-gray-500">Selecciona fecha de entrada</div>
-                  </div>
-                </div>
-                
-                <!-- Quick date options -->
-                <div class="mt-3 flex flex-wrap gap-2">
-                  <button 
-                    v-for="option in quickDateOptions" z
-                    :key="option.label"
-                    @click="setQuickDate('checkin', option.days)"
-                    class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-all duration-200 btn-ripple"
-                  >
-                    {{ option.label }}
-                  </button>
-                </div>
-              </div>
-              
-              <div>
-                <h4 class="text-sm font-medium text-gray-700 mb-3">Check-out</h4>
-                <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300 transition-all duration-200 scale-hover modern-focus"
-                     @click="openDatePicker('checkout')">
-                  <div class="text-center">
-                    <div v-if="selectedCheckout" class="text-gray-900 font-medium">{{ formatDate(selectedCheckout) }}</div>
-                    <div v-else class="text-gray-500">Selecciona fecha de salida</div>
-                  </div>
-                </div>
-                
-                <!-- Duration suggestions -->
-                <div class="mt-3 flex flex-wrap gap-2">
-                  <button 
-                    v-for="duration in durationOptions" 
-                    :key="duration.label"
-                    @click="setDuration(duration.days)"
-                    class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-all duration-200 btn-ripple disabled:opacity-50"
-                    :disabled="!selectedCheckin"
-                  >
-                    {{ duration.label }}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Check-out Panel -->
-          <div v-if="activeTab === 'checkout'" class="p-8 panel-content">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">¿Cuándo termina tu viaje?</h3>
-            <div class="border border-gray-200 rounded-lg p-6 cursor-pointer hover:border-gray-300 transition-all duration-200 text-center scale-hover modern-focus"
-                 @click="openDatePicker('checkout')">
-              <div v-if="selectedCheckout" class="text-gray-900 font-medium text-lg">{{ formatDate(selectedCheckout) }}</div>
-              <div v-else class="text-gray-500">Selecciona fecha de salida</div>
-            </div>
-            
-            <!-- Duration from check-in -->
-            <div v-if="selectedCheckin" class="mt-6">
-              <h4 class="text-sm font-medium text-gray-700 mb-3">Duración sugerida</h4>
-              <div class="flex flex-wrap gap-2">
-                <button 
-                  v-for="duration in durationOptions" 
-                  :key="duration.label"
-                  @click="setDuration(duration.days)"
-                  class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 btn-ripple scale-hover"
-                >
-                  {{ duration.label }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quién Panel -->
-          <div v-if="activeTab === 'quien'" class="p-8 panel-content">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">¿Quién viene?</h3>
-            
-            <div class="space-y-6">
-              <!-- Adultos -->
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="font-medium text-gray-900">Adultos</h4>
-                  <p class="text-sm text-gray-500">13 años o más</p>
-                </div>
-                <div class="flex items-center space-x-3">
-                  <button 
-                    @click="decrementGuests('adults')"
-                    :disabled="guests.adults <= 0"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50 guest-counter btn-ripple hover:border-gray-400 transition-all duration-200"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                    </svg>
-                  </button>
-                  <span class="w-8 text-center font-medium">{{ guests.adults }}</span>
-                  <button 
-                    @click="incrementGuests('adults')"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center guest-counter btn-ripple hover:border-gray-400 transition-all duration-200"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Niños -->
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="font-medium text-gray-900">Niños</h4>
-                  <p class="text-sm text-gray-500">De 2 a 12 años</p>
-                </div>
-                <div class="flex items-center space-x-3">
-                  <button 
-                    @click="decrementGuests('children')"
-                    :disabled="guests.children <= 0"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50 guest-counter btn-ripple hover:border-gray-400 transition-all duration-200"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                    </svg>
-                  </button>
-                  <span class="w-8 text-center font-medium">{{ guests.children }}</span>
-                  <button 
-                    @click="incrementGuests('children')"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center guest-counter btn-ripple hover:border-gray-400 transition-all duration-200"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Bebés -->
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="font-medium text-gray-900">Bebés</h4>
-                  <p class="text-sm text-gray-500">Menos de 2 años</p>
-                </div>
-                <div class="flex items-center space-x-3">
-                  <button 
-                    @click="decrementGuests('infants')"
-                    :disabled="guests.infants <= 0"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50 guest-counter btn-ripple hover:border-gray-400 transition-all duration-200"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                    </svg>
-                  </button>
-                  <span class="w-8 text-center font-medium">{{ guests.infants }}</span>
-                  <button 
-                    @click="incrementGuests('infants')"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center guest-counter btn-ripple hover:border-gray-400 transition-all duration-200"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- AI Section (visible when there's a search) -->
-          <div v-if="hasSearchCriteria" class="border-t border-gray-200 p-6 bg-gradient-to-r from-purple-50 to-pink-50">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <h4 class="font-medium text-gray-900 gradient-text">✨ Búsqueda Inteligente</h4>
-                  <p class="text-sm text-gray-600">Encuentra el servicio perfecto con IA</p>
-                </div>
-              </div>
-              <button 
-                @click="generateWithAi"
-                class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 btn-ripple scale-hover"
-              >
-                Buscar con IA
-              </button>
-            </div>
-          </div>
-        </div>
-      </Transition>
+      <!-- Dropdown Panels -->
+      <DropdownPanels
+        :isPanelOpen="isPanelOpen"
+        :activeTab="activeTab"
+        v-model:locationQuery="locationQuery"
+        v-model:selectedCheckin="selectedCheckin"
+        v-model:selectedCheckout="selectedCheckout"
+        :guests="guests"
+        :hasSearchCriteria="hasSearchCriteria"
+        :popularDestinations="popularDestinations"
+        :quickDateOptions="quickDateOptions"
+        :durationOptions="durationOptions"
+        :formatDate="formatDate"
+        @selectLocation="selectLocation"
+        @openDatePicker="openDatePicker"
+        @setQuickDate="setQuickDate"
+        @setDuration="setDuration"
+        @incrementGuests="incrementGuests"
+        @decrementGuests="decrementGuests"
+        @searchLocations="searchLocations"
+        @generateWithAi="generateWithAi"
+      />
+      <!-- Modal IA -->
+      <AiModal
+        :isModalVisible="isModalVisible"
+        :isLoading="isLoading"
+        :formattedContent="formattedContent"
+        @close="closeModal"
+      />
     </div>
-
-    <!-- Modal para mostrar el resultado de la IA -->
-    <Teleport to="body">
-      <Transition name="modal">
-        <div v-if="isModalVisible" class="fixed inset-0 z-[99999999] flex items-center justify-center bg-black bg-opacity-50">
-          <div class="modal-container w-full max-w-2xl rounded-xl bg-white shadow-2xl m-4">
-            <div class="p-6">
-              <div class="flex items-start justify-between">
-                <h2 class="text-lg font-semibold text-gray-900">✨ Recomendación de Servicio</h2>
-                <button @click="closeModal"
-                  class="py-1 px-2 leading-none text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 text-xl">x</button>
-              </div>
-              <div v-if="isLoading" class="mt-4 text-center py-8">
-                <div class="animate-pulse-fast text-gray-500">Buscando el mejor Servicio para ti...</div>
-              </div>
-              <div v-else
-                class="ai-content mt-4 p-4 bg-gray-50 rounded-lg max-h-[60vh] overflow-y-auto text-gray-700 whitespace-pre-wrap"
-                v-html="formattedContent"></div>
-            </div>
-            <div v-if="!isLoading"
-              class="flex justify-end gap-2 border-t border-gray-200 bg-gray-50 px-6 py-3 rounded-b-xl">
-
-              <button @click="closeModal"
-                class="rounded-md bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700">Buscaré yo mismo</button>
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
   </div>
-  
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import ServiceTypeTabs from './Search/ServiceTypeTabs.vue';
+import SearchBar from './Search/SearchBar.vue';
+import DropdownPanels from './Search/DropdownPanels.vue';
+import AiModal from './Search/AiModal.vue';
 
 // Estado del panel
 const isPanelOpen = ref(false);
@@ -588,6 +249,13 @@ const generateWithAi = async () => {
 
 // Event handlers
 const handleClickOutside = (event) => {
+  // Si el click es dentro del calendario de vue-datepicker-next, no cerrar el panel
+  if (
+    event.target.closest('.mx-datepicker-popup') || // popup principal
+    event.target.closest('.mx-calendar') // calendario interno
+  ) {
+    return;
+  }
   if (searchContainer.value && !searchContainer.value.contains(event.target)) {
     closePanel();
   }
@@ -595,14 +263,6 @@ const handleClickOutside = (event) => {
 
 // Data
 const servicesType = [
-  {
-    label: 'Todos',
-    value: null,
-    description: 'Ver todo disponible',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-           </svg>`
-  },
   {
     label: 'Tours',
     value: 'TOUR',
@@ -638,14 +298,7 @@ const servicesType = [
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m4 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7zM8 7h8M5 21h14"></path>
            </svg>`
   },
-  {
-    label: 'Aventura',
-    value: 'AVENTURA',
-    description: 'Deportes extremos',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-           </svg>`
-  }
+  
 ];
 
 const popularDestinations = [

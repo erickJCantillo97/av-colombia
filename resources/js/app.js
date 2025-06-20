@@ -3,6 +3,7 @@ import "../css/app.css";
 import "../css/transitions.css";
 import "../css/customs.css";
 import 'flatpickr/dist/flatpickr.css';
+ import 'vue-datepicker-next/index.css';
 import "preline";
 import 'aos/dist/aos.css'
 import { createApp, h } from "vue";
