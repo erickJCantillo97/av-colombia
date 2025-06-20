@@ -38,33 +38,7 @@ const reservas = ref();
 const todayActivity = ref(false);
 const completar = ref(false);
 const serviceSelected = ref({});
-// const configCalendar = reactive({
-//   defaultView: viewMonthGrid.name,
-//   dayBoundaries: {
-//     start: "06:00",
-//     end: "19:00",
-//   },
-//   isResponsive: false,
-//   weekOptions: {
-//     gridHeight: 500,
-//     nDays: 7,
-//     timeAxisFormatOptions: { hour: "2-digit", minute: "2-digit" },
-//   },
-//   dayOptions: {
-//     gridHeight: 400,
-//   },
-//   locale: "es-ES",
-//   selectedDate: new Date().toISOString().split("T")[0],
-//   views: [createViewMonthGrid(), createViewWeek()],
-//   callbacks: {
-//     onEventClick(calendarEvent) {
-//       editBooking(calendarEvent);
-//     },
-//   },
-//   events: [],
-//   plugins: [eventsServicePlugin],
-// });
-// const calendarApp = createCalendar(configCalendar);
+
 const visible = ref(false);
 // #endregion
 // #region Method
@@ -77,18 +51,7 @@ const getReservas = async () => {
   }))
 
   dateActivities.value = data.bookingServices;
-//   .then((response) => {
-//     dateActivities.value = response.data.bookingServices;
-//     // dateActivities.value.forEach((item) => {
-//     //   calendarApp.eventsService.add({
-//     //     title: item.service.title,
-//     //     start: item.date + " " + item.hour.substring(0, 5),
-//     //     description: item.total_price,
-//     //     end: item.date + " " + (parseInt(item.hour[1]) + 5) + item.hour.substring(2, 5),
-//     //     id: item.id,
-//     //   });
-//     // });
-//   });
+
 };
 
 const editBooking = (data) => {
