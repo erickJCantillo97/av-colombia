@@ -35,7 +35,7 @@
             <div class="text-white flex flex-col items-center justify-center">
                 <!-- <h1 class="text-6xl font-bold">Experiencias</h1> -->
                 <div class="flex flex-col md:flex-row items-start justify-between w-full">
-                    <div class="w-full p-10 flex flex-col items-start justify-start gap-10">
+                    <div class="w-full px-10 py-5 flex flex-col items-start justify-start gap-10">
                         <h2 class="text-4xl md:text-5xl font-extrabold">Experiencias y tours</h2>
                         <p class="text-justify text-gray-100 text-lg md:pr-52">
                             En AV Colombia te ofrecemos las mejores experiencias para que disfrutes de tu estancia en
@@ -46,13 +46,12 @@
                             cultura
                             y la gastronomía de nuestro país.
                         </p>
-                        
                     </div>
                     <video loop autoplay class="rounded-lg h-[45vh] hidden md:block">
                         <source src="https://avcolombia.net/videos/cartagena.mp4" type="video/mp4">
                     </video>
                 </div>
-                <div class="w-full space-x-2 py-2 justify-center mt-6 " v-if="services.length > 0">
+                <div class="w-full space-x-2 py-2 justify-center" v-if="services.length > 0">
                     <Carousel :pt="{
                         indicator: '!hidden',
                         pcNextButton: {
@@ -64,7 +63,7 @@
                             <Link :href="route('show.services', slotProps.data.slug)"
                                 class="flex flex-col items-start mx-2 gap-y-2 justify-start  rounded-md text-black">
                             <img :src="slotProps.data.portada == '/laravel/public/' ? 'https://avcolombia.net/images/logo.webp' : slotProps.data.portada"
-                                alt="" class="object-cover h-52 w-full rounded-md">
+                                alt="" class="object-cover h-44 w-full rounded-md">
                             <div class="mt-1 flex  items-center justify-start gap-2">
                                 <div class="size-2 border-2 border-withe">
                                 </div>

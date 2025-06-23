@@ -2,6 +2,7 @@ import { router, useForm } from "@inertiajs/vue3";
 import axios from "axios";
 import GeneralService from "../GeneralService";
 import { getErrorMessage, getSuccessMessage } from "@/composable/Toats";
+import  state  from "@/store/searchStore";
 
 export default class Service extends GeneralService {
     loading = false;
@@ -46,6 +47,14 @@ export default class Service extends GeneralService {
     async getServices() {
         const { data } = await axios.get(route("get.all.services"));
         return data.services;
+    }
+
+    async getServicePagination(page = 1, perPage = 10) {
+        const params = { page: page, location: state.location.value, type: state.type.value.value, checkin: state.checkin.value, checkout: state.checkout.value, guests: state.guests.value, perPage: perPage };
+        
+        const { data } = await axios.get(route("services.get.paginated"), { params });
+        
+        return data;
     }
 
     async submit() {

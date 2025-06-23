@@ -4,12 +4,12 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="bg-white rounded-lg flex flex-col items-center p-4 md:p-10">
+    <div class="bg-white rounded-lg flex flex-col items-center p-4 md:p-4">
         <h3 class="text-3xl font-bold">Tours Populares</h3>
         <p class="text-sm text-gray-700 mt-2 text-center">
             Los favoritos de nuestros usuarios. <br> Disfruta de experiencias inolvidables
         </p>
-        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 w-full md:px-72 ">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 w-full md:px-8 ">
             <div class="w-full  shadow-2xl rounded-lg hover:scale-105 transition duration-500 ease-in-out">
                 <img src="https://avcolombia.net/images/productos/isla-del-rosario.webp"
                     class="h-48 w-full object-cover rounded-t-lg shadow-lg" alt="">

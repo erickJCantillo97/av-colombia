@@ -2,9 +2,11 @@
   <div class="flex justify-center w-full">
     <div class="relative w-full max-w-4xl" ref="searchContainer">
       <!-- Service Types Section -->
-      <div class="">
-        <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="type" />
-      </div>
+      <transition name="fade-slide">
+        <div v-if="showServiceTypeTabs" key="tabs">
+          <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="searchStore.type" />
+        </div>
+      </transition>
       <!-- Search Bar -->
       <div class="relative">
         <SearchBar
@@ -16,7 +18,7 @@
           :guestSummary="guestSummary"
           :setActiveTab="setActiveTab"
           :formatDate="formatDate"
-          :performSearch="performSearch"
+          :dateRange="dateRangeDisplay"
         />
       </div>
       <!-- Dropdown Panels -->
@@ -53,11 +55,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, provide } from 'vue';
 import ServiceTypeTabs from './Search/ServiceTypeTabs.vue';
 import SearchBar from './Search/SearchBar.vue';
 import DropdownPanels from './Search/DropdownPanels.vue';
 import AiModal from './Search/AiModal.vue';
+import searchStore from '@/store/searchStore';
 
 // Estado del panel
 const isPanelOpen = ref(false);
@@ -68,22 +71,18 @@ const generatedContent = ref('');
 const searchContainer = ref(null);
 
 // Datos de búsqueda
-const selectedLocation = ref('');
-const selectedCheckin = ref('');
-const selectedCheckout = ref('');
 const locationQuery = ref('');
 
-// Huéspedes
-const guests = ref({
-  adults: 2,
-  children: 0,
-  infants: 0
-});
+// Reemplazar refs por el store
+const selectedLocation = searchStore.location;
+const selectedCheckin = searchStore.checkin;
+const selectedCheckout = searchStore.checkout;
+const guests = searchStore.guests;
 
 // Tipo de servicio
 const type = ref({
-  label: 'Todos',
-  value: null
+  label: 'Tours',
+  value: 'TOUR',
 });
 
 // Funciones principales
@@ -94,10 +93,6 @@ const setActiveTab = (tab) => {
   }
 };
 
-const openPanel = () => { 
-  isPanelOpen.value = true; 
-  if (!activeTab.value) activeTab.value = 'donde';
-};
 
 const closePanel = () => { 
   isPanelOpen.value = false; 
@@ -177,7 +172,6 @@ const searchLocations = () => {
 const guestSummary = computed(() => {
   const total = guests.value.adults + guests.value.children;
   if (total === 0) return '';
-  
   let summary = `${total} huésped${total > 1 ? 'es' : ''}`;
   if (guests.value.infants > 0) {
     summary += `, ${guests.value.infants} bebé${guests.value.infants > 1 ? 's' : ''}`;
@@ -202,24 +196,22 @@ const formattedContent = computed(() => {
   return finalHtml;
 });
 
-// Funciones de búsqueda
-const performSearch = () => {
-  if (hasSearchCriteria.value) {
-    console.log('Realizando búsqueda...', {
-      location: selectedLocation.value,
-      checkin: selectedCheckin.value,
-      checkout: selectedCheckout.value,
-      guests: guests.value,
-      type: type.value
-    });
-    closePanel();
+const dateRangeDisplay = computed(() => {
+  if (selectedCheckin.value && selectedCheckout.value) {
+    return `${formatDate(selectedCheckin.value)} - ${formatDate(selectedCheckout.value)}`;
   }
-};
+  if (selectedCheckin.value) {
+    return formatDate(selectedCheckin.value);
+  }
+  return '';
+});
+
+// Funciones de búsqueda
+
 
 const generateWithAi = async () => {
   if (!hasSearchCriteria.value) return;
-  
-  closePanel();
+
   openModal();
   isLoading.value = true;
   
@@ -261,96 +253,30 @@ const handleClickOutside = (event) => {
   }
 };
 
-// Data
-const servicesType = [
-  {
-    label: 'Tours',
-    value: 'TOUR',
-    description: 'Experiencias guiadas',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-           </svg>`
-  },
-  {
-    label: 'Embarcaciones',
-    value: 'EMBARCACION',
-    description: 'Yates y lanchas',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15s4-8 9-8 9 8 9 8-4 8-9 8-9-8-9-8z"></path>
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7v10"></path>
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11l8 0"></path>
-           </svg>`
-  },
-  {
-    label: 'Hospedaje',
-    value: 'HOSPEDAJE',
-    description: 'Hoteles y cabañas',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4a4 4 0 014-4h10a4 4 0 014 4v4M7 7a4 4 0 118 0v1a3 3 0 01-3 3h-2a3 3 0 01-3-3V7z"></path>
-           </svg>`
-  },
-  {
-    label: 'Transporte',
-    value: 'TRANSPORTE',
-    description: 'Traslados y vehículos',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m4 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7zM8 7h8M5 21h14"></path>
-           </svg>`
-  },
-  
-];
+// Mostrar/ocultar ServiceTypeTabs según scroll
+const showServiceTypeTabs = ref(true);
+let lastScrollY = window.scrollY;
 
-const popularDestinations = [
-  {
-    name: 'Cartagena',
-    description: 'Ciudad amurallada',
-    emoji: '🏰'
-  },
-  {
-    name: 'San Andrés',
-    description: 'Isla caribeña',
-    emoji: '🏝️'
-  },
-  {
-    name: 'Medellín',
-    description: 'Ciudad de la eterna primavera',
-    emoji: '🌸'
-  },
-  {
-    name: 'Bogotá',
-    description: 'Capital cultural',
-    emoji: '🏙️'
-  },
-  {
-    name: 'Eje Cafetero',
-    description: 'Paisaje cafetero',
-    emoji: '☕'
-  },
-  {
-    name: 'Amazonas',
-    description: 'Selva tropical',
-    emoji: '🌳'
-  }
-];
+// Mostrar/ocultar títulos de inputs según scroll
+const showInputTitles = showServiceTypeTabs; // Usamos el mismo control para ambos
 
-const quickDateOptions = [
-  { label: 'Hoy', days: 0 },
-  { label: 'Mañana', days: 1 },
-  { label: 'Fin de semana', days: 5 },
-  { label: 'Próxima semana', days: 7 }
-];
+function handleScrollTabs() {
+  const currentScroll = window.scrollY;
+  // Solo mostrar si está en la parte más alta (menos de 10px)
+  showServiceTypeTabs.value = currentScroll < 10;
+  lastScrollY = currentScroll;
+}
 
-const durationOptions = [
-  { label: '1 noche', days: 1 },
-  { label: '2 noches', days: 2 },
-  { label: '3 noches', days: 3 },
-  { label: '1 semana', days: 7 },
-  { label: '2 semanas', days: 14 }
-];
+onMounted(() => {
+  document.addEventListener('mousedown', handleClickOutside);
+  document.addEventListener('scroll', handleScrollTabs);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', handleClickOutside);
+  document.removeEventListener('scroll', handleScrollTabs);
+});
 
-onMounted(() => document.addEventListener('mousedown', handleClickOutside));
-onBeforeUnmount(() => document.removeEventListener('mousedown', handleClickOutside));
+provide('showInputTitles', showInputTitles);
 </script>
 
 <style scoped>
@@ -765,4 +691,16 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', handleClickOutsi
 .service-type-card:nth-child(4) { animation-delay: 0.4s; }
 .service-type-card:nth-child(5) { animation-delay: 0.5s; }
 .service-type-card:nth-child(6) { animation-delay: 0.6s; }
+
+.fade-slide-enter-active, .fade-slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-slide-enter-from, .fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.fade-slide-enter-to, .fade-slide-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>

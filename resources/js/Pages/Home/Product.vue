@@ -56,7 +56,7 @@
       <Button>Ver más</Button>
     </Link>
   </div>
-  <Link
+  <a
     :href="route('show.services', service.slug)"
     v-else
     class="flex flex-col bg-white py-4 px-4 rounded-md hover:scale-105 transition duration-500 ease-in-out hover:shadow-lg cursor-pointer"
@@ -88,7 +88,6 @@
         class="h-[25vh] w-full rounded-md object-cover shadow-sm flex flex-col items-center justify-center"
       >
         <Logo></Logo>
-        <p class="text-5xl font-extrabold">AV COLOBIA</p>
       </div>
     </div>
 
@@ -114,7 +113,7 @@
         Explorar</Link
       >
     </div>
-  </Link>
+  </a>
 </template>
 
 <script setup>

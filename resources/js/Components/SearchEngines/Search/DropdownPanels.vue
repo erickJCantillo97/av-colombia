@@ -40,27 +40,17 @@
         </div>
       </div>
       <!-- Panel Check-in -->
-      <div v-if="activeTab === 'checkin'" class="p-8 panel-content">
+      <div v-if="activeTab === 'checkin'" class="p-2 px-8 panel-content">
         <h3 class="text-lg font-semibold text-gray-900 mb-6">¿Cuándo es tu viaje?</h3>
         <div>
           <CalendarSelector
-            :value="[selectedCheckin, selectedCheckout]"
+            class="w-full"
+            :value="[searchStore.checkin.value, searchStore.checkout.value]"
             :min-date="new Date().toISOString().split('T')[0]"
             :placeholder="'Selecciona rango de fechas'"
-            :flex-value="0"
-            :flex-options="
-              [
-                { label: 'Fechas exactas', days: 0 },
-                { label: '± 1 día', days: 1 },
-                { label: '± 2 días', days: 2 },
-                { label: '± 3 días', days: 3 },
-                { label: '± 7 días', days: 7 },
-                { label: '± 14 días', days: 14 }
-              ]"
-            @flex="$emit('setQuickDate', 'checkin', $event)"
-            @update:checkin="$emit('update:selectedCheckin', $event)"
-            @update:checkout="$emit('update:selectedCheckout', $event)"
-            @update:modelValue="([checkin, checkout]) => { $emit('update:selectedCheckin', checkin); $emit('update:selectedCheckout', checkout); }"
+            @change="val => { if (Array.isArray(val) && val.length === 2) { searchStore.checkin.value = val[0]; searchStore.checkout.value = val[1]; } }"
+            @update:checkin="val => searchStore.checkin.value = val"
+            @update:checkout="val => searchStore.checkout.value = val"
           />
         </div>
       </div>
@@ -72,19 +62,7 @@
           <div v-if="selectedCheckout" class="text-gray-900 font-medium text-lg">{{ formatDate(selectedCheckout) }}</div>
           <div v-else class="text-gray-500">Selecciona fecha de salida</div>
         </div>
-        <div v-if="selectedCheckin" class="mt-6">
-          <h4 class="text-sm font-medium text-gray-700 mb-3">Duración sugerida</h4>
-          <div class="flex flex-wrap gap-2">
-            <button 
-              v-for="duration in durationOptions" 
-              :key="duration.label"
-              @click="$emit('setDuration', duration.days)"
-              class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 btn-ripple scale-hover"
-            >
-              {{ duration.label }}
-            </button>
-          </div>
-        </div>
+        
       </div>
       <!-- Panel Quién -->
       <div v-if="activeTab === 'quien'" class="p-8 panel-content">
@@ -119,6 +97,7 @@
 <script setup>
 import GuestSelector from './GuestSelector.vue';
 import CalendarSelector from './CalendarSelector.vue';
+import searchStore from '@/store/searchStore';
 defineProps([
   'isPanelOpen',
   'activeTab',

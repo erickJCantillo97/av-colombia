@@ -1,9 +1,9 @@
 <template>
-  <header class="bg-transparent  z-30" :class="{ scrolled: isScrolled }">
+  <header class="bg-transparent z-30" :class="{ scrolled: isScrolled }">
     <nav class="flex items-center justify-between p-2 lg:px-8 " aria-label="Global">
       <div class="flex  w-1/5 ">
       <Link href="/" >
-          <Logo width="120" height="60"></Logo>
+          <Logo width="60" height="60"></Logo>
         </Link>
       </div>
       <div class="rounded-md w-3/5">
@@ -122,7 +122,6 @@ header {
 .scrolled {
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.384);
   padding: 0px;
   transform: translateY(0); /* Cuando scrolled, baja a su lugar */
 }

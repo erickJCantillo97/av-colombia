@@ -10,6 +10,14 @@ export function truncatedString(string, maxLength) {
         ? string.substring(0, maxLength) + "..."
         : string;
 }
+export function formatDate(date) {
+    // console.log("formatDate", date);
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+}
 
 export function currencyFormat(value) {
        return COP.format(value);
@@ -122,15 +130,7 @@ export function useCommonUtilities() {
     };
 
    
-    function formatDate(date) {
-        // Extraer año, mes y día
-        var year = date.slice(0, 4);
-        var month = date.slice(4, 6);
-        var day = date.slice(6, 8);
-
-        // Formato de salida: dd/mm/aaaa
-        return day === "00" ? "Indefinido" : `${day}/${month}/${year}`;
-    }
+ 
 
     function formatDateTime24h(dateTime, options = {}) {
         const date = new Date(dateTime);

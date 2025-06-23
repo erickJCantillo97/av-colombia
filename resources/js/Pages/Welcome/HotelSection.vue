@@ -1,8 +1,8 @@
 <template>
-    <div class=" rounded-lg flex flex-col items-center px-10 md:px-96 py-4">
+    <div class=" rounded-lg flex flex-col items-center px-10 md:px-32 py-4">
         <div class="flex flex-col md:flex-row justify-between items-start w-full gap-y-3 md:gap-x-10">
             <div class="flex w-full 0">
-                <img src="https://avcolombia.net/images/hotel/1.png" class="h-[50vh] w-96 object-cover rounded-md"
+                <img src="https://avcolombia.net/images/hotel/1.png" class="h-[calc(60vh)] w-[calc(100%-10vw)] object-cover rounded-md"
                     alt="">
                 <div
                     class="p-2 bg-gray-800 text-white z-10 text-center rounded-xl shadow-lg top-56 -left-48 relative size-28 flex flex-col items-center justify-center text-lg font-extrabold">
