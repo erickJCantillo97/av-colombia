@@ -15,10 +15,7 @@ const noIncludes = ref();
 
 const value = ref(1);
 
-const options = [
-  { name: "Recogidas", value: 1 },
-  { name: "Puntos de encuentro", value: 2 },
-];
+
 
 const props = defineProps({
   features: Array,

@@ -1,6 +1,5 @@
 <template>
     <div class="card">
-        <Toast />
         <FileUpload name="demo[]" customUpload @upload="onTemplatedUpload($event)" :multiple="true" accept="image/*"
             :maxFileSize="1000000" @uploader="uploadArchives" @select="onSelectedFiles">
             <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">

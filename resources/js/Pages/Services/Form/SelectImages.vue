@@ -11,9 +11,10 @@
     <div class="my-2">
       <label for="" class="text-md font-bold">Fotos</label>
       <div class="flex overflow-x-auto py-4 space-x-4">
-        <div class="flex-shrink-0 w-1/6 min-w-0" v-for="image in service.images" :key="image.id">
+       
+        <div class="flex-shrink-0 w-1/6 min-w-0 hover:animate-scalein" v-for="image in service.service.images" :key="image.id">
           <div class="relative h-28">
-            <img :src="image.filepath" alt="hola" class="h-28 w-full object-cover shadow-md rounded-lg" />
+            <img :src="image.filepath" alt="Error" class="h-28 w-full object-cover shadow-md rounded-lg" />
             <button @click="removeImage(image.id)"
               class="absolute top-1 right-1 bg-red-500 fa-solid fa-xmark hover:scale-90 rounded-full flex justify-center items-center text-white shadow-md shadow-red-400 size-8"></button>
           </div>

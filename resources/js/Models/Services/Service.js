@@ -23,6 +23,8 @@ export default class Service extends GeneralService {
         destinations: "",
         duration: 0,
         duration_unit: "Dias",
+        recogidas: [],
+        puntos: [],
         capacidad_min: 1,
         capacidad_max: 1,
     });
@@ -35,6 +37,8 @@ export default class Service extends GeneralService {
             this.assignMatchingKeys(service, this.form);
             this.form.includes = JSON.parse(service.includes);
             this.form.notIncludes = JSON.parse(service.notIncludes);
+            this.form.recogidas = JSON.parse(service.recogidas);   
+            this.form.puntos = JSON.parse(service.puntos);
         }
     }
 
@@ -57,13 +61,21 @@ export default class Service extends GeneralService {
     }
 
     async submit() {
-        let included = this.form.includes;
-        let notIncluded = this.form.notIncludes;
-        this.form.notIncludes = JSON.stringify(this.form.notIncludes);
-        this.form.includes = JSON.stringify(this.form.includes);
+        // Clone the original values
+        const originalFields = ['includes', 'notIncludes', 'recogidas', 'puntos'];
+        const originals = {};
+        originalFields.forEach(field => {
+            originals[field] = this.form[field];
+            this.form[field] = JSON.stringify(this.form[field]);
+        });
+
         super.submit(this.form, this.service?.id ?? null);
-        this.form.includes = included;
-        this.form.notIncludes = notIncluded;
+
+        // Restore original values
+        originalFields.forEach(field => {
+            this.form[field] = originals[field];
+        });
+       
     }
 
     async setPortada() {

@@ -28,17 +28,13 @@
                 <div v-if="value == 2" class="p-4">
                     <SelectImages :service="service" />
                 </div>
-                <!--  
-            <div v-if="value == 3" class="p-4">
-                <IndexExtra class="mx-4" :bookingService></IndexExtra>
+                <div v-if="value == 3" class="p-4">
+                   <Recogidas :service="service" />
+                </div>
+                <div v-if="value == 5" class="p-4">
+                    <Horarios :service="service" :availabilities="availabilities" />
+                </div>
             </div>
-
-            <div v-if="value == 4" class="p-4">
-                <Changes class="mx-4" :bookingService></Changes>
-            </div> -->
-
-            </div>
-
         </div>
     </AppLayout>
 </template>
@@ -49,12 +45,15 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import SelectImages from './SelectImages.vue';
+import Recogidas from './Recogidas.vue';
+import Horarios from '../Horarios.vue';
 
 const props = defineProps({
     serviceType: String,
     features: Array,
     included: Array,
-    service: Object
+    service: Object,
+    availabilities: Array,
 })
 
 const value = ref(1);
