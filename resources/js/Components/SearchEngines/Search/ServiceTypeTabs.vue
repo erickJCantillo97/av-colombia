@@ -25,10 +25,10 @@
           ? 'text-white'
           : 'text-gray-600 group-hover:text-gray-800'
       ]">
-        <div v-html="serviceType.icon" class="w-4 h-4"></div>
+        <div v-html="serviceType.icon" class="w-6 h-6"></div>
       </div>
       <span :class="[
-        'text-xs font-medium text-center transition-all duration-200 relative z-10 leading-tight',
+        'text-sm font-medium text-center transition-all duration-200 relative z-10 leading-tight',
         type.value === serviceType.value
           ? 'text-white'
           : 'text-gray-700 group-hover:text-gray-900'
@@ -58,10 +58,7 @@ const servicesType = [
     label: 'Tours',
     value: 'TOUR',
     description: 'Experiencias guiadas',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-           </svg>`
+    icon: `<img src="assets/svgs/beach.svg" alt="Beach Icon" />`
   },
   {
     label: 'Embarcaciones',
