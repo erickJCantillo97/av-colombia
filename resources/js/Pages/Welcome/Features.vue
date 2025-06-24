@@ -1,14 +1,14 @@
 <template>
     <div>
-        <div class="flex flex-col md:flex-row justify-between py-10 px-4 md:px-20 mt-32 md:mt-4">
-            <p
+        <div class="flex flex-col md:flex-row justify-between py-4 px-4 md:px-20 mt-32 md:mt-4">
+            <h2
                 class="text-2xl md:text-3xl font-bold border-t-4 border-black placeholder-vtd-primary-100 pt-8 md:pr-32 justify-between">
-                Nuestros Servicios <br class="hidden md:block"> para ti
-            </p>
-            <div
+                Lo Mejor de Cartagena
+            </h2>
+            <p
                 class="text-justify md:mr-14 text-sm md:text-xl font-extralight w-full md:w-1/3 text-gray-500 pt-5 md:pt-10">
-                Explora nuestras opciones de servicios, encontraras todo lo necesario para tu estancia en Colombia
-            </div>
+                Explora nuestras opciones de servicios, encontraras todo lo necesario para tu estancia en Cartagena
+            </p>
 
         </div>
         <div class="w-full flex flex-col md:flex-row items-start justify-start gap-2 md:gap-10 p-4 px-10 md:px-10">
@@ -136,28 +136,28 @@ const servicesType = ref([
     {
         type: 'TOUR',
         name: 'Tours',
-        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        text: 'Vive las mejores experiencias en Cartagena, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
         textButton: 'Ir a Disfrutar'
 
     },
     {
         type: 'TRANSPORT',
         name: 'Transportes',
-        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        text: 'Vive las mejores experiencias en Cartagena, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
         textButton: 'Transportes Seguros'
 
     },
     {
         type: 'ACCOMMODATION',
         name: 'Alojamientos',
-        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        text: 'Vive las mejores experiencias en Cartagena, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
         textButton: 'Ir a Alojamientos'
 
     },
     {
         type: 'BOAT',
         name: 'Embarcaciones',
-        text: 'Vive las mejores experiencias en Colombia, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
+        text: 'Vive las mejores experiencias en Cartagena, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
         textButton: 'Ver Embarcaciones'
     }
 
