@@ -12,7 +12,7 @@
             </div>
             <p>
                 {{
-                    currencyFormat(getTotalCostByReservas(reservas.value))
+                    currencyFormat(getTotalCostByReservas(reservas.value, proveedor))
                 }}
             </p>
         </div>
@@ -22,6 +22,7 @@ import { ref } from 'vue';
 
 const props = defineProps({
     reservas: Array,
+    proveedor: String
 });
 
 

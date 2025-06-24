@@ -25,9 +25,20 @@ export function currencyFormat(value) {
 export function getTotalPaxByReservas(reservas) {
      return (reservas.reduce((total, reserva) => total + reserva.adults, 0));
 }
-export function getTotalCostByReservas(reservas) {
+export function getTotalCostByReservas(reservas, proveedor) {
     
-    return (reservas.reduce((total, reserva) => total + reserva.total_cost, 0));
+    return reservas.reduce((total, reserva) => {
+        return total + getTotalCostByReservaAndProveedor(reserva, proveedor);
+    }, 0);
+}
+
+export function getTotalCostByReservaAndProveedor(reserva, proveedor) {
+    return reserva.proveedors.reduce((total, p) => {
+        if (proveedor == p.proveedor_id) {
+            return total + p.cost_total;
+        }
+        return total;
+    }, 0);
 }
 
 /**

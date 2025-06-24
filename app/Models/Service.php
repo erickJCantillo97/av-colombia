@@ -129,7 +129,7 @@ class Service extends Model
 
     public function proveedors()
     {
-        return $this->belongsToMany(Proveedor::class, 'service_proveedor', 'service_id', 'proveedor_id')->withPivot('value', 'concept', 'id');
+        return $this->belongsToMany(Proveedor::class, 'service_proveedor', 'service_id', 'proveedor_id')->withPivot('value', 'concept', 'id', 'total_cost', 'discount');
     }
 
     public function CustomProductUsers()

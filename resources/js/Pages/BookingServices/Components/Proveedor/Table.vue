@@ -32,7 +32,14 @@ const columns = [
         field: 'cost',
         filter: true,
         type: 'currency'
-    }
+    },
+    {
+        header: 'Descuento por Pasajero',
+        field: 'discount',
+        filter: true,
+        type: 'currency'
+    },
+   
 ]
 const confirm = useConfirm();
 

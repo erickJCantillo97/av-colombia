@@ -20,6 +20,6 @@ class Proveedor extends Model
 
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'service_proveedor', 'proveedor_id', 'service_id')->withPivot('value', 'concept');
+        return $this->belongsToMany(Service::class, 'service_proveedor', 'proveedor_id', 'service_id')->withPivot('value', 'concept', 'total_cost', 'discount');
     }
 }

@@ -152,6 +152,8 @@ class BookingServiceController extends Controller
                         'proveedor_id' => $proveedor->proveedor->id,
                         'proveedor' => $proveedor->proveedor->nombre,
                         'cost' => $proveedor->cost,
+                        'cost_total' => $proveedor->cost_total,
+                        'discount' => $proveedor->discount,
                     ];
                 }),
             ];

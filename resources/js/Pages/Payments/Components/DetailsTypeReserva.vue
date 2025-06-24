@@ -1,7 +1,7 @@
 <template>
     <div class="flex justify-between gap-x-4">
         <ItemDetailTypeReserva v-for="reservas in reservasType" :key="reservas.name"
-            :reservas="reservas" @click="toggle($event, reservas)" />
+            :reservas="reservas" @click="toggle($event, reservas)" :proveedor="proveedor" />
     </div>
     <Popover ref="op">
         <div class="flex flex-col gap-4">
@@ -41,7 +41,7 @@
                                         {{ member.title }}
                                     </p>
                                 </span>
-                                <span class="text-xs">{{ member.cliente_name }}</span>
+                                <span class="text-xs">{{ member.cliente_name }} <span class="px-1.5 py-0.5 border border-red-700 text-red-700 rounded-lg" v-if="member.proveedors.find((x) => x.proveedor_id == proveedor).discount > 0"> - {{ currencyFormat(member.proveedors.find((x) => x.proveedor_id == proveedor).discount) }}</span></span>
                                 <span class="text-xs">{{ member.fecha }}</span>
                             </div>
                             <div class="flex flex-col">
@@ -49,7 +49,8 @@
                                 <span class="font-bold">{{
                                     currencyFormat(
                                         member.proveedors
-                                            .reduce((a, c) => a + c.cost, 0)
+                                    .filter((x) => x.proveedor_id == proveedor)
+                                            .reduce((a, c) => a + c.cost_total, 0)
                                     )
                                     }}</span>
                             </div>
@@ -78,6 +79,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    proveedor: {
+        type: [Number, String],
+        required: true,
+    }
 });
 
 const reservas = ref([]);
@@ -92,7 +97,8 @@ const toggle = (event, r) => {
         acc[title].count += 1;
         acc[title].pasajeros += curr.adults;
         acc[title].total += curr.proveedors
-            .reduce((a, c) => a + c.cost, 0);
+            .filter((x) => x.proveedor_id == props.proveedor)
+            .reduce((a, c) => a + c.cost_total, 0);
         return acc;
     }, {});
     reservas.value = r;

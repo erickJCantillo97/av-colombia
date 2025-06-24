@@ -11,7 +11,7 @@
         </div>
 
         <div v-if="proveedor" class="flex flex-col gap-y-2">
-            <DetailsTypeReserva v-if="proveedor"  :reservasType="reservasType" />
+            <DetailsTypeReserva v-if="proveedor"  :reservasType="reservasType" :proveedor="proveedor" />
             <div class="flex flex-col w-full justify-between font-bold">
                 <p>Fecha en que realizó el pago</p>
                 <DatePicker v-model="form.date" dateFormat="dd/mm/yy" class="w-full" :manualInput="false" />
@@ -102,7 +102,7 @@ const getReservas = () => {
                 return proveedoresItems.includes(p);
             });
 
-            totalCostoProveedor.value = getTotalCostByReservas(reservas.value);
+            totalCostoProveedor.value = getTotalCostByReservas(reservas.value, proveedor.value);
             reservasType.value = [
                 {
                     name: "RESERVADO",
