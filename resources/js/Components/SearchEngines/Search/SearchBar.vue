@@ -25,7 +25,7 @@
     <div class="px-2 py-2">
       <Link :href="route('services.home')">
       <button @click="performSearch"
-        class="bg-rose-500 hover:bg-rose-600 text-white p-4 rounded-full transition-all duration-200 shadow-lg search-button btn-ripple scale-hover">
+        class="bg-gray-500 hover:bg-gray-800 text-white p-4 rounded-full transition-all duration-200 shadow-lg search-button btn-ripple scale-hover">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>

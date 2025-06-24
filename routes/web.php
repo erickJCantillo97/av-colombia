@@ -96,3 +96,4 @@ Route::post('get-service', [ServiceController::class, 'getServiceRecommendation'
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
 Route::get('check-out', [ServiceController::class, 'checkOut'])->name('check.out');
+Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');

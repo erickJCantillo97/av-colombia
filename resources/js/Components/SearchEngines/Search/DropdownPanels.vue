@@ -122,4 +122,7 @@ defineEmits([
   'generateWithAi',
   'update:locationQuery'
 ]);
+
+
+
 </script>

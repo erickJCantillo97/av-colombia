@@ -59,84 +59,97 @@
   <a
     :href="route('show.services', service.slug)"
     v-else
-    class="flex flex-col bg-white py-4 px-4 rounded-md hover:scale-105 transition duration-500 ease-in-out hover:shadow-lg cursor-pointer"
+    class="relative flex flex-col bg-white rounded-xl hover:scale-105 transition duration-500 ease-in-out hover:shadow-lg cursor-pointer overflow-hidden"
   >
-    <div class="flex items-center justify-between gap-x-4 py-2">
+    <!-- Imagen con badges superpuestos -->
+    <div class="relative">
+      <!-- Badge Popular -->
+      <div class="absolute top-3 left-3 z-10">
+        <span class="bg-gray-800 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+          Popular
+        </span>
+      </div>
+      
+      <!-- Ícono de favoritos -->
+      <div class="absolute top-3 right-3 z-10">
+        <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
+          <i class="fa-solid fa-heart text-gray-400 hover:text-red-500 transition-colors"></i>
+        </button>
+      </div>
+
+      <!-- Imagen -->
+      <div class="h-48 w-full">
+        <img
+          v-if="service.portada != '/laravel/public/'"
+          :src="service.portada"
+          alt="portada"
+          class="h-full w-full object-cover"
+        />
+        <div
+          v-else
+          class="h-full w-full bg-gray-100 flex flex-col items-center justify-center"
+        >
+          <Logo></Logo>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de la tarjeta -->
+    <div class="p-4 flex flex-col flex-grow">
+      <!-- Título -->
       <h3
-        class="text-xl font-extrabold text-nowrap truncate"
+        class="text-lg font-semibold text-gray-900 line-clamp-2 mb-2"
         v-tooltip="`${service.title}`"
       >
         {{ service.title }}
       </h3>
-      <span>
-        <i class="fa-solid fa-bookmark text-xl"></i>
-      </span>
-    </div>
-    <span class="text-sm text-gray-700">
-      <i class="fa-solid fa-map-marker-alt text-red-600"></i> Cartagena
-    </span>
 
-    <div class="px-5 min-w-full shadow-xl rounded-xl my-4">
-      <img
-        v-if="service.portada != '/laravel/public/'"
-        :src="service.portada"
-        alt="portada"
-        class="h-[25vh] w-full rounded-md object-contain shadow-sm"
-      />
-      <div
-        v-else
-        class="h-[25vh] w-full rounded-md object-cover shadow-sm flex flex-col items-center justify-center"
-      >
-        <Logo></Logo>
+      <!-- Detalles del servicio -->
+      <div class="text-sm text-gray-600 mb-3">
+        <span>
+          <i class="fa-solid fa-map-marker-alt text-red-500 mr-1"></i>
+          {{ service.city }}
+        </span>
+        <span class="mx-2">•</span>
+        <span>{{ service.duration }} {{ service.duration_unit }} Aprox.</span>
       </div>
-    </div>
 
-    <div class="flex items-center justify-between mt-5 gap-x-2 text-sm">
-      <span v-if="form.date">
-        {{
-          USDollar.format(
-            service.availabilities
-              .find((x) => formatDate(x.start_date) <= formatDate(form.date))
-              ?.precies.find((x) => x.value > 0).value ?? 0
-          )
-        }}
-        por Persona</span
-      >
-      <button class="bg-blue-800 py-1.5 px-3 font-semibold text-white rounded-md" v-else>
-        Ver precios
-      </button>
+      <!-- Precio -->
+      <div class="mb-3">
+        <span class="text-sm text-gray-600">Desde </span>
+        <span class="font-semibold text-gray-900">{{ currencyFormat(serviceModel.getPrice()) }}</span>
+        <span class="text-sm text-gray-600" v-if="service.type == 'TOUR'"> por viajero  </span>
+        <span class="text-sm text-gray-600" v-else-if="service.type == 'EMBARCACION'"> por cada {{ service.capacidad_max }} pasajeros </span>
 
-      <Link
-        :href="route('show.services', service.slug)"
-        class="border-gray-800 hover:bg-gray-800 shadow-xl hover:text-white py-1.5 px-3 font-extrabold rounded-md border"
-      >
-        Explorar</Link
-      >
+      </div>
+
+      <!-- Rating y reseñas -->
+      <div class="flex items-center gap-1 mt-auto">
+        <div class="flex items-center">
+          <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+          <span class="font-semibold text-sm text-gray-900 ml-1">4.96</span>
+        </div>
+        <span class="text-sm text-gray-500 ml-2">(1558 reseñas)</span>
+      </div>
     </div>
   </a>
 </template>
 
 <script setup>
-import { useCommonUtilities } from "@/composable/useCommonUtilities.js";
+import { useCommonUtilities,  } from "@/composable/useCommonUtilities.js";
 import { Link } from "@inertiajs/vue3";
 import { onMounted, ref } from "vue";
 import { useHomeStore } from "@/stores/HomeStore";
 import { storeToRefs } from "pinia";
 import Logo from "@/Components/logo.vue";
+import state from "@/store/searchStore";
+import Service from "@/Models/Services/Service";
 const store = useHomeStore();
 const { form, typeList } = storeToRefs(store);
 
-const { truncateString, esMovil } = useCommonUtilities();
+const { truncateString, esMovil, currencyFormat } = useCommonUtilities();
 
-const USDollar = new Intl.NumberFormat("es-CO", {
-  style: "currency",
-  currency: "COP",
-  maximumFractionDigits: 0,
-});
-const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(dateString).toLocaleDateString("es-CO", options);
-};
+
 const includes = ref([]);
 
 const props = defineProps({
@@ -147,7 +160,6 @@ const props = defineProps({
   },
 });
 
-onMounted(() => {
-  includes.value = JSON.parse(props.service.includes).slice(0, 3);
-});
+const serviceModel = new Service(props.service);
+
 </script>

@@ -22,5 +22,5 @@ Route::middleware([
 });
 });
 // Route::post('reservar', 'reservar')->name('reservar');
-Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');
+
 

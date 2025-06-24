@@ -3,7 +3,6 @@ import axios from "axios";
 import GeneralService from "../GeneralService";
 import { getErrorMessage, getSuccessMessage } from "@/composable/Toats";
 import  state  from "@/store/searchStore";
-
 export default class Service extends GeneralService {
     loading = false;
     service = [];
@@ -79,6 +78,26 @@ export default class Service extends GeneralService {
             }
         });
     }
+
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    getPrice(){
+       const precios = this.service.availabilities.find(av => {
+       return  this.formatDate(av.start_date) <= this.formatDate(state.checkin.value)  && this.formatDate(av.end_date) >= this.formatDate(state.checkout.value)
+       })?.precies ?? [];
+
+    if (!precios.length) return 0;
+    
+    return precios.reduce((max, obj) => obj.value > max.value ? obj : max, precios[0]).value;
+    }
+
+     
 
 }
     

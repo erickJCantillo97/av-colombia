@@ -153,6 +153,40 @@ const formatDate = (dateString) => {
   });
 };
 
+const popularDestinations = [
+  {
+    name: 'Cartagena',
+    description: 'Ciudad amurallada',
+    emoji: '🏰'
+  },
+  {
+    name: 'San Andrés',
+    description: 'Isla caribeña',
+    emoji: '🏝️'
+  },
+  {
+    name: 'Medellín',
+    description: 'Ciudad de la eterna primavera',
+    emoji: '🌸'
+  },
+  {
+    name: 'Bogotá',
+    description: 'Capital cultural',
+    emoji: '🏙️'
+  },
+  {
+    name: 'Eje Cafetero',
+    description: 'Paisaje cafetero',
+    emoji: '☕'
+  },
+  {
+    name: 'Amazonas',
+    description: 'Selva tropical',
+    emoji: '🌳'
+  }
+];
+
+
 const incrementGuests = (type) => {
   guests.value[type]++;
 };
