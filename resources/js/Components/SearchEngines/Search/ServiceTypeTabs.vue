@@ -47,10 +47,9 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:modelValue']);
 
-const type = state.type;
-
 const tabRefs = ref([]);
 const containerRef = ref(null);
+const type = state.type;
 const sliderStyle = ref({ left: '0px', top: '0px', width: '', height: '' });
 
 const servicesType = [

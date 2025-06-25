@@ -23,6 +23,7 @@ function loadCache() {
       if (parsed.checkin) state.checkin.value = parsed.checkin;
       if (parsed.checkout) state.checkout.value = parsed.checkout;
       if (parsed.guests) state.guests.value = parsed.guests;
+      if (parsed.type) state.type.value = parsed.type;
     } catch { }
   }
 }

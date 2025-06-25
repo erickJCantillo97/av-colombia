@@ -383,7 +383,7 @@ const USDollar = new Intl.NumberFormat("es-CO", {
                   v-for="precio in horario.precios"
                   class="flex flex-col w-full justify-center items-center text-center text-xs shadow-lg shadow-gray-600 rounded-lg bg-white p-1"
                 >
-                  <p>{{ precio.min }} a {{ precio.max }} Años</p>
+                  <p>{{ precio.min }} a {{ precio.max }} {{ formStart.price_type == 'edad' ? ' Años' : ' Personas' }} </p>
                   <span>{{ USDollar.format(precio.value) }}</span>
                 </div>
               </div>
