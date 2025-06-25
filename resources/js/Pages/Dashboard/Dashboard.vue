@@ -16,6 +16,7 @@ import Datatable from "@/Components/Customs/Datatable.vue";
 import ViewBooking from "@/Components/viewBooking.vue";
 import Notas from "@/Components/Customs/Notas.vue";
 import Completar from "@/Components/Customs/Completar.vue";
+import { OverlayBadge } from "primevue";
 // #endregion
 
 // #region CalendarPlugins
@@ -46,7 +47,7 @@ const selectDate = ref([new Date(), new Date()]);
 
 
 const getReservas = async () => {
-  const {data} = await axios.get(route("get.all.booking.services.dates", {
+  const { data } = await axios.get(route("get.all.booking.services.dates", {
     dates: selectDate.value
   }))
 
@@ -71,14 +72,7 @@ const actions = [
     icon: "fa-solid fa-circle-check text-sm",
     severity: "success",
   },
-  {
-    label: "Detalles",
-    action: (data) => {
-      editBooking(data);
-    },
-    icon: "fa-solid fa-circle-info text-sm",
-    severity: "info",
-  },
+  
   {
     label: "Notas",
     severity: "secondary",
@@ -189,50 +183,38 @@ const getDataFilter = (data) => {
   <AppLayout title="Dashboard">
     <div class="py-4">
       <div class="w-full mx-auto sm:px-1 lg:px-4 space-y-2">
-        <div
-          class="bg-white overflow-hidden sm:rounded-lg flex justify-between items-center px-1"
-        >
+        <div class="bg-white overflow-hidden sm:rounded-lg flex justify-between items-center px-1">
           <h1>
             Hola
             <strong class="uppercase"> {{ $page.props.auth.user.name }} </strong>,
             Bienvenido a tu panel de control
           </h1>
-          <a
-            target="_blank"
-            :href="`https://vendedores-site.netlify.app/${$page.props.auth.user.id}`"
-          >
+          <a target="_blank" :href="`https://vendedores-site.netlify.app/${$page.props.auth.user.id}`">
             <Button label="Ver Portafolio" />
           </a>
         </div>
         <div class="flex w-full justify-between font-bold text-xl items-center">
           <p>Actividades</p>
-          <DatePicker
-            v-model="selectDate"
-            selectionMode="range"
-            dateFormat="dd/mm/yy"
-            :manualInput="false"
-            @value-change="getReservas"
-          />
+          <DatePicker v-model="selectDate" selectionMode="range" dateFormat="dd/mm/yy" :manualInput="false"
+            @value-change="getReservas" />
         </div>
         <div class="shadow-xl rounded-lg p-1 h-[85vh]">
-          <Datatable
-            :columnas="columns"
-            :rowClass="true"
-            :data="dateActivities"
-            :actions
-            @filterApply="getDataFilter"
-          >
+          <Datatable :columnas="columns" :rowClass="true" :data="dateActivities" :actions @filterApply="getDataFilter">
+            <template #actions="{ data }">
+              
+              <Button v-if="data.extras.length == 0" @click="editBooking(data)" severity="info" text class="p-button-sm"
+                icon="fa-solid fa-circle-info text-sm" />
+
+              <OverlayBadge v-else  severity="danger" >
+                <Button @click="editBooking(data)" severity="info" text class="p-button-sm"
+                  icon="fa-solid fa-circle-info text-sm" />
+              </OverlayBadge>
+            </template>
             <template #groupRows>
               <ColumnGroup type="footer">
                 <Row>
-                  <Column
-                    footer="Pasajeros:"
-                    :colspan="0"
-                    footerStyle="text-align:right"
-                  />
-                  <Column
-                    :footer="dataFilter.reduce((acc, item) => acc + item.adults, 0)"
-                  />
+                  <Column footer="Pasajeros:" :colspan="0" footerStyle="text-align:right" />
+                  <Column :footer="dataFilter.reduce((acc, item) => acc + item.adults, 0)" />
                 </Row>
               </ColumnGroup>
             </template>
@@ -242,17 +224,7 @@ const getDataFilter = (data) => {
       </div>
     </div>
   </AppLayout>
-  <ViewBooking
-    v-model="visible"
-    :service="serviceSelected"
-    v-if="serviceSelected"
-  ></ViewBooking>
-  <Notas
-    v-model="todayActivity"
-    :notes="notes"
-    v-if="todayActivity"
-    :note="note"
-    :service="serviceSelected"
-  ></Notas>
+  <ViewBooking v-model="visible" :service="serviceSelected" v-if="serviceSelected"></ViewBooking>
+  <Notas v-model="todayActivity" :notes="notes" v-if="todayActivity" :note="note" :service="serviceSelected"></Notas>
   <Completar v-if="completar" v-model="completar" :service="serviceSelected"> </Completar>
 </template>

@@ -136,14 +136,13 @@
         <p>{{ service.observations }}</p>
       </div>
 
-      <div class="text-lg flex w-full justify-between items-center mt-2">
+      <div class="text-lg flex w-full justify-between items-center mt-2 ">
         <p class="font-bold">Proveedores</p>
         <p
           class="rounded-full bg-green-800 text-white px-1.5 py-0.5 text-xs fles items-center justify-center"
         >
           {{ service.proveedors.length }}
         </p>
-        <!-- {{ service.proveedors }} -->
       </div>
       <div
         v-for="proveedor in service.proveedors"
@@ -154,6 +153,25 @@
         </p>
         <p>
           {{ COP.format(proveedor.cost) }}
+        </p>
+      </div>
+      <div class="text-lg flex w-full justify-between items-center mt-2">
+        <p class="font-bold">Extras</p>
+        <p
+          class="rounded-full bg-sky-800 text-white px-1.5 py-0.5 text-xs flex items-center justify-center"
+        >
+          {{ service.extras.length }}
+        </p>
+      </div>
+      <div
+        v-for="extra in service.extras "
+        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
+      >
+        <p>
+         {{ extra.cantidad }} {{ extra.description }}
+        </p>
+        <p class="font-semibold">
+          {{ COP.format(extra.total_price) }}
         </p>
       </div>
     </div>

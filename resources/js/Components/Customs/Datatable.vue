@@ -562,6 +562,7 @@ const getDataFilter = (data) => {
         <div
           class="flex items-center justify-center  rounded-md shadow-sm gap-0.5"
         >
+          <slot name="actions" :data="data" />
           <span v-for="button in props.actions">
             {{ button.event ? console.log(mensaje) : undefined }}
             <Button
