@@ -1,9 +1,9 @@
 <template>
-  <div class="flex justify-center w-full">
-    <div class="relative w-full max-w-4xl" ref="searchContainer">
+  <div class="flex justify-center w-full px-4 sm:px-6 lg:px-8">
+    <div class="relative w-full" ref="searchContainer">
       <!-- Service Types Section -->
       <transition name="fade-slide">
-        <div v-if="showServiceTypeTabs" key="tabs">
+        <div v-if="showServiceTypeTabs" key="tabs" class="mb-3 sm:mb-4">
           <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="searchStore.type" />
         </div>
       </transition>
@@ -296,8 +296,9 @@ const showInputTitles = showServiceTypeTabs; // Usamos el mismo control para amb
 
 function handleScrollTabs() {
   const currentScroll = window.scrollY;
-  // Solo mostrar si está en la parte más alta (menos de 10px)
-  showServiceTypeTabs.value = currentScroll < 10;
+  // Solo mostrar si está en la parte más alta (menos de 20px en móvil, 10px en desktop)
+  const threshold = window.innerWidth <= 768 ? 20 : 10;
+  showServiceTypeTabs.value = currentScroll < threshold;
   lastScrollY = currentScroll;
 }
 
@@ -645,8 +646,15 @@ provide('showInputTitles', showInputTitles);
 
 /* Service Types Container - Always visible at top */
 .service-types-container {
-  padding: 0 16px;
+  padding: 0 8px;
   margin-bottom: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.service-types-container::-webkit-scrollbar {
+  display: none;
 }
 
 .service-type-tab {
@@ -655,6 +663,8 @@ provide('showInputTitles', showInputTitles);
   opacity: 0;
   transform: translateY(10px);
   animation: slideInUp 0.3s ease-out forwards;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .service-type-tab:nth-child(1) { animation-delay: 0.05s; }
@@ -685,35 +695,44 @@ provide('showInputTitles', showInputTitles);
 /* Responsive design for service types */
 @media (max-width: 768px) {
   .service-types-container {
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    padding: 0 8px;
+    padding: 0 4px;
+    gap: 6px;
+    justify-content: flex-start;
   }
   
   .service-type-tab {
-    min-width: calc(33.333% - 8px);
-    max-width: calc(33.333% - 8px);
+    min-width: auto;
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }
 
 @media (max-width: 640px) {
   .service-types-container {
-    gap: 6px;
+    padding: 0 2px;
+    gap: 4px;
   }
   
   .service-type-tab {
-    min-width: calc(50% - 6px);
-    max-width: calc(50% - 6px);
+    padding: 6px 10px;
     font-size: 11px;
+    min-width: auto;
   }
 }
 
 @media (max-width: 480px) {
   .service-type-tab {
-    min-width: calc(33.333% - 6px);
-    max-width: calc(33.333% - 6px);
-    padding: 8px 6px;
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+  
+  .service-type-tab span {
+    display: none;
+  }
+  
+  .service-type-tab {
+    min-width: 40px;
+    justify-content: center;
   }
 }
 
@@ -736,5 +755,104 @@ provide('showInputTitles', showInputTitles);
 .fade-slide-enter-to, .fade-slide-leave-from {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Additional responsive improvements */
+@media (max-width: 768px) {
+  .dropdown-shadow {
+    box-shadow: 
+      0 2px 4px -1px rgba(0, 0, 0, 0.1),
+      0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Improve touch targets on mobile */
+  .search-section {
+    min-height: 60px;
+  }
+  
+  /* Better spacing for mobile panels */
+  .panel-content {
+    padding: 16px !important;
+  }
+  
+  /* Improve button accessibility on mobile */
+  .search-button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Stack search sections vertically on small screens */
+  .search-section {
+    min-height: 50px;
+  }
+  
+  /* Reduce panel padding on small screens */
+  .panel-content {
+    padding: 12px !important;
+  }
+  
+  /* Smaller text on mobile */
+  .panel-content h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Very small screens adjustments */
+  .panel-content {
+    padding: 10px !important;
+  }
+  
+  .destination-card {
+    padding: 8px !important;
+  }
+  
+  .destination-card .w-10,
+  .destination-card .w-12 {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+/* Improve scrolling on mobile */
+@media (max-width: 768px) {
+  .max-h-96 {
+    max-height: 60vh;
+  }
+}
+
+/* Better touch feedback */
+@media (hover: none) {
+  .scale-hover:hover {
+    transform: none;
+  }
+  
+  .scale-hover:active {
+    transform: scale(0.98);
+  }
+  
+  .search-section:hover {
+    background-color: transparent;
+  }
+  
+  .search-section:active {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Prevent horizontal scroll */
+.service-types-container {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better focus styles for mobile */
+@media (max-width: 768px) {
+  .modern-focus:focus {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+  }
 }
 </style>

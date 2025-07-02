@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="flex flex-col md:flex-row justify-between py-4 px-4 md:px-20 mt-32 md:mt-2">
+        <div class="flex flex-col md:flex-row justify-between py-4 px-4 md:px-20 md:mt-2">
             <h2
-                class="text-xl md:text-22xl font-bold border-t-4 border-black placeholder-vtd-primary-100 pt-4 md:pr-32 justify-between">
+                class="text-xl md:text-2xl font-bold border-t-4 border-black placeholder-vtd-primary-100 pt-4 md:pr-32 justify-between">
                 Los mejor de Cartagena
             </h2>
             <p

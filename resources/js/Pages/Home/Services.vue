@@ -1,11 +1,18 @@
 <template>
   <GuestLayout>
     <div class="sticky top-20 z-20 bg-white shadow-md py-2 px-4">
-      <span class="font-semibold text-lg">Filtros</span>
+      <input
+        v-model="search"
+        type="text"
+        placeholder="Buscar servicios..."
+        class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
     </div>
     <div class="w-full flex flex-col items-center justify-center gap-y-4">
       <ul class="w-full gap-2 md:gap-4 py-10 bg-gray-100 grid grid-cols-1 md:grid-cols-4 md:px-10 px-5">
-        <Product :service v-for="service in services" />
+        <Product :service v-for="service in services.filter(s => s.title.toLowerCase().includes(search.toLowerCase())
+          || s.description.toLowerCase().includes(search.toLowerCase())
+        )" :key="service.id" />
       </ul>
       <div class="w-full flex items-center justify-center py-4" v-if="searching">
         <Loading v-if="searching" />
@@ -22,7 +29,7 @@ import Loading from "@/Components/Loading.vue";
 import Service from "@/Models/Services/Service";
 
 const serviceModel = new Service();
-
+const search = ref("");
 const services = ref([]);
 const page = ref(1);
 const hasMore = ref(true);

@@ -1,5 +1,5 @@
 <template>
-  <div ref="containerRef" class="flex items-center justify-center space-x-2 service-types-container relative">
+  <div ref="containerRef" class="flex items-center justify-center space-x-2 service-types-container relative overflow-x-auto">
     <!-- Fondo animado -->
     <div
       v-if="sliderStyle.width"
@@ -12,7 +12,7 @@
       :ref="el => tabRefs[index] = el"
       @click="selectTab(serviceType, index)"
       :class="[
-        'service-type-tab flex items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-[80px] z-10',
+        'service-type-tab flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-fit z-10 flex-shrink-0',
         type.value === serviceType.value
           ? 'text-white'
           : 'text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300 bg-white'
@@ -20,15 +20,15 @@
       :style="{ animationDelay: `${index * 0.1}s` }"
     >
       <div :class="[
-        'w-6 h-6 flex items-center justify-center mb-1 transition-all duration-200 relative z-10',
+        'w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center transition-all duration-200 relative z-10 flex-shrink-0',
         type.value === serviceType.value
           ? 'text-white'
           : 'text-gray-600 group-hover:text-gray-800'
       ]">
-        <div v-html="serviceType.icon" class="w-6 h-6"></div>
+        <div v-html="serviceType.icon" class="w-5 h-5 sm:w-6 sm:h-6"></div>
       </div>
       <span :class="[
-        'text-sm font-medium text-center transition-all duration-200 relative z-10 leading-tight',
+        'text-xs sm:text-sm font-medium transition-all duration-200 relative z-10 leading-tight whitespace-nowrap',
         type.value === serviceType.value
           ? 'text-white'
           : 'text-gray-700 group-hover:text-gray-900'
@@ -117,10 +117,38 @@ onMounted(updateSlider);
 <style scoped>
 .service-types-container {
   position: relative;
-  min-height: 48px;
+  min-height: 40px;
+  padding: 0 8px;
+  /* Para el scroll horizontal en móviles */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+
+.service-types-container::-webkit-scrollbar {
+  display: none;
+}
+
 .service-type-tab {
   position: relative;
   z-index: 10;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .service-types-container {
+    padding: 0 4px;
+    gap: 4px;
+  }
+  
+  .service-type-tab {
+    padding: 6px 10px;
+    min-width: fit-content;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-type-tab {
+    padding: 6px 8px;
+  }
 }
 </style>

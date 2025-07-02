@@ -10,25 +10,8 @@
       <div
         class="mt-10 flex items-center justify-between rounded-lg px-10 md:px-12 h-full"
       >
-        <div class="py-10 space-y-10 mt-4 w-full">
-          <div class="flex gap-x-24 justify-between items-center w-full">
-            <div class="">
-              <h1
-                data-aos="zoom-in-down"
-                data-aos-duration="2000"
-                class="text-right text-4xl lg:text-6xl text-white font-extrabold"
-              >
-              
-              </h1>
-            </div>
-          </div>
-          <div
-            data-aos="flip-down"
-            data-aos-duration="1000"
-            class="rounded-lg bg-white"
-          >
-            <!-- <Experiencias  /> -->
-          </div>
+        <div class="py-24 space-y-10 mt-4 w-full">
+        
         </div>
       </div>
     </div>
