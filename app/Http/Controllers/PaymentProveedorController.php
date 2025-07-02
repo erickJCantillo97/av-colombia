@@ -74,6 +74,7 @@ class PaymentProveedorController extends Controller
      */
     public function destroy(PaymentProveedor $paymentProveedor)
     {
-        //
+        $paymentProveedor->delete();
+        return back();
     }
 }

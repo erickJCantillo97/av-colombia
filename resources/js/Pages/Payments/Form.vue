@@ -37,7 +37,7 @@
 </template>
 <script setup>
 import { router, useForm } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { alerts } from "@/composable/toasts";
 import axios from "axios";
 import Input from "@/Components/Customs/Input.vue";
@@ -49,7 +49,7 @@ const { toast } = alerts();
 
 
 const props = defineProps({
-    payments: Array,
+    payment: Array,
 });
 
 
@@ -175,7 +175,21 @@ const save = () => {
 };
 
 const diference = computed(() => {
-    
     return totalCostoProveedor.value - form.amount;
+});
+
+onMounted( () => {
+    if (props.payment) {
+        payment_id.value = props.payment.id;
+        form.date = formatDate(props.payment.date);
+        form.startDate = formatDate(props.payment.startDate);
+        form.endDate = formatDate(props.payment.endDate);
+        form.amount = props.payment.amount;
+        form.proveedor_id = props.payment.proveedor_id;
+        form.description = props.payment.description;
+        selectDate.value = [new Date(props.payment.startDate), new Date(props.payment.endDate)];
+        proveedor.value = props.payment.proveedor_id;
+        getReservas();
+    }
 });
 </script>
