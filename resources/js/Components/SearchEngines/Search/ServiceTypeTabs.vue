@@ -1,5 +1,5 @@
 <template>
-  <div ref="containerRef" class="flex items-center justify-center space-x-2 service-types-container relative overflow-x-auto">
+  <div ref="containerRef" class="flex items-center justify-center service-types-container space-x-2 relative overflow-x-auto">
     <!-- Fondo animado -->
     <div
       v-if="sliderStyle.width"
@@ -20,12 +20,12 @@
       :style="{ animationDelay: `${index * 0.1}s` }"
     >
       <div :class="[
-        'w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center transition-all duration-200 relative z-10 flex-shrink-0',
+        'w-5 h-5 sm:w-6 sm:h-6  items-center justify-center transition-all duration-200 relative z-10 flex-shrink-0 hidden sm:flex',
         type.value === serviceType.value
           ? 'text-white'
           : 'text-gray-600 group-hover:text-gray-800'
       ]">
-        <div v-html="serviceType.icon" class="w-5 h-5 sm:w-6 sm:h-6"></div>
+        <div v-html="serviceType.icon" class="w-5 h-5 sm:w-6 sm:h-6 "></div>
       </div>
       <span :class="[
         'text-xs sm:text-sm font-medium transition-all duration-200 relative z-10 leading-tight whitespace-nowrap',

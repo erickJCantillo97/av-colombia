@@ -204,4 +204,31 @@ class ServiceController extends Controller
             'recommendation' => $result->text()
         ]);
     }
+
+     public function updateStart(Service $service, Request $request)
+    {
+        $validate = $request->validate([
+            'availability_type' => 'required|string',
+            'price_type' => 'required|string',
+            'horarios' => 'required|array',
+        ]);
+        // dd($validate['horarios']);
+        foreach ($validate['horarios'] as $horario) {
+            Horario::where('availability_id', $horario['id'])->delete();
+            foreach ($horario['days'] as $index => $day) {
+                foreach ($day['times'] as $time)
+                    Horario::create([
+                        'availability_id' => $horario['id'],
+                        'day' => $day['day'],
+                        'day_number' => $index + 1,
+                        'start' => $time['start']['hours'] . ':' . $time['start']['minutes'],
+                        'end' => $time['end'] ? $time['end']['hours'] . ':' . $time['end']['minutes'] : null,
+                    ]);
+            }
+        }
+
+        unset($validate['horarios']);
+        $service->update($validate);
+        return back()->with('message', 'Servicio iniciado');
+    }
 }

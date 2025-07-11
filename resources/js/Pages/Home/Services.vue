@@ -1,6 +1,6 @@
 <template>
   <GuestLayout>
-    <div class="sticky top-20 z-20 bg-white shadow-md py-2 px-4">
+    <div class="sticky top-16 z-20 bg-white shadow-md py-2 px-4">
       <input
         v-model="search"
         type="text"

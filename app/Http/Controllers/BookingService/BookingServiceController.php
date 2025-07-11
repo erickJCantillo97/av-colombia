@@ -271,6 +271,7 @@ class BookingServiceController extends Controller
         storeState(
             $booking,
             'SIN CONFIRMAR',
+            request('user_id'),
         );
         return response()->json([
             'message' => 'Reservación guardada correctamente',
