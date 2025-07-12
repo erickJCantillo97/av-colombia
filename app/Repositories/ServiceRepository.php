@@ -96,7 +96,8 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
 
     public function getServiceByUser($userId)
     {
-        auth()->user()->id = $userId;
+        $user = User::find($userId);
+        Auth::login($user);
         return $this->getAll();
     }
 }
