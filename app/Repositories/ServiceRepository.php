@@ -18,13 +18,13 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
     public function getAllByType($type = 'TOUR')
     {
         return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies')
-        ->where('type', $type)->get();
+            ->where('type', $type)->get();
     }
 
     public function getAll()
     {
         return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies')
-        ->get();
+            ->get();
     }
 
     public function search(array $data)
@@ -72,7 +72,7 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
         foreach ($included as $i) {
             Included::firstOrCreate(['name' => $i]);
         }
-        
+
         return $this->find($id)->update($data);
     }
 
@@ -92,5 +92,11 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
     public function getProveedors($id)
     {
         return $this->model->find($id)->proveedors;
+    }
+
+    public function getServiceByUser($userId)
+    {
+        auth()->user()->id = $userId;
+        return $this->getAll();
     }
 }

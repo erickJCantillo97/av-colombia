@@ -20,7 +20,7 @@ use Gemini\Laravel\Facades\Gemini;
 class ServiceController extends Controller
 {
     public function __construct(
-        private ServiceRepositoryInterface $serviceRepository
+    private ServiceRepositoryInterface $serviceRepository
     ) {}
 
     public function index(Request $request)
@@ -36,6 +36,14 @@ class ServiceController extends Controller
     {
         return response()->json([
             'services' => $this->serviceRepository->getAll(),
+        ]);
+    }
+
+    public function getServiceByUser(Request $request)
+    {
+        $userId = $request->user_id;
+        return response()->json([
+            'services' => $this->serviceRepository->getServiceByUser($userId),
         ]);
     }
 
@@ -205,7 +213,7 @@ class ServiceController extends Controller
         ]);
     }
 
-     public function updateStart(Service $service, Request $request)
+    public function updateStart(Service $service, Request $request)
     {
         $validate = $request->validate([
             'availability_type' => 'required|string',

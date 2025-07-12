@@ -17,6 +17,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('logout', 'logout')->middleware('auth:sanctum');
 });
 
-Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('api.get.all.services');
+Route::get('getAllServices', [ServiceController::class , 'getServiceByUser'])->name('api.get.all.services');
 Route::post('reservar', [BookingServiceController::class, 'reservarByApi']);
 Route::get('getBookingServices/{bookingService}', [BookingServiceController::class, 'show'])->name('bookingServices.show');

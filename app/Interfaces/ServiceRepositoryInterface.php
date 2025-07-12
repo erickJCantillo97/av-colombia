@@ -10,5 +10,6 @@ interface ServiceRepositoryInterface extends BaseRepositoryInterface
     public function search(array $data);
     public function getProveedors($id);
     public function setPortada($id, $image);
+    public function getServiceByUser($userId);
 
 }
