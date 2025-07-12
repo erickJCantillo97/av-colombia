@@ -311,7 +311,7 @@ class BookingServiceController extends Controller
             };
         }
         // dd($service);
-        storeState($service, request('state'), request('terminated'));
+        storeState($service, request('state'), Auth::user()->id, request('terminated'));
         return back()->with('message', 'Estado actualizado');
     }
 }
