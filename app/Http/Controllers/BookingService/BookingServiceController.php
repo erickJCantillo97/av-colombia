@@ -178,11 +178,12 @@ class BookingServiceController extends Controller
     public function completarReserva(Request $request)
     {
         $booking = BookingService::find($request->service_id);
-        if (isset($booking->extra)) {
-            foreach ($booking->extras as $extra) {
-                BookingExtras::find($extra->id)->update([
-                    'unit_cost' => $extra->unit_cost,
-                    'total_cost' => $extra->unit_cost * $extra->cantidad,
+        if (isset($request->extras)) {
+            foreach ($request->extras as $extra) {
+                // dd($extra);
+                BookingExtras::find($extra['id'])->update([
+                    'unit_cost' => $extra['unit_cost'],
+                    'total_cost' => $extra['unit_cost'] * $extra['cantidad'],
                 ]);
             }
         }
@@ -193,7 +194,16 @@ class BookingServiceController extends Controller
                 'total_pago_proveedor' => $request->value,
             ]);
         }
-        storeState($booking, request('status'), 1);
+        if($request->saldoPagado == 'proveedor'){
+            $proveedor = $booking->proveedors->first();
+            if($proveedor) {
+                $proveedor->update([
+                    'cost' => $proveedor->cost - $booking->saldo,
+                ]);
+            }
+
+        }
+        storeState($booking, request('status'), Auth::user()->id, 1);
         return back()->with('message', 'Reservación completada correctamente');
     }
 
