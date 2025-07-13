@@ -6,6 +6,7 @@ use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\Included;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceRepository extends BaseRepository implements ServiceRepositoryInterface
@@ -96,9 +97,12 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
 
     public function getServiceByUser($userId)
     {
-        $user = User::find($userId);
-        
-        Auth::login($user);
-        return $this->getAll();
+      
+        $services = \DB::select('CALL ObtenerTodosLosServicios(?)', [$userId]);
+        return array_map(function ($service)  {
+           $images = isset($service->image_urls) ? explode(',', $service->image_urls) : [];
+           $service->image_urls = $images;
+           return $service;
+        }, $services);
     }
 }
