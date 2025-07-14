@@ -9,7 +9,7 @@
       <span class="font-bold uppercase"> {{ service.service }} Sin novedad</span>.
     </h2>
     <div class="mt-4">
-      <div v-if="service.service_type == 'TRANSFER'">
+      <div v-if="service.service_type == 'TRANSFER'" >
         <div class="flex w-full justify-between gap-x-4">
           <Input
             label="Nombre del Conductor"
