@@ -166,9 +166,7 @@ const buttons = [
             serviceSelected.value = data;
             todayActivity.value = true;
         },
-        badge: (data) => {
-            return data.notes;
-        },
+       
         icon: "fa-solid fa-note-sticky text-sm",
     },
     {

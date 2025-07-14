@@ -32,8 +32,15 @@
       <label for="price_input">
         Descuento por pasajero
       </label>
-
     </IftaLabel>
+    <IftaLabel class="w-full">
+      <InputNumber v-model="bookingServicesProveedors.form.percent_discount" inputId="discount_input"
+         variant="filled"  class="w-full" />
+      <label for="discount_input">
+       % Descuento por pasajero
+      </label>
+    </IftaLabel>
+
     
     <Button type="submit" severity="success" class="w-full">
       <i class="fa-solid fa-plus"></i>

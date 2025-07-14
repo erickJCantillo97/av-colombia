@@ -23,6 +23,7 @@ export default class BookingServicesProveedors {
         cost: 0,
         concept: "",
         discount: 0,
+        percent_discount: 0,
     });
 
     async getProveedorByBookingService() {

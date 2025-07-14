@@ -38,7 +38,7 @@ export const columns = [
         sortable: true,
     },
     {
-        field: "channel.name",
+        field: "channel_name",
         header: "Canal de venta",
         filter: true,
         sortable: true,
@@ -54,7 +54,7 @@ export const columns = [
         header: "Estado",
         filter: true,
         sortable: true,
-        type: "tag",
+        type: "text",
         filtertype: "EQUALS",
         class: "text-center uppercase",
         severitys: [
