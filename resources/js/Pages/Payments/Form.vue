@@ -187,7 +187,7 @@ onMounted( () => {
         form.amount = props.payment.amount;
         form.proveedor_id = props.payment.proveedor_id;
         form.description = props.payment.description;
-        selectDate.value = [new Date(props.payment.startDate), new Date(props.payment.endDate)];
+        selectDate.value = [formatDate(props.payment.startDate), formatDate(props.payment.endDate)];
         proveedor.value = props.payment.proveedor_id;
         getReservas();
     }
