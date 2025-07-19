@@ -105,6 +105,15 @@ class ServiceController extends Controller
 
     public function show(Service $service)
     {
+        if(request()->wantsJson()) {
+            return response()->json([
+                'service' => $service,
+                'gallery' => $service->images,
+                'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
+                'features' => $service->features
+            ]);
+        }
+
         return Inertia::render('Services/Show', [
             'service' => $service,
             'gallery' => $service->images,
