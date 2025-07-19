@@ -122,6 +122,15 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function apiShow($slug, $userId)
+    {
+        return response()->json([
+            'service' => $this->serviceRepository->getServiceBySlugAndUser($slug, $userId),
+           
+            
+        ]);
+    }
+
     public function edit(Service $service)
     {
         $features = Feature::orderBy('name')->get();

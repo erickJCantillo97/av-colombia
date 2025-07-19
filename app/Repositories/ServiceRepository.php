@@ -97,12 +97,20 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
 
     public function getServiceByUser($userId)
     {
-      
         $services = \DB::select('CALL ObtenerTodosLosServicios(?)', [$userId]);
         return array_map(function ($service)  {
            $images = isset($service->image_urls) ? explode(',', $service->image_urls) : [];
            $service->image_urls = $images;
            return $service;
         }, $services);
+    }
+
+    public function getServiceBySlugAndUser($slug, $userId)
+    {
+        return array_map(function ($service) {
+            $images = isset($service->image_urls) ? explode(',', $service->image_urls) : [];
+            $service->image_urls = $images;
+            return $service;
+        }, \DB::select('CALL ObtenerServiciosBySlugAndUser(?, ?)', [$slug, $userId]));
     }
 }
