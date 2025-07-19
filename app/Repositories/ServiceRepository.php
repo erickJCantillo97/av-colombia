@@ -111,6 +111,6 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
             $images = isset($service->image_urls) ? explode(',', $service->image_urls) : [];
             $service->image_urls = $images;
             return $service;
-        }, \DB::select('CALL ObtenerServiciosBySlugAndUser(?, ?)', [$slug, $userId]));
+        }, \DB::select('CALL ObtenerServiciosBySlugAndUser(?, ?)', [$userId, $slug ]));
     }
 }
