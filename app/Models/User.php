@@ -97,7 +97,7 @@ class User extends Authenticatable
     protected function cuenta(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
+            get: fn($value) =>  str_replace('//', '/', $value),
             set: fn($value) => $value,
         );
     }

@@ -101,10 +101,6 @@ const columns = [
   },
 ];
 
-
-
-
-
 </script>
 
 <template>

@@ -38,7 +38,7 @@ export const columns = [
         sortable: true,
     },
     {
-        field: "channel_name",
+        field: "channel.name",
         header: "Canal de venta",
         filter: true,
         sortable: true,

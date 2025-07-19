@@ -39,7 +39,6 @@ const columns = [
         filter: true,
         type: 'currency'
     },
-   
 ]
 const confirm = useConfirm();
 
