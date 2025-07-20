@@ -113,4 +113,9 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
             return $service;
         }, \DB::select('CALL ObtenerServiciosBySlugAndUser(?, ?)', [$userId, $slug ]));
     }
+
+    public function obtenerHorariosByServiceBetweeDays($serviceId, $startDate)
+    {
+        return \DB::select('CALL obtenerHorariosByServiceBetweeDays(?, ?, ?)', [$serviceId, $startDate]);
+    }
 }

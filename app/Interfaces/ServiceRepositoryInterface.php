@@ -12,5 +12,5 @@ interface ServiceRepositoryInterface extends BaseRepositoryInterface
     public function setPortada($id, $image);
     public function getServiceByUser($userId);
     public function getServiceBySlugAndUser($slug, $userId);
-
+    public function obtenerHorariosByServiceBetweeDays($serviceId, $startDate);
 }

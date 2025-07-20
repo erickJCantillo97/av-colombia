@@ -257,4 +257,11 @@ class ServiceController extends Controller
         $service->update($validate);
         return back()->with('message', 'Servicio iniciado');
     }
+
+    public function obtenerHorariosByServiceBetweeDays($serviceId, $startDate)
+    {
+        return response()->json([
+            'horarios' => $this->serviceRepository->obtenerHorariosByServiceBetweeDays($serviceId, $startDate),
+        ]);
+    }
 }
