@@ -116,6 +116,6 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
 
     public function obtenerHorariosByServiceBetweeDays($serviceId, $startDate)
     {
-        return \DB::select('CALL obtenerHorariosByServiceBetweeDays(?, ?, ?)', [$serviceId, $startDate]);
+        return \DB::select('CALL obtenerHorariosByServiceBetweeDays(?, ?)', [$serviceId, $startDate]);
     }
 }
