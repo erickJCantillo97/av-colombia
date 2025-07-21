@@ -52,6 +52,29 @@
           v-model="form.password_confirmation"
         />
         <Input label="Telefono" v-model="form.phone" />
+        <div
+          class="w-full flex flex-col justify-center items-center col-span-2 my-4"
+          v-if="!(form.rol == 'superadmin' || form.rol == 'admin' || form.rol == 'cordinador')"
+        >
+        <div class="text-lg font-bold font-mono flex justify-between items-center gap-x-16"><p> Ver Portafolio </p><i @click="downloadQR" class="fa-solid fa-download cursor-pointer text-gray-800 text-xs"></i></div>
+        <a target="_blank" id="qrCode" :href="form.url" class="rounded-md border flex flex-col gap-y-2 p-1 items-center  shadow-lg shadow-[rgba(6,74,89,0.5)] hover:scale-105 transition-all duration-300 ease-in-out">
+            <qrcode-vue
+              ref="qrCodeRef"
+              :value="form.url" 
+              :size="200" 
+              level="L" 
+              render-as="svg" 
+              foreground="#064a59" 
+              class="rounded-md" 
+              :image-settings="{
+                src: '/images/logo.webp',
+                width: 30,
+                height: 30,
+                excavate: true
+              }" />
+          <span class="text-xs italic text-gray-600 text-center font-mono">Scanear QR </span>
+          </a>
+        </div>
         <div class="flex flex-col" v-if="form.rol == 'vendedor'">
           <div class="rounded-md border border-gray-100 bg-white p-4 shadow-md">
             <label for="upload" class="flex flex-col items-center gap-2 cursor-pointer">
@@ -150,14 +173,7 @@
           </div>
         </div>
 
-        <div
-          class="w-full flex flex-col justify-center items-center"
-          v-if="form.rol == 'vendedor'"
-        >
-          <a target="_blank" :href="form.url">
-            <qrcode-vue :value="form.url" :size="150" level="H" render-as="svg" />
-          </a>
-        </div>
+        
       </div>
       <div class="w-full shadow-2xl border rounded-md gap-2 p-4">
         <h3 class="text-center font-semibold text-lg">Permisos</h3>
@@ -286,6 +302,8 @@ const confirm = useConfirm();
 const editor = ref(false);
 
 const search = ref();
+
+const qrCodeRef = ref();
 
 const filterPermissions = computed(() => {
   return props.permisos.filter((x) => !search.value || x.name.includes(search.value));
@@ -529,5 +547,121 @@ const subirRut = (e) => {
 };
 const subirCuenta = (e) => {
   form.cuenta = e.target.files[0];
+};
+
+const downloadQR = () => {
+  if (!form.url) {
+    toast.add({
+      severity: "warn",
+      icon: "fa-solid fa-exclamation-triangle",
+      summary: "Advertencia",
+      detail: "No hay código QR para descargar",
+      group: "customTooltipDataTable",
+      life: 3000,
+    });
+    return;
+  }
+
+  try {
+    // Obtener el elemento por ID
+    const qrElement = document.getElementById('qrCode');
+    if (!qrElement) {
+      throw new Error('No se encontró el elemento QR');
+    }
+
+    // Crear un canvas basado en las dimensiones del elemento
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Obtener las dimensiones del elemento
+    const rect = qrElement.getBoundingClientRect();
+    const scale = 2; // Factor de escala para mejor calidad
+    
+    canvas.width = rect.width * scale;
+    canvas.height = rect.height * scale;
+    
+    // Escalar el contexto para mejor calidad
+    ctx.scale(scale, scale);
+    
+    // Función para capturar el elemento como imagen
+    const captureElement = () => {
+      // Crear un objeto de datos del elemento
+      const svgElement = qrElement.querySelector('svg');
+      if (!svgElement) {
+        throw new Error('No se encontró el SVG dentro del elemento');
+      }
+      
+      // Obtener el SVG como string
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      
+      // Crear imagen desde SVG
+      const img = new Image();
+      img.onload = () => {
+        // Limpiar canvas
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, rect.width, rect.height);
+        
+        // Calcular posición centrada para el QR
+        const qrSize = 200; // Tamaño del QR según el componente
+        const x = (rect.width - qrSize) / 2;
+        const y = 10; // Pequeño margen superior
+        
+        // Dibujar el QR
+        ctx.drawImage(img, x, y, qrSize, qrSize);
+        
+        // Agregar el texto "Scanear QR" debajo
+        ctx.fillStyle = '#6b7280'; // Color gris del texto
+        ctx.font = '12px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('Scanear QR', rect.width / 2, y + qrSize + 20);
+        
+        // Convertir canvas a blob y descargar
+        canvas.toBlob((blob) => {
+          const downloadUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = `qr-portafolio-${form.name || 'usuario'}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Limpiar URLs
+          URL.revokeObjectURL(downloadUrl);
+          URL.revokeObjectURL(url);
+          
+          toast.add({
+            severity: "success",
+            icon: "fa-solid fa-download",
+            summary: "Descarga exitosa",
+            detail: "Código QR descargado correctamente",
+            group: "customTooltipDataTable",
+            life: 3000,
+          });
+        }, 'image/png');
+      };
+      
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        throw new Error('Error al cargar la imagen SVG');
+      };
+      
+      img.src = url;
+    };
+    
+    captureElement();
+    
+  } catch (error) {
+    console.error('Error al descargar QR:', error);
+    toast.add({
+      severity: "error",
+      icon: "fa-solid fa-exclamation-circle",
+      summary: "Error",
+      detail: "Error al descargar el código QR: " + error.message,
+      group: "customTooltipDataTable",
+      life: 3000,
+    });
+  }
 };
 </script>
