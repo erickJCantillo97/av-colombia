@@ -8,17 +8,20 @@
       </div>
       <div class="rounded-md w-full">
         <Experiencias   />
-      </div>   
+      </div>
+      <Link class="rounded-md w-1/5 flex justify-center" :href="route('login')">
+        <div class="flex items-center gap-x-3 justify-center h-full bg-white/90 rounded-md px-2 py-1">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span class="text-lg font-bold  text-gray-800">Entrar</span>
+        </div>
+      </Link>
     </nav>
-  
   </header>
 </template>
 
 <script setup>
 import Experiencias from "@/Components/SearchEngines/Search.vue";
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { Dialog, DialogPanel } from "@headlessui/vue";
-import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { Link } from "@inertiajs/vue3";
 import Logo from "../logo.vue";
 

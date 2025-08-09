@@ -137,6 +137,7 @@ class BookingServiceController extends Controller
                 'price' => $booking->total_price,
                 'total_cost' => $booking->proveedors->sum('cost'),
                 'adults' => $booking->adults,
+                'boys' => $booking->boys,
                 'cliente_name' => $booking->cliente_name,
                 'observaciones' => $booking->observations,
                 'notas' => $booking->notes->map(function ($note) {

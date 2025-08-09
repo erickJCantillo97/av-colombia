@@ -9,6 +9,10 @@
                 <p class="p-1 pl-3">
                     {{ getTotalPaxByReservas(reservas.value) }} Pasajeros
                 </p>
+                
+                <p class="p-1 pl-3">
+                    {{ getTotalBoysByReservas(reservas.value) }} Niños
+                </p>
             </div>
             <p>
                 {{
@@ -26,7 +30,7 @@ const props = defineProps({
 });
 
 
-import { currencyFormat ,  getTotalPaxByReservas, getTotalCostByReservas } from '@/composable/useCommonUtilities';
+import { currencyFormat ,  getTotalPaxByReservas, getTotalBoysByReservas, getTotalCostByReservas } from '@/composable/useCommonUtilities';
 
 
 

@@ -25,6 +25,11 @@ export function currencyFormat(value) {
 export function getTotalPaxByReservas(reservas) {
      return (reservas.reduce((total, reserva) => total + reserva.adults, 0));
 }
+
+export function getTotalBoysByReservas(reservas) {
+    return (reservas.reduce((total, reserva) => total + reserva.boys, 0));
+}
+
 export function getTotalCostByReservas(reservas, proveedor) {
     
     return reservas.reduce((total, reserva) => {

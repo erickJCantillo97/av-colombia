@@ -88,6 +88,10 @@ Route::middleware([
     Route::get('addConcept', [ProveedorController::class, 'addConcept'])->name('add.concept');
 
     Route::get('getProvedorsService/{service}', [ProveedorController::class, 'getProvedorsService'])->name('get.provedors.service');
+
+    Route::get('qrGenerator', function () {
+        return Inertia::render('QrGenerator/Index');
+    })->name('qr.generator');
     
 });
 

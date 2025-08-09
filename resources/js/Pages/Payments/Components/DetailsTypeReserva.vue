@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-between gap-x-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-between">
         <ItemDetailTypeReserva v-for="reservas in reservasType" :key="reservas.name"
             :reservas="reservas" @click="toggle($event, reservas)" :proveedor="proveedor" />
     </div>
@@ -27,7 +27,7 @@
                                 <span class="text-xs">{{ grupo.count }} Reservas</span>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-sm">{{ grupo.pasajeros }} Pasajeros</span>
+                                <span class="text-sm">{{ grupo.pasajeros }} Pasajeros / {{ grupo.boys }} Niños</span>
                                 <span class="font-bold">{{ currencyFormat(grupo.total) }}</span>
                             </div>
                         </div>
@@ -45,8 +45,8 @@
                                 <span class="text-xs">{{ member.fecha }}</span>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-sm">{{ member.adults }} Pasajeros</span>
-                                <span class="font-bold">{{
+                                <span class="text-sm">{{ member.adults }} Pasajeros / {{ member.boys }} Niños</span>
+                                <span class="font-bold text-end">{{
                                     currencyFormat(
                                         member.proveedors
                                     .filter((x) => x.proveedor_id == proveedor)
@@ -92,10 +92,11 @@ const toggle = (event, r) => {
     groupReservas.value = r.value.reduce((acc, curr) => {
         const title = curr.title;
         if (!acc[title]) {
-            acc[title] = { count: 0, pasajeros: 0, total: 0 };
+            acc[title] = { count: 0, pasajeros: 0, total: 0, boys: 0 };
         }
         acc[title].count += 1;
         acc[title].pasajeros += curr.adults;
+        acc[title].boys += curr.boys;
         acc[title].total += curr.proveedors
             .filter((x) => x.proveedor_id == props.proveedor)
             .reduce((a, c) => a + c.cost_total, 0);

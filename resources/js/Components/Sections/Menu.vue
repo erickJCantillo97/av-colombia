@@ -121,6 +121,13 @@
               </ul>
             </li>
             <li>
+              <Link :href="route('qr.generator')" v-ripple
+                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
+              <i class="pi pi-qrcode mr-2"></i>
+              <span class="font-pago">Generador de QR</span>
+              </Link>
+            </li>
+            <li>
               <Link v-if="hasPermissionTo('ver proveedores')" :href="route('proveedors.index')" v-ripple
                 class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
               <i class="pi pi-truck mr-2"></i>

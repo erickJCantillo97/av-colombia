@@ -11,7 +11,6 @@
 </template>
 
 <script setup>
-import { Link } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Menu from "./Menu.vue";
 
