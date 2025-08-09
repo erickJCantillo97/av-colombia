@@ -25,10 +25,8 @@
         </div>
 
         <div class="flex justify-end gap-x-2">
-            <button @click="show = false" class="bg-red-500 text-white px-4 py-2 rounded-md">
-                Cancelar
-            </button>
-            <button :loading v-if="proveedor" @click="save" class="bg-green-500 text-white px-4 py-2 rounded-md">
+            
+            <button :loading v-if="$page.props.auth.user.rol == 'superadmin' && proveedor" @click="save" class="bg-green-500 text-white px-4 py-2 rounded-md">
                 Guardar
             </button>
         </div>

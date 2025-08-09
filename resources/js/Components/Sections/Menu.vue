@@ -1,171 +1,120 @@
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex items-center justify-between px-2 pt-4 shrink-0">
-      <span class="inline-flex items-center gap-2">
-        <img src="/images/logo.webp" class="size-14" alt="" />
-        <span class="font-semibold text-2xl text-primary">AV Colombia</span>
-      </span>
-      <span class="flex lg:hidden">
-        <Button type="button" icon="pi pi-times" rounded outlined></Button>
-      </span>
-    </div>
+    <MenuLogo />
+    
     <div class="overflow-y-auto">
       <ul class="list-none p-2 m-0">
-        <li>
-          <div v-ripple v-styleclass="{
-            selector: '@next',
-            enterFromClass: 'hidden',
-            enterActiveClass: 'animate-slidedown',
-            leaveToClass: 'hidden',
-            leaveActiveClass: 'animate-slideup',
-          }"
-            class="p-4 flex items-center justify-between text-surface-500 dark:text-surface-400 cursor-pointer p-ripple">
-            <span class="font-medium">Favoritos</span>
-            <i class="pi pi-chevron-down"></i>
-          </div>
-          <ul class="list-none p-0 m-0 overflow-hidden">
-            <li>
-              <Link :href="route('dashboard')" v-ripple
-                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-              <i class="pi pi-home mr-2"></i>
-              <span class="font-medium">Dashboard</span>
-              </Link>
-            </li>
-            <li>
-              <a v-ripple v-styleclass="{
-                selector: '@next',
-                enterFromClass: 'hidden',
-                enterActiveClass: 'animate-slidedown',
-                leaveToClass: 'hidden',
-                leaveActiveClass: 'animate-slideup',
-              }"
-                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-               <i class="fa-solid fa-tags mr-2"></i>
-                <span class="font-medium">Servicios</span>
-                <i class="pi pi-chevron-down ml-auto"></i>
-              </a>
-              <ul
-                class="list-none py-0 pl-4 pr-0 m-0 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out">
-                <li>
-                  <Link v-show="hasPermissionTo('ver servicios')" :href="route('services.index')" v-ripple
-                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                  <i class="fa-solid fa-person-hiking mr-2"></i>
-                  <span class="font-medium">Tours</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link v-if="hasPermissionTo('ver servicios')" :href="route('services.index', { type: 'EMBARCACION' })" v-ripple
-                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                  <i class="fa-solid fa-ship mr-2"></i>
-                  <span class="font-medium">Embarcaciones</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a v-ripple v-styleclass="{
-                selector: '@next',
-                enterFromClass: 'hidden',
-                enterActiveClass: 'animate-slidedown',
-                leaveToClass: 'hidden',
-                leaveActiveClass: 'animate-slideup',
-              }"
-                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                <i class="pi pi-calendar mr-2"></i>
-                <span class="font-medium">Reservas</span>
-                <i class="pi pi-chevron-down ml-auto"></i>
-              </a>
-              <ul
-                class="list-none py-0 pl-4 pr-0 m-0 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out">
-                <li>
-                  <Link v-if="hasPermissionTo('ver experiencas')" :href="route('BookingServices.index')" v-ripple
-                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                  <i class="fa-solid fa-person-hiking mr-2"></i>
-                  <span class="font-medium">Experiencias</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a v-ripple v-styleclass="{
-                selector: '@next',
-                  enterFromClass: 'hidden',
-                  enterActiveClass: 'animate-slidedown',
-                  leaveToClass: 'hidden',
-                  leaveActiveClass: 'animate-slideup',
-                }"
-                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                <i class="pi pi-dollar mr-2"></i>
-                <span class="font-medium">Contabilidad</span>
-                <i class="pi pi-chevron-down ml-auto"></i>
-              </a>
-              <ul
-                class="list-none py-0 pl-4 pr-0 m-0 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out">
-                <li>
-                  <Link v-if="hasPermissionTo('ver pagos')" :href="route('contabilidad')" v-ripple
-                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                  <i class="fa-solid fa-gauge mr-2"></i>
-                  <span class="font-medium">Informe</span>
-                  </Link>
-                  <Link v-if="hasPermissionTo('ver pagos')" :href="route('pagos')" v-ripple
-                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                  <i class="fa-solid fa-money-bill-transfer text-green-500 mr-2"></i>
-                  <span class="font-medium">Pagos</span>
-                  </Link>
-                  <Link v-if="hasPermissionTo('ver entradas')" :href="route('BookingServices.index')" v-ripple
-                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-                  <i class="fa-solid fa-person-hiking mr-2"></i>
-                  <span class="font-medium">Entradas</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <Link :href="route('qr.generator')" v-ripple
-                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-              <i class="pi pi-qrcode mr-2"></i>
-              <span class="font-pago">Generador de QR</span>
-              </Link>
-            </li>
-            <li>
-              <Link v-if="hasPermissionTo('ver proveedores')" :href="route('proveedors.index')" v-ripple
-                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-              <i class="pi pi-truck mr-2"></i>
-              <span class="font-pago">Proveedores</span>
-              </Link>
-            </li>
-            <li>
-              <Link v-if="hasPermissionTo('ver usuarios')" :href="route('settings')" v-ripple
-                class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple">
-              <i class="pi pi-cog mr-2"></i>
-              <span class="font-medium">Ajustes</span>
-              </Link>
-            </li>
-          </ul>
-        </li>
+        <MenuSection title="Favoritos">
+          <!-- Dashboard -->
+          <MenuItem 
+            label="Dashboard"
+            :href="route('dashboard')"
+            icon="pi pi-home"
+          />
+
+          <!-- Servicios -->
+          <MenuItem 
+            label="Servicios"
+            icon="fa-solid fa-tags"
+            :submenu-items="serviciosItems"
+          />
+
+          <!-- Reservas -->
+          <MenuItem 
+            label="Reservas"
+            icon="pi pi-calendar"
+            :submenu-items="reservasItems"
+          />
+
+          <!-- Contabilidad -->
+          <MenuItem 
+            label="Contabilidad"
+            icon="pi pi-dollar"
+            :submenu-items="contabilidadItems"
+          />
+
+          <!-- Generador de QR -->
+          <MenuItem 
+            label="Generador de QR"
+            :href="route('qr.generator')"
+            icon="pi pi-qrcode"
+          />
+
+          <!-- Proveedores -->
+          <MenuItem 
+            label="Proveedores"
+            :href="route('proveedors.index')"
+            icon="pi pi-truck"
+            permission="ver proveedores"
+          />
+
+          <!-- Ajustes -->
+          <MenuItem 
+            label="Ajustes"
+            :href="route('settings')"
+            icon="pi pi-cog"
+            permission="ver usuarios"
+          />
+        </MenuSection>
       </ul>
     </div>
-    <div class="mt-auto">
-      <hr class="border-t border-0 border-surface-200 dark:border-surface-700" />
-      <div class="flex items-center">
-        <Link :href="route('profile.show')" v-ripple
-          class="w-full flex items-center cursor-pointer p-2 gap-2 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple truncate">
-        <span class="font-bold">{{ $page.props.auth.user.name }}</span>
-        </Link>
-        <div
-          class="w-full py-2 border-l-2 flex justify-center items-center cursor-pointer hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple gap-x-4 text-red-500">
-          <Link :href="route('logout')" method="post" class="flex items-center gap-x-4">
-          <p>Salir</p>
-          <i class="pi pi-sign-out"></i>
-          </Link>
-        </div>
-      </div>
-    </div>
+
+    <MenuUserPanel />
   </div>
 </template>
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import { usePermissions } from "@/composable/Auth";
+import MenuLogo from "@/Components/Menu/MenuLogo.vue";
+import MenuSection from "@/Components/Menu/MenuSection.vue";
+import MenuItem from "@/Components/Menu/MenuItem.vue";
+import MenuUserPanel from "@/Components/Menu/MenuUserPanel.vue";
 
 const { hasPermissionTo } = usePermissions();
+
+// Define submenu items as reactive data
+const serviciosItems = [
+  {
+    label: "Tours",
+    href: route('services.index'),
+    icon: "fa-solid fa-person-hiking",
+    permission: "ver servicios"
+  },
+  {
+    label: "Embarcaciones",
+    href: route('services.index', { type: 'EMBARCACION' }),
+    icon: "fa-solid fa-ship",
+    permission: "ver servicios"
+  }
+];
+
+const reservasItems = [
+  {
+    label: "Experiencias",
+    href: route('BookingServices.index'),
+    icon: "fa-solid fa-person-hiking",
+    permission: "ver experiencas"
+  }
+];
+
+const contabilidadItems = [
+  {
+    label: "Informe",
+    href: route('contabilidad'),
+    icon: "fa-solid fa-gauge",
+    permission: "ver pagos"
+  },
+  {
+    label: "Pagos",
+    href: route('pagos'),
+    icon: "fa-solid fa-money-bill-transfer text-green-500",
+    permission: "ver pagos"
+  },
+  {
+    label: "Entradas",
+    href: route('BookingServices.index'),
+    icon: "fa-solid fa-person-hiking",
+    permission: "ver entradas"
+  }
+];
 </script>
