@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookingService\BookingClientService;
 use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Models\BookingService;
 use App\Models\PaymentProveedor;
+use App\Models\Service;
+use App\Models\User;
 use Carbon\Carbon;
+use Gemini\Foundation\Request;
 use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
@@ -86,26 +90,27 @@ class PaymentController extends Controller
         return back()->with('success', 'Estado actualizado');
     }
 
-    public function generateLinkToPayment($payment)
+    public function generateLinkToPayment(BookingClientService $request, $userId)
     {
-
+        $user = User::find($userId);
+        $service = Service::findOrFail($request->service_id);
         $token = $this->getTokenToPayment();
         $link = Http::withHeaders(headers: ['auth-token' => $token, 'content-type' => 'application/json'])->post("https://noccapi-stg.redeban.com/linktopay/init_order/", [
             "user" => [
-                "id" => "117",
-                "email" => "dummy@foo.com",
-                "name" => "Gabriel",
-                "last_name" => "Cruz"
+                "id" => $user->id,
+                "email" => $request->client_email,
+                "name" => $request->client_name,
+                "last_name" => $request->last_name
             ],
             "order" => [
                 "dev_reference" => "1",
-                "description" => "Product description",
-                "amount" => 1000,
+                "description" => $service->title,
+                "amount" => $request->totalCost,
                 "installments_type" => 0,
                 "currency" => "COP"
             ],
             "configuration" => [
-                "partial_payment" => true,
+                "partial_payment" => false,
                 "expiration_days" => 1,
                 "allowed_payment_methods" => ["All"],
                 "success_url" => "https://url-to-success.com",
@@ -114,7 +119,7 @@ class PaymentController extends Controller
                 "review_url" => "https://url-to-review.com"
             ]
         ]);
-        return redirect()->away($link->json('payment.payment_url'));
+        return response()->json($link->json());
     }
 
     private function getTokenToPayment()

@@ -24,4 +24,4 @@ Route::post('reservar', [BookingServiceController::class, 'reservarByApi']);
 Route::get('getBookingServices/{bookingService}', [BookingServiceController::class, 'show'])->name('bookingServices.show');
 Route::get('getService/{slug}/{userId}', [ServiceController::class, 'apiShow'])->name('api.get.service');
 Route::get('obtenerHorariosByServiceBetweeDays/{serviceId}/{startDate}', [ServiceController::class, 'obtenerHorariosByServiceBetweeDays'])->name('api.get.horarios');
-Route::get('generateLinkToPayment/{bookingService}', [PaymentController::class, 'generateLinkToPayment'])->name('api.generate.link.payment');
+Route::get('generateLinkToPayment/{userId}', [PaymentController::class, 'generateLinkToPayment'])->name('api.generate.link.payment');
