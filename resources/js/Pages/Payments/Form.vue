@@ -11,27 +11,27 @@
         </div>
 
         <div v-if="proveedor" class="flex flex-col gap-y-2">
-            <DetailsTypeReserva v-if="proveedor"  :reservasType="reservasType" :proveedor="proveedor" />
+            <DetailsTypeReserva v-if="proveedor" :reservasType="reservasType" :proveedor="proveedor" />
             <div class="flex flex-col w-full justify-between font-bold">
                 <p>Fecha en que realizó el pago</p>
                 <DatePicker v-model="form.date" dateFormat="dd/mm/yy" class="w-full" :manualInput="false" />
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 ">
                 <Input label="Valor Pagado" type="number" mode="currency" v-model="form.amount" />
-                <Input label="Valor Total" type="number" mode="currency"  v-model="totalCostoProveedor" disabled />
-                <Input label="Diferencia" type="number" mode="currency"  v-model="diference" disabled  />
+                <Input label="Valor Total" type="number" mode="currency" v-model="totalCostoProveedor" disabled />
+                <Input label="Diferencia" type="number" mode="currency" v-model="diference" disabled />
             </div>
             <input type="file" @change="previewFiles" label="Comprobante" />
         </div>
 
         <div class="flex justify-end gap-x-2">
-            
-            <button :loading v-if="$page.props.auth.user.rol == 'superadmin' && proveedor" @click="save" class="bg-green-500 text-white px-4 py-2 rounded-md">
+            <button :loading v-if="$page.props.auth.user.rol == 'superadmin' && proveedor" @click="save"
+                class="bg-green-500 text-white px-4 py-2 rounded-md">
                 Guardar
             </button>
         </div>
     </div>
-    
+
 </template>
 <script setup>
 import { router, useForm } from "@inertiajs/vue3";
@@ -40,7 +40,7 @@ import { alerts } from "@/composable/toasts";
 import axios from "axios";
 import Input from "@/Components/Customs/Input.vue";
 import DetailsTypeReserva from "./Components/DetailsTypeReserva.vue";
-import {  getTotalCostByReservas } from '@/composable/useCommonUtilities';
+import { getTotalCostByReservas } from '@/composable/useCommonUtilities';
 const show = ref(false);
 
 const { toast } = alerts();
@@ -176,7 +176,7 @@ const diference = computed(() => {
     return totalCostoProveedor.value - form.amount;
 });
 
-onMounted( () => {
+onMounted(() => {
     if (props.payment) {
         payment_id.value = props.payment.id;
         form.date = formatDate(props.payment.date);

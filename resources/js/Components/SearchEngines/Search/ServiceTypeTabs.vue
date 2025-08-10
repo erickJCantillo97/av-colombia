@@ -1,24 +1,17 @@
 <template>
-  <div ref="containerRef" class="flex items-center justify-center service-types-container space-x-2 relative overflow-x-auto">
+  <div ref="containerRef"
+    class="flex items-center justify-center service-types-container space-x-2 relative overflow-x-auto">
     <!-- Fondo animado -->
-    <div
-      v-if="sliderStyle.width"
+    <div v-if="sliderStyle.width"
       class="absolute transition-all duration-300 bg-gray-900 rounded-xl z-0 shadow-md border-2 border-gray-900"
-      :style="sliderStyle"
-    ></div>
-    <div
-      v-for="(serviceType, index) in servicesType"
-      :key="serviceType.value"
-      :ref="el => tabRefs[index] = el"
-      @click="selectTab(serviceType, index)"
-      :class="[
+      :style="sliderStyle"></div>
+    <div v-for="(serviceType, index) in servicesType" :key="serviceType.value" :ref="el => tabRefs[index] = el"
+      @click="selectTab(serviceType, index)" :class="[
         'service-type-tab flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group relative overflow-hidden min-w-fit z-10 flex-shrink-0',
         type.value === serviceType.value
           ? 'text-white'
           : 'text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300 bg-white'
-      ]"
-      :style="{ animationDelay: `${index * 0.1}s` }"
-    >
+      ]" :style="{ animationDelay: `${index * 0.1}s` }">
       <div :class="[
         'w-5 h-5 sm:w-6 sm:h-6  items-center justify-center transition-all duration-200 relative z-10 flex-shrink-0 hidden sm:flex',
         type.value === serviceType.value
@@ -40,7 +33,7 @@
 </template>
 <script setup>
 import { ref, watch, nextTick, onMounted } from 'vue';
-import state  from '@/store/searchStore';
+import state from '@/store/searchStore';
 
 const props = defineProps({
   modelValue: Object
@@ -63,35 +56,26 @@ const servicesType = [
     label: 'Embarcaciones',
     value: 'EMBARCACION',
     description: 'Yates y lanchas',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15s4-8 9-8 9 8 9 8-4 8-9 8-9-8-9-8z"></path>
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7v10"></path>
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11l8 0"></path>
-           </svg>`
+    icon: `<img src="assets/svgs/motor-boat.svg" alt="Motor Boat Icon" />`
   },
   {
     label: 'Hospedaje',
     value: 'HOSPEDAJE',
     description: 'Hoteles y cabañas',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4a4 4 0 014-4h10a4 4 0 014 4v4M7 7a4 4 0 118 0v1a3 3 0 01-3 3h-2a3 3 0 01-3-3V7z"></path>
-           </svg>`
+    icon: `<img src="assets/svgs/house.svg" alt="House Icon" />`
   },
   {
     label: 'Transporte',
     value: 'TRANSPORTE',
     description: 'Traslados y vehículos',
-    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m4 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7zM8 7h8M5 21h14"></path>
-           </svg>`
+    icon: `<img src="assets/svgs/automobile.svg" alt="Automobile Icon" />`
   },
-  
 ];
 
 function updateSlider() {
   nextTick(() => {
-    const idx = servicesType.findIndex(s =>  s.value == type.value.value);
-    
+    const idx = servicesType.findIndex(s => s.value == type.value.value);
+
     const el = tabRefs.value[idx];
     const container = containerRef.value;
     if (el && container) {
@@ -111,7 +95,7 @@ function selectTab(serviceType, index) {
   type.value = serviceType;
 }
 
-watch(() => type, updateSlider, {deep: true});
+watch(() => type, updateSlider, { deep: true });
 onMounted(updateSlider);
 </script>
 <style scoped>
@@ -139,7 +123,7 @@ onMounted(updateSlider);
     padding: 0 4px;
     gap: 4px;
   }
-  
+
   .service-type-tab {
     padding: 6px 10px;
     min-width: fit-content;

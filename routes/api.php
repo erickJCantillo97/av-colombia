@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\BookingService\BookingServiceController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ServiceController;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,3 +24,4 @@ Route::post('reservar', [BookingServiceController::class, 'reservarByApi']);
 Route::get('getBookingServices/{bookingService}', [BookingServiceController::class, 'show'])->name('bookingServices.show');
 Route::get('getService/{slug}/{userId}', [ServiceController::class, 'apiShow'])->name('api.get.service');
 Route::get('obtenerHorariosByServiceBetweeDays/{serviceId}/{startDate}', [ServiceController::class, 'obtenerHorariosByServiceBetweeDays'])->name('api.get.horarios');
+Route::get('generateLinkToPayment/{bookingService}', [PaymentController::class, 'generateLinkToPayment'])->name('api.generate.link.payment');

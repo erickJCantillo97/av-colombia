@@ -7,6 +7,8 @@ use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Models\BookingService;
 use App\Models\PaymentProveedor;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -16,7 +18,7 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = PaymentProveedor::all();
-        
+
         return inertia('Payments/Index', [
             'payments' => $payments
         ]);
@@ -53,10 +55,7 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment $payment)
-    {
-        
-    }
+    public function show(Payment $payment) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -69,10 +68,7 @@ class PaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePaymentRequest $request, Payment $payment)
-    {
-        
-    }
+    public function update(UpdatePaymentRequest $request, Payment $payment) {}
 
     /**
      * Remove the specified resource from storage.
@@ -88,5 +84,48 @@ class PaymentController extends Controller
             'status' => request('status')
         ]);
         return back()->with('success', 'Estado actualizado');
+    }
+
+    public function generateLinkToPayment($payment)
+    {
+
+        $token = $this->getTokenToPayment();
+        $link = Http::withHeaders(headers: ['auth-token' => $token, 'content-type' => 'application/json'])->post("https://noccapi-stg.redeban.com/linktopay/init_order/", [
+            "user" => [
+                "id" => "117",
+                "email" => "dummy@foo.com",
+                "name" => "Gabriel",
+                "last_name" => "Cruz"
+            ],
+            "order" => [
+                "dev_reference" => "1",
+                "description" => "Product description",
+                "amount" => 1000,
+                "installments_type" => 0,
+                "currency" => "COP"
+            ],
+            "configuration" => [
+                "partial_payment" => true,
+                "expiration_days" => 1,
+                "allowed_payment_methods" => ["All"],
+                "success_url" => "https://url-to-success.com",
+                "failure_url" => "https://url-to-failure.com",
+                "pending_url" => "https://url-to-pending.com",
+                "review_url" => "https://url-to-review.com"
+            ]
+        ]);
+        return redirect()->away($link->json('payment.payment_url'));
+    }
+
+    private function getTokenToPayment()
+    {
+        $server_application_code = env('API_LOGIN_DEV', 'AVCOLCARTAGENA-STG-RE-SERVER');
+        $server_app_key = env('APP_KEY_SERVER', 'qWu2xFF8y0iLRPmvZ69oUs7ejoC2Cp');
+        $date = new Carbon();
+        $unix_timestamp = $date->getTimestamp();
+        $uniq_token_string = $server_app_key . $unix_timestamp;
+        $uniq_token_hash = hash('sha256', $uniq_token_string);
+        $auth_token = base64_encode($server_application_code . ";" . $unix_timestamp . ";" . $uniq_token_hash);
+        return $auth_token;
     }
 }
