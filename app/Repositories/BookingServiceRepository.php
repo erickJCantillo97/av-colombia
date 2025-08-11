@@ -71,7 +71,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         });
     }
 
-    public function create(array $data)
+    public function create(array $data, $status = 'reservado')
     {
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
         $service = $this->service->getById($data['service_id']);
@@ -88,7 +88,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $this->createNote($bookingService, $data);
         $this->stateRepository->create([
             'statable_id' => $bookingService->id,
-            'state' => 'reservado',
+            'state' => $status,
         ]);
         $this->addChange(
             $bookingService,

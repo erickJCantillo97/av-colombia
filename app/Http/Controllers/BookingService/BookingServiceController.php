@@ -272,7 +272,6 @@ class BookingServiceController extends Controller
         $data['boys_tarifa'] = $service->boy_tarifa;
         $data['boys_price'] = $service->boys_price;
         $data['adults_price'] = $service->adults_price;
-
         $data['service'] = $service->title;
         $data['total_real'] = $service->adults_price * $data['adults'];
         if (request()->file('soporte')) {
@@ -288,7 +287,7 @@ class BookingServiceController extends Controller
             'message' => 'Reservación guardada correctamente',
             'bookingService' => $booking,
             'status' => true,
-        ], 201);
+        ], 200);
     }
 
     public function setStatus()
@@ -324,5 +323,17 @@ class BookingServiceController extends Controller
         // dd($service);
         storeState($service, request('state'), Auth::user()->id, request('terminated'));
         return back()->with('message', 'Estado actualizado');
+    }
+
+    private function getTokenToPayment()
+    {
+        $server_application_code = env('API_LOGIN_DEV', 'AVCOLCARTAGENA-STG-RE-SERVER');
+        $server_app_key = env('APP_KEY_SERVER', 'qWu2xFF8y0iLRPmvZ69oUs7ejoC2Cp');
+        $date = new Carbon();
+        $unix_timestamp = $date->getTimestamp();
+        $uniq_token_string = $server_app_key . $unix_timestamp;
+        $uniq_token_hash = hash('sha256', $uniq_token_string);
+        $auth_token = base64_encode($server_application_code . ";" . $unix_timestamp . ";" . $uniq_token_hash);
+        return $auth_token;
     }
 }
