@@ -3,7 +3,7 @@
     <!-- Botón fijo abajo para mostrar el panel de reserva -->
     <button
       v-if="!showBooking"
-      class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full shadow-lg z-50 font-bold transition-colors"
+      class="md:hidden  fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-900 hover:bg-gray-700 text-white px-8 py-3 rounded-full shadow-lg z-50 font-bold transition-colors"
       @click="showBooking = true"
     >
       <i class="fa-solid fa-calendar-plus mr-2"></i>
@@ -14,7 +14,8 @@
     <transition name="slide-up">
       <div
         v-if="showBooking"
-        class="p-4 shadow-xl w-[25rem] rounded-lg fixed left-[calc(100%-26rem)] top-[calc(10%+5rem)] bg-white gap-y-2 overflow-y-auto z-50"
+        ref="bookingPanel"
+        class="p-4 shadow-xl w-full  rounded-lg fixed bottom-4 bg-white gap-y-2 overflow-y-auto z-50"
       >
         <!-- Botón para cerrar -->
         <button
@@ -114,7 +115,7 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/themes/material_blue.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
@@ -126,6 +127,7 @@ import Logo from "@/Components/logo.vue";
 const props = defineProps(["product", "availabilities"]);
 
 const showBooking = ref(false);
+const bookingPanel = ref(null);
 
 const config = {
   minDate: "today",
@@ -200,6 +202,26 @@ const modifyCantPerson = (index, sum) => {
   if (sum == -1 && person.cant > 0) person.cant -= 1;
   else if (sum == 1 && person.cant < person.max) person.cant += 1;
 };
+
+// Función para cerrar el panel al hacer clic fuera
+const handleClickOutside = (event) => {
+  if (showBooking.value && bookingPanel.value && !bookingPanel.value.contains(event.target)) {
+    // Verificar que no se haga clic en el botón de reservar
+    const reserveButton = event.target.closest('button');
+    if (!reserveButton || !reserveButton.textContent.includes('Reservar')) {
+      showBooking.value = false;
+    }
+  }
+};
+
+// Agregar y remover event listeners
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>

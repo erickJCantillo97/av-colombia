@@ -9,6 +9,7 @@ import Gallery from "./Components/Gallery.vue";
 import LargeBooking from "./Components/LargeBooking.vue";
 import Equipament from "./Components/Equipament.vue";
 import CollectionPoints from "./Components/CollectionPoints.vue";
+import MiniBooking from "./Components/miniBooking.vue";
 
 const props = defineProps({
   service: Object,
@@ -47,15 +48,15 @@ const product = {
 
 <template>
   <Header />
-  <div class="px-4 py-16 md:p-28 ">
+  <div class="px-1 py-16 md:p-28 ">
     <Portada :images="product.images" :portada="product.images[0]" />
     <div class="flex md:flex-row flex-col gap-4">
       <div class="my-4 rounded-xl p-4 w-full md:w-[70%] flex flex-col gap-y-4">
-        <Breadcrumb :service="service"  />
-        <h1 class="text-3xl font-bold text-gray-800">
+        <Breadcrumb :service="service" class="hidden md:flex"  />
+        <h1 class="text-xl md:text-3xl font-bold text-gray-800 capitalize">
           {{ product.name }}
         </h1>
-        <Gallery :images="product.images"></Gallery>
+        <Gallery :images="product.images"  class="hidden md:flex"></Gallery>
         <div class="flex flex-col gap-y-4 text-justify text-gray-700">
           <transition name="expand">
             <div
@@ -81,7 +82,8 @@ const product = {
         <IncludesView :service="service" v-if="service.includes != '[]'"></IncludesView>
         <CollectionPoints :service="service" v-if="service.recogidas != '[]'"  />
       </div>
-      <LargeBooking :product="service" :availabilities></LargeBooking>
+      <LargeBooking :product="service" class="hidden md:block" :availabilities></LargeBooking>
+      <MiniBooking :product="service" class="md:hidden block" :availabilities></MiniBooking>
     </div>
   </div>
 </template>
