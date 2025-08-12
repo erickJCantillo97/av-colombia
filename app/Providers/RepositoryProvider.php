@@ -20,7 +20,8 @@ class RepositoryProvider extends ServiceProvider
             'BookingService',
             'BookingServiceProveedor',
             'BookingExtras',
-            'Proveedor'
+            'Proveedor',
+            'Payment'
         ];
 
         foreach ($models as $model) {

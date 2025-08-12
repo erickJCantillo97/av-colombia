@@ -3,12 +3,13 @@
 use App\Models\State;
 use Illuminate\Support\Facades\Auth;
 
-function storeState($statable, $state = 'RESERVADO', $user_id = null, $terminated = false)
+function storeState($statable, $state = null, $user_id = null, $terminated = false)
 {
     if ($user_id === null) {
         $user = Auth::user()->id;
         $user_id = $user ? $user : null;
     }
+    $description = $state ? 'Estado actualizado a ' . $state : 'Reserva Creada';
 
     State::create([
         'user_id' => $user_id,
@@ -19,10 +20,10 @@ function storeState($statable, $state = 'RESERVADO', $user_id = null, $terminate
     ]);
 
     addChanges(
-        $user_id,
         $statable,
         [
-            'description' => 'Estado actualizado a ' . $state,
+            'description' => $description,
         ]
+        , $user_id
     );
 }

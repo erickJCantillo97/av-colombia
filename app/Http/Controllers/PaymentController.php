@@ -94,7 +94,7 @@ class PaymentController extends Controller
     {
         $user = User::find($userId);
         $service = Service::findOrFail($request->service_id);
-        $token = $this->getTokenToPayment();
+        // $token = $this->getTokenToPayment();
         $link = Http::withHeaders(headers: ['auth-token' => $token, 'content-type' => 'application/json'])->post("https://noccapi-stg.redeban.com/linktopay/init_order/", [
             "user" => [
                 "id" => $user->id,

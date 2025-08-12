@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\BookingService;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BookingService\BookingClientService;
 use App\Http\Requests\BookingService\StoreBookingServiceRequest;
 use App\Http\Requests\BookingService\UpdateBookingServiceRequest;
 use App\Interfaces\BookingServiceRepositoryInterface;
+use App\Interfaces\PaymentRepositoryInterface;
 use App\Models\BookingExtras;
 use App\Models\BookingService;
 use App\Models\Channel;
@@ -24,6 +26,7 @@ class BookingServiceController extends Controller
 {
     public function __construct(
         private BookingServiceRepositoryInterface $bookingServiceRepository,
+        private PaymentRepositoryInterface $paymentRepository
     ) {}
 
     public function index()
@@ -249,43 +252,40 @@ class BookingServiceController extends Controller
         return back()->with('message', 'Reservación marcada como no show correctamente');
     }
 
-    public function reservarByApi(Request $request)
+    public function reservarByApi(BookingClientService $request, $userId)
     {
-        $data = $request->validate([
-            'adults' => 'required|numeric',
-            'boys' => 'required|numeric',
-            'service_id' => 'required|uuid',
-            'user_id' => 'required|numeric',
-            'date' => 'required|date',
-            'adult_tarifa' => 'required|numeric',
-            'total' => 'required|numeric',
-            'cliente_name' => 'required|string',
-            'cliente_phone' => 'required',
-            'cliente_building' => 'required|string',
-            'cliente_city' => 'required|string',
-        ]);
-        $data['saldo'] = $data['total'] - $request->abono;
-        $data['hour'] = Horario::find($request->time)->start;
+        $data = $request->validated();
+        $last_name = $data['last_name'];
+        $email = $data['cliente_email'];
+        $method = $data['payment_method'];
+        $data['saldo'] = 0;
+        $data['hour'] = Horario::find($request->time)->start ?? null;
+        unset($data['cliente_email']);
+        unset($data['last_name']);
+        unset($data['time']);
+        unset($data['payment_method']);
+        $data['adult_tarifa'] = 0;
+        $data['boys'] = 0;
         $data['channel_id'] = Channel::where('name', 'Vendedor')->first()->id;
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
-        $service = Service::find($data['service_id']);
+        $service = Service::findOrFail($data['service_id']);
         $data['boys_tarifa'] = $service->boy_tarifa;
         $data['boys_price'] = $service->boys_price;
         $data['adults_price'] = $service->adults_price;
         $data['service'] = $service->title;
-        $data['total_real'] = $service->adults_price * $data['adults'];
         if (request()->file('soporte')) {
             $data['file'] = request()->file('soporte')->store('soportes');
         }
-        $booking = BookingService::create($data);
-        storeState(
-            $booking,
-            'SIN CONFIRMAR',
-            request('user_id'),
-        );
+        $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
+        $data['last_name'] =  $last_name;
+        $data['cliente_email'] = $email;
+        $data['payment_method'] = $method;
+        $data['cliente_name'] = $data['cliente_name'] . ' ' . $last_name;
+        $payment = $this->paymentRepository->createPayment($data, $userId);
         return response()->json([
             'message' => 'Reservación guardada correctamente',
             'bookingService' => $booking,
+            'payment' => $payment,
             'status' => true,
         ], 200);
     }
@@ -325,15 +325,5 @@ class BookingServiceController extends Controller
         return back()->with('message', 'Estado actualizado');
     }
 
-    private function getTokenToPayment()
-    {
-        $server_application_code = env('API_LOGIN_DEV', 'AVCOLCARTAGENA-STG-RE-SERVER');
-        $server_app_key = env('APP_KEY_SERVER', 'qWu2xFF8y0iLRPmvZ69oUs7ejoC2Cp');
-        $date = new Carbon();
-        $unix_timestamp = $date->getTimestamp();
-        $uniq_token_string = $server_app_key . $unix_timestamp;
-        $uniq_token_hash = hash('sha256', $uniq_token_string);
-        $auth_token = base64_encode($server_application_code . ";" . $unix_timestamp . ";" . $uniq_token_hash);
-        return $auth_token;
-    }
+    
 }

@@ -22,18 +22,20 @@ class BookingClientService extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => 'required|date',
-            'persons' => 'required|integer|min:1',
             'last_name' => 'required|string|max:255',
             'time' => 'nullable',
             'service_id' => 'required|exists:services,id',
-            'service_name' => 'required|string|max:255',
-            'client_name' => 'required|string|max:255',
-            'client_email' => 'required|email|max:255',
-            'client_phone' => 'required|string|max:20',
-            'client_city' => 'required|string|max:255',
-            'client_building' => 'required|string|max:255',
-            'totalCost' => 'required|numeric|min:1'
+            'cliente_name' => 'required|string|max:255',
+            'cliente_email' => 'required|email|max:255',
+            'cliente_phone' => 'required|numeric',
+            'cliente_city' => 'required|string|max:255',
+            'cliente_building' => 'required|string|max:255',
+            'total_real' => 'required|numeric|min:1',
+            'adults' => 'required|numeric',
+            'boys' => 'nullable|numeric',
+            'date' => 'required|date',
+            'adult_tarifa' => 'nullable|numeric',
+            'payment_method' => 'required|in:1,2,3',
         ];
     }
 }

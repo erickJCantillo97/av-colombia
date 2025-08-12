@@ -20,7 +20,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::get('getAllServices', [ServiceController::class , 'getServiceByUser'])->name('api.get.all.services');
-Route::post('reservar', [BookingServiceController::class, 'reservarByApi']);
+Route::post('reservar/{userId}', [BookingServiceController::class, 'reservarByApi']);
 Route::get('getBookingServices/{bookingService}', [BookingServiceController::class, 'show'])->name('bookingServices.show');
 Route::get('getService/{slug}/{userId}', [ServiceController::class, 'apiShow'])->name('api.get.service');
 Route::get('obtenerHorariosByServiceBetweeDays/{serviceId}/{startDate}', [ServiceController::class, 'obtenerHorariosByServiceBetweeDays'])->name('api.get.horarios');

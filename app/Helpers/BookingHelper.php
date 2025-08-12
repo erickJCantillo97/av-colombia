@@ -50,9 +50,9 @@ function addBookingServiceExtras(BookingService $bookingService, $extras)
     }
 }
 
-function addChanges($user_id, BookingService $bookingService, $data)
+function addChanges(BookingService $bookingService, $data, $user_id = null)
 {
-    if($user_id === null) {
+    if ($user_id === null) {
         $user_id = Auth::id();
     }
     $data['user_id'] = $user_id;

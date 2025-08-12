@@ -71,7 +71,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         });
     }
 
-    public function create(array $data, $status = 'reservado')
+    public function create(array $data)
     {
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
         $service = $this->service->getById($data['service_id']);
@@ -84,19 +84,8 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $data['boys_price'] = $service->boys_price;
         $data['boys_tarifa'] = $service->boy_tarifa;
 
-        $bookingService =  BookingService::create($data);
-        $this->createNote($bookingService, $data);
-        $this->stateRepository->create([
-            'statable_id' => $bookingService->id,
-            'state' => $status,
-        ]);
-        $this->addChange(
-            $bookingService,
-            [
-                'description' => 'Reserva creada',
-            ]
-        );
-        return $bookingService;
+        return $this->store($data);
+        
     }
 
     public function update($id, array $data): bool
@@ -117,7 +106,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $original = $bookingService->getOriginal();
         foreach ($changes as $key => $newValue) {
             $oldValue = $original[$key] ?? null;
-            $this->addChange(
+            addChanges(
                 $bookingService,
                 [
                     'field' => $key,
@@ -131,13 +120,15 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
     }
 
 
-
-    private function createNote(BookingService $booking, array $data): void
-    {
+    public function store(array $data, string $status = 'reservado', $userId = null): BookingService{
+        $userId = $userId ?? Auth::id();
+        $bookingService = $this->model->create($data);
         $this->noteRepository->create([
-            'booking_service_id' => $booking->id,
+            'booking_service_id' => $bookingService->id,
             'note' => $data['observations'] ?? '',
         ]);
+        storeState($bookingService, $status, $userId);
+        return $bookingService;
     }
 
 
@@ -193,11 +184,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         ];
     }
 
-    private function addChange(BookingService $bookingService, $data)
-    {
-        addChanges(Auth::id(), $bookingService, $data);
-    }
-
+    
     public function delete($id)
     {
         $bookingService = $this->getById($id);
