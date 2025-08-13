@@ -37,7 +37,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             default:
                 throw new \InvalidArgumentException('Invalid payment method');
         }
-        return $this->model()::create($data);
+        // return $this->model()::create($data);
     }
 
     private function getTokenToPayment()

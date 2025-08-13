@@ -121,7 +121,6 @@ import "flatpickr/dist/themes/material_blue.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import { Link, useForm } from "@inertiajs/vue3";
 import { Button } from "primevue";
-import { data } from "autoprefixer";
 import Logo from "@/Components/logo.vue";
 
 const props = defineProps(["product", "availabilities"]);

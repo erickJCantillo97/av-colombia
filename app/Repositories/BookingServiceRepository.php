@@ -76,8 +76,8 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
         $service = $this->service->getById($data['service_id']);
         $data['boys'] = $data['boys'] ?? 0;
-        $data['hour'] = explode(',', request('date'))[1];
-        $data['user_id'] = request('user_id') ?? Auth::id();
+        $data['hour'] = explode(',', $data['date'])[1];
+        
         $data['service'] = $service->title;
         $data['adults_price'] = $service->adults_price;
         $data['adult_tarifa'] = $service->adult_tarifa;
@@ -122,6 +122,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
 
     public function store(array $data, string $status = 'reservado', $userId = null): BookingService{
         $userId = $userId ?? Auth::id();
+        $data['user_id'] = $userId;
         $bookingService = $this->model->create($data);
         $this->noteRepository->create([
             'booking_service_id' => $bookingService->id,
