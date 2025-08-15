@@ -281,7 +281,7 @@ class BookingServiceController extends Controller
         $data['cliente_email'] = $email;
         $data['payment_method'] = $method;
         $data['cliente_name'] = $data['cliente_name'] . ' ' . $last_name;
-        $payment = $this->paymentRepository->createPayment($data, $userId);
+        $payment = $this->paymentRepository->createPayment($data, $userId, $booking->id);
         return response()->json([
             'message' => 'Reservación guardada correctamente',
             'bookingService' => $booking,

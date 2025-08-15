@@ -23,11 +23,11 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
         return Payment::class;
     }
 
-    public function createPayment(array $data, $userId)
+    public function createPayment(array $data, $userId, $bookingId)
     {
         switch($data['payment_method']) {
             case 2:
-                return $this->createPaymentOnline($data, $userId);
+                return $this->createPaymentOnline($data, $userId, $bookingId);
             case 1:
                 $data['token'] = $this->getTokenToPayment();
                 break;
@@ -52,14 +52,14 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
         return $auth_token;
     }
 
-    private function createPaymentOnline(array $data, $userId)
+    private function createPaymentOnline(array $data, $userId, $bookingId)
     {
         $token = $this->getTokenToPayment();
         $user = User::find($userId);
         $service = $this->serviceRepository->getById($data['service_id']);
         $link = Http::withHeaders(headers: ['auth-token' => $token, 'content-type' => 'application/json'])->post("https://noccapi-stg.redeban.com/linktopay/init_order/", [
             "user" => [
-                "id" => $user->id,
+                "id" => $user->id, 
                 "email" => $data['cliente_email'],
                 "name" => $data['cliente_name'],
                 "last_name" => $data['last_name']
@@ -75,7 +75,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
                 "partial_payment" => false,
                 "expiration_days" => 1,
                 "allowed_payment_methods" => ["All"],
-                "success_url" => "https://url-to-success.com",
+                "success_url" => "https://vendedores-site.netlify.app/success/{$bookingId}",
                 "failure_url" => "https://url-to-failure.com",
                 "pending_url" => "https://url-to-pending.com",
                 "review_url" => "https://url-to-review.com"
