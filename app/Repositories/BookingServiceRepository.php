@@ -73,11 +73,11 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
 
     public function create(array $data)
     {
+        $data['hour'] = explode(',', $data['date'])[1];
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
         $service = $this->service->getById($data['service_id']);
         $data['boys'] = $data['boys'] ?? 0;
         $data['service'] = $service->title;
-        $data['hour'] = explode(',', $data['date'])[1];
         $data['adults_price'] = $service->adults_price;
         $data['adult_tarifa'] = $service->adult_tarifa;
         $data['boys_price'] = $service->boys_price;
