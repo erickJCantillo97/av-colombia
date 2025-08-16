@@ -14,6 +14,9 @@
                 <div v-if="serviceType == 'EMBARCACION'">
                     <EmbarcacionForm />
                 </div>
+                <div v-if="serviceType == 'TRANSFER'">
+                    <ToursForm :features="features" :included="included" />
+                </div>
             </div>
         </div>
     </AppLayout>
