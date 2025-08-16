@@ -1,10 +1,6 @@
 <template>
-  <Drawer
-    v-model:visible="show"
-    :pt:root:class="`!bg-${statues[service.status]}-200`"
-    header="Detalles de la actividad"
-    position="right"
-  >
+  <Drawer v-model:visible="show" :pt:root:class="`!bg-${statues[service.status]}-200`" header="Detalles de la actividad"
+    position="right">
     <template #header>
       <div class="flex items-center gap-2">
         <span class="font-bold text-lg">{{ service.service }}</span>
@@ -19,10 +15,7 @@
         <strong>Hora del Servicio:</strong>
         <p>{{ service.hour }}</p>
       </div>
-      <div
-        v-if="service.time_service"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-if="service.time_service" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Duración del Servicio:</strong>
         <p>{{ service.time_service }}</p>
       </div>
@@ -40,11 +33,9 @@
       </div>
       <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Telelfono:</strong>
-        <a
-          target="_blank"
-          :href="`https://wa.me/${service.cliente_phone}?text=Hola%20👋,%20mi%20nombre%20es%20*Sandra Gil*,%20Le%20escribo%20desde%20*AV%20COLOMBIA*`"
-          >{{ service.cliente_phone }}</a
-        >
+        <a target="_blank"
+          :href="`https://wa.me/${service.cliente_phone}?text=Hola%20👋,%20mi%20nombre%20es%20*Sandra Gil*,%20Le%20escribo%20desde%20*AV%20COLOMBIA*`">{{
+            service.cliente_phone }}</a>
       </div>
 
       <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
@@ -68,46 +59,28 @@
         <strong>Total Real:</strong>
         <p>{{ COP.format(service.total_real) }}</p>
       </div>
-      <div
-        v-if="service.user"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>{{ service.user.rol == "vendedor" ? "Vendedor" : "Usuario" }}:</strong>
         <p>{{ service.user?.name }}</p>
       </div>
-      <div
-        v-if="service.user"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Fecha de reserva:</strong>
         <p>{{ new Date(service.created_at).toLocaleDateString("es-CO") }}</p>
       </div>
 
-      <div
-        v-if="service.conductor"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-if="service.conductor" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>conductor:</strong>
         <p>{{ service.conductor }}</p>
       </div>
-      <div
-        v-if="service.placa"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-if="service.placa" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>conductor:</strong>
         <p>{{ service.placa }}</p>
       </div>
-      <div
-        v-if="service.total_pago_proveedor"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-if="service.total_pago_proveedor" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Valor del Servicio:</strong>
         <p>{{ COP.format(service.total_pago_proveedor) }}</p>
       </div>
-      <div
-        v-if="service.fecha_cancelacion"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-if="service.fecha_cancelacion" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <strong>Fecha de Cancelación:</strong>
         <p>
           {{
@@ -138,16 +111,11 @@
 
       <div class="text-lg flex w-full justify-between items-center mt-2 ">
         <p class="font-bold">Proveedores</p>
-        <p
-          class="rounded-full bg-green-800 text-white px-1.5 py-0.5 text-xs fles items-center justify-center"
-        >
+        <p class="rounded-full bg-green-800 text-white px-1.5 py-0.5 text-xs fles items-center justify-center">
           {{ service.proveedors.length }}
         </p>
       </div>
-      <div
-        v-for="proveedor in service.proveedors"
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-for="proveedor in service.proveedors" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <p>
           {{ proveedor.proveedor.proveedor.nombre }}
         </p>
@@ -157,18 +125,13 @@
       </div>
       <div class="text-lg flex w-full justify-between items-center mt-2">
         <p class="font-bold">Extras</p>
-        <p
-          class="rounded-full bg-sky-800 text-white px-1.5 py-0.5 text-xs flex items-center justify-center"
-        >
+        <p class="rounded-full bg-sky-800 text-white px-1.5 py-0.5 text-xs flex items-center justify-center">
           {{ service.extras.length }}
         </p>
       </div>
-      <div
-        v-for="extra in service.extras "
-        class="flex justify-between border py-1 bg-white/30 rounded-md px-2"
-      >
+      <div v-for="extra in service.extras" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
         <p>
-         {{ extra.cantidad }} {{ extra.description }}
+          {{ extra.cantidad }} {{ extra.description }}
         </p>
         <p class="font-semibold">
           {{ COP.format(extra.total_price) }}
@@ -179,43 +142,18 @@
     <template #footer>
       <div class="flex flex-col items-center">
         <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
-          <Button
-            @click="setState('reservado', true)"
-            icon="fa-solid fa-circle-check"
-            v-tooltip.top="'Reservada'"
-            severity="info"
-          />
-          <Button
-            @click="showNoShow = true"
-            icon="fa-solid fa-eye-slash"
-            v-tooltip.top="'Servicio No show'"
-            class="!text-white !bg-yellow-600"
-          />
-          <Button
-            @click="dateChange()"
-            icon="fa-solid fa-calendar-week"
-            v-tooltip.top="'Cambio de Fecha'"
-            class="!bg-gray-600 !text-white"
-          />
-          <Button
-            @click="reubicarServicio()"
-            icon="fa-solid fa-people-arrows"
-            v-tooltip.top="'Cambio de proveedor'"
-            severity="warn"
-          />
-          <Button
-            @click="cancelarServicio()"
-            icon="fa-solid fa-xmark-circle"
-            v-tooltip.top="'Cancelar Servicio'"
-            severity="danger"
-          />
-          <Button
-            @click="setState('PROBLEMATICA', false)"
-            icon="fa-solid fa-person-dress-burst"
-            v-tooltip.top="'Servicio Problematico'"
-            class="flex-auto"
-            severity="danger"
-          />
+          <Button @click="setState('reservado', true)" icon="fa-solid fa-circle-check" v-tooltip.top="'Reservada'"
+            severity="info" />
+          <Button @click="showNoShow = true" icon="fa-solid fa-eye-slash" v-tooltip.top="'Servicio No show'"
+            class="!text-white !bg-yellow-600" />
+          <Button @click="dateChange()" icon="fa-solid fa-calendar-week" v-tooltip.top="'Cambio de Fecha'"
+            class="!bg-gray-600 !text-white" />
+          <Button @click="reubicarServicio()" icon="fa-solid fa-people-arrows" v-tooltip.top="'Cambio de proveedor'"
+            severity="warn" />
+          <Button @click="cancelarServicio()" icon="fa-solid fa-xmark-circle" v-tooltip.top="'Cancelar Servicio'"
+            severity="danger" />
+          <Button @click="setState('PROBLEMATICA', false)" icon="fa-solid fa-person-dress-burst"
+            v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
         </div>
       </div>
       <!-- <div v-else class="flex items-center w-full justify-center">
@@ -230,13 +168,8 @@
     <div class="flex flex-col gap-y-2">
       <span class="flex flex-col gap-y-1">
         <label for="" class="font-bold"> Proveedor Actual</label>
-        <Select
-          placeholder="Proveedor Actual"
-          :options="service.proveedors"
-          label="Proveedor Actual"
-          v-model="current_proveedors"
-          option-label="proveedor.name"
-        >
+        <Select placeholder="Proveedor Actual" :options="service.proveedors" label="Proveedor Actual"
+          v-model="current_proveedors" option-label="proveedor.name">
           <template #value="slotProps">
             <div v-if="slotProps.value" class="flex items-center gap-x-2">
               <div>{{ current_proveedors.proveedor.proveedor.nombre }}</div>
@@ -256,38 +189,18 @@
           </template>
         </Select>
       </span>
-      <Input
-        option-label="nombre"
-        type="dropdown"
-        label="Nuevo Proveedor"
-        v-model="formReu.new_id"
-        :options="proveedors"
-      ></Input>
+      <Input option-label="nombre" type="dropdown" label="Nuevo Proveedor" v-model="formReu.new_id"
+        :options="proveedors"></Input>
       <Input label="Valor" v-model="formReu.value" type="number" mode="currency"></Input>
       <Input label="Nota" v-model="formReu.note" type="textarea" mode="currency"></Input>
 
       <div class="flex justify-end gap-2">
-        <Button
-          @click="reubicar = false"
-          label="Cancelar"
-          severity="danger"
-          icon="fa-solid fa-xmark"
-        />
-        <Button
-          @click="sendReubicar()"
-          label="Guardar"
-          severity="success"
-          icon="fa-solid fa-save"
-        />
+        <Button @click="reubicar = false" label="Cancelar" severity="danger" icon="fa-solid fa-xmark" />
+        <Button @click="sendReubicar()" label="Guardar" severity="success" icon="fa-solid fa-save" />
       </div>
     </div>
   </Modal>
-  <ServiceCancel
-    v-model="showCancel"
-    v-model:view="show"
-    :service="service"
-    v-if="showCancel"
-  />
+  <ServiceCancel v-model="showCancel" v-model:view="show" :service="service" v-if="showCancel" />
   <ServiceNoShow v-model="showNoShow" :service="service" v-if="showNoShow" />
 </template>
 
@@ -371,18 +284,23 @@ const setState = (state, terminated) => {
 const dateChange = () => {
   Swal.fire({
     title: "Cambio de Fecha",
-    input: "date",
-    inputLabel: "Nueva Fecha",
+    html: `<input type="date" id="swal-date" class="w-full rounded-md text-center">`,
     showCancelButton: true,
     confirmButtonText: "Cambiar Fecha",
     showLoaderOnConfirm: true,
-    preConfirm: async (date) => {
+    preConfirm: async () => {
+      const date = document.getElementById('swal-date').value;
+      if (!date) {
+        Swal.showValidationMessage('Debes seleccionar una fecha');
+        return false;
+      }
       await router.post(route("set.states.booking"), {
         service: props.service.id,
         state: "CAMBIO DE FECHA",
         date: date,
         terminated: false,
       });
+      return date;
     },
     allowOutsideClick: () => !Swal.isLoading(),
   }).then((result) => {
@@ -438,7 +356,7 @@ const proveedors = ref([]);
 const getProveedorsByService = async () => {
 
   proveedors.value = await serviceModel.getProveedorsByService(props.service.service_id);
-  
+
 };
 
 

@@ -1,1 +1,0 @@
-import{S as t}from"./sweetalert2.all-Dh6EPSCn.js";const s=t.mixin({toast:!0,position:"top-end",iconColor:"white",customClass:{popup:"colored-toast"},showConfirmButton:!1,timer:5e3,timerProgressBar:!0}),r=o=>{s.fire({icon:"error",title:o})},i=o=>{s.fire({icon:"success",title:o})};export{r as a,i as g};
