@@ -18,7 +18,7 @@ const props = defineProps({
     },
     closeOnEscape: {
         type: Boolean,
-        default: false
+        default: true
     },
     icon: {
         type: String,

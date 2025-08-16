@@ -85,6 +85,12 @@ const serviciosItems = [
     href: route('services.index', { type: 'EMBARCACION' }),
     icon: "fa-solid fa-ship",
     permission: "ver servicios"
+  },
+  {
+    label: "Transportes",
+    href: route('services.index', { type: 'TRANSFER' }),
+    icon: "fa-solid fa-bus",
+    permission: "ver servicios"
   }
 ];
 
@@ -98,12 +104,7 @@ const reservasItems = [
 ];
 
 const contabilidadItems = [
-  {
-    label: "Informe",
-    href: route('contabilidad'),
-    icon: "fa-solid fa-gauge",
-    permission: "ver pagos"
-  },
+  
   {
     label: "Pagos",
     href: route('pagos'),
@@ -111,10 +112,22 @@ const contabilidadItems = [
     permission: "ver pagos"
   },
   {
-    label: "Entradas",
-    href: route('BookingServices.index'),
-    icon: "fa-solid fa-person-hiking",
-    permission: "ver entradas"
-  }
+    label: 'Pagos de Entradas',
+    href: route('pagoEntradas.index'),
+    icon: "fa-solid fa-calendar-check",
+    permission: "ver pagos"
+  },
+  // {
+  //   label: "Entradas",
+  //   href: route('BookingServices.index'),
+  //   icon: "fa-solid fa-person-hiking",
+  //   permission: "ver entradas"
+  // },
+  {
+    label: "Informe",
+    href: route('contabilidad'),
+    icon: "fa-solid fa-gauge",
+    permission: "ver pagos"
+  },
 ];
 </script>

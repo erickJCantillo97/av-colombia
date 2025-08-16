@@ -5,6 +5,7 @@ use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\PagoEntradaController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentProveedorController;
@@ -37,8 +38,6 @@ Route::middleware([
         return Inertia::render('Dashboard/Dashboard');
     })->name('dashboard');
 
-    // Routes for services
-  
     // Routes for bookings services
 
     Route::resource('users', UserController::class)->except(['update']);
@@ -92,7 +91,8 @@ Route::middleware([
     Route::get('qrGenerator', function () {
         return Inertia::render('QrGenerator/Index');
     })->name('qr.generator');
-    
+
+    Route::resource('pagoEntradas', PagoEntradaController::class);
 });
 
 Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('get.all.services');
