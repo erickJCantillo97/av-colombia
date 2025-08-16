@@ -105,8 +105,8 @@ class ContabilidadController extends Controller
     public function pagos()
     {
 
-        $payments = PaymentProveedor::with('user', 'proveedor')->get();
-        
+        $payments = PaymentProveedor::with('user', 'proveedor')->orderBy('created_at', 'desc')->get();
+
         return Inertia::render('Payments/Index', [
             'payments' => $payments
         ]);
