@@ -59,7 +59,7 @@ class UserController extends Controller
             'rol' => $request['rol'],
             'password' => Hash::make($request['password']),
             'phone' => $request['phone'],
-            'camara_comercio' => $request['camara_comercio'],
+            // 'camara_comercio' => $request['camara_comercio'],
             'rut' => $request['rut'],
             'cuenta' => $request['cuenta'],
         ]);

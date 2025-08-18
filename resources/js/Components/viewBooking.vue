@@ -32,10 +32,9 @@
         <p>{{ service.cliente_city }}</p>
       </div>
       <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Telelfono:</strong>
-        <a target="_blank"
-          :href="`https://wa.me/${service.cliente_phone}?text=Hola%20👋,%20mi%20nombre%20es%20*Sandra Gil*,%20Le%20escribo%20desde%20*AV%20COLOMBIA*`">{{
-            service.cliente_phone }}</a>
+        <strong>Telefono:</strong>
+        <a target="_blank" :href="`https://wa.me/${service.cliente_phone}?text=Hola  mucho gusto yo soy Sandra la coordinadora de su actividad 
+Hello, nice to talk to you  I'm Sandra the coordinator for  your activity`">{{ service.cliente_phone }}</a>
       </div>
 
       <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
@@ -140,7 +139,7 @@
     </div>
 
     <template #footer>
-      <div class="flex flex-col items-center">
+      <div class="flex flex-col items-center" v-if="hasRole(['admin', 'superadmin'])">
         <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
           <Button @click="setState('reservado', true)" icon="fa-solid fa-circle-check" v-tooltip.top="'Reservada'"
             severity="info" />
@@ -214,7 +213,9 @@ import Input from "./Customs/Input.vue";
 import ServiceCancel from "./ServiceCancel.vue";
 import ServiceNoShow from "./ServiceNoShow.vue";
 import Service from "@/Models/Services/Service";
+import { usePermissions } from '@/composable/Auth.js';
 
+const { hasRole } = usePermissions();
 const serviceModel = new Service();
 const { toast } = alerts();
 const props = defineProps({
@@ -222,7 +223,6 @@ const props = defineProps({
 });
 
 const current_proveedors = ref(null);
-
 const show = defineModel();
 const showCancel = ref(false);
 const showNoShow = ref(false);

@@ -3,9 +3,10 @@
         <div class="mx-4 mt-4 flex justify-between">
             <div class="w-full flex gap-x-4">
                 <Link :href="route('BookingServices.index')" class="btn btn-primary">
-                    <i class="fa-solid fa-arrow-left text-xl "></i>
-                    </Link>
-                <h1 class="text-lg font-bold">Editar Reserva {{ bookingService.service }} de {{bookingService.cliente_name}}</h1>
+                <i class="fa-solid fa-arrow-left text-xl "></i>
+                </Link>
+                <h1 class="text-lg font-bold">Editar Reserva {{ bookingService.service }} de
+                    {{ bookingService.cliente_name }}</h1>
             </div>
 
             <div
@@ -15,19 +16,24 @@
         </div>
         <div class="border bg-gray-100 rounded-md mt-2">
             <div class=" rounded-md w-auto flex">
-                <div @click="value = op.value" v-for="op in options"
-                    class="w-auto select-none text-center py-2 px-6 text-sm md:text-md cursor-pointer "
-                    :class="value == op.value ? 'border-blue-800 border-2 text-blue-800 font-bold' : 'hover:bg-white/30 shadow-md shadow-blue-400' ">
-                    {{ op.name }} <span v-if="op.label" class="bg-blue-800 py-1 px-2 text-white text-xs ml-2 rounded-full">
+                <div @click="value = op.value" v-for="op in options">
+                    <div 
+                    v-if="op.show"
+                    class="w-auto select-none text-center py-2 px-6 text-sm md:text-md cursor-pointer " :class="
+                        value == op.value ? 'border-blue-800 border-2 text-blue-800 font-bold' : 'hover:bg-white/30 shadow-md shadow-blue-400'
+                    ">
+                    {{ op.name }} <span v-if="op.label"
+                        class="bg-blue-800 py-1 px-2 text-white text-xs ml-2 rounded-full">
                         {{ op.label }}
                     </span>
                 </div>
+                </div>
+                
             </div>
-
             <div v-if="value == 1" class="p-4">
                 <Form class="mx-4" :bookingService></Form>
             </div>
-            <div v-if="value == 2" class="p-4">
+            <div v-if="value == 2 && hasRole(['admin', 'superadmin'])" class="p-4">
                 <Index class="mx-4" :bookingService></Index>
             </div>
             <div v-if="value == 3" class="p-4">
@@ -51,6 +57,9 @@ import { Link } from '@inertiajs/vue3';
 import Index from './Components/Proveedor/Index.vue';
 import IndexExtra from './Components/Extra/Index.vue';
 import Changes from './Components/Changes/Changes.vue';
+import { usePermissions } from '@/composable/Auth.js';
+
+const { hasRole } = usePermissions();
 
 const value = ref(1);
 
@@ -61,9 +70,9 @@ const props = defineProps({
 const bookingServices = new BookingServices(props.bookingService);
 
 const options = [
-    { name: "Datos de la Reserva", value: 1 },
-    { name: "Proveedores", value: 2, label: props.bookingService.proveedors.length },
-    { name: "Extras", value: 3, label: props.bookingService.extras.length  },
-    { name: "Historial de Cambios", value: 4, label: props.bookingService.changes.length   },
+    { name: "Datos de la Reserva", value: 1, show:true },
+    { name: "Proveedores", value: 2, label: props.bookingService.proveedors.length, show: hasRole(['admin', 'superadmin']) },
+    { name: "Extras", value: 3, label: props.bookingService.extras.length, show: !hasRole('Vendedor') },
+    { name: "Historial de Cambios", value: 4, label: props.bookingService.changes.length, show: hasRole(['admin', 'superadmin'])  },
 ];
 </script>

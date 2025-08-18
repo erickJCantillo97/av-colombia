@@ -82,9 +82,9 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $data['adult_tarifa'] = $service->adult_tarifa;
         $data['boys_price'] = $service->boys_price;
         $data['boys_tarifa'] = $service->boy_tarifa;
+        $status = Auth::user()->rol == 'vendedor' ? 'SIN CONFIRMAR' : 'reservado';
+        return $this->store($data, $status);
 
-        return $this->store($data);
-        
     }
 
     public function update($id, array $data): bool

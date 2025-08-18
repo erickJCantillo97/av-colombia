@@ -3,6 +3,11 @@ import Input from '@/Components/Customs/Input.vue';
 import BookingServices from '@/Models/BookingServices/BookingServices'
 import { onMounted, ref } from 'vue';
 import Service from '@/Models/Services/Service';
+import { usePermissions } from '@/composable/Auth.js';
+
+const { hasRole } = usePermissions();
+
+
 const services = ref([]);
 const channels = ref([]);
 const methods = ref([]);
@@ -18,6 +23,7 @@ onMounted(async () => {
     services.value = await service.getServices();
     channels.value = await bookingServices.getChannels();
     methods.value = await bookingServices.getMethods();
+    console.log(channels.value);
 })
 
 </script>
@@ -47,14 +53,14 @@ onMounted(async () => {
             <Input label="Ciudad de donde Proviene" class="w-full"  v-model="form.cliente_city"/>
             <Input label="Edificio u Hotel" class="w-full" v-model="form.cliente_building"/>
 
-            <Input class="w-full" type="dropdown" option-label="name" option-value="id" :options="methods" v-model="form.method_id"
+            <Input class="w-full" v-if="!hasRole('vendedor')" type="dropdown" option-label="name" option-value="id" :options="methods" v-model="form.method_id"
                 label="Medio de Pago"  />
-            <Input class="w-full" type="dropdown" option-label="name" option-value="id" :options="channels" v-model="form.channel_id"
+            <Input class="w-full" type="dropdown" v-if="!hasRole('vendedor')" option-label="name" option-value="id" :options="channels" v-model="form.channel_id"
                 label="Canal de Venta"  />
-            <Input class="w-full" label="Saldo"type="number" mode="currency" v-model="form.saldo" />
+            <Input class="w-full" label="Saldo a pagar en Sitio"type="number" mode="currency" v-model="form.saldo" :step="1000" :min="0" :max="form.total"/>
             <Input class="w-full col-span-1 md:col-span-2" :rows-textarea="2" label="Observaciones" v-model="form.observations" type="textarea" />
-            <div class="flex justify-between w-full gap-x-4 col-span-2">
-                <div class="p-2 border rounded-md shadow-md w-full text-center">
+            <div class="flex justify-between w-full gap-x-4 col-span-2" v-if="!hasRole('vendedor')">
+                <div class="p-2 border rounded-md shadow-md w-full text-center" >
                     <p class="text-md font-extralight">Valor Pasajero</p>
                     <h1 class="text-xl font-bold">{{ bookingServices.valuePasajeros }}</h1>
                 </div>

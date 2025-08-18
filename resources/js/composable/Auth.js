@@ -1,4 +1,5 @@
 import { usePage } from '@inertiajs/vue3';
+import { use } from 'marked';
 
 const permissions = () => {
     try {
@@ -8,6 +9,15 @@ const permissions = () => {
         return []; // Devolver un array vacío en caso de error
     }
 };
+
+const rol = () => {
+    try {
+        return usePage().props.auth.user.rol || '';
+    } catch (error) {
+        console.error("Error obteniendo roles:", error);
+        return '';
+    }
+}
 
 export function usePermissions() {
 
@@ -21,5 +31,14 @@ export function usePermissions() {
         return userPermissions.includes(name);
     };
 
-    return { hasPermissionTo };
+    const hasRole = (name) => {
+        const userRol = rol();
+
+        if (Array.isArray(name)) {
+            return name.includes(userRol);
+        }
+        return userRol == name;
+    }
+
+    return { hasPermissionTo, hasRole };
 }

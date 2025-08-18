@@ -136,7 +136,8 @@ const columns = [
     sortable: true,
     type: "html-custom",
     renderer: (rowData) => {
-      return `<a target="_blank" href="https://wa.me/${rowData.cliente_phone}?text=Hola%20👋,%20mi%20nombre%20es%20*Sandra%20%Gil*,%20Le%20escribo%20desde%20*AV%20COLOMBIA*">${rowData.cliente_phone}</a>`;
+      return `<a target="_blank" href="https://wa.me/${rowData.cliente_phone}?text=Hola  mucho gusto yo soy Sandra la coordinadora de su actividad 
+              Hello, nice to talk to you  I'm Sandra the coordinator for  your activity">${rowData.cliente_phone}</a>`;
     },
   },
   {

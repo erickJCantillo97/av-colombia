@@ -3,10 +3,13 @@ import { useForm } from "@inertiajs/vue3";
 import axios from "axios";
 import { computed, ref } from "vue";
 import { useCommonUtilities } from "@/composable/useCommonUtilities";
+import { usePermissions } from '@/composable/Auth.js';
 
-const { currencyFormat} = useCommonUtilities();
+const { hasRole } = usePermissions();
 
-export default class BookingServices  {
+const { currencyFormat } = useCommonUtilities();
+
+export default class BookingServices {
 
     loading = ref(false);
     statuesOptions = [
@@ -17,8 +20,8 @@ export default class BookingServices  {
         { text: "REUBICADO", color: "orange" },
         { text: "CANCELADA", color: "green" },
         { text: "SIN CONFIRMAR", color: "purple" },
-        { text: "PROBLEMATICA", color: "red"}
-      ];
+        { text: "PROBLEMATICA", color: "red" }
+    ];
 
     channels = ref([]);
     bookingService = ref();
@@ -35,7 +38,7 @@ export default class BookingServices  {
         cliente_building: "",
         reserva: 0,
         method_id: "",
-        channel_id: "9d99a95f-6c3d-48fd-aa7d-6ef4e6860123",
+        channel_id: hasRole('vendedor') ? "9d75e9d5-6e8f-48c1-9f56-276fd185297e" : "9d99a95f-6c3d-48fd-aa7d-6ef4e6860123",
         saldo: 0,
         total: 0,
         total_real: 0,
@@ -44,11 +47,11 @@ export default class BookingServices  {
         code_booking: "",
     });
 
-    formatDateTime  (date, time)  {
+    formatDateTime(date, time) {
         const [year, month, day] = date.split("-");
         const [hour, minute] = time.split(":");
         return `${year}-${month}-${day},${hour}:${minute}`;
-      };
+    };
 
     constructor(bookingServices) {
         this.bookingService = bookingServices;
@@ -67,8 +70,6 @@ export default class BookingServices  {
     async create() {
         if (!this.form.service_id) return getErrorMessage("Selecciona un Servicio");
         if (!this.form.date) return getErrorMessage("Selecciona una fecha");
-        if (!this.form.method_id)
-            return getErrorMessage("Selecciona un metodo de pago");
         if (!this.form.channel_id) return getErrorMessage("Selecciona un canal");
         if (!this.form.cliente_name)
             return getErrorMessage("Ingresa el nombre del cliente");
@@ -80,7 +81,7 @@ export default class BookingServices  {
             return getErrorMessage("Ingresa el edificio del cliente");
         this.form.total_real = this.valorReal.value;
         this.form.percent_channel = this.channels.value.find(
-          (channel) => channel.id == this.form.channel_id
+            (channel) => channel.id == this.form.channel_id
         ).percent;
         this.loading.value = true;
         this.form.post(route("BookingServices.store"));
@@ -90,7 +91,7 @@ export default class BookingServices  {
     async update() {
         this.form.total_real = this.valorReal.value;
         this.form.percent_channel = this.channels.value.find(
-          (channel) => channel.id == this.form.channel_id
+            (channel) => channel.id == this.form.channel_id
         ).percent;
         this.loading.value = true;
         this.form.put(route("BookingServices.update", this.bookingService.id));
@@ -124,17 +125,17 @@ export default class BookingServices  {
     });
 
     valuePasajeros = computed(() => {
-        return currencyFormat(this.form.total/this.form.adults);
+        return currencyFormat(this.form.total / this.form.adults);
     });
 
     valueCanalVenta = computed(() => {
         let chanel = this.channels.value.find((channel) => channel.id == this.form.channel_id);
-        let chanelValue = chanel? chanel.percent / 100 : 0;
+        let chanelValue = chanel ? chanel.percent / 100 : 0;
         return currencyFormat(this.form.total * chanelValue);
     });
 
     submit() {
-        if(this.bookingService) return this.update();
+        if (this.bookingService) return this.update();
         return this.create();
     }
 }
