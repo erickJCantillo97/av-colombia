@@ -9,7 +9,7 @@
                     <h1 class="text-2xl font-bold">Reservas</h1>
                     <Changes />
                 </div>
-                <div class="flex gap-x-2">
+                <!-- <div class="flex gap-x-2">
                     <div class="p-2 bg-black text-white text-center rounded-lg cursor-pointer transition-all duration-300 scale-95 hover:scale-100 border-2"
                         @click="statusFilter = null" v-tooltip.bottom="`${dataFilter.length} Reservas
                         ${ dataFilter.reduce((acc, item) => acc + item.adults, 0)
@@ -29,7 +29,7 @@
                     <p class="text-xs font-bold uppercase">{{ status.text }}</p>
                     </div>
 
-                </div>
+                </div> -->
                 <div>
                     <VueDatePicker
                     hide-offset-dates
