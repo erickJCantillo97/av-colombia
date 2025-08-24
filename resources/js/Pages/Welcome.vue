@@ -8,6 +8,7 @@ import Features from './Welcome/Features.vue';
 import PopularSection from './Welcome/PopularSection.vue';
 import HotelSection from './Welcome/HotelSection.vue';
 import ContactSection from './Welcome/ContactSection.vue';
+import Recommendations from './Welcome/Recommendations.vue';
 
 const toggler = ref(false)
 defineProps({
@@ -35,6 +36,7 @@ const changeMotor = (motor) => {
 <template>
 
     <GuestLayout>
+        <Recommendations/>
         <Features></Features>
         <Banner></Banner>
         <PopularSection></PopularSection>
