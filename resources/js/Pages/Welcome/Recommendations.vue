@@ -6,27 +6,34 @@
                 {{ subTitle }}
             </h2>
         </div>
-        <div class="h-96">
-            <Carousel :key="title" :value="products" :showNavigators="false" :numVisible="5" :numScroll="3"
-                :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
+            <Carousel :key="title" :value="products" :showNavigators="true" :numVisible="5" 
+                :responsiveOptions="responsiveOptions" circular>
                 <template #item="{ data } = slotProps">
-                    <div class="view view-third">
-                        <img v-if="data.portada != '/laravel/public/'"
-                            :src="'https://avcolombia.net/' + data.portada" />
-                        <div v-else class="no-photo">
-                            <Logo></Logo>
-                        </div>
-                        <div class="mask">
-                            <h2>{{ data.title }}</h2>
-                            <p></p>
-                            <!-- <p>{{ data.description?.substring(0, 150) }}...</p> -->
-                            <a :href="route('show.services', data.slug)" class="info">Mas información</a>
+                    <div class="w-full flex justify-center">
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden w-64 border border-gray-200 flex flex-col">
+                            <div class="h-40 bg-gray-100 overflow-hidden">
+                                <img v-if="data.portada != '/laravel/public/'"
+                                    :src="'https://avcolombia.net/' + data.portada"
+                                    class="w-full h-40 object-cover" />
+                                <div v-else class="h-40 w-full flex items-center justify-center">
+                                    <Logo class="w-16 h-16" />
+                                </div>
+                            </div>
+                            <div class="p-4 flex flex-col gap-2">
+                                <div class="flex items-start justify-between gap-2">
+                                    <h3 class="text-md font-semibold text-gray-800 truncate">{{ data.title }}</h3>
+                                    <span v-if="data.precio || data.price || data.total" class="text-sm font-bold text-orange-600 whitespace-nowrap">
+                                        {{ data.precio || data.price || data.total }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-500 truncate">{{ data.ubicacion || data.location || '' }}</p>
+                                    <a :href="route('show.services', data.slug)" class="px-3 py-1 bg-gray-800 hover:bg-gray-900 w-full text-center text-white rounded-md text-md">Ver Tour</a>
+                            </div>
                         </div>
                     </div>
                 </template>
             </Carousel>
         </div>
-    </div>
 </template>
 
 <script setup>
