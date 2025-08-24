@@ -70,27 +70,7 @@
         <GuestSelector :guests="guests" @increment="$emit('incrementGuests', $event)" @decrement="$emit('decrementGuests', $event)" />
       </div>
       <!-- Panel IA -->
-      <div v-if="hasSearchCriteria" class="border-t border-gray-200 p-4 sm:p-6 bg-gradient-to-r from-purple-50 to-pink-50">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-              </svg>
-            </div>
-            <div class="min-w-0 flex-1">
-              <h4 class="font-medium text-gray-900 gradient-text">✨ Búsqueda Inteligente</h4>
-              <p class="text-sm text-gray-600">Encuentra el servicio perfecto con IA</p>
-            </div>
-          </div>
-          <button 
-            @click="$emit('generateWithAi')"
-            class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 btn-ripple scale-hover w-full sm:w-auto"
-          >
-            Buscar con IA
-          </button>
-        </div>
-      </div>
+      
     </div>
   </Transition>
 </template>

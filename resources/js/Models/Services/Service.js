@@ -26,7 +26,11 @@ export default class Service extends GeneralService {
         recogidas: [],
         puntos: [],
         capacidad_min: 1,
+        is_round_trip: true,
         capacidad_max: 1,
+        origen: '',
+        destino: '',
+        tarifa_vehiculo: ''
     });
 
     constructor(service) {

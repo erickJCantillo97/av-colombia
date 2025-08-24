@@ -47,6 +47,10 @@ class UpdateServiceRequest extends FormRequest
             'images' => 'nullable|array',
             'availability_type' => 'nullable|string',
             'price_type' => 'nullable|string',
+            'origen' => 'nullable|string',
+            'destino' => 'nullable|string',
+            'is_round_trip' => 'nullable|boolean',
+            'tarifa_vehiculo' => 'nullable|numeric'
         ];
     }
 }

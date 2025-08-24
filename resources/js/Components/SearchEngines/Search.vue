@@ -43,13 +43,7 @@
         @searchLocations="searchLocations"
         @generateWithAi="generateWithAi"
       />
-      <!-- Modal IA -->
-      <AiModal
-        :isModalVisible="isModalVisible"
-        :isLoading="isLoading"
-        :formattedContent="formattedContent"
-        @close="closeModal"
-      />
+      
     </div>
   </div>
 </template>

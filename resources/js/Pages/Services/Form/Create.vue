@@ -15,7 +15,7 @@
                     <EmbarcacionForm />
                 </div>
                 <div v-if="serviceType == 'TRANSFER'">
-                    <ToursForm :features="features" :included="included" />
+                    <TransferFrom :features="features" :included="included" />
                 </div>
             </div>
         </div>
@@ -26,6 +26,7 @@ import ToursForm from './ToursForm.vue';
 import EmbarcacionForm from './EmbarcacionForm.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
+import TransferFrom from './TransferFrom.vue';
 
 const props = defineProps({
     serviceType: String,

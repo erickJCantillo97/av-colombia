@@ -17,34 +17,7 @@ class Service extends Model
     use HasFactory;
     use HasUuids;
 
-    protected $fillable = [
-        'title',
-        'title_en',
-        'slug',
-        'days',
-        'adults_price',
-        'boys_price',
-        'description',
-        'description_en',
-        'custom_price',
-        'includes',
-        'notIncludes',
-        'type',
-        'city',
-        'portada',
-        'code',
-        'destinations',
-        'duration_type',
-        'duration',
-        'duration_unit',
-        'capacidad_min',
-        'capacidad_max',
-        'availability_type',
-        'price_type',
-        'recogidas',
-        'puntos'
-    ];
-
+    protected $guarded = [];
     protected $appends = ['adult_tarifa', 'boy_tarifa', 'is_locked'];
 
     public function getRouteKeyName(): string

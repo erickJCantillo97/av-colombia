@@ -24,6 +24,7 @@
                 <div v-if="value == 1" class="p-4">
                     <ToursForm :service :included v-if="service.type == 'TOUR'" />
                     <EmbarcacionForm  :service  v-else-if="service.type == 'EMBARCACION'" />
+                    <TransferFrom :service="service" v-else-if="service.type == 'TRANSFER'" />
                 </div>
                 <div v-if="value == 2" class="p-4">
                     <SelectImages :service="service" />
@@ -47,6 +48,7 @@ import { ref } from 'vue';
 import SelectImages from './SelectImages.vue';
 import Recogidas from './Recogidas.vue';
 import Horarios from '../Horarios.vue';
+import TransferFrom from './TransferFrom.vue';
 
 const props = defineProps({
     serviceType: String,
