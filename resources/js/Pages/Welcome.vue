@@ -39,7 +39,7 @@ const changeMotor = (motor) => {
         <Recommendations/>
         <Features></Features>
         <Banner></Banner>
-        <PopularSection></PopularSection>
+        <!-- <PopularSection></PopularSection> -->
         <HotelSection></HotelSection>
         <ContactSection></ContactSection>
     </GuestLayout>

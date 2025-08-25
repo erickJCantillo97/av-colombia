@@ -1,5 +1,5 @@
 <template>
-    <div class="p-8" v-if="products.length > 0">
+    <div class="p-4" v-if="products.length > 0">
         <div class="mb-2 flex justify-between items-center">
             <h1 class="font-bold text-xl">{{ title }}</h1>
             <div class="flex items-center gap-2">
@@ -17,13 +17,13 @@
                 </button>
             </div>
         </div>
-    <div ref="scroller" class="flex gap-x-2 overflow-x-hidden py-2 snap-x snap-mandatory" tabindex="0">
-            <a :href="route('show.services', data.slug)" class="flex-shrink-0 px-1 snap-start w-1/6" v-for="data in products" :key="data.id || data.slug">
+    <div ref="scroller" class="flex gap-x-2 overflow-x-auto hide-scrollbar touch-scroll py-2 snap-x snap-mandatory" tabindex="0">
+            <a :href="route('show.services', data.slug)" class="flex-shrink-0 px-1 snap-start w-1/2 md:w-1/6" v-for="data in products" :key="data.id || data.slug">
                 <div class="bg-white  overflow-hidden w-full flex flex-col">
-                    <div class=" bg-gray-100 overflow-hidden">
+                    <div class=" overflow-hidden rounded-xl bg-gray-200">
                         <img v-if="data.portada != '/laravel/public/'" :src="'https://avcolombia.net/' + data.portada"
                             class="w-full h-60 object-cover rounded-xl" />
-                        <div v-else class="h-60 w-full flex items-center justify-center rounded-xl">
+                        <div v-else class="h-60 w-full flex items-center  justify-center rounded-xl">
                             <Logo class="w-16 h-16" />
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                         <div class="flex items-start justify-between gap-2">
                             <h3 class="text-md font-semibold text-gray-800 truncate">{{ data.title }}</h3>
                         </div>
-                         <span v-if="data.adults_price || data.price || data.total"
+                        <span v-if="data.adults_price || data.price || data.total"
                                 class="text-sm font-bold text-gray-600 whitespace-nowrap">
                                 Desde {{ currencyFormat(data.adults_price || data.price || data.total) }}
                             </span>
@@ -56,28 +56,7 @@ import { currencyFormat } from '@/composable/useCommonUtilities';
 const products = ref([]);
 const scroller = ref(null);
 
-const responsiveOptions = ref([
-    {
-        breakpoint: '1400px',
-        numVisible: 2,
-        numScroll: 1
-    },
-    {
-        breakpoint: '1199px',
-        numVisible: 3,
-        numScroll: 1
-    },
-    {
-        breakpoint: '767px',
-        numVisible: 2,
-        numScroll: 1
-    },
-    {
-        breakpoint: '575px',
-        numVisible: 1,
-        numScroll: 1
-    }
-]);
+
 
 
 const serviceModel = new Service();
@@ -141,6 +120,17 @@ watch([
 </script>
 
 <style scoped>
+.hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+.touch-scroll {
+    -webkit-overflow-scrolling: touch; /* momentum scrolling on iOS */
+    touch-action: pan-x; /* allow horizontal panning */
+}
 .view {
     width: 300px;
     height: 300px;

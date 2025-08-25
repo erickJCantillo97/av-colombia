@@ -1,18 +1,22 @@
 <template>
   <GuestLayout>
-    <div class="sticky top-16 z-20 bg-white shadow-md py-2 px-4">
-      <input
+    <div class="sticky top-16 z-20 bg-white  py-2 px-4">
+      <div class="w-full flex justify-between items-center">
+        <span class="font-bold text-lg">
+          {{ servicesFilter.length }} servicios encontrados
+        </span>
+        <input
         v-model="search"
         type="text"
         placeholder="Buscar servicios..."
         class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
+      </div>
+      
     </div>
-    <div class="w-full flex flex-col items-center justify-center gap-y-4">
-      <ul class="w-full gap-2 md:gap-4 py-10 bg-gray-100 grid grid-cols-1 md:grid-cols-4 md:px-10 px-5">
-        <Product :service v-for="service in services.filter(s => s.title.toLowerCase().includes(search.toLowerCase())
-          || s.description.toLowerCase().includes(search.toLowerCase())
-        )" :key="service.id" />
+    <div class="w-full flex flex-col items-center justify-center gap-y-4 mt-4">
+      <ul class="w-full gap-2 md:gap-4 py-1 grid grid-cols-1 md:grid-cols-6 px-4">
+        <Product :service="service" v-for="service in servicesFilter" :key="service.id" />
       </ul>
       <div class="w-full flex items-center justify-center py-4" v-if="searching">
         <Loading v-if="searching" />
@@ -23,7 +27,7 @@
 
 <script setup>
 import GuestLayout from "@/Layouts/GuestLayout.vue";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import Product from "./Product.vue";
 import Loading from "@/Components/Loading.vue";
 import Service from "@/Models/Services/Service";
@@ -71,6 +75,14 @@ function onScroll() {
     fetchServices();
   }
 }
+
+const servicesFilter = computed(() => {
+  if (!search.value) return services.value;
+  const term = search.value.toLowerCase();
+  return services.value.filter(s => s.title.toLowerCase().includes(term)
+    || s.description.toLowerCase().includes(term)
+  );
+});
 
 onMounted(() => {
   fetchServices(true);

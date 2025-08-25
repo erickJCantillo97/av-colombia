@@ -50,25 +50,25 @@ const servicesType = [
     label: 'Tours',
     value: 'TOUR',
     description: 'Experiencias guiadas',
-    icon: `<img src="assets/svgs/beach.svg" alt="Beach Icon" />`
+    icon: `<img src="/assets/svgs/beach.svg" alt="Beach Icon" />`
   },
   {
     label: 'Embarcaciones',
     value: 'EMBARCACION',
     description: 'Yates y lanchas',
-    icon: `<img src="assets/svgs/motor-boat.svg" alt="Motor Boat Icon" />`
+    icon: `<img src="/assets/svgs/motor-boat.svg" alt="Motor Boat Icon" />`
   },
   {
     label: 'Hospedaje',
     value: 'HOSPEDAJE',
     description: 'Hoteles y cabañas',
-    icon: `<img src="assets/svgs/house.svg" alt="House Icon" />`
+    icon: `<img src="/assets/svgs/house.svg" alt="House Icon" />`
   },
   {
     label: 'Transporte',
     value: 'TRANSPORTE',
     description: 'Traslados y vehículos',
-    icon: `<img src="assets/svgs/automobile.svg" alt="Automobile Icon" />`
+    icon: `<img src="/assets/svgs/automobile.svg" alt="Automobile Icon" />`
   },
 ];
 
