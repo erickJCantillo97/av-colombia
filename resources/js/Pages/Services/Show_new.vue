@@ -12,7 +12,6 @@ import LargeBooking from "./Components/LargeBooking.vue";
 import Equipament from "./Components/Equipament.vue";
 import CollectionPoints from "./Components/CollectionPoints.vue";
 import MiniBooking from "./Components/miniBooking.vue";
-import GuestSelector from "@/Components/SearchEngines/Search/GuestSelector.vue";
 
 const props = defineProps({
   service: Object,
@@ -24,8 +23,6 @@ const showFullDescription = ref(false);
 const dateRange = ref(null); // [startDate, endDate] (Date objects)
 const guests = ref(1);
 const op = ref(null);
-const guestsOp = ref(null);
-const showMobileBooking = ref(false);
 
 // normalize availabilities into a Set of YYYY-MM-DD strings when possible
 const availabilitySet = computed(() => {
@@ -198,36 +195,6 @@ watch(guests, (n) => {
   searchStore.guests.value = { ...current, adults: newAdults };
 });
 
-// Funciones para manejar el incremento/decremento de huéspedes detallado
-function incrementGuests(type) {
-  const current = searchStore.guests.value || { adults: 1, children: 0, infants: 0 };
-  const updated = { ...current };
-  updated[type] = Math.max(0, (updated[type] || 0) + 1);
-  searchStore.guests.value = updated;
-  
-  // Actualizar el total local
-  const total = updated.adults + updated.children + updated.infants;
-  guests.value = total || 1;
-}
-
-function decrementGuests(type) {
-  const current = searchStore.guests.value || { adults: 1, children: 0, infants: 0 };
-  const updated = { ...current };
-  
-  // No permitir que los adultos bajen de 1
-  if (type === 'adults') {
-    updated[type] = Math.max(1, (updated[type] || 1) - 1);
-  } else {
-    updated[type] = Math.max(0, (updated[type] || 0) - 1);
-  }
-  
-  searchStore.guests.value = updated;
-  
-  // Actualizar el total local
-  const total = updated.adults + updated.children + updated.infants;
-  guests.value = total || 1;
-}
-
 const USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -256,9 +223,9 @@ const product = {
 
 <template>
   <Header />
-  <div class="px-4 py-36 md:py-48 md:px-56 max-w-full mx-auto pb-20 lg:pb-8">
+  <div class="px-4 py-8 md:py-16 md:px-16 max-w-7xl mx-auto">
     <!-- Breadcrumb -->
-    <!-- <Breadcrumb :service="service" class="mb-4" /> -->
+    <Breadcrumb :service="service" class="mb-4" />
     
     <!-- Título y rating arriba de las imágenes -->
     <div class="mb-6">
@@ -266,6 +233,12 @@ const product = {
         {{ product.name }}
       </h1>
       <div class="flex flex-wrap items-center gap-4 text-sm">
+        <div class="flex items-center gap-1">
+          <span class="text-yellow-500">⭐</span>
+          <span class="font-medium">{{ product.rating }}</span>
+          <span class="text-gray-500">({{ service.reviews_count || 0 }} reseñas)</span>
+        </div>
+        <span v-if="service.location" class="text-gray-700">{{ service.location }}</span>
         <!-- Botones de compartir y guardar -->
         <div class="flex items-center gap-3 ml-auto">
           <button class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg border">
@@ -292,8 +265,16 @@ const product = {
       <!-- Left: contenido principal (span 2) -->
       <main class="lg:col-span-2 space-y-6">
         <!-- Información del anfitrión -->
-        <div class="border-b pb-1">
-         
+        <div class="border-b pb-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">{{ service.type || 'Experiencia' }} ofrecida por {{ service.host_name || 'Anfitrión' }}</h2>
+              <p class="text-gray-600">{{ guests }} huésped{{ guests > 1 ? 'es' : '' }} · Se traduce automáticamente</p>
+            </div>
+            <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+              <span class="text-gray-600 font-medium">{{ (service.host_name || 'A')[0].toUpperCase() }}</span>
+            </div>
+          </div>
         </div>
 
         <!-- Descripción -->
@@ -334,15 +315,22 @@ const product = {
 
       <!-- Right: tarjeta de reserva sticky -->
       <aside class="lg:col-span-1">
-        <!-- Desktop version - hidden on mobile -->
-        <div class="sticky top-24 hidden lg:block">
+        <div class="sticky top-24">
           <div class="bg-white border rounded-2xl shadow-md p-6">
-              <div class="flex items-baseline justify-start gap-x-2">
-                <div class="text-2xl md:text-3xl font-bold text-gray-900">{{ USDollar.format(props.service.adults_price) }}</div>
-                <div class="text-sm text-gray-600"> {{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}</div>
+              <div class="flex items-baseline justify-between">
+                <div class="text-2xl md:text-3xl font-bold text-gray-900">{{ USDollar.format(props.service.price) }}</div>
+                <div class="text-sm text-gray-600">por persona</div>
               </div>
 
-              
+              <div class="mt-3 flex items-center justify-between text-sm text-gray-600">
+                <div class="flex items-center gap-2">
+                  <span class="text-yellow-500">⭐</span>
+                  <span class="font-medium">{{ product.rating }}</span>
+                  <span class="text-gray-400">·</span>
+                  <span class="text-gray-500">{{ service.reviews_count || '—' }} reviews</span>
+                </div>
+                <div class="text-right text-sm text-gray-500">Disponible · <span class="font-medium text-gray-700">{{ availabilities ? availabilities.length : '—' }}</span></div>
+              </div>
 
             <form class="mt-4 space-y-3">
               <!-- Selector de fechas con formato tipo Airbnb -->
@@ -376,11 +364,10 @@ const product = {
                 </div>
 
                 <OverlayPanel ref="op" appendTo="body" class="!w-auto">
-                  <div class="p-0">
+                  <div class="p-4">
                     <VueDatePicker 
                       v-model="dateRange"
                       range
-                      
                       :min-date="new Date()"
                       inline
                       auto-apply
@@ -397,27 +384,28 @@ const product = {
 
               <!-- Selector de huéspedes -->
               <div>
-                <label class="text-xs font-medium text-gray-700 block mb-1">VIAJEROS</label>
-                <button
-                  type="button"
-                  class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                  @click="guestsOp?.toggle($event)"
-                >
-                  <div class="text-sm text-gray-900 font-medium">
-                    {{ guests }} viajero{{ guests > 1 ? 's' : '' }}
+                <label class="text-xs font-medium text-gray-700 block mb-1">HUÉSPEDES</label>
+                <div class="flex items-center border border-gray-300 rounded-lg">
+                  <button
+                    type="button"
+                    aria-label="Disminuir huéspedes"
+                    class="px-3 py-3 hover:bg-gray-50 rounded-l-lg"
+                    @click="guests = Math.max(1, Number(guests) - 1)"
+                  >
+                    <span class="text-lg font-medium text-gray-600">−</span>
+                  </button>
+                  <div class="flex-1 text-center py-3">
+                    <span class="text-sm font-medium text-gray-900">{{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</span>
                   </div>
-                </button>
-
-                <OverlayPanel ref="guestsOp" appendTo="body" class="!w-auto">
-                  <div class="p-4 min-w-[300px]">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">¿Quién viene?</h3>
-                    <GuestSelector 
-                      :guests="searchStore.guests.value || { adults: 1, children: 0, infants: 0 }" 
-                      @increment="incrementGuests" 
-                      @decrement="decrementGuests" 
-                    />
-                  </div>
-                </OverlayPanel>
+                  <button
+                    type="button"
+                    aria-label="Aumentar huéspedes"
+                    class="px-3 py-3 hover:bg-gray-50 rounded-r-lg"
+                    @click="guests = Number(guests) + 1"
+                  >
+                    <span class="text-lg font-medium text-gray-600">+</span>
+                  </button>
+                </div>
               </div>
 
               <div class="pt-2">
@@ -432,7 +420,8 @@ const product = {
                 <button
                   v-else
                   type="button"
-                  class="w-full bg-black text-white rounded-lg py-3 font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  :disabled="!datesAvailable"
+                  class="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white rounded-lg py-3 font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Reservar
                 </button>
@@ -441,18 +430,33 @@ const product = {
 
             <!-- Mensaje de disponibilidad y totales -->
             <div v-if="checkIn && checkOut" class="mt-4">
+              <div v-if="dateRange && dateRange.length === 2" class="mb-3 text-sm">
+                <span v-if="datesAvailable" class="text-green-600 flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  Fechas disponibles
+                </span>
+                <span v-else class="text-red-600 flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                  Fechas no disponibles
+                </span>
+              </div>
+
               <div class="border-t pt-3">
                 <div class="flex items-center justify-between text-sm text-gray-600">
-                  <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</div>
-                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.adults_price * guests) }}</div>
+                  <div>{{ USDollar.format(props.service.price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</div>
+                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.price * guests) }}</div>
                 </div>
-                <!-- <div class="flex items-center justify-between text-sm text-gray-600 mt-1">
+                <div class="flex items-center justify-between text-sm text-gray-600 mt-1">
                   <div>Tarifa de servicio</div>
-                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.adults_price * guests * 0.1) }}</div>
-                </div> -->
+                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.price * guests * 0.1) }}</div>
+                </div>
                 <div class="flex items-center justify-between text-base font-semibold text-gray-900 mt-3 pt-3 border-t">
                   <div>Total</div>
-                  <div>{{ USDollar.format(props.service.adults_price * guests) }}</div>
+                  <div>{{ USDollar.format(props.service.price * guests * 1.1) }}</div>
                 </div>
               </div>
             </div>
@@ -470,149 +474,6 @@ const product = {
         
       </aside>
     </div>
-
-    <!-- Mobile sticky bottom bar -->
-    <div class="lg:hidden fixed rounded-2xl bottom-2 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 mx-4">
-      <div class="px-4 py-3">
-        <div class="flex items-center justify-between"  @click="showMobileBooking = true">
-          <div class="flex-1">
-            <div class="text-lg font-bold text-gray-900">{{ USDollar.format(props.service.adults_price) }}</div>
-            <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}</div>
-          </div>
-          <button
-           
-            class="bg-[#FF385C] hover:bg-[#E31C5F] text-white px-6 py-3 rounded-lg font-semibold transition duration-200"
-          >
-            Reservar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mobile booking modal -->
-    <Transition name="mobile-modal">
-      <div 
-        v-if="showMobileBooking"
-        class="lg:hidden fixed inset-0 z-50 overflow-hidden"
-        @click="showMobileBooking = false"
-      >
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity"></div>
-        
-        <!-- Modal content -->
-        <div 
-          class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl max-h-[90vh] overflow-y-auto transform transition-transform mobile-booking-content"
-          @click.stop
-        >
-          <!-- Header -->
-          <div class="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between rounded-t-2xl">
-            <h2 class="text-lg font-semibold text-gray-900">Reservar experiencia</h2>
-            <button 
-              @click="showMobileBooking = false"
-              class="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-
-          <!-- Content -->
-          <div class="p-4 pb-20">
-            <div class="mb-6">
-              <div class="flex items-baseline justify-start gap-x-2">
-                <div class="text-2xl font-bold text-gray-900">{{ USDollar.format(props.service.adults_price) }}</div>
-                <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}</div>
-              </div>
-            </div>
-
-            <form class="space-y-4">
-              <!-- Selector de fechas móvil -->
-              <div class="space-y-3">
-                <h3 class="text-base font-medium text-gray-900">Fechas</h3>
-                <div class="grid grid-cols-2 gap-3">
-                  <!-- Check-in móvil -->
-                  <div>
-                    <label class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
-                    <button
-                      type="button"
-                      class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                      @click="op?.toggle($event)"
-                    >
-                      <div class="text-sm text-gray-900 font-medium">
-                        {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Agregar fecha' }}
-                      </div>
-                    </button>
-                  </div>
-                  
-                  <!-- Check-out móvil -->
-                  <div>
-                    <label class="text-xs font-medium text-gray-700 block mb-1">SALIDA</label>
-                    <button
-                      type="button"
-                      class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                      @click="op?.toggle($event)"
-                    >
-                      <div class="text-sm text-gray-900 font-medium">
-                        {{ checkOut ? new Date(checkOut).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Agregar fecha' }}
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Selector de huéspedes móvil -->
-              <div class="space-y-3">
-                <h3 class="text-base font-medium text-gray-900">Viajeros</h3>
-                <button
-                  type="button"
-                  class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                  @click="guestsOp?.toggle($event)"
-                >
-                  <div class="text-sm text-gray-900 font-medium">
-                    {{ guests }} viajero{{ guests > 1 ? 's' : '' }}
-                  </div>
-                </button>
-              </div>
-
-              <!-- Totales móvil -->
-              <div v-if="checkIn && checkOut" class="border-t pt-4 mt-6">
-                <div class="space-y-2">
-                  <div class="flex items-center justify-between text-sm text-gray-600">
-                    <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</div>
-                    <div class="font-medium text-gray-900">{{ USDollar.format(props.service.adults_price * guests) }}</div>
-                  </div>
-                  <div class="flex items-center justify-between text-base font-semibold text-gray-900 pt-2 border-t">
-                    <div>Total</div>
-                    <div>{{ USDollar.format(props.service.adults_price * guests) }}</div>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <!-- Fixed bottom button -->
-          <div class="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-            <button
-              v-if="!checkIn || !checkOut"
-              type="button"
-              class="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white rounded-lg py-3 font-semibold transition duration-200"
-              @click="op?.toggle($event)"
-            >
-              Revisa las fechas
-            </button>
-            <button
-              v-else
-              type="button"
-              class="w-full bg-black text-white rounded-lg py-3 font-semibold transition duration-200"
-              @click="showMobileBooking = false"
-            >
-              Reservar
-            </button>
-          </div>
-        </div>
-      </div>
-    </Transition>
   </div>
 </template>
 <style scoped>
@@ -632,89 +493,5 @@ const product = {
 .expand-leave-from {
   max-height: 1000px;
   opacity: 1;
-}
-
-/* Mobile modal animations */
-.mobile-modal-enter-active {
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.mobile-modal-leave-active {
-  transition: all 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-}
-
-.mobile-modal-enter-from {
-  opacity: 0;
-}
-.mobile-modal-enter-from .mobile-booking-content {
-  transform: translateY(100%);
-}
-
-.mobile-modal-leave-to {
-  opacity: 0;
-}
-.mobile-modal-leave-to .mobile-booking-content {
-  transform: translateY(100%);
-}
-
-.mobile-modal-enter-to,
-.mobile-modal-leave-from {
-  opacity: 1;
-}
-.mobile-modal-enter-to .mobile-booking-content,
-.mobile-modal-leave-from .mobile-booking-content {
-  transform: translateY(0);
-}
-
-/* Smooth backdrop animation */
-.mobile-modal-enter-active .bg-black,
-.mobile-modal-leave-active .bg-black {
-  transition: opacity 0.3s ease-in-out;
-}
-
-.mobile-modal-enter-from .bg-black {
-  opacity: 0;
-}
-
-.mobile-modal-leave-to .bg-black {
-  opacity: 0;
-}
-
-/* Smooth content slide animation */
-.mobile-booking-content {
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
-}
-
-/* Smooth scroll for mobile content */
-@media (max-width: 1023px) {
-  .mobile-booking-content {
-    scroll-behavior: smooth;
-  }
-  
-  /* Add a subtle bounce effect when modal appears */
-  .mobile-modal-enter-active .mobile-booking-content {
-    animation: slideUpBounce 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-}
-
-@keyframes slideUpBounce {
-  0% {
-    transform: translateY(100%);
-  }
-  70% {
-    transform: translateY(-2%);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-/* Enhanced button transitions */
-.mobile-modal button {
-  transition: all 0.2s ease-in-out;
-}
-
-.mobile-modal button:active {
-  transform: scale(0.98);
 }
 </style>

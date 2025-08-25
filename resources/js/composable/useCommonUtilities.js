@@ -46,6 +46,7 @@ export function getTotalCostByReservaAndProveedor(reserva, proveedor) {
     }, 0);
 }
 
+
 /**
  * This function exports common utilities in JavaScript.
  */
