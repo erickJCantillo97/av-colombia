@@ -252,6 +252,15 @@ const product = {
     // More sections...
   ],
 };
+
+const priceService = computed(() => {
+  if(props.service.type === 'TOUR') {
+    return props.service.adults_price * guests.value;
+  } else if(props.service.type === 'EMBARCACION') {
+    return props.service.adults_price;
+  }
+  return product.price * guests.value;
+});
 </script>
 
 <template>
@@ -444,7 +453,7 @@ const product = {
               <div class="border-t pt-3">
                 <div class="flex items-center justify-between text-sm text-gray-600">
                   <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</div>
-                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.adults_price * guests) }}</div>
+                  <div class="font-medium text-gray-900">{{ USDollar.format(priceService) }}</div>
                 </div>
                 <!-- <div class="flex items-center justify-between text-sm text-gray-600 mt-1">
                   <div>Tarifa de servicio</div>
@@ -452,7 +461,7 @@ const product = {
                 </div> -->
                 <div class="flex items-center justify-between text-base font-semibold text-gray-900 mt-3 pt-3 border-t">
                   <div>Total</div>
-                  <div>{{ USDollar.format(props.service.adults_price * guests) }}</div>
+                  <div>{{ USDollar.format(priceService) }}</div>
                 </div>
               </div>
             </div>
