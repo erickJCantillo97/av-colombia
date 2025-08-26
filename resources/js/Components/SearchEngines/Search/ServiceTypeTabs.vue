@@ -50,7 +50,7 @@ const servicesType = [
     label: 'Tours',
     value: 'TOUR',
     description: 'Experiencias guiadas',
-    icon: `<img src="/assets/svgs/beach.svg" alt="Beach Icon" />`
+    icon: `<img src="/images/beach.png" alt="Beach Icon" />`
   },
   {
     label: 'Embarcaciones',
@@ -68,7 +68,7 @@ const servicesType = [
     label: 'Transporte',
     value: 'TRANSPORTE',
     description: 'Traslados y vehículos',
-    icon: `<img src="/assets/svgs/automobile.svg" alt="Automobile Icon" />`
+    icon: `<img src="/images/car.png" alt="Automobile Icon" />`
   },
 ];
 

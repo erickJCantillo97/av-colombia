@@ -13,6 +13,7 @@ import Equipament from "./Components/Equipament.vue";
 import CollectionPoints from "./Components/CollectionPoints.vue";
 import MiniBooking from "./Components/miniBooking.vue";
 import GuestSelector from "@/Components/SearchEngines/Search/GuestSelector.vue";
+import { Head, Link, router } from "@inertiajs/vue3";
 
 const props = defineProps({
   service: Object,
@@ -67,22 +68,22 @@ function handleCalendarChange(val) {
       searchStore.checkout.value = '';
       return;
     }
-    
+
     // VueDatePicker retorna array de Date objects cuando es range
     if (Array.isArray(val)) {
       const [startDate, endDate] = val;
-      
+
       // Actualizar dateRange con los objetos Date
       dateRange.value = val;
-      
+
       // Convertir a strings para el store
       searchStore.checkin.value = startDate ? formatYMD(startDate) : '';
       searchStore.checkout.value = endDate ? formatYMD(endDate) : '';
-      
+
       // Cerrar el overlay después de seleccionar ambas fechas
       if (startDate && endDate) {
         setTimeout(() => {
-          try { op.value?.hide(); } catch (e) {}
+          try { op.value?.hide(); } catch (e) { }
         }, 500);
       }
     }
@@ -165,9 +166,9 @@ watch([() => searchStore.checkin.value, () => searchStore.checkout.value], ([nci
         // Solo actualizar si es diferente para evitar bucles
         const currentStart = dateRange.value?.[0];
         const currentEnd = dateRange.value?.[1];
-        if (!currentStart || !currentEnd || 
-            formatYMD(currentStart) !== nci || 
-            formatYMD(currentEnd) !== nco) {
+        if (!currentStart || !currentEnd ||
+          formatYMD(currentStart) !== nci ||
+          formatYMD(currentEnd) !== nco) {
           dateRange.value = [a, b];
         }
       }
@@ -204,7 +205,7 @@ function incrementGuests(type) {
   const updated = { ...current };
   updated[type] = Math.max(0, (updated[type] || 0) + 1);
   searchStore.guests.value = updated;
-  
+
   // Actualizar el total local
   const total = updated.adults + updated.children + updated.infants;
   guests.value = total || 1;
@@ -213,16 +214,16 @@ function incrementGuests(type) {
 function decrementGuests(type) {
   const current = searchStore.guests.value || { adults: 1, children: 0, infants: 0 };
   const updated = { ...current };
-  
+
   // No permitir que los adultos bajen de 1
   if (type === 'adults') {
     updated[type] = Math.max(1, (updated[type] || 1) - 1);
   } else {
     updated[type] = Math.max(0, (updated[type] || 0) - 1);
   }
-  
+
   searchStore.guests.value = updated;
-  
+
   // Actualizar el total local
   const total = updated.adults + updated.children + updated.infants;
   guests.value = total || 1;
@@ -254,21 +255,28 @@ const product = {
 };
 
 const priceService = computed(() => {
-  if(props.service.type === 'TOUR') {
+  if (props.service.type === 'TOUR') {
     return props.service.adults_price * guests.value;
-  } else if(props.service.type === 'EMBARCACION') {
+  } else if (props.service.type === 'EMBARCACION') {
     return props.service.adults_price;
   }
   return product.price * guests.value;
 });
+
+
+const goToCheckout = () => {
+  router.get(route('check.out'));
+}
 </script>
 
 <template>
+
+  <Head :title="`Av Colombia -  ${product.name}`" />
   <Header />
   <div class="px-4 py-36 md:py-48 md:px-56 max-w-full mx-auto pb-20 lg:pb-8">
     <!-- Breadcrumb -->
     <!-- <Breadcrumb :service="service" class="mb-4" /> -->
-    
+
     <!-- Título y rating arriba de las imágenes -->
     <div class="mb-6">
       <h1 class="text-2xl md:text-3xl font-semibold text-gray-900 capitalize mb-2">
@@ -277,15 +285,21 @@ const priceService = computed(() => {
       <div class="flex flex-wrap items-center gap-4 text-sm">
         <!-- Botones de compartir y guardar -->
         <div class="flex items-center gap-3 ml-auto">
-          <button class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg border">
+          <button
+            class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg border">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z">
+              </path>
             </svg>
             Compartir
           </button>
-          <button class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg border">
+          <button
+            class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg border">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+              </path>
             </svg>
             Guardar
           </button>
@@ -302,7 +316,7 @@ const priceService = computed(() => {
       <main class="lg:col-span-2 space-y-6">
         <!-- Información del anfitrión -->
         <div class="border-b pb-1">
-         
+
         </div>
 
         <!-- Descripción -->
@@ -310,22 +324,12 @@ const priceService = computed(() => {
           <h3 class="text-lg font-semibold text-gray-900 mb-3">Acerca de esta experiencia</h3>
           <div class="prose max-w-none text-gray-700">
             <transition name="expand">
-              <div
-                v-if="showFullDescription || product.description.length <= 500"
-                key="full"
-                v-html="product.description"
-              ></div>
-              <div
-                v-else
-                key="short"
-                v-html="product.description.slice(0, 500) + '...'"
-              ></div>
+              <div v-if="showFullDescription || product.description.length <= 500" key="full"
+                v-html="product.description"></div>
+              <div v-else key="short" v-html="product.description.slice(0, 500) + '...'"></div>
             </transition>
-            <button
-              v-if="product.description.length > 500"
-              @click="showFullDescription = !showFullDescription"
-              class="text-gray-900 hover:underline mt-2 font-medium"
-            >
+            <button v-if="product.description.length > 500" @click="showFullDescription = !showFullDescription"
+              class="text-gray-900 hover:underline mt-2 font-medium">
               {{ showFullDescription ? 'Mostrar menos' : 'Mostrar más' }} ›
             </button>
           </div>
@@ -333,10 +337,10 @@ const priceService = computed(() => {
 
         <!-- Equipamiento (solo para embarcaciones) -->
         <Equipament :service="service" v-if="service.type == 'EMBARCACION'" class="border-b pb-6" />
-        
+
         <!-- Qué incluye -->
         <IncludesView :service="service" v-if="service.includes != '[]'" class="border-b pb-6" />
-        
+
         <!-- Puntos de recogida -->
         <CollectionPoints :service="service" v-if="service.recogidas != '[]'" class="border-b pb-6" />
       </main>
@@ -346,60 +350,46 @@ const priceService = computed(() => {
         <!-- Desktop version - hidden on mobile -->
         <div class="sticky top-24 hidden lg:block">
           <div class="bg-white border rounded-2xl shadow-md p-6">
-              <div class="flex items-baseline justify-start gap-x-2">
-                <div class="text-2xl md:text-3xl font-bold text-gray-900">{{ USDollar.format(props.service.adults_price) }}</div>
-                <div class="text-sm text-gray-600"> {{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}</div>
+            <div class="flex items-baseline justify-start gap-x-2">
+              <div class="text-2xl md:text-3xl font-bold text-gray-900">{{ USDollar.format(props.service.adults_price)
+                }}</div>
+              <div class="text-sm text-gray-600"> {{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}
               </div>
-
-              
-
+            </div>
             <form class="mt-4 space-y-3">
               <!-- Selector de fechas con formato tipo Airbnb -->
               <div class="grid grid-cols-2 gap-2">
                 <!-- Check-in -->
                 <div>
                   <label class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
-                  <button
-                    type="button"
+                  <button type="button"
                     class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    @click="op?.toggle($event)"
-                  >
+                    @click="op?.toggle($event)">
                     <div class="text-sm text-gray-900 font-medium">
-                      {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Agregar fecha' }}
+                      {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) :
+                      'Agregar fecha' }}
                     </div>
                   </button>
                 </div>
-                
+
                 <!-- Check-out -->
                 <div>
                   <label class="text-xs font-medium text-gray-700 block mb-1">SALIDA</label>
-                  <button
-                    type="button"
+                  <button type="button"
                     class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    @click="op?.toggle($event)"
-                  >
+                    @click="op?.toggle($event)">
                     <div class="text-sm text-gray-900 font-medium">
-                      {{ checkOut ? new Date(checkOut).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Agregar fecha' }}
+                      {{ checkOut ? new Date(checkOut).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) :
+                      'Agregar fecha' }}
                     </div>
                   </button>
                 </div>
 
                 <OverlayPanel ref="op" appendTo="body" class="!w-auto">
                   <div class="p-0">
-                    <VueDatePicker 
-                      v-model="dateRange"
-                      range
-                      
-                      :min-date="new Date()"
-                      inline
-                      auto-apply
-                      :teleport="false"
-                      locale="es"
-                      :format="'dd/MM/yyyy'"
-                      :preview-format="'dd/MM/yyyy'"
-                      placeholder="Selecciona fechas"
-                      @update:model-value="handleCalendarChange"
-                    />
+                    <VueDatePicker v-model="dateRange" range :min-date="new Date()" inline auto-apply :teleport="false"
+                      locale="es" :format="'dd/MM/yyyy'" :preview-format="'dd/MM/yyyy'" placeholder="Selecciona fechas"
+                      @update:model-value="handleCalendarChange" />
                   </div>
                 </OverlayPanel>
               </div>
@@ -407,11 +397,9 @@ const priceService = computed(() => {
               <!-- Selector de huéspedes -->
               <div>
                 <label class="text-xs font-medium text-gray-700 block mb-1">VIAJEROS</label>
-                <button
-                  type="button"
+                <button type="button"
                   class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                  @click="guestsOp?.toggle($event)"
-                >
+                  @click="guestsOp?.toggle($event)">
                   <div class="text-sm text-gray-900 font-medium">
                     {{ guests }} viajero{{ guests > 1 ? 's' : '' }}
                   </div>
@@ -420,29 +408,20 @@ const priceService = computed(() => {
                 <OverlayPanel ref="guestsOp" appendTo="body" class="!w-auto">
                   <div class="p-4 min-w-[300px]">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">¿Quién viene?</h3>
-                    <GuestSelector 
-                      :guests="searchStore.guests.value || { adults: 1, children: 0, infants: 0 }" 
-                      @increment="incrementGuests" 
-                      @decrement="decrementGuests" 
-                    />
+                    <GuestSelector :guests="searchStore.guests.value || { adults: 1, children: 0, infants: 0 }"
+                      @increment="incrementGuests" @decrement="decrementGuests" />
                   </div>
                 </OverlayPanel>
               </div>
 
-              <div class="pt-2">
-                <button
-                  v-if="!checkIn || !checkOut"
-                  type="button"
+              <div class="pt-2 w-full">
+                <button v-if="!checkIn || !checkOut" type="button"
                   class="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white rounded-lg py-3 font-semibold transition duration-200"
-                  @click="op?.toggle($event)"
-                >
+                  @click="op?.toggle($event)">
                   Revisa las fechas
                 </button>
-                <button
-                  v-else
-                  type="button"
-                  class="w-full bg-black text-white rounded-lg py-3 font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <button @click="goToCheckout" v-else type="button"
+                  class="w-full bg-black text-white rounded-lg py-3 font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                   Reservar
                 </button>
               </div>
@@ -452,7 +431,8 @@ const priceService = computed(() => {
             <div v-if="checkIn && checkOut" class="mt-4">
               <div class="border-t pt-3">
                 <div class="flex items-center justify-between text-sm text-gray-600">
-                  <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</div>
+                  <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : ''
+                    }}</div>
                   <div class="font-medium text-gray-900">{{ USDollar.format(priceService) }}</div>
                 </div>
                 <!-- <div class="flex items-center justify-between text-sm text-gray-600 mt-1">
@@ -474,24 +454,24 @@ const priceService = computed(() => {
 
             <p class="mt-3 text-xs text-gray-500">Política flexible · Cancelación gratuita hasta 24 horas antes</p>
           </div>
-          
+
         </div>
-        
+
       </aside>
     </div>
 
     <!-- Mobile sticky bottom bar -->
-    <div class="lg:hidden fixed rounded-2xl bottom-2 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 mx-4">
+    <div
+      class="lg:hidden fixed rounded-2xl bottom-2 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 mx-4">
       <div class="px-4 py-3">
-        <div class="flex items-center justify-between"  @click="showMobileBooking = true">
+        <div class="flex items-center justify-between" @click="showMobileBooking = true">
           <div class="flex-1">
             <div class="text-lg font-bold text-gray-900">{{ USDollar.format(props.service.adults_price) }}</div>
-            <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}</div>
+            <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}
+            </div>
           </div>
           <button
-           
-            class="bg-[#FF385C] hover:bg-[#E31C5F] text-white px-6 py-3 rounded-lg font-semibold transition duration-200"
-          >
+            class="bg-[#FF385C] hover:bg-[#E31C5F] text-white px-6 py-3 rounded-lg font-semibold transition duration-200">
             Reservar
           </button>
         </div>
@@ -500,26 +480,20 @@ const priceService = computed(() => {
 
     <!-- Mobile booking modal -->
     <Transition name="mobile-modal">
-      <div 
-        v-if="showMobileBooking"
-        class="lg:hidden fixed inset-0 z-50 overflow-hidden"
-        @click="showMobileBooking = false"
-      >
+      <div v-if="showMobileBooking" class="lg:hidden fixed inset-0 z-50 overflow-hidden"
+        @click="showMobileBooking = false">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity"></div>
-        
+
         <!-- Modal content -->
-        <div 
+        <div
           class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl max-h-[90vh] overflow-y-auto transform transition-transform mobile-booking-content"
-          @click.stop
-        >
+          @click.stop>
           <!-- Header -->
-          <div class="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between rounded-t-2xl">
+          <div
+            class="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between rounded-t-2xl">
             <h2 class="text-lg font-semibold text-gray-900">Reservar experiencia</h2>
-            <button 
-              @click="showMobileBooking = false"
-              class="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
+            <button @click="showMobileBooking = false" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
               <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -531,7 +505,8 @@ const priceService = computed(() => {
             <div class="mb-6">
               <div class="flex items-baseline justify-start gap-x-2">
                 <div class="text-2xl font-bold text-gray-900">{{ USDollar.format(props.service.adults_price) }}</div>
-                <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación' }}</div>
+                <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación'
+                  }}</div>
               </div>
             </div>
 
@@ -543,27 +518,25 @@ const priceService = computed(() => {
                   <!-- Check-in móvil -->
                   <div>
                     <label class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
-                    <button
-                      type="button"
+                    <button type="button"
                       class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                      @click="op?.toggle($event)"
-                    >
+                      @click="op?.toggle($event)">
                       <div class="text-sm text-gray-900 font-medium">
-                        {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Agregar fecha' }}
+                        {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) :
+                        'Agregar fecha' }}
                       </div>
                     </button>
                   </div>
-                  
+
                   <!-- Check-out móvil -->
                   <div>
                     <label class="text-xs font-medium text-gray-700 block mb-1">SALIDA</label>
-                    <button
-                      type="button"
+                    <button type="button"
                       class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                      @click="op?.toggle($event)"
-                    >
+                      @click="op?.toggle($event)">
                       <div class="text-sm text-gray-900 font-medium">
-                        {{ checkOut ? new Date(checkOut).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Agregar fecha' }}
+                        {{ checkOut ? new Date(checkOut).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+                        : 'Agregar fecha' }}
                       </div>
                     </button>
                   </div>
@@ -573,11 +546,9 @@ const priceService = computed(() => {
               <!-- Selector de huéspedes móvil -->
               <div class="space-y-3">
                 <h3 class="text-base font-medium text-gray-900">Viajeros</h3>
-                <button
-                  type="button"
+                <button type="button"
                   class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                  @click="guestsOp?.toggle($event)"
-                >
+                  @click="guestsOp?.toggle($event)">
                   <div class="text-sm text-gray-900 font-medium">
                     {{ guests }} viajero{{ guests > 1 ? 's' : '' }}
                   </div>
@@ -588,8 +559,10 @@ const priceService = computed(() => {
               <div v-if="checkIn && checkOut" class="border-t pt-4 mt-6">
                 <div class="space-y-2">
                   <div class="flex items-center justify-between text-sm text-gray-600">
-                    <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</div>
-                    <div class="font-medium text-gray-900">{{ USDollar.format(props.service.adults_price * guests) }}</div>
+                    <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' :
+                      '' }}</div>
+                    <div class="font-medium text-gray-900">{{ USDollar.format(props.service.adults_price * guests) }}
+                    </div>
                   </div>
                   <div class="flex items-center justify-between text-base font-semibold text-gray-900 pt-2 border-t">
                     <div>Total</div>
@@ -602,22 +575,16 @@ const priceService = computed(() => {
 
           <!-- Fixed bottom button -->
           <div class="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-            <button
-              v-if="!checkIn || !checkOut"
-              type="button"
+            <button v-if="!checkIn || !checkOut" type="button"
               class="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white rounded-lg py-3 font-semibold transition duration-200"
-              @click="op?.toggle($event)"
-            >
+              @click="op?.toggle($event)">
               Revisa las fechas
             </button>
-            <button
-              v-else
-              type="button"
+            <Link v-else type="button"
               class="w-full bg-black text-white rounded-lg py-3 font-semibold transition duration-200"
-              @click="showMobileBooking = false"
-            >
-              Reservar
-            </button>
+              :href="route('check.out')">
+            Reservar
+            </Link>
           </div>
         </div>
       </div>
@@ -632,11 +599,13 @@ const priceService = computed(() => {
   transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
   overflow: hidden;
 }
+
 .expand-enter-from,
 .expand-leave-to {
   max-height: 0;
   opacity: 0;
 }
+
 .expand-enter-to,
 .expand-leave-from {
   max-height: 1000px;
@@ -647,6 +616,7 @@ const priceService = computed(() => {
 .mobile-modal-enter-active {
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
 .mobile-modal-leave-active {
   transition: all 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
 }
@@ -654,6 +624,7 @@ const priceService = computed(() => {
 .mobile-modal-enter-from {
   opacity: 0;
 }
+
 .mobile-modal-enter-from .mobile-booking-content {
   transform: translateY(100%);
 }
@@ -661,6 +632,7 @@ const priceService = computed(() => {
 .mobile-modal-leave-to {
   opacity: 0;
 }
+
 .mobile-modal-leave-to .mobile-booking-content {
   transform: translateY(100%);
 }
@@ -669,6 +641,7 @@ const priceService = computed(() => {
 .mobile-modal-leave-from {
   opacity: 1;
 }
+
 .mobile-modal-enter-to .mobile-booking-content,
 .mobile-modal-leave-from .mobile-booking-content {
   transform: translateY(0);
@@ -699,7 +672,7 @@ const priceService = computed(() => {
   .mobile-booking-content {
     scroll-behavior: smooth;
   }
-  
+
   /* Add a subtle bounce effect when modal appears */
   .mobile-modal-enter-active .mobile-booking-content {
     animation: slideUpBounce 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -710,9 +683,11 @@ const priceService = computed(() => {
   0% {
     transform: translateY(100%);
   }
+
   70% {
     transform: translateY(-2%);
   }
+
   100% {
     transform: translateY(0);
   }

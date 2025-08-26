@@ -8,9 +8,9 @@
       <form class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
         <div>
           <div class="flex items-center justify-start gap-x-2">
-            <Link :href="route('/')">
+            <!-- <Link :href="route('/')">
             Volver
-            </Link>
+            </Link> -->
             <h2 class="text-lg font-medium text-gray-900">Información del pasajero principal</h2>
           </div>
 
@@ -161,7 +161,11 @@ const persons = ref(props.service.persons);
 
 
 const totalCost = computed(() =>
-  persons.value.reduce((acc, person) => acc + parseInt(person.value) * person.cant, 0)
+
+  // persons.value.reduce((acc, person) => acc + parseInt(person.value) * person.cant, 0)
+  {
+    return 0;
+  }
 );
 
 const deliveryMethods = [

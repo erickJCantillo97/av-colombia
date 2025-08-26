@@ -1,36 +1,35 @@
 <template>
-    <div class="flex items-center gap-x-4">
-        <div class="flex items-center border gap-x-4 p-4 bg-gray-200/80 rounded-lg shadow-lg">
-        <i class="fa-solid fa-users text-4xl text-lime-800"></i>
-        <div class="flex flex-col">
-            <h3 class="font-bold">Tripulación</h3>
-            <span>
-                Estaras Acompañado de un
-                <span v-if="includes.includes('capitán')">
-                    <strong>
-                        Capitán
-                    </strong>
-                </span>
-                <span v-if="includes.includes('capitán') && includes.includes('marinero')">
-                    y de un
-                </span>
-                <span v-if="includes.includes('marinero')" class="font-bold">
-                    Marinero
-                </span>
-            </span>
+    <div class="flex items-center gap-x-4 px-4 justify-start">
+        <div class="shadow-md flex justify-start rounded-lg gap-x-4  pr-5  items-center">
+            <div class="bg-black rounded-lg py-1 px-2">
+                <img src="/images/show/people.png" class="w-20 object-cover " alt="">
+            </div>
+            <div class="flex flex-col">
+                <span class="font-bold text-2xl">Capacidad</span>
+                <span class="text-md">{{ service.capacidad_max }} Personas</span>
+            </div>
         </div>
-    </div>
-    <div class="flex items-center border gap-x-4 p-4 bg-gray-200/80 rounded-lg shadow-lg" v-if="includes.includes('bebidas')">
-        <i class="fa-solid fa-wine-bottle text-4xl text-amber-800"></i>
-        <div class="flex flex-col">
-            <h3 class="font-bold">Bebidas</h3>
-            <span>
-                Contaras con bebida a bordo
-            </span>
+        <div class="shadow-md flex justify-start rounded-lg gap-x-4  pr-5  items-center">
+            <div class="bg-black rounded-lg py-1 px-2">
+                <img src="/images/show/boat.png"  style="filter: drop-shadow(0 10px 8px rgb(255 255 255 / 0.5)) drop-shadow(0 4px 3px rgb(255 255 255 / 0.5));" class="w-20 object-cover drop-shadow-lg" alt="">
+            </div>
+            <div class="flex flex-col">
+                <span class="font-bold text-2xl">Tamaño</span>
+                <span class="text-md">29 pies</span>
+            </div>
         </div>
+        <div class="shadow-md flex justify-start rounded-lg gap-x-4  pr-5  items-center">
+            <div class="bg-black rounded-lg py-1 px-2">
+                <img src="/images/show/engine.png"  style="filter: drop-shadow(0 10px 8px rgb(255 255 255 / 0.5)) drop-shadow(0 4px 3px rgb(255 255 255 / 0.5));" class="w-20 object-cover drop-shadow-lg" alt="">
+            </div>
+            <div class="flex flex-col">
+                <span class="font-bold text-2xl">Motor</span>
+                <span class="text-md">2 motores fuera de borda</span>
+            </div>
+        </div>
+
     </div>
-    </div>
-    
+
 </template>
 
 <script setup>

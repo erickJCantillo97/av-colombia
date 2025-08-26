@@ -2,7 +2,7 @@
   <div class="w-full flex justify-start rounded-xl gap-4 py-2 text-sm">
     <!-- {{ images }} -->
        <Galleria v-model:activeIndex="activeIndex" v-model:visible="displayCustom" :value="images" :responsiveOptions="responsiveOptions" :numVisible="7"
-            containerStyle="max-width: 850px" :circular="true" :fullScreen="true" :showItemNavigators="true" :showThumbnails="false">
+            containerStyle="max-width: 100%" :circular="true" :fullScreen="true" :showItemNavigators="true" :showThumbnails="false">
             <template #item="slotProps">
                 <img :src="'https://avcolombia.net/' + slotProps.item" :alt="slotProps.item" style="width: 100%; display: block" />
             </template>
