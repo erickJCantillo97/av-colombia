@@ -9,7 +9,7 @@
       <div class="rounded-md w-full">
         <Experiencias   />
       </div>
-      <Link class="rounded-md w-1/5 flex justify-center" :href="route('login')">
+      <Link class="rounded-md w-1/5 sm:flex hidden justify-center" :href="route('login')">
         <div class="flex items-center gap-x-3 justify-center h-full bg-white/90 rounded-md px-2 py-1">
           <i class="fa-solid fa-right-to-bracket"></i>
           <span class="text-lg font-bold  text-gray-800">Entrar</span>

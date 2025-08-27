@@ -2,7 +2,7 @@
   <div>
     <DatePicker
       v-model:value="modelValueProxy"
-      range
+      :range="range"
       class="w-full"
       :format="'YYYY-MM-DD'"
       :minDate="new Date()"
@@ -10,7 +10,8 @@
       :clearable="false"
       :inline="true"
       :numberOfMonths="2"
-      selectionMode="range" :manualInput="false"
+      :selectionMode="range?'range':'single'"
+      :manualInput="false"
       :show-header="true"
       :show-week-number="false"
       @value-change="onRangeUpdate"
@@ -18,7 +19,7 @@
         calendarContainer: '!w-full'
       }"
     />
-    
+
   </div>
 </template>
 <style scoped>
@@ -34,6 +35,7 @@ const props = defineProps({
   minDate: String,
   maxDate: String,
   placeholder: String,
+  range:Boolean
 });
 const emit = defineEmits(['update:modelValue', 'update:value', 'flex']);
 
@@ -41,7 +43,7 @@ const modelValueProxy = ref(props.modelValue ?? props.value);
 watch(() => props.modelValue ?? props.value, v => modelValueProxy.value = v);
 
 const onRangeUpdate = (val) => {
-   
+
   emit('update:modelValue', val);
   emit('update:value', val);
   // Emitir fechas individuales para check-in y check-out si el padre lo espera
