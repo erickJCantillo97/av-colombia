@@ -1,15 +1,15 @@
 <template>
   <GuestLayout>
     <div class="sticky top-16 z-20 bg-white  py-2 px-4">
-      <div class="w-full flex justify-between items-center">
-        <span class="font-bold text-lg">
+      <div class="w-full flex justify-between items-center md:px-4">
+        <span class="font-bold text-xs md:text-lg">
           {{ servicesFilter.length }} servicios encontrados
         </span>
         <input
         v-model="search"
         type="text"
-        placeholder="Buscar servicios..."
-        class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Buscar..."
+        class="w-1/2 lg:w-1/3 xl:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
       </div>
       

@@ -42,7 +42,7 @@
     </Link>
   </div>
   <Link :href="route('show.services', service.slug)" v-else
-    class="relative flex flex-col bg-white rounded-2xl overflow-hidden transition-transform transform hover:scale-[1.02] w-full max-w-sm mx-auto shadow-md">
+    class="relative flex flex-col bg-white  justify-between rounded-2xl overflow-hidden transition-transform transform hover:scale-[1.02] w-full max-w-sm mx-auto shadow-md">
     <!-- Imagen superior con esquinas redondeadas -->
     <div class="w-full h-60 overflow-hidden rounded-xl p-2">
       <img v-if="service.portada != '/laravel/public/'" :src="`https://avcolombia.net/${service.portada}`" alt="portada"
@@ -56,8 +56,8 @@
     <div class="p-5 flex flex-col gap-2">
       <!-- Título y subtítulo -->
       <div>
-        <h3 class="text-xl font-bold text-gray-900 leading-tight line-clamp-2" v-tooltip="`${service.title}`">{{ service.title }}</h3>
-        <p class="text-sm text-gray-500 mt-1">{{ service.subtitle ?? (service.type ? service.type.toLowerCase().replace('_',' ') : '') }}</p>
+        <h3 class="text-lg font-bold text-gray-900 leading-tight line-clamp-2" v-tooltip="`${service.title}`">{{ service.title }}</h3>
+        <!-- <p class="text-sm text-gray-500 mt-1">{{ service.subtitle ?? (service.type ? service.type.toLowerCase().replace('_',' ') : '') }}</p> -->
       </div>
 
       <!-- Badges: precio y ciudad -->
@@ -67,9 +67,14 @@
           <span class="text-gray-900 font-semibold">{{ currencyFormat(serviceModel.getPrice()) }}</span>
         </div>
 
-        <div class="flex items-center gap-2 text-sm text-gray-600">
+        <div class="flex items-center gap-2 text-sm text-gray-600" v-if="service.type == 'TOUR'">
           <i class="fa-solid fa-clock"></i>
           <span class="text-gray-900 font-medium">{{ service.duration }} {{ service.duration_unit }} Aprox</span>
+        </div>
+
+        <div class="flex items-center gap-2 text-sm text-gray-600" v-if="service.type == 'EMBARCACION'">
+          <i class="fa-solid fa-users"></i>
+          <span class="text-gray-900 font-medium">{{ service.capacidad_max }} Personas</span>
         </div>
 
         <div class="flex-1"></div>

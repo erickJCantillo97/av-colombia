@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center gap-x-4 px-4 justify-start">
+    <div class="grid grid-cols-1 md:grid-cols-4 items-center gap-4 md:px-4 justify-start">
         <div class="shadow-md flex justify-start rounded-lg gap-x-4  pr-5  items-center">
             <div class="bg-black rounded-lg py-1 px-2">
                 <img src="/images/show/people.png" class="w-20 object-cover " alt="">
