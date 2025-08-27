@@ -3,8 +3,11 @@
     <div class="relative w-full" ref="searchContainer">
       <!-- Service Types Section -->
       <transition name="fade-slide">
-        <div v-if="showServiceTypeTabs" key="tabs" class="mb-3 sm:mb-4">
+        <div v-if="showServiceTypeTabs" key="tabs" class="mb-3 sm:mb-4 w-full items-center flex justify-center">
           <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="searchStore.type" />
+          <Link class=" sm:hidden fixed right-0 top-9 bg-white/90 rounded-full px-2 py-1" :href="route('login')">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+           </Link>
         </div>
       </transition>
       <!-- Search Bar -->
@@ -43,7 +46,7 @@
         @searchLocations="searchLocations"
         @generateWithAi="generateWithAi"
       />
-      
+
     </div>
   </div>
 </template>
@@ -55,6 +58,7 @@ import SearchBar from './Search/SearchBar.vue';
 import DropdownPanels from './Search/DropdownPanels.vue';
 import AiModal from './Search/AiModal.vue';
 import searchStore from '@/store/searchStore';
+import { Link } from "@inertiajs/vue3";
 
 // Estado del panel
 const isPanelOpen = ref(false);
@@ -88,8 +92,8 @@ const setActiveTab = (tab) => {
 };
 
 
-const closePanel = () => { 
-  isPanelOpen.value = false; 
+const closePanel = () => {
+  isPanelOpen.value = false;
   activeTab.value = '';
 };
 
@@ -123,7 +127,7 @@ const setQuickDate = (type, days) => {
   const today = new Date();
   const targetDate = new Date(today);
   targetDate.setDate(today.getDate() + days);
-  
+
   if (type === 'checkin') {
     selectedCheckin.value = targetDate.toISOString().split('T')[0];
   }
@@ -208,7 +212,7 @@ const guestSummary = computed(() => {
 });
 
 const hasSearchCriteria = computed(() => {
-  return selectedLocation.value || selectedCheckin.value || selectedCheckout.value || 
+  return selectedLocation.value || selectedCheckin.value || selectedCheckout.value ||
          guests.value.adults > 0 || guests.value.children > 0 || guests.value.infants > 0;
 });
 
@@ -242,7 +246,7 @@ const generateWithAi = async () => {
 
   openModal();
   isLoading.value = true;
-  
+
   try {
     // Construir prompt basado en criterios de búsqueda
     let prompt = '';
@@ -251,12 +255,12 @@ const generateWithAi = async () => {
     if (selectedCheckout.value) prompt += `Check-out: ${selectedCheckout.value}. `;
     if (guestSummary.value) prompt += `Huéspedes: ${guestSummary.value}. `;
     if (type.value.value) prompt += `Tipo: ${type.value.label}. `;
-    
-    const response = await axios.post('/get-service', { 
-      prompt: prompt || 'Búsqueda general', 
-      type: type.value.value 
+
+    const response = await axios.post('/get-service', {
+      prompt: prompt || 'Búsqueda general',
+      type: type.value.value
     });
-    
+
     const result = response.data;
     generatedContent.value = result.recommendation || result.response || "No se recibió una recomendación válida.";
   } catch (error) {
@@ -456,7 +460,7 @@ provide('showInputTitles', showInputTitles);
 }
 
 .dropdown-shadow {
-  box-shadow: 
+  box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06),
     0 0 0 1px rgba(0, 0, 0, 0.05);
@@ -693,7 +697,7 @@ provide('showInputTitles', showInputTitles);
     gap: 6px;
     justify-content: flex-start;
   }
-  
+
   .service-type-tab {
     min-width: auto;
     padding: 8px 12px;
@@ -706,7 +710,7 @@ provide('showInputTitles', showInputTitles);
     padding: 0 2px;
     gap: 4px;
   }
-  
+
   .service-type-tab {
     padding: 6px 10px;
     font-size: 11px;
@@ -719,11 +723,11 @@ provide('showInputTitles', showInputTitles);
     padding: 6px 8px;
     font-size: 10px;
   }
-  
+
   .service-type-tab span {
     display: none;
   }
-  
+
   .service-type-tab {
     min-width: 40px;
     justify-content: center;
@@ -754,21 +758,21 @@ provide('showInputTitles', showInputTitles);
 /* Additional responsive improvements */
 @media (max-width: 768px) {
   .dropdown-shadow {
-    box-shadow: 
+    box-shadow:
       0 2px 4px -1px rgba(0, 0, 0, 0.1),
       0 1px 2px -1px rgba(0, 0, 0, 0.06);
   }
-  
+
   /* Improve touch targets on mobile */
   .search-section {
     min-height: 60px;
   }
-  
+
   /* Better spacing for mobile panels */
   .panel-content {
     padding: 16px !important;
   }
-  
+
   /* Improve button accessibility on mobile */
   .search-button {
     min-width: 48px;
@@ -781,12 +785,12 @@ provide('showInputTitles', showInputTitles);
   .search-section {
     min-height: 50px;
   }
-  
+
   /* Reduce panel padding on small screens */
   .panel-content {
     padding: 12px !important;
   }
-  
+
   /* Smaller text on mobile */
   .panel-content h3 {
     font-size: 1rem;
@@ -799,11 +803,11 @@ provide('showInputTitles', showInputTitles);
   .panel-content {
     padding: 10px !important;
   }
-  
+
   .destination-card {
     padding: 8px !important;
   }
-  
+
   .destination-card .w-10,
   .destination-card .w-12 {
     width: 32px !important;
@@ -823,15 +827,15 @@ provide('showInputTitles', showInputTitles);
   .scale-hover:hover {
     transform: none;
   }
-  
+
   .scale-hover:active {
     transform: scale(0.98);
   }
-  
+
   .search-section:hover {
     background-color: transparent;
   }
-  
+
   .search-section:active {
     background-color: rgba(0, 0, 0, 0.05);
   }
