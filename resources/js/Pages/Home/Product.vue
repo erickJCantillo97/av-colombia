@@ -42,12 +42,12 @@
     </Link>
   </div>
   <Link :href="route('show.services', service.slug)" v-else
-    class="relative flex flex-col bg-white  justify-between rounded-2xl overflow-hidden transition-transform transform hover:scale-[1.02] w-full max-w-sm mx-auto shadow-md">
+    class="relative flex flex-col bg-white  justify-between rounded-xl overflow-hidden transition-transform transform hover:scale-[1.02] w-full max-w-sm mx-auto shadow-md">
     <!-- Imagen superior con esquinas redondeadas -->
     <div class="w-full h-60 overflow-hidden rounded-xl p-2">
       <img v-if="service.portada != '/laravel/public/'" :src="`https://avcolombia.net/${service.portada}`" alt="portada"
-        class="w-full h-full object-cover rounded-3xl" />
-      <div v-else class="w-full h-full flex items-center justify-center bg-white rounded-xl py-4">
+        class="w-full h-full object-cover rounded-xl" />
+      <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 rounded-xl py-4">
         <Logo />
       </div>
     </div>
@@ -55,12 +55,9 @@
     <!-- Contenido -->
     <div class="p-5 flex flex-col gap-2">
       <!-- Título y subtítulo -->
-      <div>
-        <h3 class="text-lg font-bold text-gray-900 leading-tight line-clamp-2" v-tooltip="`${service.title}`">{{ service.title }}</h3>
-        <!-- <p class="text-sm text-gray-500 mt-1">{{ service.subtitle ?? (service.type ? service.type.toLowerCase().replace('_',' ') : '') }}</p> -->
-      </div>
-
-      <!-- Badges: precio y ciudad -->
+      
+        <h3 class="text-lg font-bold leading-tight line-clamp-2" v-tooltip="`${service.title}`">{{ service.title }}</h3>
+    
       <div class="flex items-center gap-4 mt-3">
         <div class="flex items-center gap-2 text-sm text-gray-600">
           <i class="fa-solid fa-tag text-gray-400"></i>

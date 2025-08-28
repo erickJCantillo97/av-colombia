@@ -112,7 +112,7 @@ const contabilidadItems = [
     permission: "ver pagos"
   },
   {
-    label: 'Pagos de Entradas',
+    label: 'Tiquetes',
     href: route('pagoEntradas.index'),
     icon: "fa-solid fa-calendar-check",
     permission: "ver pagos"
