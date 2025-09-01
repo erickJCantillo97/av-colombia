@@ -45,12 +45,13 @@ class UpdateServiceRequest extends FormRequest
             'availability_type' => 'nullable|string',
             'price_type' => 'nullable|string',
             'images' => 'nullable|array',
-            'availability_type' => 'nullable|string',
-            'price_type' => 'nullable|string',
             'origen' => 'nullable|string',
             'destino' => 'nullable|string',
             'is_round_trip' => 'nullable|boolean',
-            'tarifa_vehiculo' => 'nullable|numeric'
+            'tarifa_vehiculo' => 'nullable|numeric',
+            'size' => 'nullable|numeric',
+            'motor' => 'nullable|string',
+            'potencia'=>'nullable|string',
         ];
     }
 }

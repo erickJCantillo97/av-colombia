@@ -39,7 +39,6 @@ class StoreServiceRequest extends FormRequest
             'boys_price' => 'nullable|numeric',
             'capacidad_min' => 'nullable|numeric',
             'problematics' => 'nullable|numeric',
-            'capacidad_min' => 'nullable|numeric',
             'recogidas' => 'nullable|string',
             'availability_type' => 'nullable|string',
             'price_type' => 'nullable|string',
@@ -47,7 +46,10 @@ class StoreServiceRequest extends FormRequest
             'origen' => 'nullable|string',
             'destino' => 'nullable|string',
             'is_round_trip' => 'nullable|boolean',
-            'tarifa_vehiculo' => 'nullable|numeric'
+            'tarifa_vehiculo' => 'nullable|numeric',
+            'size' => 'nullable|numeric',
+            'motor' => 'nullable|string',
+            'potencia'=>'nullable|string',
         ];
     }
 }
