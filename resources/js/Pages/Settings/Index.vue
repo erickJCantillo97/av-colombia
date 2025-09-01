@@ -33,6 +33,9 @@
         <div v-else-if="value == 4">
           <Channels />
         </div>
+        <div v-else-if="value == 5">
+          <IndexTiquetes />
+        </div>
       </div>
     </div>
   </AppLayout>
@@ -45,6 +48,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref } from "vue";
 import Index from "./Users/Index.vue";
 import Channels from "./Channels.vue";
+import IndexTiquetes from "./TiquetesType/Index.vue";
 const value = ref(1);
 
 const props = defineProps({
@@ -59,6 +63,7 @@ const options = [
   { name: "Métodos de Pago", value: 1 },
   { name: "Usuarios", value: 2 },
   { name: "Canales", value: 4 },
-  { name: "Tasas", value: 3 },
+  // { name: "Tasas", value: 3 },
+  { name: "Tipos de Tiquetes", value: 5 },
 ];
 </script>

@@ -55,14 +55,14 @@ const servicesType = ref([
 
     },
     {
-        value: 'TRANSPORT',
+        value: 'TRANSFER',
         name: 'Transportes',
         text: 'Vive las mejores experiencias en Cartagena, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
         textButton: 'Transportes Seguros'
 
     },
     {
-        value: 'ACCOMMODATION',
+        value: 'HOSPEDAJE',
         name: 'Alojamientos',
         text: 'Vive las mejores experiencias en Cartagena, conoce los mejores lugares y disfruta de la cultura y la gastronomía de nuestro país.',
         textButton: 'Ir a Alojamientos'

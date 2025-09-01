@@ -127,4 +127,9 @@ class Service extends Model
     {
         return $this->hasMany(Precie::class);
     }
+
+    public function tickets(): BelongsToMany
+    {
+        return $this->belongsToMany(Ticket::class, 'services_tickets');
+    }
 }

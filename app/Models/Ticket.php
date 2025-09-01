@@ -18,4 +18,9 @@ class Ticket extends Model
     {
         return $this->belongsTo(BookingService::class);
     }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'services_tickets');
+    }
 }
