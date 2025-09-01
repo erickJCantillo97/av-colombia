@@ -30,7 +30,9 @@ export default class Service extends GeneralService {
         capacidad_max: 1,
         origen: '',
         destino: '',
-        tarifa_vehiculo: ''
+        tarifa_vehiculo: '',
+        motor:'',
+        size:''
     });
 
     constructor(service) {
@@ -41,7 +43,7 @@ export default class Service extends GeneralService {
             this.assignMatchingKeys(service, this.form);
             this.form.includes = JSON.parse(service.includes);
             this.form.notIncludes = JSON.parse(service.notIncludes);
-            this.form.recogidas = JSON.parse(service.recogidas);   
+            this.form.recogidas = JSON.parse(service.recogidas);
             this.form.puntos = JSON.parse(service.puntos);
         }
     }
@@ -56,11 +58,16 @@ export default class Service extends GeneralService {
         return data.services;
     }
 
+    async getAllFeatures(){
+        const {data}=await axios.get(route('get.all.features'))
+        return data
+    }
+
     async getServicePagination(page = 1, perPage = 10) {
         const params = { page: page, location: state.location.value, type: state.type.value.value, checkin: state.checkin.value, checkout: state.checkout.value, guests: state.guests.value, perPage: perPage };
-        
+
         const { data } = await axios.get(route("services.get.paginated"), { params });
-        
+
         return data;
     }
 
@@ -79,7 +86,7 @@ export default class Service extends GeneralService {
         originalFields.forEach(field => {
             this.form[field] = originals[field];
         });
-       
+
     }
 
     async setPortada() {
@@ -109,11 +116,10 @@ export default class Service extends GeneralService {
        })?.precies ?? [];
 
     if (!precios.length) return 0;
-    
+
     return precios.reduce((max, obj) => obj.value > max.value ? obj : max, precios[0]).value;
     }
 
-     
+
 
 }
-    

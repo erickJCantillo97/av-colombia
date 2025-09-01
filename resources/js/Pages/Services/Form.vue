@@ -120,6 +120,7 @@ const form = useForm({
   capacidad_max: 1,
   recogidas: [],
   puntos: [],
+
 });
 
 const files = ref([]);
@@ -308,7 +309,7 @@ const removeImage = (id) => {
                   v-model="form.boys_price"
                   mode="currency"
                 />
-                
+
               </div>
               <div class="w-full">
                 <Input
