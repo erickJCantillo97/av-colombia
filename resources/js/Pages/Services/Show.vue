@@ -18,6 +18,7 @@ import { Head, Link, router } from "@inertiajs/vue3";
 const props = defineProps({
   service: Object,
   availabilities: Array,
+  features: Array,
 });
 
 const showFullDescription = ref(false);
@@ -339,8 +340,7 @@ const goToCheckout = () => {
         <Equipament :service="service" v-if="service.type == 'EMBARCACION'" class="border-b pb-6" />
 
         <!-- Qué incluye -->
-        <IncludesView :service="service" v-if="service.includes != '[]'" class="border-b pb-6" />
-
+        <IncludesView :service="service" :features="features" v-if="service.includes != '[]'" class="border-b pb-6" />
         <!-- Puntos de recogida -->
         <CollectionPoints :service="service" v-if="service.recogidas != '[]'" class="border-b pb-6" />
       </main>

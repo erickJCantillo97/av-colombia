@@ -101,3 +101,4 @@ Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('s
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
 Route::get('check-out', [ServiceController::class, 'checkOut'])->name('check.out');
 Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');
+Route::get('getAllFeatures',[ServiceController::class, 'getAllFeatures'])->name('get.all.features');

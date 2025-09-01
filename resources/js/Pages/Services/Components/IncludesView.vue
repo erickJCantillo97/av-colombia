@@ -3,18 +3,32 @@
         <div class="flex flex-col gap-y-2">
             <h4 class="text-lg font-semibold text-green-800">Servicios Incluidos</h4>
             <span class="text-xs italic">Estos son los servicios que se incluyen en tu reserva</span>
-            <div>
+            <div v-if="service.type != 'EMBARCACION'">
+                {{ includes }}
                 <ul class=" text-gray-700 flex flex-col gap-y-1 text-sm">
                     <li v-for="(include, index) in includes" class="p-1 shadow-sm" :key="index">
                         <i class="fa-solid fa-check text-teal-500"></i>
                         <span class="ml-2 font-semibold">
                             {{ include }}
                         </span>
+                    </li>
+                </ul>
+            </div>
+            <div v-else>
+                <ul class=" text-gray-700 flex flex-col text-sm">
+                    <span v-for="(feature, index) in features" :key="index">
+                        <li class="mt-2" v-if="includes.includes(feature.name.toUpperCase() || feature.id)">
+                            <i class="fa-solid text-teal-500" :class="[feature.icon]"></i>
+                            <span class="ml-2 font-semibold">
+                                {{ feature.name.toUpperCase() }}
+                            </span>
                         </li>
+                    </span>
                 </ul>
             </div>
         </div>
-        <div class="flex flex-col gap-y-2">
+
+        <div v-if="notIncludes.length > 0" class="flex flex-col gap-y-2">
             <h4 class="text-lg font-semibold text-red-700">Servicios NO Incluidos</h4>
             <span class="text-xs italic">Lastimosamente NO podemos asegurarte estos servicios con tu reserva</span>
             <div>
@@ -36,7 +50,8 @@ import { ref } from 'vue';
 const includes = ref([])
 const notIncludes = ref([])
 const props = defineProps({
-  service: Object,
+    service: Object,
+    features: Array,
 });
 
 includes.value = JSON.parse(props.service.includes);

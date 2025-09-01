@@ -100,6 +100,7 @@ class ServiceController extends Controller
     public function store(StoreServiceRequest $request)
     {
         $service = $this->serviceRepository->create($request->validated());
+        // dd($service);
         return redirect()->route('services.edit', $service->slug)->with('message', 'Servicio creado');
     }
 
@@ -110,7 +111,7 @@ class ServiceController extends Controller
                 'service' => $service,
                 'gallery' => $service->images,
                 'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
-                'features' => $service->features
+                'features' => Feature::all()
             ]);
         }
 
@@ -118,7 +119,7 @@ class ServiceController extends Controller
             'service' => $service,
             'gallery' => $service->images,
             'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
-            'features' => $service->features
+            'features' => Feature::all()
         ]);
     }
 
@@ -135,7 +136,7 @@ class ServiceController extends Controller
         $serviceType = $request->serviceType ?? 'TOUR';
 
         return Inertia::render('Services/Form/Edit', [
-            'features' => $features,
+            // 'features' => $features,
             'service' => $service,
             'serviceType' => $serviceType,
             'images' => $service->images,
@@ -146,6 +147,7 @@ class ServiceController extends Controller
     }
     public function update(UpdateServiceRequest $request, $service)
     {
+        //  dd($request->all());
         $this->serviceRepository->update($service, $request->validated());
     }
 
@@ -261,5 +263,9 @@ class ServiceController extends Controller
         return response()->json([
             'horarios' => $this->serviceRepository->obtenerHorariosByServiceBetweeDays($serviceId, $startDate),
         ]);
+    }
+
+    public function getAllFeatures(){
+        return response()->json(Feature::all()->toArray());
     }
 }
