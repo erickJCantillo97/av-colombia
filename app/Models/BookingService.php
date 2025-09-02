@@ -101,4 +101,9 @@ class BookingService extends Model
     {
         return $this->hasMany(Change::class, 'booking_service_id');
     }
+
+    public function pagosSaldos()
+    {
+        return $this->hasMany(PagoSaldos::class, 'booking_service_id');
+    }
 }

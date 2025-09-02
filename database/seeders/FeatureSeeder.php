@@ -20,7 +20,6 @@ class FeatureSeeder extends Seeder
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-gas-pump', 'name' => 'combustible', 'created_at'=>now(),'updated_at'=>now()],
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-user-tie', 'name' => 'ayudante', 'created_at'=>now(),'updated_at'=>now()],
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-shield-halved', 'name' => 'poliza de seguro', 'created_at'=>now(),'updated_at'=>now()],
-
         ];
 
         DB::table('features')->insert($features);

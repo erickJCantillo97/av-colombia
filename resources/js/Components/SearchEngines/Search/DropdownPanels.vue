@@ -35,6 +35,27 @@
                     </div>
                 </div>
             </div>
+            <!----- Panel de origen y destino ----->
+            <div v-if="activeTab === 'origin'" class="p-4 sm:p-8 panel-content">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">¿Dónde te recogemos y dónde te llevamos?
+                </h3>
+                <div class="flex justify-between gap-4">
+                    <div class="w-full shadow-lg px-4 py-2 rounded-md">
+                        <p class="font-bold">Origen</p>
+                        <div class="grid  grid-cols-3 gap-2 mt-2">
+                            <div v-for="destino in destinos">
+                                <div class="p-2 border border-gray-200 rounded-lg shadow-md cursor-pointer hover:bg-gray-500 hover:text-white transition-all duration-200 text-center scale-hover modern-focuss">
+                                    {{ destino }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="w-full shadow-sm">
+                        <p>Destino</p>
+                    </div>
+                </div>
+            </div>
             <!-- Panel Check-in -->
             <div v-if="activeTab === 'checkin'" class="p-4 sm:p-8 panel-content">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 sm:mb-6">
@@ -77,7 +98,10 @@
 import GuestSelector from './GuestSelector.vue';
 import CalendarSelector from './CalendarSelector.vue';
 import searchStore from '@/store/searchStore';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+
+
+
 const props = defineProps([
     'isPanelOpen',
     'activeTab',
@@ -90,7 +114,8 @@ const props = defineProps([
     'quickDateOptions',
     'durationOptions',
     'formatDate',
-    'type'
+    'type',
+    'destinos'
 ]);
 defineEmits([
     'selectLocation',
@@ -110,7 +135,7 @@ const mensajePrincipal = computed(() => {
     if (props.type === 'Hospedaje') {
         if (checkin) {
             const fecha1 = new Date(checkin).toLocaleDateString();
-            const fecha2 = checkout?new Date(checkout).toLocaleDateString():null;
+            const fecha2 = checkout ? new Date(checkout).toLocaleDateString() : null;
             if (fecha2) return `¡Bien! Llegarías el ${fecha1}, hasta el día ${fecha2}`;
             return `¡Bien! Llegarías el ${fecha1}, hasta que dia?`
         } else {
@@ -122,5 +147,7 @@ const mensajePrincipal = computed(() => {
     if (props.type === 'Tours') return '¿Qué día quieres el tour?';
     return '¿Qué día necesitas tu transporte?';
 });
+
+
 
 </script>

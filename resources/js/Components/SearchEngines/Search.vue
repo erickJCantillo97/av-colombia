@@ -25,8 +25,7 @@
                 :quickDateOptions="quickDateOptions" :durationOptions="durationOptions" :formatDate="formatDate"
                 @selectLocation="selectLocation" @openDatePicker="openDatePicker" @setQuickDate="setQuickDate"
                 @setDuration="setDuration" @incrementGuests="incrementGuests" @decrementGuests="decrementGuests"
-                @searchLocations="searchLocations" @generateWithAi="generateWithAi" :type="searchStore.type.value.label"/>
-
+                @searchLocations="searchLocations" @generateWithAi="generateWithAi" :type="searchStore.type.value.label" :destinos/>
         </div>
     </div>
 </template>
@@ -77,16 +76,29 @@ const closePanel = () => {
     activeTab.value = '';
 };
 
+const destinos = ref([]);
+
 const openModal = () => { isModalVisible.value = true; };
 const closeModal = () => {
     isModalVisible.value = false;
+    
     generatedContent.value = '';
 };
 
 // Funciones de selección
-const selectLocation = (location) => {
+const selectLocation = async (location) => {
     selectedLocation.value = location;
+    getAllDestinations(location);
+    if(searchStore.type.value.label == 'Transporte'){
+        setActiveTab('origin');
+        return;
+    }
     setActiveTab('checkin');
+};
+
+const getAllDestinations = async (location) => {
+    const response = await axios.get(`getAllDestinations?city=${location}`);
+    destinos.value = response.data;
 };
 
 const openDatePicker = (type) => {

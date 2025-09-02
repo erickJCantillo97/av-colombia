@@ -268,4 +268,9 @@ class ServiceController extends Controller
     public function getAllFeatures(){
         return response()->json(Feature::all()->toArray());
     }
+
+    public function getAllDestinations(Request $request){
+        $servicesDestinos = Service::where('city', $request->city)->whereNotNull('destino')->pluck('destino');
+        return response()->json($servicesDestinos);
+    }
 }
