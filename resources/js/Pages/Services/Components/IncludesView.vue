@@ -4,7 +4,6 @@
             <h4 class="text-lg font-semibold text-green-800">Servicios Incluidos</h4>
             <span class="text-xs italic">Estos son los servicios que se incluyen en tu reserva</span>
             <div v-if="service.type != 'EMBARCACION'">
-                {{ includes }}
                 <ul class=" text-gray-700 flex flex-col gap-y-1 text-sm">
                     <li v-for="(include, index) in includes" class="p-1 shadow-sm" :key="index">
                         <i class="fa-solid fa-check text-teal-500"></i>

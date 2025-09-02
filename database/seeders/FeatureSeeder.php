@@ -15,7 +15,7 @@ class FeatureSeeder extends Seeder
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-wine-bottle', 'name' => 'bebidas', 'created_at'=>now(),'updated_at'=>now()],
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-dice-d6', 'name' => 'hielo', 'created_at'=>now(),'updated_at'=>now()],
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-tint', 'name' => 'agua', 'created_at'=>now(),'updated_at'=>now()],
-            ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-anchor', 'name' => 'capitán', 'created_at'=>now(),'updated_at'=>now()],
+            ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-anchor', 'name' => 'capitan', 'created_at'=>now(),'updated_at'=>now()],
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-user-tie', 'name' => 'marinero', 'created_at'=>now(),'updated_at'=>now()],
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-gas-pump', 'name' => 'combustible', 'created_at'=>now(),'updated_at'=>now()],
             ['id' => Str::uuid(), 'color' => 'green', 'icon' => 'fa-solid fa-user-tie', 'name' => 'ayudante', 'created_at'=>now(),'updated_at'=>now()],
