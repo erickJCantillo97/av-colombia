@@ -97,7 +97,7 @@ const selectLocation = async (location) => {
 };
 
 const getAllDestinations = async (location) => {
-    const response = await axios.get(`getAllDestinations?city=${location}`);
+    const response = await axios.get(`/getAllDestinations?city=${location}`);
     destinos.value = response.data;
 };
 
