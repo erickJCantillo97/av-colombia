@@ -35,6 +35,9 @@
                 <div v-if="value == 3" class="p-4">
                     <Recogidas :service="service" />
                 </div>
+                <div v-if="value == 4" class="p-4">
+                    <Itinerary :service="service" :itineraries="itineraries" />
+                </div>
                 <div v-if="value == 5" class="p-4">
                     <Horarios :service="service" :availabilities="availabilities" />
                 </div>
@@ -52,6 +55,7 @@ import SelectImages from './SelectImages.vue';
 import Recogidas from './Recogidas.vue';
 import Horarios from '../Horarios.vue';
 import TransferFrom from './TransferFrom.vue';
+import Itinerary from './Itinerary.vue';
 
 const props = defineProps({
     serviceType: String,
@@ -59,6 +63,7 @@ const props = defineProps({
     included: Array,
     service: Object,
     availabilities: Array,
+    itineraries: Array,
 })
 
 const value = ref(1);

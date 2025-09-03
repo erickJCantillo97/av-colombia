@@ -4,6 +4,7 @@ use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\CustomProductControlle;
+use App\Http\Controllers\ItineraryController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PagoEntradaController;
 use App\Http\Controllers\PaymentController;
@@ -93,6 +94,8 @@ Route::middleware([
     })->name('qr.generator');
 
     Route::resource('pagoEntradas', PagoEntradaController::class);
+
+    Route::resource('itinerary',ItineraryController::class);
 });
 
 Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('get.all.services');
