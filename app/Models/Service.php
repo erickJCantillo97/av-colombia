@@ -39,6 +39,11 @@ class Service extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
+    public function itineraries(): HasMany
+    {
+        return $this->hasMany(Itinerary::class);
+    }
+
     public function features(): BelongsToMany
     {
         return $this->belongsToMany(Feature::class);

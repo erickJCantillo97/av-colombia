@@ -141,6 +141,7 @@ class ServiceController extends Controller
             'serviceType' => $serviceType,
             'images' => $service->images,
             'features' => $service->features,
+            'itineraries' => $service->itineraries()->with('images')->get(),
             'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
             'included' => Included::orderBy('name')->pluck('name')->toArray()
         ]);
