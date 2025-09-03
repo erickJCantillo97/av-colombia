@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTicketRequest;
 use App\Models\PagoEntrada;
 use App\Models\TicketType;
 use App\Models\Ticket;
@@ -33,20 +34,14 @@ class PagoEntradaController extends Controller
     /**
      * Store ticket purchase
      */
-    public function storeTicket(Request $request)
+    public function storeTicket(StoreTicketRequest $request)
     {
-        $data = $request->validate([
-            'ticket_type_id' => 'required|exists:ticket_types,id',
-            'booking_service_id' => 'nullable|exists:booking_services,id',
-            'cantidad' => 'required|integer|min:1',
-            'costo_total' => 'required|numeric|min:0',
-        ]);
-
-        $data['tipo_movimiento'] = 'entrada';
+       
+        // $data['tipo_movimiento'] = 'entrada';
 
         FacadesDB::beginTransaction();
         try {
-            Ticket::create($data);
+            Ticket::create($request->validated());
             FacadesDB::commit();
             return back()->with('success', 'Ticket registrado exitosamente.');
         } catch (\Exception $e) {

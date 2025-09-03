@@ -162,6 +162,7 @@ const columns = [
         class: "text-md uppercase",
         severitys: [
             { text: "entrada", severity: "success", class: "" },
+            { text: "salida", severity: "danger", class: "" },
         ],
         
     },
