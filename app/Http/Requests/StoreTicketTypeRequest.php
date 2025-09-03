@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateTicketRequest extends FormRequest
+class StoreTicketTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,9 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'booking_service_id' => 'nullable|exists:booking_services,id',
-            'ticket_type_id' => 'required|exists:ticket_types,id',
-            'cantidad' => 'required|integer|min:1',
-            'costo_total' => 'required|numeric|min:0',
-            'tipo_movimiento' => 'required|in:entrada,salida'
+            'name' => 'required|string|max:255|unique:ticket_types,name',
+            'services' => 'required|array',
+            'services.*' => 'exists:services,id',
         ];
     }
 }

@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('services_tickets', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('service_id')->constrained('services')->onDelete('cascade');
-            $table->foreignUuid('ticket_id')->constrained('tickets')->onDelete('cascade');
+            // $table->string('name');
+            $table->foreignUuid('ticket_type_id')->constrained('ticket_types')->onDelete('cascade');
             $table->timestamps();
             
         });

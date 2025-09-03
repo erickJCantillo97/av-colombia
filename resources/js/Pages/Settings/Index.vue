@@ -34,7 +34,7 @@
           <Channels />
         </div>
         <div v-else-if="value == 5">
-          <IndexTiquetes />
+          <IndexTiquetes :ticketTypes :services />
         </div>
       </div>
     </div>
@@ -57,6 +57,8 @@ const props = defineProps({
     default: [],
   },
   permisos: Array,
+  ticketTypes: Array,
+  services: Array,
 });
 
 const options = [

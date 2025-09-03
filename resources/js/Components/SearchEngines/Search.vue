@@ -101,6 +101,8 @@ const getAllDestinations = async (location) => {
     destinos.value = response.data;
 };
 
+getAllDestinations(selectedLocation.value);
+
 const openDatePicker = (type) => {
     // Simular apertura de datepicker - aquí puedes integrar con tu componente de fechas preferido
     const today = new Date();

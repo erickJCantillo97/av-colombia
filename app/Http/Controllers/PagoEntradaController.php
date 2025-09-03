@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\PagoEntrada;
+use App\Models\TicketType;
+use App\Models\Ticket;
+use App\Models\BookingService;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB as FacadesDB;
@@ -15,9 +18,41 @@ class PagoEntradaController extends Controller
      */
     public function index()
     {
+        $tickets = Ticket::with(['ticketType', 'bookingService'])
+            ->latest()
+            ->get();
+
         return Inertia::render("PagoEntradas/Index", [
-            'pagoEntradas' => PagoEntrada::with('bookingService', 'user')->get()
+            'pagoEntradas' => PagoEntrada::with('bookingService', 'user')->get(),
+            'ticketTypes' => TicketType::with('services')->get(),
+            'tickets' => $tickets,
+            // 'bookingServices' => BookingService::select('id', 'client_name')->latest()->get()
         ]);
+    }
+
+    /**
+     * Store ticket purchase
+     */
+    public function storeTicket(Request $request)
+    {
+        $data = $request->validate([
+            'ticket_type_id' => 'required|exists:ticket_types,id',
+            'booking_service_id' => 'nullable|exists:booking_services,id',
+            'cantidad' => 'required|integer|min:1',
+            'costo_total' => 'required|numeric|min:0',
+        ]);
+
+        $data['tipo_movimiento'] = 'entrada';
+
+        FacadesDB::beginTransaction();
+        try {
+            Ticket::create($data);
+            FacadesDB::commit();
+            return back()->with('success', 'Ticket registrado exitosamente.');
+        } catch (\Exception $e) {
+            FacadesDB::rollBack();
+            return back()->with('error', 'Error al registrar el ticket: ' . $e->getMessage());
+        }
     }
 
     /**

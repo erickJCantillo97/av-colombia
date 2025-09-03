@@ -137,4 +137,9 @@ class Service extends Model
     {
         return $this->belongsToMany(Ticket::class, 'services_tickets');
     }
+
+    public function ticketTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(TicketType::class, 'services_ticket_types');
+    }
 }

@@ -40,11 +40,11 @@
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">¿Dónde te recogemos y dónde te llevamos?
                 </h3>
                 <div class="flex justify-between gap-4">
-                    <div class="w-full shadow-lg px-4 py-2 rounded-md">
+                    <div class="w-full py-2 rounded-md">
                         <p class="font-bold">Origen</p>
-                        <div class="grid  grid-cols-3 gap-2 mt-2">
+                        <div class="grid  grid-cols-4 gap-2 mt-2">
                             <div v-for="destino in destinos">
-                                <div class="p-2 border border-gray-200 rounded-lg shadow-md cursor-pointer hover:bg-gray-500 hover:text-white transition-all duration-200 text-center scale-hover modern-focuss">
+                                <div class="p-2 border border-gray-200 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 hover:text-white transition-all duration-200 text-center scale-hover modern-focus">
                                     {{ destino }}
                                 </div>
                             </div>

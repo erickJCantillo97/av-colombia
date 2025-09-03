@@ -43,6 +43,9 @@
             <div v-if="value == 4" class="p-4">
                 <Changes class="mx-4" :bookingService></Changes>
             </div>
+            <div v-if="value == 5 && hasRole(['admin', 'superadmin'])" class="p-4">
+                <Tickets class="mx-4" :bookingService></Tickets>
+            </div>
 
 
         </div>
@@ -58,6 +61,7 @@ import Index from './Components/Proveedor/Index.vue';
 import IndexExtra from './Components/Extra/Index.vue';
 import Changes from './Components/Changes/Changes.vue';
 import { usePermissions } from '@/composable/Auth.js';
+import Tickets from './Components/Tickets.vue';
 
 const { hasRole } = usePermissions();
 
@@ -73,6 +77,7 @@ const options = [
     { name: "Datos de la Reserva", value: 1, show:true },
     { name: "Proveedores", value: 2, label: props.bookingService.proveedors.length, show: hasRole(['admin', 'superadmin']) },
     { name: "Extras", value: 3, label: props.bookingService.extras.length, show: !hasRole('Vendedor') },
+    { name: "Tickets", value: 5,show: hasRole(['admin', 'superadmin']) },
     { name: "Historial de Cambios", value: 4, label: props.bookingService.changes.length, show: hasRole(['admin', 'superadmin'])  },
 ];
 </script>

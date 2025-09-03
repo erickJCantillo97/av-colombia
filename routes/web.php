@@ -96,6 +96,10 @@ Route::middleware([
     Route::resource('pagoEntradas', PagoEntradaController::class);
 
     Route::resource('itinerary',ItineraryController::class);
+    Route::post('pagoEntradas/storeTicket', [PagoEntradaController::class, 'storeTicket'])->name('pagoEntradas.storeTicket');
+    
+    // Rutas para tickets
+    Route::resource('tickets', \App\Http\Controllers\TicketController::class)->only(['update', 'destroy']);
 });
 
 Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('get.all.services');

@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('booking_service_id')->constrained('booking_services')->nullable();
-            $table->string('name')->default('Entrada Aviario');
-            $table->integer('adults_extranjeros')->default(0);
-            $table->integer('adults_nacionales')->default(0);
-            $table->integer('boys_extranjeros')->default(0);
-            $table->integer('boys_nacionales')->default(0);
+            $table->foreignUuid('ticket_type_id')->constrained('ticket_types')->nullable();
+            $table->integer('cantidad')->default(0);
             $table->double('costo_total')->nullable();
-            $table->string('tipo_movimiento'); //['entrada', 'salidas']
+            $table->string('tipo_movimiento'); //['entrada', 'salida']
             $table->timestamps();
         });
     }
