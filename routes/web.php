@@ -110,3 +110,4 @@ Route::get('check-out', [ServiceController::class, 'checkOut'])->name('check.out
 Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');
 Route::get('getAllFeatures',[ServiceController::class, 'getAllFeatures'])->name('get.all.features');
 Route::get('getAllDestinations',[ServiceController::class, 'getAllDestinations'])->name('get.all.destinations');
+Route::get('getAllOrigins',[ServiceController::class, 'getAllOrigins'])->name('get.all.origins');

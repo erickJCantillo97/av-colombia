@@ -10,6 +10,11 @@ defineProps({
 });
 
 const showingNavigationDropdown = ref(false);
+const isMenuCollapsed = ref(false);
+
+const handleMenuToggle = (collapsed) => {
+  isMenuCollapsed.value = collapsed;
+};
 
 const switchToTeam = (team) => {
   router.put(
@@ -32,7 +37,7 @@ const logout = () => {
   <div>
     <Head :title="title" />
     <Banner />
-    <div class="bg-white">
+    <div class="bg-white overflow-x-hidden min-h-screen">
       <!-- Navigation Toggle -->
       <nav
         class="items-center justify-between p-6 lg:px-8 flex lg:hidden"
@@ -58,13 +63,15 @@ const logout = () => {
       <!-- Sidebar -->
       <div
         id="docs-sidebar"
-        class="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 start-0 bottom-0 z-[60] w-64 bg-white border-e border-gray-200 pt-2 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 dark:bg-neutral-800 dark:border-neutral-700"
+        class="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 start-0 bottom-0 z-[60] border-e border-gray-200 pt-2 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+        :class="isMenuCollapsed ? 'w-16' : 'w-64'"
       >
-        <Menu></Menu>
+        <Menu @menu-toggle="handleMenuToggle" />
       </div>
       <!-- Page Content -->
       <main
-        class="px-2 lg:ml-64 bg-white h-[100vh] overflow-y-auto animate-zoomin animate-once animate-duration-300"
+        class="px-2 bg-white h-[100vh] overflow-y-auto overflow-x-hidden animate-zoomin animate-once animate-duration-300 transition-all duration-300"
+        :class="isMenuCollapsed ? 'lg:ml-16' : 'lg:ml-64'"
       >
         <slot />
       </main>

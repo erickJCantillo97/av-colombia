@@ -21,7 +21,7 @@
             :error-message="form.errors.adults_price" />
         <div class="flex flex-col items-center justify-center">
             <label for="" class="font-bold">Disponible Ida y vuelta</label>
-            <ToggleSwitch v-model="form.is_round_trip" class="w-14">
+            <ToggleSwitch v-model="form.is_round_trip">
                 <template #handle="{ checked }">
                     <i :class="['!text-xs pi', { 'pi-check': checked, 'pi-times': !checked }]" />
                 </template>

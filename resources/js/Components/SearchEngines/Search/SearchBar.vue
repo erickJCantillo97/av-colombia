@@ -28,12 +28,13 @@
         ]">
             <div v-if="showInputTitles" class="text-xs font-semibold text-gray-900 uppercase tracking-wide">
                 <span class="hidden sm:inline">
+                    
                     Origen/Destino
                 </span>
                 <span class="sm:hidden"> Origen/Destino</span>
             </div>
             <div class="text-sm text-gray-500 mt-1 truncate">
-              Seleccionar Origen y Destino
+                {{ (searchStore.origen.value || 'Origen') + ' - ' + (searchStore.destino.value || 'Destino') }}
             </div>
         </div>
         <!-- Divider - Hidden on mobile -->
@@ -106,6 +107,7 @@ const props = defineProps([
     'selectedLocation',
     'guestSummary',
     'setActiveTab',
+    'selectedOrigin',
     'formatDate',
     'type'
 ]);
