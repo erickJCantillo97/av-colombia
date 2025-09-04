@@ -118,6 +118,7 @@ class ServiceController extends Controller
         return Inertia::render('Services/Show', [
             'service' => $service,
             'gallery' => $service->images,
+            'itineraries' => $service->itineraries()->with('images')->get(),
             'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
             'features' => Feature::all()
         ]);
