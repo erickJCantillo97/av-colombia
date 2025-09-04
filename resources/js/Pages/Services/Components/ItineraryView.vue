@@ -5,7 +5,7 @@
             <p class="text-gray-500 italic">No hay itinerarios agregados</p>
         </div>
         <span v-for="(item, index) in itineraries" :key="index">
-            <div class="w-full bg-white grid grid-cols-3 gap-3 p-5 rounded-lg shadow-md mb-3 h-[190px]">
+            <div class="w-full bg-white grid grid-cols-3 gap-3 p-5 rounded-lg shadow-md mb-3 h-[190px] hover:bg-slate-200 transition-all">
                 <img :src="item.image" alt="Image" class="w-full rounded-lg  h-[150px] border object-cover" />
                 <div class="col-span-2 flex items-center justify-center">
                     <span class="w-full">
