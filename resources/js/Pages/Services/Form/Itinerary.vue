@@ -30,7 +30,8 @@
                 <Button v-if="isEditing" type="button" @click="cancelEdit" severity="secondary">Cancelar</Button>
             </div>
         </form>
-        <div class="col-span-2 bg-gray-300 p-2 rounded-md h-[600px] gap-3 flex flex-col overflow-y-auto">
+        <ItineraryView :itineraries="filteredItineraries" @deleteItem="deleteItem" @edit="edit" />
+        <!-- <div class="col-span-2 bg-gray-300 p-2 rounded-md h-[600px] gap-3 flex flex-col overflow-y-auto">
             <div v-if="filteredItineraries.length === 0" class="flex items-center justify-center h-full">
                 <p class="text-gray-500 italic">No hay itinerarios agregados</p>
             </div>
@@ -50,7 +51,7 @@
                     </div>
                 </div>
             </span>
-        </div>
+        </div> -->
     </div>
     <div class="flex justify-center p-5">
         <Button type="button" @click="save" icon="fa-solid fa-save" label="Guardar todo" severity="primary" />
@@ -60,6 +61,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { reactive, ref, computed } from 'vue';
+import ItineraryView from '../Components/ItineraryView.vue';
 
 const props = defineProps({
     service: Object,

@@ -15,11 +15,13 @@ import MiniBooking from "./Components/miniBooking.vue";
 import GuestSelector from "@/Components/SearchEngines/Search/GuestSelector.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import ServicesMain from "./Components/ServicesMain.vue";
+import ItineraryView from "./Components/ItineraryView.vue";
 
 const props = defineProps({
     service: Object,
     availabilities: Array,
     features: Array,
+    itineraries: Array,
 });
 
 const showFullDescription = ref(false);
@@ -351,7 +353,8 @@ const goToCheckout = () => {
                         </button>
                     </div>
                 </section>
-
+                <!-- Itinerario -->
+                <ItineraryView :itineraries="itineraries" :readOnly="true" />
                 <ServicesMain :service="service" :features="features"></ServicesMain>
 
                 <!-- Qué incluye -->
