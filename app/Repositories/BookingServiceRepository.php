@@ -1,13 +1,11 @@
 <?php
 
-
 namespace App\Repositories;
 
 use App\Interfaces\BookingServiceRepositoryInterface;
 use App\Interfaces\NoteRepositoryInterface;
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\BookingService;
-use App\Models\State;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,48 +25,79 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         return BookingService::class;
     }
 
-
-
     public function getRecentAll()
     {
-        $booking = $this->model->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes', 'changes')
-            ->orderBy('created_at', 'DESC')->where('created_at', '>=', now()->subDays(15));
+        $booking = $this->model
+            ->with([
+                'service:id,title,type',
+                'extras:id,booking_service_id', // Replace ... with needed columns
+                'user:id,name,email', // Only select needed columns
+                'payments:id,booking_service_id',
+                'payments.metohdPayment:id,name', // Only select needed columns
+                'proveedors:id,booking_service_id,proveedor_id,cost,concept',
+                'proveedors.proveedor:id,nombre',
+                'channel:id,name',
+                'notes:id,booking_service_id',
+                'changes:id,booking_service_id',
+            ])
+            ->orderByDesc('created_at')
+            ->where('created_at', '>=', now()->subDays(15));
 
-        if (Auth::user()->rol == 'vendedor') {
-            $booking = $booking->where('user_id', Auth::user()->id);
+        if (Auth::user()->rol === 'vendedor') {
+            $booking->where('user_id', Auth::id());
         }
 
-        return $booking->get()->map(function ($booking) {
-            return $this->map($booking);
-        });
+        return $booking->get()->map(fn ($booking) => $this->map($booking));
     }
 
     public function getAll()
     {
-        $booking = $this->model->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes', 'changes')
-            ->orderBy('created_at', 'DESC');
+        $booking = $this->model
+            ->with([
+                'service:id,title,type',
+                'extras:id,booking_service_id', // Add specific columns you need
+                'user:id,name,email',
+                // 'payments:id', // Add specific columns you need
+                'payments.metohdPayment:id,name',
+                'proveedors:id,booking_service_id,proveedor_id,cost,concept',
+                'proveedors.proveedor:id,nombre',
+                'channel:id,name',
+                'notes:id,booking_service_id',
+                'changes:id,booking_service_id',
+            ])
+            ->orderByDesc('created_at');
 
-        return $booking->get()->map(function ($booking) {
-            return $this->map($booking);
-        });
+        return $booking->get()->map(fn ($booking) => $this->map($booking));
     }
 
     public function getAllByDate($dates)
     {
         $star_date = Carbon::parse($dates[0])->format('Y-m-d');
-        $end_date =    Carbon::parse($dates[1])->format('Y-m-d');
-        $booking = $this->model->whereBetween('date', [
-            $star_date,
-            $end_date
-        ])->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
-            ->orderBy('created_at', 'DESC');
-        if (Auth::user()->rol == 'vendedor') {
-            $booking = $booking->where('user_id', Auth::user()->id);
+        $end_date = Carbon::parse($dates[1])->format('Y-m-d');
+        $booking = $this->model
+            ->with([
+                'service:id,title,type',
+                'extras:id,booking_service_id', // Add specific columns you need
+                'user:id,name,email',
+                // 'payments:id,booking_service_id', // Add specific columns you need
+                'payments.metohdPayment:id,name',
+                'proveedors:id,booking_service_id,proveedor_id,cost,concept',
+                'proveedors.proveedor:id,nombre',
+                'channel:id,name',
+                'notes:id,booking_service_id',
+                'changes:id,booking_service_id',
+            ])
+            ->whereBetween('date', [
+                $star_date,
+                $end_date,
+            ])
+            ->orderByDesc('created_at');
+
+        if (Auth::user()->rol === 'vendedor') {
+            $booking->where('user_id', Auth::id());
         }
 
-        return $booking->get()->map(function ($booking) {
-            return $this->map($booking);
-        });
+        return $booking->get()->map(fn ($booking) => $this->map($booking));
     }
 
     public function create(array $data)
@@ -83,6 +112,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $data['boys_price'] = $service->boys_price;
         $data['boys_tarifa'] = $service->boy_tarifa;
         $status = Auth::user()->rol == 'vendedor' ? 'SIN CONFIRMAR' : 'reservado';
+
         return $this->store($data, $status);
 
     }
@@ -99,7 +129,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $data['adult_tarifa'] = $service->adult_tarifa;
         $data['boys_price'] = $service->boys_price;
         $data['boys_tarifa'] = $service->boy_tarifa;
-        $bookingService =  $this->getById($id);
+        $bookingService = $this->getById($id);
         $bookingService->fill($data);
         $changes = $bookingService->getDirty();
         $original = $bookingService->getOriginal();
@@ -112,14 +142,14 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                     'before' => $oldValue,
                     'after' => $newValue,
                 ]
-                );
+            );
         }
 
         return $bookingService->save();
     }
 
-
-    public function store(array $data, string $status = 'reservado', $userId = null): BookingService{
+    public function store(array $data, string $status = 'reservado', $userId = null): BookingService
+    {
         $userId = $userId ?? Auth::id();
         $data['user_id'] = $userId;
         $bookingService = $this->model->create($data);
@@ -128,9 +158,9 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             'note' => $data['observations'] ?? '',
         ]);
         storeState($bookingService, $status, $userId);
+
         return $bookingService;
     }
-
 
     private function map(BookingService $booking): array
     {
@@ -164,9 +194,8 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             'placa' => $booking->placa,
             'total_pago_proveedor' => $booking->total_pago_proveedor,
             'total' => $booking->total,
-            'channel' => $booking->channel,
             'total_price_sales' => $booking->total_price_sales,
-            'service_type' => $booking->service()->get()->first()->type,
+            // 'service_type' => $booking->service->type,
             'proveedors_names' => $booking->proveedors->map(function ($proveedor) {
                 return $proveedor->proveedor->nombre;
             })->implode(', '),
@@ -184,7 +213,6 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         ];
     }
 
-    
     public function delete($id)
     {
         $bookingService = $this->getById($id);
