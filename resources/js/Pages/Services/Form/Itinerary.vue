@@ -30,7 +30,7 @@
                 <Button v-if="isEditing" type="button" @click="cancelEdit" severity="secondary">Cancelar</Button>
             </div>
         </form>
-        <ItineraryView :itineraries="filteredItineraries" @deleteItem="deleteItem" @edit="edit" />
+        <ItineraryView :itineraries="filteredItineraries" :readOnly="false" @deleteItem="deleteItem" @edit="edit" />
         <!-- <div class="col-span-2 bg-gray-300 p-2 rounded-md h-[600px] gap-3 flex flex-col overflow-y-auto">
             <div v-if="filteredItineraries.length === 0" class="flex items-center justify-center h-full">
                 <p class="text-gray-500 italic">No hay itinerarios agregados</p>
