@@ -653,7 +653,7 @@ const goToCheckout = () => {
                             @click="op?.toggle($event)">
                             Revisa las fechas
                         </button>
-                        <Button class="w-full" @click="router.get(route('check.out'))" label="Reservar"></Button>
+                        <Button class="w-full" @click="router.get(route('check.out', props.service))" label="Reservar"></Button>
                     </div>
                 </div>
             </div>

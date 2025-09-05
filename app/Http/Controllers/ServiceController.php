@@ -191,10 +191,10 @@ class ServiceController extends Controller
         }
     }
 
-    public function checkOut(Request $request)
+    public function checkOut(Service $service, Request $request)
     {
         return Inertia::render('Home/CheckOut/Index', [
-            'service' => $request->all(),
+            'service' => $service,
         ]);
     }
 
