@@ -73,7 +73,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
     public function getAllByDate($dates)
     {
         $star_date = Carbon::parse($dates[0])->format('Y-m-d');
-        $end_date = Carbon::parse($dates[1])->addDay()->format('Y-m-d');
+        $end_date = Carbon::parse($dates[1])->format('Y-m-d');
         $booking = $this->model
             ->with([
                 'service:id,title,type',
@@ -87,7 +87,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                 'notes:id,booking_service_id',
                 'changes:id,booking_service_id',
             ])
-            ->whereBetween('created_at', [
+            ->whereBetween('date', [
                 $star_date,
                 $end_date,
             ])

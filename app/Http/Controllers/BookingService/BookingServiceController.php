@@ -55,7 +55,7 @@ class BookingServiceController extends Controller
             'dates.1' => 'required|date',
         ]);
 
-        $booking = $this->bookingServiceRepository->getAllByDate($validated['dates']);
+        $booking = $this->bookingServiceRepository->getRecentAll();
         return response()->json(['bookingServices' => $booking], 200);
     }
 
