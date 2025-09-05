@@ -58,10 +58,7 @@ const availabilitySet = computed(() => {
 
 function formatYMD(d) {
     if (!d) return null;
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+    return d.toISOString();
 }
 
 function handleCalendarChange(val) {
@@ -383,12 +380,12 @@ const goToCheckout = () => {
                             <div class="flex gap-2">
                                 <!-- Check-in -->
                                 <div class="w-full">
-                                    <label class="text-xs font-medium  text-gray-700 block mb-1">{{ service.type !=
-                                        'EMBARCACION'?'LLEGADA':'FECHA'}}</label>
+                                    <label class="text-xs font-medium  text-gray-700 block mb-1">{{
+                                    service.type =='HOSPEDAJE'?'LLEGADA':'FECHA'}}</label>
                                     <button type="button"
                                         class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
                                         @click="op?.toggle($event)">
-                                        <div v-if="service.type != 'EMBARCACION'"
+                                        <div v-if="service.type == 'HOSPEDAJE'"
                                             class="text-sm text-gray-900 font-medium">
                                             {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', {
                                                 day: 'numeric',
@@ -408,7 +405,7 @@ const goToCheckout = () => {
                                 </div>
 
                                 <!-- Check-out -->
-                                <div v-if="service.type != 'EMBARCACION'" class="w-full">
+                                <div v-if="service.type == 'HOSPEDAJE'" class="w-full">
                                     <label class="text-xs font-medium text-gray-700 block mb-1">SALIDA</label>
                                     <button type="button"
                                         class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
@@ -424,7 +421,8 @@ const goToCheckout = () => {
                                 </div>
 
                                 <OverlayPanel ref="op" appendTo="body" class="!w-auto">
-                                    <div class="p-0 h-[330px]" v-if="service.type != 'EMBARCACION'">
+
+                                    <div class="p-0 h-[330px]" v-if="service.type == 'HOSPEDAJE'">
                                         <VueDatePicker v-model="dateRange" range :min-date="new Date()" inline
                                             auto-apply :teleport="false" locale="es" :format="'dd/MM/yyyy'"
                                             :preview-format="'dd/MM/yyyy'" placeholder="Selecciona fechas"
@@ -574,8 +572,8 @@ const goToCheckout = () => {
                                 </h3>
                                 <div class="grid grid-cols-2 gap-3">
                                     <!-- Check-in móvil -->
-                                    <div :class="service.type == 'EMBARCACION'?'col-span-2 w-full':''">
-                                        <label v-if="service.type != 'EMBARCACION'" class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
+                                    <div :class="service.type != 'HOSPEDAJE'?'col-span-2 w-full':''">
+                                        <label v-if="service.type == 'HOSPEDAJE'" class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
                                         <button type="button"
                                             class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
                                             @click="op?.toggle($event)">
@@ -597,7 +595,7 @@ const goToCheckout = () => {
                                     </div>
 
                                     <!-- Check-out móvil -->
-                                    <div v-if="service.type != 'EMBARCACION'">
+                                    <div v-if="service.type == 'HOSPEDAJE'">
                                         <label class="text-xs font-medium text-gray-700 block mb-1">SALIDA</label>
                                         <button type="button"
                                             class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
