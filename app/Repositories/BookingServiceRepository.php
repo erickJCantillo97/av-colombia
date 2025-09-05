@@ -87,7 +87,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                 'notes:id,booking_service_id',
                 'changes:id,booking_service_id',
             ])
-            ->whereBetween('date', [
+            ->whereBetween('created_at', [
                 $star_date,
                 $end_date,
             ])
