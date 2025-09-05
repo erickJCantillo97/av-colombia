@@ -185,7 +185,7 @@ const destinosFinales = ref([]);
 
 
 const getDestinos = async () => {
-    const response = await axios.get(`/getAllOrigins?city=${props.selectedLocation}`);
+    const response = await axios.get(`/getAllDestinations?origen=${searchStore.origen.value}`);
     destinosFinales.value = response.data.filter(destino => destino !== searchStore.origen.value);
 };
 

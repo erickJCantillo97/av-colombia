@@ -1,0 +1,1 @@
+import{S as t}from"./sweetalert2.all-BOX8iAj0.js";const r=t.mixin({toast:!0,position:"top-end",iconColor:"white",customClass:{popup:"colored-toast"},showCloseButton:!0,showConfirmButton:!1,timer:2e3,timerProgressBar:!0,didOpen:o=>{o.onmouseenter=t.stopTimer,o.onmouseleave=t.resumeTimer}});function n(){return{toast:(e,s)=>{r.fire({icon:e,title:s})}}}export{n as a};

@@ -279,7 +279,8 @@ const priceService = computed(() => {
 
 
 const goToCheckout = () => {
-    router.get(route('check.out'));
+    router.get(route('check.out', props.service.slug)
+    );
 }
 </script>
 
@@ -369,10 +370,10 @@ const goToCheckout = () => {
                         <div class="flex items-baseline justify-start gap-x-2">
                             <div class="text-2xl md:text-3xl font-bold text-gray-900">{{
                                 USDollar.format(props.service.adults_price)
-                            }}</div>
+                                }}</div>
                             <div class="text-sm text-gray-600"> {{
                                 props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación'
-                                }}
+                            }}
                             </div>
                         </div>
                         <form class="mt-4 space-y-3">
@@ -381,7 +382,7 @@ const goToCheckout = () => {
                                 <!-- Check-in -->
                                 <div class="w-full">
                                     <label class="text-xs font-medium  text-gray-700 block mb-1">{{
-                                    service.type =='HOSPEDAJE'?'LLEGADA':'FECHA'}}</label>
+                                        service.type == 'HOSPEDAJE' ? 'LLEGADA' : 'FECHA' }}</label>
                                     <button type="button"
                                         class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
                                         @click="op?.toggle($event)">
@@ -477,7 +478,7 @@ const goToCheckout = () => {
                                 <div class="flex items-center justify-between text-sm text-gray-600">
                                     <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{
                                         guests > 1 ? 'es' : ''
-                                    }}</div>
+                                        }}</div>
                                     <div class="font-medium text-gray-900">{{ USDollar.format(priceService) }}</div>
                                 </div>
                                 <!-- <div class="flex items-center justify-between text-sm text-gray-600 mt-1">
@@ -517,7 +518,7 @@ const goToCheckout = () => {
                         </div>
                         <div class="text-sm text-gray-600">{{
                             props.service.type == 'TOUR' ? 'por persona' : 'por Embarcación'
-                        }}
+                            }}
                         </div>
                     </div>
                     <button
@@ -559,7 +560,7 @@ const goToCheckout = () => {
                                     USDollar.format(props.service.adults_price) }}</div>
                                 <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' :
                                     'por Embarcación'
-                                }}</div>
+                                    }}</div>
                             </div>
                         </div>
 
@@ -568,16 +569,18 @@ const goToCheckout = () => {
                             <div class="space-y-3">
                                 <h3 class="text-base font-medium text-gray-900">{{
                                     service.type != 'EMBARCACION' ? 'Fechas' : 'Dia a reservar'
-                                }}
+                                    }}
                                 </h3>
                                 <div class="grid grid-cols-2 gap-3">
                                     <!-- Check-in móvil -->
-                                    <div :class="service.type != 'HOSPEDAJE'?'col-span-2 w-full':''">
-                                        <label v-if="service.type == 'HOSPEDAJE'" class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
+                                    <div :class="service.type != 'HOSPEDAJE' ? 'col-span-2 w-full' : ''">
+                                        <label v-if="service.type == 'HOSPEDAJE'"
+                                            class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
                                         <button type="button"
                                             class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
                                             @click="op?.toggle($event)">
-                                            <div v-if="service.type != 'EMBARCACION'" class="text-sm text-gray-900 font-medium">
+                                            <div v-if="service.type != 'EMBARCACION'"
+                                                class="text-sm text-gray-900 font-medium">
                                                 {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', {
                                                     day:
                                                         'numeric', month: 'short'
@@ -653,7 +656,8 @@ const goToCheckout = () => {
                             @click="op?.toggle($event)">
                             Revisa las fechas
                         </button>
-                        <Button class="w-full" @click="router.get(route('check.out', props.service))" label="Reservar"></Button>
+                        <Button class="w-full" @click="router.get(route('check.out', props.service))"
+                            label="Reservar"></Button>
                     </div>
                 </div>
             </div>

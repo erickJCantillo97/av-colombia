@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="h-[40vh]">
+        <div class="h-[70vh]">
             <Datatable :add :columnas="columns" :data="tickets" title="Movimientos de los tickets" :actions="buttons">
             </Datatable>
         </div>

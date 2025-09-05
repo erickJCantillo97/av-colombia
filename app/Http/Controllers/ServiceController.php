@@ -280,7 +280,7 @@ class ServiceController extends Controller
 
     public function getAllDestinations(Request $request){
         $destinos = Service::where('origen', $request->origen)->whereNotNull('destino')->pluck('destino')->unique()->toArray();
-        $origin = Service::whereNotNull('origen')->where('city', $request->city)->pluck('origen')->unique()->toArray();
+        $origin = Service::where('destino', $request->origen)->where('is_round_trip', 1)->whereNotNull('origen')->pluck('origen')->unique()->toArray();
         $result = array_unique(array_merge($origin, $destinos));
         return response()->json($result);
     }
