@@ -75,9 +75,8 @@
                     }}</h3>
 
                 <div>
-                    <CalendarSelector class="w-full" :value="[searchStore.checkin.value, searchStore.checkout.value]"
-                        :min-date="new Date().toISOString().split('T')[0]" :placeholder="'Selecciona rango de fechas'"
-                        @change="val => { if (Array.isArray(val) && val.length === 2) { searchStore.checkin.value = val[0]; searchStore.checkout.value = val[1]; } }"
+                    <CalendarSelector class="w-full" :value="dates" :min-date="new Date().toISOString().split('T')[0]"
+                        :placeholder="'Selecciona rango de fechas'" @update:value="val => valueDateChange(val)"
                         @update:checkin="val => searchStore.checkin.value = val"
                         @update:checkout="val => searchStore.checkout.value = val"
                         :range="type == 'Hospedaje' ? true : false" />
@@ -110,8 +109,6 @@ import GuestSelector from './GuestSelector.vue';
 import CalendarSelector from './CalendarSelector.vue';
 import searchStore from '@/store/searchStore';
 import { computed, ref } from 'vue';
-
-
 
 const props = defineProps([
     'isPanelOpen',
@@ -160,6 +157,20 @@ const mensajePrincipal = computed(() => {
     return '¿Qué día necesitas tu transporte?';
 });
 
+
+const dates = ref([])
+
+function valueDateChange(val) {
+    if (Array.isArray(val) && val.length === 2) {
+        searchStore.checkin.value = val[0];
+        searchStore.checkout.value = val[1];
+    } else {
+        searchStore.checkin.value = val;
+        searchStore.checkout.value = val;
+    }
+    console.log(dates.value)
+}
+
 const selectOrigen = (origen) => {
     searchStore.origen.value = origen;
     searchStore.destino.value = null;
@@ -179,7 +190,5 @@ const getDestinos = async () => {
 };
 
 getDestinos();
-
-
 
 </script>

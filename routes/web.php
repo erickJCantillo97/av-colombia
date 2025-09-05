@@ -106,7 +106,7 @@ Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('
 Route::post('get-service', [ServiceController::class, 'getServiceRecommendation']);
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
-Route::get('check-out', [ServiceController::class, 'checkOut'])->name('check.out');
+Route::get('check-out/{service}', [ServiceController::class, 'checkOut'])->name('check.out');
 Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');
 Route::get('getAllFeatures',[ServiceController::class, 'getAllFeatures'])->name('get.all.features');
 Route::get('getAllDestinations',[ServiceController::class, 'getAllDestinations'])->name('get.all.destinations');
