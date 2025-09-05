@@ -12,6 +12,7 @@
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
+                    <!-- {{ locationQuery }} -->
                     <input :value="locationQuery"
                         @input="$emit('update:locationQuery', $event.target.value); $emit('searchLocations')"
                         type="text" placeholder="Buscar destinos"
@@ -30,6 +31,37 @@
                             <div class="min-w-0 flex-1">
                                 <p class="font-medium text-gray-900 truncate">{{ destination.name }}</p>
                                 <p class="text-sm text-gray-500 truncate">{{ destination.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!----- Panel de origen y destino ----->
+            <div v-if="activeTab === 'origin'" class="p-4 sm:p-8 panel-content">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">¿Dónde te recogemos y dónde te llevamos?
+                </h3>
+                <div class="flex justify-between gap-4">
+                    <div class="w-full py-2 rounded-md">
+                        <p class="font-bold">Origen</p>
+                        <div class="grid  grid-cols-4 gap-2 mt-2">
+                            <div v-for="origen in origenes" :key="origen" 
+                                @click="selectOrigen(origen)">
+                                <div class="p-2 border border-gray-200 rounded-lg shadow-md cursor-pointer hover:bg-rose-500 hover:text-white transition-all duration-200 text-center scale-hover modern-focus"
+                                    :class="{ 'bg-rose-500 text-white': searchStore.origen.value === origen }">
+                                    {{ origen }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full py-2 rounded-md" v-if="searchStore.origen.value">
+                        <p class="font-bold">Destino</p>
+                        <div class="grid  grid-cols-4 gap-2 mt-2">
+                            <div v-for="destino in destinosFinales" :key="destino" 
+                                @click="selectDestino(destino)">
+                                <div class="p-2 border border-gray-200 rounded-lg shadow-md cursor-pointer hover:bg-blue-500 hover:text-white transition-all duration-200 text-center scale-hover modern-focus"
+                                    :class="{ 'bg-blue-500 text-white': searchStore.destino.value === destino }">
+                                    {{ destino }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -77,6 +109,7 @@ import GuestSelector from './GuestSelector.vue';
 import CalendarSelector from './CalendarSelector.vue';
 import searchStore from '@/store/searchStore';
 import { computed, ref } from 'vue';
+
 const props = defineProps([
     'isPanelOpen',
     'activeTab',
@@ -89,7 +122,9 @@ const props = defineProps([
     'quickDateOptions',
     'durationOptions',
     'formatDate',
-    'type'
+    'type',
+    'selectedLocation',
+    'origenes',
 ]);
 defineEmits([
     'selectLocation',
@@ -122,6 +157,7 @@ const mensajePrincipal = computed(() => {
     return '¿Qué día necesitas tu transporte?';
 });
 
+
 const dates = ref([])
 
 function valueDateChange(val) {
@@ -134,4 +170,25 @@ function valueDateChange(val) {
     }
     console.log(dates.value)
 }
+
+const selectOrigen = (origen) => {
+    searchStore.origen.value = origen;
+    searchStore.destino.value = null;
+    getDestinos(origen);
+};
+
+const selectDestino = (destino) => {
+    searchStore.destino.value = destino;
+};
+
+const destinosFinales = ref([]);
+
+
+const getDestinos = async () => {
+    const response = await axios.get(`/getAllOrigins?city=${props.selectedLocation}`);
+    destinosFinales.value = response.data.filter(destino => destino !== searchStore.origen.value);
+};
+
+getDestinos();
+
 </script>

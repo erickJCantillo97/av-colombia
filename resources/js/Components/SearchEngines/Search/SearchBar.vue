@@ -19,6 +19,32 @@
         <!-- Línea divisoria móvil -->
         <div class="block sm:hidden h-px bg-gray-200 mx-4"></div>
 
+        
+
+        <!-- Sección Check-in/Check-out -->
+        <div class="flex-1 relative search-section" @click="setActiveTab('origin')" v-if="type === 'Transporte'" :class="[
+            'px-4 sm:px-6 py-3 sm:py-4 cursor-pointer transition-all duration-200 modern-focus',
+            activeTab === 'checkin' ? 'bg-white shadow-md section-active' : 'hover:bg-gray-50'
+        ]">
+            <div v-if="showInputTitles" class="text-xs font-semibold text-gray-900 uppercase tracking-wide">
+                <span class="hidden sm:inline">
+                    
+                    Origen/Destino
+                </span>
+                <span class="sm:hidden"> Origen/Destino</span>
+            </div>
+            <div class="text-sm text-gray-500 mt-1 truncate">
+                {{ (searchStore.origen.value || 'Origen') + ' - ' + (searchStore.destino.value || 'Destino') }}
+            </div>
+        </div>
+        <!-- Divider - Hidden on mobile -->
+        <div class="hidden sm:block w-px h-8 bg-gray-200 divider-animated"></div>
+
+        <!-- Línea divisoria móvil -->
+        <div class="block sm:hidden h-px bg-gray-200 mx-4"></div>
+
+        
+
         <!-- Sección Check-in/Check-out -->
         <div class="flex-1 relative search-section" @click="setActiveTab('checkin')" :class="[
             'px-4 sm:px-6 py-3 sm:py-4 cursor-pointer transition-all duration-200 modern-focus',
@@ -81,6 +107,7 @@ const props = defineProps([
     'selectedLocation',
     'guestSummary',
     'setActiveTab',
+    'selectedOrigin',
     'formatDate',
     'type'
 ]);

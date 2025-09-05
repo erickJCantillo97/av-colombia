@@ -270,4 +270,19 @@ class ServiceController extends Controller
     public function getAllFeatures(){
         return response()->json(Feature::all()->toArray());
     }
+
+    public function getAllOrigins(Request $request){
+        $destinos = Service::where('city', $request->city)->whereNotNull('destino')->pluck('destino')->unique()->toArray();
+        $origen = Service::where('is_round_trip', true)->where('city', $request->city)->whereNotNull('origen')->pluck('origen')->unique()->toArray();
+        $result = array_unique(array_merge($origen, $destinos));
+        return response()->json($result);
+    }
+
+    public function getAllDestinations(Request $request){
+        $destinos = Service::where('origen', $request->origen)->whereNotNull('destino')->pluck('destino')->unique()->toArray();
+        $origin = Service::whereNotNull('origen')->where('city', $request->city)->pluck('origen')->unique()->toArray();
+        $result = array_unique(array_merge($origin, $destinos));
+        return response()->json($result);
+    }
+
 }

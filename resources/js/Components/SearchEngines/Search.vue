@@ -16,17 +16,16 @@
                 <SearchBar :type="searchStore.type.value.label" :isPanelOpen="isPanelOpen" :activeTab="activeTab"
                     :selectedLocation="selectedLocation" :selectedCheckin="selectedCheckin"
                     :selectedCheckout="selectedCheckout" :guestSummary="guestSummary" :setActiveTab="setActiveTab"
-                    :formatDate="formatDate" :dateRange="dateRangeDisplay" />
+                    :formatDate="formatDate" :dateRange="dateRangeDisplay" :selectedOrigin />
             </div>
             <!-- Dropdown Panels -->
             <DropdownPanels :isPanelOpen="isPanelOpen" :activeTab="activeTab" v-model:locationQuery="locationQuery"
                 v-model:selectedCheckin="selectedCheckin" v-model:selectedCheckout="selectedCheckout" :guests="guests"
-                :hasSearchCriteria="hasSearchCriteria" :popularDestinations="popularDestinations"
+                :hasSearchCriteria="hasSearchCriteria" :popularDestinations="popularDestinations" :selectedLocation
                 :quickDateOptions="quickDateOptions" :durationOptions="durationOptions" :formatDate="formatDate"
                 @selectLocation="selectLocation" @openDatePicker="openDatePicker" @setQuickDate="setQuickDate"
                 @setDuration="setDuration" @incrementGuests="incrementGuests" @decrementGuests="decrementGuests"
-                @searchLocations="searchLocations" @generateWithAi="generateWithAi" :type="searchStore.type.value.label"/>
-
+                @searchLocations="searchLocations" @generateWithAi="generateWithAi" :type="searchStore.type.value.label" :origenes />
         </div>
     </div>
 </template>
@@ -56,6 +55,7 @@ const selectedLocation = searchStore.location;
 const selectedCheckin = searchStore.checkin;
 const selectedCheckout = searchStore.checkout;
 const guests = searchStore.guests;
+const selectedOrigin = searchStore.origen;
 
 // Tipo de servicio
 const type = ref({
@@ -77,20 +77,31 @@ const closePanel = () => {
     activeTab.value = '';
 };
 
+const destinos = ref([]);
+const origenes = ref([]);
+const destinosFinales = ref([]);
+
 const openModal = () => { isModalVisible.value = true; };
-const closeModal = () => {
-    isModalVisible.value = false;
-    generatedContent.value = '';
-};
 
 // Funciones de selección
-const selectLocation = (location) => {
+const selectLocation = async (location) => {
     selectedLocation.value = location;
+    getAllOrigins(location);
+    if(searchStore.type.value.label == 'Transporte'){
+        setActiveTab('origin');
+        return;
+    }
     setActiveTab('checkin');
 };
 
+const getAllOrigins = async (location) => {
+    const response = await axios.get(`/getAllOrigins?city=${location}`);
+    origenes.value = response.data;
+};
+
+getAllOrigins(selectedLocation.value);
+
 const openDatePicker = (type) => {
-    // Simular apertura de datepicker - aquí puedes integrar con tu componente de fechas preferido
     const today = new Date();
     if (type === 'checkin') {
         const tomorrow = new Date(today);

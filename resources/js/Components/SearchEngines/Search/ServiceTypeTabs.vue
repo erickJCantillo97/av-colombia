@@ -66,7 +66,7 @@ const servicesType = [
   },
   {
     label: 'Transporte',
-    value: 'TRANSPORTE',
+    value: 'TRANSFER',
     description: 'Traslados y vehículos',
     icon: `<img src="/images/car.png" alt="Automobile Icon" />`
   },

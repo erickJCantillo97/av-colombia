@@ -13,6 +13,7 @@ use App\Models\BookingService;
 use App\Models\Channel;
 use App\Models\Horario;
 use App\Models\Note;
+use App\Models\PagoSaldos;
 use App\Models\Service;
 use App\Models\State;
 use Carbon\Carbon;
@@ -32,7 +33,7 @@ class BookingServiceController extends Controller
     public function index()
     {
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => $this->bookingServiceRepository->getRecentAll(),
+            'bookingServices' => $this->bookingServiceRepository->getAllByDate([Carbon::now()->subDays(15), Carbon::tomorrow()]),
         ]);
     }
 
@@ -198,11 +199,16 @@ class BookingServiceController extends Controller
                 'total_pago_proveedor' => $request->value,
             ]);
         }
-        if($request->saldoPagado == 'proveedor'){
-            $proveedor = $booking->proveedors->first();
+        foreach($request->saldos as $saldo){
+            $proveedor = $booking->proveedors->firstWhere('id', $saldo['id']);
             if($proveedor) {
                 $proveedor->update([
-                    'cost' => $proveedor->cost - $booking->saldo,
+                    'cost' => $proveedor->cost - $saldo['amount'],
+                ]);
+                PagoSaldos::create([
+                    'amount' => $saldo['amount'],
+                    'proveedor_id' => $saldo['id'],
+                    'booking_service_id' => $booking->id,
                 ]);
             }
 

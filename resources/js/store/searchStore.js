@@ -5,6 +5,8 @@ const CACHE_KEY = 'avcolombia_search_state';
 
 const state = {
   location: ref(''),
+  origen: ref(''),
+  destino: ref(''),
   type: ref({
     label: 'Tours',
     value: 'TOUR',
@@ -20,6 +22,8 @@ function loadCache() {
     try {
       const parsed = JSON.parse(cache);
       if (parsed.location) state.location.value = parsed.location;
+      if (parsed.origen) state.origen.value = parsed.origen;
+      if (parsed.destino) state.destino.value = parsed.destino;
       if (parsed.checkin) state.checkin.value = parsed.checkin;
       if (parsed.checkout) state.checkout.value = parsed.checkout;
       if (parsed.guests) state.guests.value = parsed.guests;
@@ -31,6 +35,8 @@ function loadCache() {
 function saveCache() {
   localStorage.setItem(CACHE_KEY, JSON.stringify({
     location: state.location.value,
+    origen: state.origen.value,
+    destino: state.destino.value,
     checkin: state.checkin.value,
     type: state.type.value,
     checkout: state.checkout.value,
@@ -39,7 +45,7 @@ function saveCache() {
 }
 
 // Sincronizar cambios con cache
-watch([state.location, state.checkin, state.checkout, state.guests, state.type], saveCache, { deep: true });
+watch([state.location, state.origen, state.destino, state.checkin, state.checkout, state.guests, state.type], saveCache, { deep: true });
 
 
 function performSearch() {

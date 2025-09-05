@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class TicketController extends Controller
 {
@@ -29,7 +31,16 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+            Ticket::create($request->validated());
+            DB::commit();
+            
+            return back()->with('success', 'Ticket creado exitosamente');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al crear el ticket: ' . $e->getMessage()]);
+        }
     }
 
     /**
@@ -53,7 +64,16 @@ class TicketController extends Controller
      */
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $ticket->update($request->validated());
+            DB::commit();
+            
+            return back()->with('success', 'Ticket actualizado exitosamente');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al actualizar el ticket: ' . $e->getMessage()]);
+        }
     }
 
     /**
@@ -61,6 +81,15 @@ class TicketController extends Controller
      */
     public function destroy(Ticket $ticket)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $ticket->delete();
+            DB::commit();
+            
+            return back()->with('success', 'Ticket eliminado exitosamente');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al eliminar el ticket: ' . $e->getMessage()]);
+        }
     }
 }

@@ -24,7 +24,7 @@ class ServiceRepository extends BaseRepository implements ServiceRepositoryInter
 
     public function getAll()
     {
-        return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies')
+        return $this->model->with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies', 'ticketTypes')
             ->get();
     }
 

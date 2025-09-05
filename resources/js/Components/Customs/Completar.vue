@@ -35,51 +35,18 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-y-4">
-        <div class="flex justify-between my-4">
+      <div class="flex flex-col gap-y-1" >
+        <div class="flex justify-between">
           <label for="" class="w-full font-bold"
-            >Saldo Pagado ({{ COP.format(service.saldo) }})</label
+            >Saldo ({{ COP.format(service.saldo - saldos.reduce((acc, curr) => acc + curr.amount, 0)) }})</label
           >
-          <div class="flex gap-4 justify-between text-md">
-            <div class="flex items-center gap-2">
-              <RadioButton
-                v-model="form.saldoPagado"
-                inputId="AV COLOMBIA"
-                name="AV COLOMBIA"
-                value="AV COLOMBIA"
-                size="small"
-              />
-              <label for="AV COLOMBIA" class="text-nowrap cursor-pointer"
-                >AV COLOMBIA</label
-              >
-            </div>
-            <div class="flex items-center gap-2">
-              <RadioButton
-                v-model="form.saldoPagado"
-                inputId="proveedor"
-                name="proveedor"
-                value="proveedor"
-                size="small"
-              />
-              <label for="proveedor" class="cursor-pointer uppercase">Proveedor</label>
-            </div>
-            <div class="flex items-center gap-2">
-              <RadioButton
-                v-model="form.saldoPagado"
-                inputId="NoPagado"
-                class="cursor-pointer text-red-500"
-                name="NoPagado"
-                value="NoPagado"
-                size="small"
-              />
-              <label
-                for="NoPagado"
-                class="cursor-pointer uppercase text-nowrap text-red-500"
-                >No Pagado</label
-              >
+        </div>
+        <div class="flex flex-col gap-y-2">
+            <div v-for="proveedor in saldos" :key="proveedor.id" class="flex justify-between w-full items-center gap-x-4">
+              <p class="w-full">{{ proveedor.name }}</p>
+              <Input class="w-1/2" type="number" mode="currency" v-model="proveedor.amount"></Input>
             </div>
           </div>
-        </div>
       </div>
 
       <div v-if="service.extras.length > 0" class="flex flex-col gap-y-2 my-4">
@@ -130,6 +97,7 @@ const show = defineModel(true);
 const status = ref("COMPLETADA");
 
 const options = [{ label: "Sin novedad", value: "COMPLETADA", color: "blue" }];
+const saldos = ref([]);
 
 const form = useForm({
   saldoPagado: "AV COLOMBIA",
@@ -138,6 +106,7 @@ const form = useForm({
   conductor: "",
   placa: "",
   value: "",
+  saldos: [],
   extras: [],
 });
 
@@ -161,9 +130,28 @@ function llenarExtras() {
 llenarExtras();
 
 const submit = () => {
+  form.saldos = saldos.value;
   form.status = status.value;
-  form.post(route("completar.reserva"));
-  form.reset();
-  show.value = false;
+  form.post(route("completar.reserva"), {
+    onSuccess: () => {
+      form.reset();
+      show.value = false;
+    }
+  });
+  // form.reset();
+  // // show.value = false;
 };
+
+function llenarSaldos() {
+  saldos.value = props.service.proveedors.map((proveedor) => {
+    return {
+      id: proveedor.id,
+      name: proveedor.proveedor.proveedor.nombre,
+      amount: 0
+    };
+  });
+}
+
+llenarSaldos();
+
 </script>

@@ -2,26 +2,29 @@
 
 const columns = [
     {
-        header: "Cantidad de pasajeros",
+        header: "Adultos Nacionales",
         field: "title",
         filter: true,
     },
     {
-        header: "Costo Total",
+        header: "Adultos Extranjeros",
         field: "total_cost",
         type: "currency",
     },
     {
-        header: "Servicio",
+        header: "Niños Extranjeros",
         field: "type",
         filter: true,
     },
     {
-        header: "Proveedor",
+        header: "Niños Nacionales",
         field: "city",
         filter: true,
     },
-    
+    {
+        header: 'tipo_movimiento',
+        field: 'tipo_movimiento',
+        filter: true,
+    }
 ];
-
 export default columns;

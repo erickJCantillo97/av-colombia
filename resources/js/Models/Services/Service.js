@@ -41,6 +41,7 @@ export default class Service extends GeneralService {
         this.url = "services";
         if (service) {
             this.assignMatchingKeys(service, this.form);
+            this.form.is_round_trip = service.is_round_trip == 1 ? true : false;
             this.form.includes = JSON.parse(service.includes);
             this.form.notIncludes = JSON.parse(service.notIncludes);
             this.form.recogidas = JSON.parse(service.recogidas);

@@ -11,7 +11,7 @@ class UpdateTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'booking_service_id' => 'nullable|exists:booking_services,id',
+            'ticket_type_id' => 'required|exists:ticket_types,id',
+            'cantidad' => 'required|integer|min:1',
+            'costo_total' => 'required|numeric|min:0',
+            'tipo_movimiento' => 'required|in:entrada,salida'
         ];
     }
 }

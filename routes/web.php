@@ -96,6 +96,10 @@ Route::middleware([
     Route::resource('pagoEntradas', PagoEntradaController::class);
 
     Route::resource('itinerary',ItineraryController::class);
+    Route::post('pagoEntradas/storeTicket', [PagoEntradaController::class, 'storeTicket'])->name('pagoEntradas.storeTicket');
+    
+    // Rutas para tickets
+    Route::resource('tickets', \App\Http\Controllers\TicketController::class)->only(['update', 'destroy']);
 });
 
 Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('get.all.services');
@@ -105,3 +109,5 @@ Route::get('services-home', [ServiceController::class, 'home'])->name('services.
 Route::get('check-out/{service}', [ServiceController::class, 'checkOut'])->name('check.out');
 Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');
 Route::get('getAllFeatures',[ServiceController::class, 'getAllFeatures'])->name('get.all.features');
+Route::get('getAllDestinations',[ServiceController::class, 'getAllDestinations'])->name('get.all.destinations');
+Route::get('getAllOrigins',[ServiceController::class, 'getAllOrigins'])->name('get.all.origins');

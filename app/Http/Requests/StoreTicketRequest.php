@@ -11,7 +11,7 @@ class StoreTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,13 +22,11 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'booking_service_id' => ['nullable', 'exists:booking_services,id'],
-            'adults_extranjeros' => ['required', 'integer', 'min:0'],
-            'adults_nacionales' => ['required', 'integer', 'min:0'],
-            'boys_extranjeros' => ['required', 'integer', 'min:0'],
-            'boys_nacionales' => ['required', 'integer', 'min:0'],
-            'costo_total' => ['nullable', 'numeric', 'min:0'],
-            'tipo_movimiento' => ['required', 'in:entrada,salidas'],
+            'booking_service_id' => 'nullable|exists:booking_services,id',
+            'ticket_type_id' => 'required|exists:ticket_types,id',
+            'cantidad' => 'required|integer|min:1',
+            'costo_total' => 'required|numeric|min:0',
+            'tipo_movimiento' => 'required|in:entrada,salida'
         ];
     }
 }
