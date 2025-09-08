@@ -78,6 +78,23 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             $star_date,
             $end_date
         ])->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
+            ->orderBy('date', 'DESC');
+        
+        if (Auth::user()->rol === 'vendedor') {
+            $booking->where('user_id', Auth::id());
+        }
+
+        return $booking->get()->map(fn ($booking) => $this->map($booking));
+    }
+
+    public function getAllByDateCreated($dates)
+    {
+        $star_date = Carbon::parse($dates[0])->format('Y-m-d');
+        $end_date =    Carbon::parse($dates[1])->format('Y-m-d');
+        $booking = $this->model->whereBetween('created_at', [
+            $star_date,
+            $end_date
+        ])->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
             ->orderBy('created_at', 'DESC');
         
         if (Auth::user()->rol === 'vendedor') {

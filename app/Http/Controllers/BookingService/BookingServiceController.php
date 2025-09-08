@@ -33,7 +33,7 @@ class BookingServiceController extends Controller
     public function index()
     {
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => $this->bookingServiceRepository->getAllByDate([Carbon::now()->subDays(15), Carbon::tomorrow()]),
+            'bookingServices' => $this->bookingServiceRepository->getAllByDateCreated([Carbon::now()->subDays(15), Carbon::tomorrow()]),
         ]);
     }
 
