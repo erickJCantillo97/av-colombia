@@ -91,7 +91,7 @@ class ServiceController extends Controller
             ->first();
             }
 
-            return redirect()->route('services.show',  $transfer->slug);
+            return redirect()->route('show.services',  $transfer->slug);
         }
         return Inertia::render('Home/Services', [
             'search' => $request->search,

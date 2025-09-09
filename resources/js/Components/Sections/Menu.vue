@@ -21,9 +21,9 @@
 
     <!-- Main Menu Section -->
     <div class="flex-1 overflow-y-auto px-3 py-4">
-      <div v-if="!isCollapsed" class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+      <!-- <div v-if="!isCollapsed" class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
         MAIN MENU
-      </div>
+      </div> -->
 
       <nav class="space-y-1 overflow-hidden">
         <!-- Dashboard -->
@@ -94,7 +94,9 @@
           :is-collapsed="isCollapsed"
         />
       </nav>
+
     </div>
+    <Tickets v-if="!isCollapsed"></Tickets>
 
     <MenuUserPanelModern :is-collapsed="isCollapsed" />
   </div>
@@ -105,6 +107,7 @@ import { usePermissions } from "@/composable/Auth";
 import { ref, watch, onMounted } from "vue";
 import MenuItemModern from "@/Components/Menu/MenuItemModern.vue";
 import MenuUserPanelModern from "@/Components/Menu/MenuUserPanelModern.vue";
+import Tickets from "../Tickets.vue";
 
 const { hasPermissionTo } = usePermissions();
 

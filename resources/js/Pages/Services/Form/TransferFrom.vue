@@ -27,6 +27,7 @@
                 </template>
             </ToggleSwitch>
         </div>
+          <Input label="Descripción del Servicio" class=" col-span-1 md:col-span-3" type="textarea" :rowsTextarea="3" v-model="form.description"  :error-message="form.errors.description" />
         <div class="grid grid-cols-2 col-span-3 gap-2">
             <Button severity="danger" label="Cancelar" icon="fa-solid fa-xmark"></Button>
             <Button @click="submit()" title="Save" severity="success" label="Guardar" icon="fa-solid fa-save"
@@ -55,7 +56,7 @@ const submit = () => {
     form.title = `Transfer ${form.origen} - ${form.destino}`;
     form.type = "TRANSFER";
     form.code = `T-${form.origen}-${form.destino}`;
-    form.description = 'Transfer';
+    // form.description = 'Transfer';
     form.duration_type = 'Duración Fija';
     serviceModel.submit();
 };

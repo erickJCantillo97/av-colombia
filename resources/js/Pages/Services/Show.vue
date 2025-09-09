@@ -323,7 +323,7 @@ const goToCheckout = () => {
         </div>
 
         <!-- Galería de imágenes -->
-        <Gallery :images="product.images" class="mb-8" />
+        <Gallery :images="product.images" class="mb-8" v-if="service.type != 'TRANSFER'" />
 
         <!-- Main grid: left content + right booking card -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -337,7 +337,7 @@ const goToCheckout = () => {
                 <Equipament :service="service" v-if="service.type == 'EMBARCACION'" class="border-b pb-6" />
                 <!-- Descripción -->
                 <section class="border-b pb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Acerca de esta experiencia</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Descripción del servicio</h3>
                     <div class="prose max-w-none text-gray-700">
                         <transition name="expand">
                             <div v-if="showFullDescription || product.description.length <= 500" key="full"

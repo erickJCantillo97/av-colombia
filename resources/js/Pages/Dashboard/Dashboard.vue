@@ -17,6 +17,7 @@ import ViewBooking from "@/Components/viewBooking.vue";
 import Notas from "@/Components/Customs/Notas.vue";
 import Completar from "@/Components/Customs/Completar.vue";
 import { OverlayBadge } from "primevue";
+import { get } from "@vueuse/core";
 // #endregion
 
 // #region CalendarPlugins
@@ -44,6 +45,10 @@ const visible = ref(false);
 // #endregion
 // #region Method
 const selectDate = ref([new Date(), new Date()]);
+
+
+const tickets = ref([]);
+
 
 
 const getReservas = async () => {
@@ -194,6 +199,7 @@ const getDataFilter = (data) => {
             <Button label="Ver Portafolio" />
           </a>
         </div>
+        
         <div class="flex w-full justify-between font-bold text-xl items-center">
           <p>Actividades</p>
           <DatePicker v-model="selectDate" selectionMode="range" dateFormat="dd/mm/yy" :manualInput="false"
