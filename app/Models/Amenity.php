@@ -14,6 +14,7 @@ class Amenity extends Model
     protected $fillable = [
         'name',
         'slug',
+        'icon',
     ];
 
     // Relación muchos a muchos con accommodations

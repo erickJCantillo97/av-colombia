@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->string('guest_name')->nullable()->after('guests_children');
-            $table->string('guest_email')->nullable()->after('guest_name');
-            $table->string('guest_phone')->nullable()->after('guest_email');
-            $table->string('guest_document')->nullable()->after('guest_phone');
-            $table->text('special_requests')->nullable()->after('guest_document');
+            // $table->string('guest_name')->nullable()->after('guests_children');
+            // $table->string('guest_email')->nullable()->after('guest_name');
+            // $table->string('guest_phone')->nullable()->after('guest_email');
+            // $table->string('guest_document')->nullable()->after('guest_phone');
+            // $table->text('special_requests')->nullable()->after('guest_document');
         });
     }
 

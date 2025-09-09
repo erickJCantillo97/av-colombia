@@ -53,7 +53,7 @@ class AccommodationController extends Controller
             'city' => 'required|string|max:100',
             'state' => 'required|string|max:100',
             'country' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
+            'postal_code' => 'nullable|string|max:20',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'star_rating' => 'required|integer|min:1|max:5',
@@ -210,5 +210,47 @@ class AccommodationController extends Controller
 
         return redirect()->route('accommodations.index')
             ->with('success', 'Alojamiento eliminado exitosamente.');
+    }
+
+    /**
+     * Remove an image from accommodation or room.
+     */
+    public function destroyImage($imageId)
+    {
+        try {
+            // Buscar la imagen
+            $photo = \App\Models\Photo::find($imageId);
+            
+            if (!$photo) {
+                return response()->json(['error' => 'Imagen no encontrada'], 404);
+            }
+
+            // Verificar permisos dependiendo del tipo de imagen
+            if ($photo->imageable_type === 'App\\Models\\Accommodation') {
+                $accommodation = $photo->imageable;
+                if ($accommodation->user_id !== Auth::id()) {
+                    return response()->json(['error' => 'No autorizado'], 403);
+                }
+            } elseif ($photo->imageable_type === 'App\\Models\\Room') {
+                $room = $photo->imageable;
+                if ($room->accommodation->user_id !== Auth::id()) {
+                    return response()->json(['error' => 'No autorizado'], 403);
+                }
+            } else {
+                return response()->json(['error' => 'Tipo de imagen no válido'], 400);
+            }
+            
+            // Eliminar archivo físico si existe
+            $fullPath = storage_path('app/public/' . $photo->path);
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+            
+            $photo->delete();
+            return response()->json(['success' => true]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al eliminar imagen: ' . $e->getMessage()], 500);
+        }
     }
 }

@@ -16,6 +16,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Web\AccommodationController as WebAccommodationController;
 use App\Http\Controllers\Web\BookingAccommodationController;
+use App\Http\Controllers\AmenityController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -101,6 +102,13 @@ Route::middleware([
     Route::resource('tickets', \App\Http\Controllers\TicketController::class)->only(['update', 'destroy']);
 
     Route::resource('accommodations', WebAccommodationController::class);
+    
+    // Ruta para eliminar imágenes de alojamientos
+    Route::delete('accommodations/images/{imageId}', [WebAccommodationController::class, 'destroyImage'])
+        ->name('accommodations.images.destroy');
+
+    // Rutas para amenidades
+    Route::resource('amenities', AmenityController::class)->only(['store', 'index', 'destroy']);
 
     // Rutas para reservas de alojamientos
     Route::resource('booking-accommodations', BookingAccommodationController::class)
