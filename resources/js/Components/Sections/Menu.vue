@@ -1,7 +1,10 @@
 <template>
-  <div class="flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-300 relative z-[1000] overflow-hidden" :class="isCollapsed ? 'w-16' : 'w-64'">
+  <div
+    class="flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-300 relative z-[1000] overflow-hidden"
+    :class="isCollapsed ? 'w-16' : 'w-64'">
     <!-- Header with Logo and Toggle -->
-    <div class="flex items-center p-4 border-b border-gray-200" :class="isCollapsed ? 'flex-col space-y-2' : 'justify-between'">
+    <div class="flex items-center p-4 border-b border-gray-200"
+      :class="isCollapsed ? 'flex-col space-y-2' : 'justify-between'">
       <div v-if="!isCollapsed" class="flex items-center gap-3">
         <div class="flex items-center justify-center w-8 h-8 bg-gray-900 rounded">
           <span class="text-white font-bold text-sm">AV</span>
@@ -11,10 +14,7 @@
       <div v-else class="flex items-center justify-center w-8 h-8 bg-gray-900 rounded">
         <span class="text-white font-bold text-sm">AV</span>
       </div>
-      <button 
-        @click="toggleMenu"
-        class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-      >
+      <button @click="toggleMenu" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
         <i class="pi pi-bars text-gray-600"></i>
       </button>
     </div>
@@ -27,72 +27,34 @@
 
       <nav class="space-y-1 overflow-hidden">
         <!-- Dashboard -->
-        <MenuItemModern 
-          label="Home"
-          :href="route('dashboard')"
-          v-tooltip="`Dashboard`"
-          icon="pi pi-home"
-          :is-collapsed="isCollapsed"
-        />
+        <MenuItemModern label="Home" :href="route('dashboard')" v-tooltip="`Dashboard`" icon="pi pi-home"
+          :is-collapsed="isCollapsed" />
 
         <!-- Servicios -->
-        <MenuItemModern 
-          label="Servicios"
-          v-tooltip="`Servicios`"
-          icon="fa-solid fa-tags"
-          :submenu-items="serviciosItems"
-          :is-collapsed="isCollapsed"
-          @submenu-toggle="handleSubmenuToggle"
-        />
+        <MenuItemModern label="Servicios" v-tooltip="`Servicios`" icon="fa-solid fa-tags"
+          :submenu-items="serviciosItems" :is-collapsed="isCollapsed" @submenu-toggle="handleSubmenuToggle" />
 
         <!-- Reservas -->
-        <MenuItemModern 
-          label="Reservas"
-          v-tooltip="`Reservas`"
-          icon="pi pi-calendar"
-          :submenu-items="reservasItems"
-          :is-collapsed="isCollapsed"
-          @submenu-toggle="handleSubmenuToggle"
-        />
+        <MenuItemModern label="Reservas" v-tooltip="`Reservas`" icon="pi pi-calendar" :submenu-items="reservasItems"
+          :is-collapsed="isCollapsed" @submenu-toggle="handleSubmenuToggle" />
+
+       
 
         <!-- Contabilidad -->
-        <MenuItemModern 
-          label="Contabilidad"
-          v-tooltip="`Contabilidad`"
-          icon="pi pi-dollar"
-          :submenu-items="contabilidadItems"
-          :is-collapsed="isCollapsed"
-          @submenu-toggle="handleSubmenuToggle"
-        />
+        <MenuItemModern label="Contabilidad" v-tooltip="`Contabilidad`" icon="pi pi-dollar"
+          :submenu-items="contabilidadItems" :is-collapsed="isCollapsed" @submenu-toggle="handleSubmenuToggle" />
 
         <!-- Generador de QR -->
-        <MenuItemModern 
-          label="Generador de QR"
-          v-tooltip="`Generador de QR`"
-          :href="route('qr.generator')"
-          icon="pi pi-qrcode"
-          :is-collapsed="isCollapsed"
-        />
+        <MenuItemModern label="Generador de QR" v-tooltip="`Generador de QR`" :href="route('qr.generator')"
+          icon="pi pi-qrcode" :is-collapsed="isCollapsed" />
 
         <!-- Proveedores -->
-        <MenuItemModern 
-          label="Proveedores"
-          v-tooltip="`Proveedores`"
-          :href="route('proveedors.index')"
-          icon="pi pi-truck"
-          permission="ver proveedores"
-          :is-collapsed="isCollapsed"
-        />
+        <MenuItemModern label="Proveedores" v-tooltip="`Proveedores`" :href="route('proveedors.index')"
+          icon="pi pi-truck" permission="ver proveedores" :is-collapsed="isCollapsed" />
 
         <!-- Ajustes -->
-        <MenuItemModern 
-          label="Ajustes"
-          v-tooltip="`Ajustes`"
-          :href="route('settings')"
-          icon="pi pi-cog"
-          permission="ver usuarios"
-          :is-collapsed="isCollapsed"
-        />
+        <MenuItemModern label="Ajustes" v-tooltip="`Ajustes`" :href="route('settings')" icon="pi pi-cog"
+          permission="ver usuarios" :is-collapsed="isCollapsed" />
       </nav>
 
     </div>
@@ -182,6 +144,12 @@ const serviciosItems = [
     href: route('services.index', { type: 'TRANSFER' }),
     icon: "fa-solid fa-bus",
     permission: "ver servicios"
+  },
+  {
+    label: "Alojamientos",
+    href: route('accommodations.index'),
+    icon: "fa-solid fa-building",
+    permission: null
   }
 ];
 
@@ -191,11 +159,33 @@ const reservasItems = [
     href: route('BookingServices.index'),
     icon: "fa-solid fa-person-hiking",
     permission: "ver experiencas"
+  },
+  {
+    label: "Alojamientos",
+    href: route('booking-accommodations.index'),
+    icon: "fa-solid fa-bed",
+    permission: null
   }
 ];
 
+const alojamientosItems = [
+  {
+    label: "Buscar Alojamientos",
+    href: route('booking-accommodations.search'),
+    icon: "fa-solid fa-search",
+    permission: null
+  },
+  {
+    label: "Mis Reservas",
+    href: route('booking-accommodations.index'),
+    icon: "fa-solid fa-calendar-check",
+    permission: null
+  },
+
+];
+
 const contabilidadItems = [
-  
+
   {
     label: "Pagos",
     href: route('pagos'),

@@ -14,9 +14,8 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
-use App\Models\BookingService;
-use App\Models\PaymentProveedor;
-use App\Models\Service;
+use App\Http\Controllers\Web\AccommodationController as WebAccommodationController;
+use App\Http\Controllers\Web\BookingAccommodationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -95,19 +94,56 @@ Route::middleware([
 
     Route::resource('pagoEntradas', PagoEntradaController::class);
 
-    Route::resource('itinerary',ItineraryController::class);
+    Route::resource('itinerary', ItineraryController::class);
     Route::post('pagoEntradas/storeTicket', [PagoEntradaController::class, 'storeTicket'])->name('pagoEntradas.storeTicket');
-    
+
     // Rutas para tickets
     Route::resource('tickets', \App\Http\Controllers\TicketController::class)->only(['update', 'destroy']);
+
+    Route::resource('accommodations', WebAccommodationController::class);
+
+    // Rutas para reservas de alojamientos
+    Route::resource('booking-accommodations', BookingAccommodationController::class)
+        ->names([
+            'index' => 'booking-accommodations.index',
+            'create' => 'booking-accommodations.create',
+            'store' => 'booking-accommodations.store',
+            'show' => 'booking-accommodations.show',
+            'edit' => 'booking-accommodations.edit',
+            'update' => 'booking-accommodations.update',
+            'destroy' => 'booking-accommodations.destroy',
+        ]);
+
+    // Rutas adicionales para reservas de alojamientos
+    Route::get('search-accommodations', [BookingAccommodationController::class, 'search'])
+        ->name('booking-accommodations.search');
+
+    Route::patch('booking-accommodations/{booking}/cancel', [BookingAccommodationController::class, 'cancel'])
+        ->name('booking-accommodations.cancel');
+
+    Route::get('booking-accommodations/{booking}/voucher', [BookingAccommodationController::class, 'voucher'])
+        ->name('booking-accommodations.voucher');
 });
 
-Route::get('getAllServices', [ServiceController::class , 'getServices'])->name('get.all.services');
+Route::get('getAllServices', [ServiceController::class, 'getServices'])->name('get.all.services');
 Route::post('get-service', [ServiceController::class, 'getServiceRecommendation']);
 Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
 Route::get('check-out/{service}', [ServiceController::class, 'checkOut'])->name('check.out');
 Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');
-Route::get('getAllFeatures',[ServiceController::class, 'getAllFeatures'])->name('get.all.features');
-Route::get('getAllDestinations',[ServiceController::class, 'getAllDestinations'])->name('get.all.destinations');
-Route::get('getAllOrigins',[ServiceController::class, 'getAllOrigins'])->name('get.all.origins');
+Route::get('getAllFeatures', [ServiceController::class, 'getAllFeatures'])->name('get.all.features');
+Route::get('getAllDestinations', [ServiceController::class, 'getAllDestinations'])->name('get.all.destinations');
+Route::get('getAllOrigins', [ServiceController::class, 'getAllOrigins'])->name('get.all.origins');
+
+// Rutas web para el sistema de alojamientos (para testing o vistas web futuras)
+Route::prefix('accommodations')->name('accommodations.')->group(function () {
+    // Rutas públicas
+    // Route::get('/', [WebAccommodationController::class, 'index'])->name('public.index');
+    Route::get('/{accommodation}', [WebAccommodationController::class, 'show'])->name('public.show');
+
+    // Rutas protegidas
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/my-bookings', [BookingAccommodationController::class, 'index'])->name('my-bookings');
+        Route::post('/book', [BookingAccommodationController::class, 'store'])->name('book');
+    });
+});

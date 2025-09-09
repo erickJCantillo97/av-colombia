@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -18,9 +19,9 @@ class User extends Authenticatable
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
+    use HasRoles;
     use Notifiable;
     use TwoFactorAuthenticatable;
-    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -75,30 +76,48 @@ class User extends Authenticatable
 
     public function getUrlAttribute(): string
     {
-        return 'https://vendedores-site.netlify.app/' . $this->id;
+        return 'https://vendedores-site.netlify.app/'.$this->id;
     }
 
     protected function camaraComercio(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
-            set: fn($value) => $value,
+            get: fn ($value) => '/laravel/public/'.str_replace('//', '/', $value),
+            set: fn ($value) => $value,
         );
     }
 
     protected function rut(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
-            set: fn($value) => $value,
+            get: fn ($value) => '/laravel/public/'.str_replace('//', '/', $value),
+            set: fn ($value) => $value,
         );
     }
 
     protected function cuenta(): Attribute
     {
         return Attribute::make(
-            get: fn($value) =>  str_replace('//', '/', $value),
-            set: fn($value) => $value,
+            get: fn ($value) => str_replace('//', '/', $value),
+            set: fn ($value) => $value,
         );
+    }
+
+    // Relación con alojamientos (como propietario)
+    public function accommodations(): HasMany
+    {
+        return $this->hasMany(Accommodation::class);
+    }
+
+    // Relación con reservas
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    // Relación con reseñas
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 }
