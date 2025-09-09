@@ -74,7 +74,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
     {
         $star_date = Carbon::parse($dates[0])->format('Y-m-d');
         $end_date =    Carbon::parse($dates[1])->addDay()->format('Y-m-d');
-        $booking = $this->model->whereBetween('created_at', [
+        $booking = $this->model->whereBetween('date', [
             $star_date,
             $end_date
         ])->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')

@@ -78,6 +78,21 @@ class ServiceController extends Controller
 
     public function home(Request $request)
     {
+        if($request->type == 'TRANSFER'){
+            $transfer = Service::where('type', 'TRANSFER')
+            ->where('destino', $request->destino)
+            ->where('origen', $request->origen)
+            ->first();
+            if(!$transfer){
+                $transfer = Service::where('type', 'TRANSFER')
+            ->where('origen', $request->destino)
+            ->where('destino', $request->origen)
+            ->where('is_round_trip', 1)
+            ->first();
+            }
+
+            return redirect()->route('services.show',  $transfer->slug);
+        }
         return Inertia::render('Home/Services', [
             'search' => $request->search,
             'date' => $request->date,
