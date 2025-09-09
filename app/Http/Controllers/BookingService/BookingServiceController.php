@@ -8,6 +8,7 @@ use App\Http\Requests\BookingService\StoreBookingServiceRequest;
 use App\Http\Requests\BookingService\UpdateBookingServiceRequest;
 use App\Interfaces\BookingServiceRepositoryInterface;
 use App\Interfaces\PaymentRepositoryInterface;
+use App\Mail\BookingConfirmation;
 use App\Models\BookingExtras;
 use App\Models\BookingService;
 use App\Models\Channel;
@@ -17,11 +18,13 @@ use App\Models\PagoSaldos;
 use App\Models\Service;
 use App\Models\State;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Inertia\Inertia;
 
 class BookingServiceController extends Controller
 {
@@ -37,8 +40,10 @@ class BookingServiceController extends Controller
         ]);
     }
 
-    public function getAll(){
+    public function getAll()
+    {
         $booking = $this->bookingServiceRepository->getAll();
+
         return response()->json(['bookingServices' => $booking], 200);
     }
 
@@ -56,6 +61,7 @@ class BookingServiceController extends Controller
         ]);
 
         $booking = $this->bookingServiceRepository->getAllByDate($validated['dates']);
+
         return response()->json(['bookingServices' => $booking], 200);
     }
 
@@ -68,9 +74,11 @@ class BookingServiceController extends Controller
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $booking], 201);
             }
-            return redirect()->route('BookingServices.edit',  $booking->id);
+
+            return redirect()->route('BookingServices.edit', $booking->id);
         } catch (Exception $e) {
             DB::rollBack();
+
             return response()->json(['message' => 'Error al guardar la reservación'], 500);
         }
     }
@@ -83,6 +91,7 @@ class BookingServiceController extends Controller
     public function edit($bookingService)
     {
         $bookingService = $this->bookingServiceRepository->getById($bookingService);
+
         // dd($bookingService);
         return Inertia::render('BookingServices/Edit', [
             'bookingService' => $bookingService,
@@ -104,6 +113,7 @@ class BookingServiceController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
+
             return response()->json(['message' => 'Error al actualizar la reservación'], 500);
         }
     }
@@ -121,12 +131,14 @@ class BookingServiceController extends Controller
         $bookingNoPayment = BookingService::with('payments')->get()->filter(function ($booking) {
             return $booking->payments->count() == 0 || $booking->payments->sum('amount') < $booking->total_price;
         });
+
         return response()->json(['bookingNoPayment' => $bookingNoPayment], 200);
     }
 
     public function problematic(BookingService $bookingService)
     {
-        $bookingService->update(['problematic' => !$bookingService->problematic]);
+        $bookingService->update(['problematic' => ! $bookingService->problematic]);
+
         return back()->with('message', 'Estado actualizado correctamente');
     }
 
@@ -166,6 +178,7 @@ class BookingServiceController extends Controller
         $proveedores = $bookingTimeRange->map(function ($booking) {
             return $booking['proveedors'];
         })->flatten(1)->unique('proveedor_id')->values();
+
         return response()->json(['bookingTimeRange' => $bookingTimeRange, 'proveedores' => $proveedores], 200);
     }
 
@@ -176,7 +189,7 @@ class BookingServiceController extends Controller
         $statues = State::where('user_id', 5)->whereDate('created_at', $date)->orderByDesc('created_at')->with('user', 'statable')->get();
 
         return response()->json([
-            'status' => $statues
+            'status' => $statues,
         ]);
     }
 
@@ -199,9 +212,9 @@ class BookingServiceController extends Controller
                 'total_pago_proveedor' => $request->value,
             ]);
         }
-        foreach($request->saldos as $saldo){
+        foreach ($request->saldos as $saldo) {
             $proveedor = $booking->proveedors->firstWhere('id', $saldo['id']);
-            if($proveedor) {
+            if ($proveedor) {
                 $proveedor->update([
                     'cost' => $proveedor->cost - $saldo['amount'],
                 ]);
@@ -214,6 +227,7 @@ class BookingServiceController extends Controller
 
         }
         storeState($booking, request('status'), Auth::user()->id, 1);
+
         return back()->with('message', 'Reservación completada correctamente');
     }
 
@@ -227,10 +241,11 @@ class BookingServiceController extends Controller
                 ]);
         }
         $service->update([
-            'fecha_cancelacion' => $request->date
+            'fecha_cancelacion' => $request->date,
         ]);
 
         storeState($service, 'CANCELADA', 1);
+
         return back()->with('message', 'Reservación cancelada correctamente');
     }
 
@@ -249,12 +264,13 @@ class BookingServiceController extends Controller
                 'note' => $request['notes'],
                 'user_id' => Auth::user()->id,
             ]);
-        };
+        }
 
         // $service->update([
         //     'fecha_cancelacion' => $request->date
         // ]);
         storeState($service, 'NO SHOW', 1);
+
         return back()->with('message', 'Reservación marcada como no show correctamente');
     }
 
@@ -282,12 +298,37 @@ class BookingServiceController extends Controller
         if (request()->file('soporte')) {
             $data['file'] = request()->file('soporte')->store('soportes');
         }
+
         $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
-        $data['last_name'] =  $last_name;
+        // send mail
+        $data['last_name'] = $last_name;
         $data['cliente_email'] = $email;
         $data['payment_method'] = $method;
-        $data['cliente_name'] = $data['cliente_name'] . ' ' . $last_name;
+        $data['cliente_name'] = $data['cliente_name'].' '.$last_name;
         $payment = $this->paymentRepository->createPayment($data, $userId, $booking->id);
+
+        // Enviar correo de confirmación
+        try {
+            // Preparar datos del cliente para el correo
+            $customerData = [
+                'cliente_name' => $data['cliente_name'],
+                'cliente_email' => $email,
+                'payment_method' => $method,
+                'last_name' => $last_name,
+            ];
+
+            // Enviar correo de confirmación
+            Mail::to([$email, 'avacacionales@gmail.com'])->send(new BookingConfirmation($booking, $payment, $customerData));
+
+        } catch (Exception $e) {
+            // Log del error pero no fallar la reserva
+            Log::error('Error al enviar correo de confirmación: '.$e->getMessage(), [
+                'booking_id' => $booking->id,
+                'email' => $email,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return response()->json([
             'message' => 'Reservación guardada correctamente',
             'bookingService' => $booking,
@@ -324,12 +365,11 @@ class BookingServiceController extends Controller
                     'note' => request('note'),
                     'user_id' => Auth::user()->id,
                 ]);
-            };
+            }
         }
         // dd($service);
         storeState($service, request('state'), Auth::user()->id, request('terminated'));
+
         return back()->with('message', 'Estado actualizado');
     }
-
-    
 }
