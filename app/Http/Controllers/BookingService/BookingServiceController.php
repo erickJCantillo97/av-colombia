@@ -318,7 +318,7 @@ class BookingServiceController extends Controller
             ];
 
             // Enviar correo de confirmación
-            Mail::to([$email, 'avacacionales@gmail.com'])->send(new BookingConfirmation($booking, $payment, $customerData));
+            Mail::to([$email, 'avacacionales@gmail.com'])->send(new BookingConfirmation($booking,  $customerData));
 
         } catch (Exception $e) {
             // Log del error pero no fallar la reserva

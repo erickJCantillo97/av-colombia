@@ -20,7 +20,6 @@ class BookingConfirmation extends Mailable
      */
     public function __construct(
         public BookingService $booking,
-        public Payment $payment,
         public array $customerData
     ) {}
 
@@ -44,7 +43,6 @@ class BookingConfirmation extends Mailable
             text: 'emails.booking-confirmation-text',
             with: [
                 'booking' => $this->booking,
-                'payment' => $this->payment,
                 'customerData' => $this->customerData,
             ],
         );
