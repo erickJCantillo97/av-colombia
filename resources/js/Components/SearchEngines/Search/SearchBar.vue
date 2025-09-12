@@ -19,7 +19,7 @@
         <!-- Línea divisoria móvil -->
         <div class="block sm:hidden h-px bg-gray-200 mx-4"></div>
 
-        
+
 
         <!-- Sección Check-in/Check-out -->
         <div class="flex-1 relative search-section" @click="setActiveTab('origin')" v-if="type === 'Transporte'" :class="[
@@ -28,7 +28,7 @@
         ]">
             <div v-if="showInputTitles" class="text-xs font-semibold text-gray-900 uppercase tracking-wide">
                 <span class="hidden sm:inline">
-                    
+
                     Origen/Destino
                 </span>
                 <span class="sm:hidden"> Origen/Destino</span>
@@ -43,7 +43,7 @@
         <!-- Línea divisoria móvil -->
         <div class="block sm:hidden h-px bg-gray-200 mx-4"></div>
 
-        
+
 
         <!-- Sección Check-in/Check-out -->
         <div class="flex-1 relative search-section" @click="setActiveTab('checkin')" :class="[
@@ -74,14 +74,16 @@
         ]">
             <div v-if="showInputTitles" class="text-xs font-semibold text-gray-900 uppercase tracking-wide">
                 <span class="hidden sm:inline">Quién</span>
-                <span class="sm:hidden">Huéspedes</span>
+                <span class="sm:hidden">
+                    {{ type == "Hospedaje" ? 'Huéspedes' : 'Pasajeros' }}
+                </span>
             </div>
             <div class="text-sm text-gray-500 mt-1 truncate">{{ guestSummary || '¿Cuántos?' }}</div>
         </div>
 
         <!-- Botón de búsqueda -->
         <div class="px-2 py-2 sm:px-2 sm:py-2 flex justify-center sm:justify-end">
-            
+
             <Link v-if="type == 'Transporte'" :href="route('services.home', { type: 'TRANSFER', origen: searchStore.origen.value, destino: searchStore.destino.value, date: searchStore.checkin.value })">
                  <button @click=""
                 class="bg-gray-500 hover:bg-teal-800 text-white p-3 sm:p-4 rounded-full transition-all duration-200 shadow-lg search-button btn-ripple scale-hover w-12 h-12 sm:w-auto sm:h-auto flex items-center justify-center">
