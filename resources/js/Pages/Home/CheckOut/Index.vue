@@ -51,13 +51,13 @@
                                                     'text-gray-900': !active
                                                 }">{{
                                                     deliveryMethod.title
-                                                    }}</span>
+                                                }}</span>
                                                 <span class="mt-1 flex items-center text-sm " :class="{
                                                     'text-white': active,
                                                     'text-gray-500': !active
                                                 }">{{
                                                     deliveryMethod.turnaround
-                                                    }}</span>
+                                                }}</span>
 
                                             </span>
                                         </span>
@@ -137,23 +137,77 @@
                         </label>
                     </div>
                     <div class="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
-                        <h2 class="text-lg  text-gray-900 mx-4 mt-2">Resumen de reserva de <strong>{{
-                            formReserva.service_name
-                        }}</strong></h2>
+                        <div>
+                            <h2 class="text-lg  text-gray-900 mx-4 mt-2 font-bold text-center">Resumen de reserva</h2>
+                            <span v-if="service.type == 'TRANSPORTE'" class="flex gap-2 justify-center">
+                                <p class="text-center  text-gray-500">Fecha:
+                                    <strong>
+                                        {{ formReserva.date }}
+                                    </strong>
+                                </p>
+                                <p class="text-center  text-gray-500">Hora:
+                                    <strong>
+                                        {{ formReserva.hour }}
+                                    </strong>
+                                </p>
+                            </span>
+                            <p class="text-center  text-gray-500">Servicio:
+                                <strong>
+                                    {{ formReserva.service_name }}
+                                </strong>
+                            </p>
+                            <span v-if="service.type == 'TRANSPORTE'" class="flex gap-2 justify-center">
+                                <p class="text-center  text-gray-500">Origen:
+                                    <strong>
+                                        {{ formReserva.origin }}
+                                    </strong>
+                                </p>
+                                <p class="text-center  text-gray-500">Destino:
+                                    <strong>
+                                        {{ formReserva.destination }}
+                                    </strong>
+                                </p>
+                            </span>
+                            <span class="flex justify-center gap-2">
+                                <p class="text-center text-gray-500">Niños:
+                                    <strong>
+                                        {{ formReserva.children }}
+                                    </strong>
+                                </p>
+                                <p class="text-center text-gray-500">Adultos:
+                                    <strong>
+                                        {{ formReserva.adults }}
+                                    </strong>
+                                </p>
+                                <p class="text-center  text-gray-500">Infantes:
+                                    <strong>
+                                        {{ formReserva.infants }}
+                                    </strong>
+                                </p>
+                            </span>
+                        </div>
                         <h3 class="sr-only">Personas de la reserva</h3>
                         <dl class="space-y-6 border-t border-gray-200 px-4 py-6 sm:px-6">
                             <div class="flex items-center justify-between">
-                                <dt class="text-sm">Subtotal</dt>
-                                <dd class="text-sm font-medium text-gray-900">{{ formReserva.price_service }}</dd>
+                                <dt class="">Subtotal</dt>
+                                <dd class=" font-medium text-gray-900">
+                                    <span>
+                                        {{ formatCurrency(formReserva.price_service) }}
+                                    </span>
+                                </dd>
                             </div>
                             <div class="flex items-center justify-between">
-                                <dt class="text-sm">Extras</dt>
-                                <dd class="text-sm font-medium text-gray-900">$ 0</dd>
+                                <dt class="">Extras</dt>
+                                <dd class=" font-medium text-gray-900">
+                                    <span>
+                                        {{ formatCurrency(formReserva.extras) }}
+                                    </span>
+                                </dd>
                             </div>
 
                             <div class="flex items-center justify-between border-t border-gray-200 pt-6">
                                 <dt class="text-base font-medium">Total</dt>
-                                <dd class="text-base font-medium text-gray-900">{{ formReserva.total_real }}</dd>
+                                <dd class="text-base font-medium text-gray-900">{{ formatCurrency(formReserva.total_real) }}</dd>
                             </div>
                         </dl>
                         <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
@@ -194,6 +248,7 @@ const formReserva = ref({
     cliente_last_name: "",
     cliente_email: "",
     cliente_phone: "",
+    extras: 0,
 })
 
 
@@ -255,6 +310,18 @@ const handleSubmit = () => {
 function previewFiles(event) {
     soporte.value = event.target.files[0];
 }
+
+const formatCurrency = (value) => {
+    // Convert input to number, defaulting to 0 if invalid
+    const number = Number(value) || 0;
+
+    // Format as Colombian Peso
+    return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+    }).format(number);
+};
 
 
 </script>
