@@ -17,6 +17,7 @@ class AccommodationController extends Controller
      */
     public function index(Request $request)
     {
+        // dd($request->user());
         $query = Accommodation::with(['rooms', 'amenities', 'photos', 'user']);
 
         $accommodations = $query->orderBy('created_at', 'desc')->get();
@@ -119,7 +120,7 @@ class AccommodationController extends Controller
             abort(403, 'No tienes permiso para editar este alojamiento.');
         }
 
-        $accommodation->load(['rooms', 'amenities']);
+        $accommodation->load(['rooms', 'amenities', 'photos', 'rooms.photos']);
         $amenities = Amenity::orderBy('name')->get();
 
         return Inertia::render('Accommodations/Form', [
@@ -162,6 +163,7 @@ class AccommodationController extends Controller
             'rooms.*.capacity_adults' => 'required|integer|min:1',
             'rooms.*.capacity_children' => 'required|integer|min:0',
             'rooms.*.price_per_night' => 'required|numeric|min:0',
+            'accommodation_images' => 'array',
         ]);
 
         $accommodation->update($validatedData);
@@ -189,11 +191,12 @@ class AccommodationController extends Controller
             }
         }
 
-        // Eliminar habitaciones que ya no están en la lista
         $accommodation->rooms()->whereNotIn('id', $existingRoomIds)->delete();
 
-        return redirect()->route('accommodations.index')
-            ->with('success', 'Alojamiento actualizado exitosamente.');
+        return redirect()->back()->with('success', 'Alojamiento actualizado exitosamente.');
+
+        // return redirect()->route('accommodations.index')
+        //     ->with('success', 'Alojamiento actualizado exitosamente.');
     }
 
     /**
@@ -212,6 +215,32 @@ class AccommodationController extends Controller
             ->with('success', 'Alojamiento eliminado exitosamente.');
     }
 
+    public function uploadPhotos(Request $request, $accommodationId)
+    {
+        $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'image|max:5120', // Máximo 5MB por imagen
+            'room_id' => 'nullable|exists:rooms,id',
+        ]);
+
+        $uploadedPhotos = [];
+
+        foreach ($request->file('images') as $image) {
+            $path = $image->store('public/images/accommodations');
+
+            $photoData = [
+                'path' => $path,
+            ];
+
+
+            $accommodation = Accommodation::find($accommodationId);
+            $photo = $accommodation->photos()->create($photoData);
+            $uploadedPhotos[] = $photo;
+        }
+
+        return response()->json(['photos' => $uploadedPhotos], 201);
+    }
+
     /**
      * Remove an image from accommodation or room.
      */
@@ -220,7 +249,7 @@ class AccommodationController extends Controller
         try {
             // Buscar la imagen
             $photo = \App\Models\Photo::find($imageId);
-            
+
             if (!$photo) {
                 return response()->json(['error' => 'Imagen no encontrada'], 404);
             }
@@ -239,16 +268,15 @@ class AccommodationController extends Controller
             } else {
                 return response()->json(['error' => 'Tipo de imagen no válido'], 400);
             }
-            
+
             // Eliminar archivo físico si existe
             $fullPath = storage_path('app/public/' . $photo->path);
             if (file_exists($fullPath)) {
                 unlink($fullPath);
             }
-            
+
             $photo->delete();
             return response()->json(['success' => true]);
-            
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar imagen: ' . $e->getMessage()], 500);
         }

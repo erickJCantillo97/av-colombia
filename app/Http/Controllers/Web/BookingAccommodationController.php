@@ -19,8 +19,8 @@ class BookingAccommodationController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::with(['room.accommodation.photos', 'room.photos'])
-            ->where('user_id', Auth::id())
+        $bookings = Booking::
+            where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
 

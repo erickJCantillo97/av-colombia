@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Photo extends Model
@@ -26,5 +27,13 @@ class Photo extends Model
     public function getUrlAttribute()
     {
         return asset('storage/'.$this->path);
+    }
+
+     protected function path(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
+            set: fn($value) => $value,
+        );
     }
 }

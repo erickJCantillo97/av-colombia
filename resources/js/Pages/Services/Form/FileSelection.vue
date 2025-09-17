@@ -57,8 +57,15 @@ import { router } from '@inertiajs/vue3';
 const props = defineProps({
     service: {
         type: Object,
+    },
+    route: {
+        type: String,
+        required: false,
+        default: null
     }
 });
+
+const routerRequest = props.route || route('services.photos.upload', props.service.id);
 
 const $primevue = usePrimeVue();
 const toast = useToast();
@@ -106,9 +113,8 @@ const formatSize = (bytes) => {
 
 const uploadArchives = (event) => {
 
-    let files
-    files = event.files
-    router.post(route('upload.images', props.service.slug), { images: files }, {
+    let files = event.files
+    router.post(routerRequest, { images: files }, {
         onSuccess: () => {
             alert('subidos')
         },

@@ -147,7 +147,7 @@ const serviciosItems = [
   },
   {
     label: "Alojamientos",
-    href: route('accommodations.index'),
+    href: route('accommodation.index'),
     icon: "fa-solid fa-building",
     permission: null
   }

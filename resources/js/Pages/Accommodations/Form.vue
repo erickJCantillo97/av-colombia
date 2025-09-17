@@ -56,7 +56,7 @@
                             @roomImagesSelect="onRoomImagesSelect"
                         />
                     </TabPanel>
-
+                    
                     <!-- Tab 4: Fotos del Alojamiento -->
                     <TabPanel value="4" v-if="accommodation">
                         <AccommodationPhotos 
@@ -80,8 +80,12 @@ import { router } from '@inertiajs/vue3';
 import { onMounted, watch } from 'vue';
 
 import AppLayout from '@/Layouts/AppLayout.vue';
-// import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
 import Button from 'primevue/button';
+import Tabs from 'primevue/tabs';
+import TabList from 'primevue/tablist';
+import Tab from 'primevue/tab';
+import TabPanels from 'primevue/tabpanels';
+import TabPanel from 'primevue/tabpanel';
 
 // Importar los nuevos componentes de formulario
 import BasicInformation from '@/Components/Form/BasicInformation.vue';
@@ -101,21 +105,7 @@ const props = defineProps({
     }
 });
 
-const accommodationTypes = [
-    { label: 'Hotel', value: 'hotel' },
-    { label: 'Apartamento', value: 'apartment' },
-    { label: 'Casa', value: 'house' },
-    { label: 'Villa', value: 'villa' },
-    { label: 'Resort', value: 'resort' },
-    { label: 'Cabaña', value: 'cabin' },
-    { label: 'Hostal', value: 'hostel' }
-];
 
-const statusOptions = [
-    { label: 'Borrador', value: 'draft' },
-    { label: 'Publicado', value: 'published' },
-    { label: 'Pausado', value: 'paused' }
-];
 
 const form = useForm({
     name: props.accommodation?.name || '',
@@ -145,14 +135,14 @@ const submit = () => {
             _method: 'PUT'
         });
     } else {
-        form.post(route('accommodations.store'), {
+        form.post(route('accommodation.store'), {
             forceFormData: true
         });
     }
 };
 
 const cancel = () => {
-    router.visit(route('accommodations.index'));
+    router.visit(route('accommodation.index'));
 };
 
 const addRoom = () => {
@@ -192,22 +182,28 @@ const removeImage = (imageId, isRoom = false, roomIndex = null) => {
 };
 
 const onRoomImagesSelect = (event, roomIndex) => {
-    if (!form.rooms[roomIndex].room_images) {
-        form.rooms[roomIndex].room_images = [];
+    // Si roomIndex es -1, significa que es para una nueva habitación
+    // En este caso, guardamos las imágenes temporalmente para cuando se cree la habitación
+    if (roomIndex === -1) {
+        // Crear nueva habitación con las imágenes
+        addRoom();
+        const newRoomIndex = form.rooms.length - 1;
+        if (!form.rooms[newRoomIndex].room_images) {
+            form.rooms[newRoomIndex].room_images = [];
+        }
+        form.rooms[newRoomIndex].room_images = event.files;
+    } else {
+        // Habitación existente
+        if (!form.rooms[roomIndex].room_images) {
+            form.rooms[roomIndex].room_images = [];
+        }
+        form.rooms[roomIndex].room_images = event.files;
     }
-    form.rooms[roomIndex].room_images = event.files;
 };
 
 const onAccommodationImagesSelect = (event) => {
     form.accommodation_images = event.files;
 };
 
-const formatSize = (bytes) => {
-    const k = 1024;
-    const dm = 3;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 B';
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-};
+
 </script>

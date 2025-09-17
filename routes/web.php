@@ -96,16 +96,24 @@ Route::middleware([
     Route::resource('pagoEntradas', PagoEntradaController::class);
 
     Route::resource('itinerary', ItineraryController::class);
+
     Route::post('pagoEntradas/storeTicket', [PagoEntradaController::class, 'storeTicket'])->name('pagoEntradas.storeTicket');
 
     // Rutas para tickets
     Route::resource('tickets', \App\Http\Controllers\TicketController::class)->only(['update', 'destroy']);
 
-    Route::resource('accommodations', WebAccommodationController::class);
+    Route::resource('accommodation', WebAccommodationController::class);
     
+    Route::post('photos/upload/{accommodationId}', [WebAccommodationController::class, 'uploadPhotos'])
+        ->name('accommodations.photos.upload');
+
+    Route::post('accommodation/{accommodation}/update', [WebAccommodationController::class, 'update'])
+        ->name('accommodations.update');
+
     // Ruta para eliminar imágenes de alojamientos
-    Route::delete('accommodations/images/{imageId}', [WebAccommodationController::class, 'destroyImage'])
+    Route::delete('accommodation/images/{imageId}', [WebAccommodationController::class, 'destroyImage'])
         ->name('accommodations.images.destroy');
+        
 
     // Rutas para amenidades
     Route::resource('amenities', AmenityController::class)->only(['store', 'index', 'destroy']);
@@ -143,15 +151,15 @@ Route::get('getAllFeatures', [ServiceController::class, 'getAllFeatures'])->name
 Route::get('getAllDestinations', [ServiceController::class, 'getAllDestinations'])->name('get.all.destinations');
 Route::get('getAllOrigins', [ServiceController::class, 'getAllOrigins'])->name('get.all.origins');
 
-// Rutas web para el sistema de alojamientos (para testing o vistas web futuras)
-Route::prefix('accommodations')->name('accommodations.')->group(function () {
-    // Rutas públicas
-    // Route::get('/', [WebAccommodationController::class, 'index'])->name('public.index');
-    Route::get('/{accommodation}', [WebAccommodationController::class, 'show'])->name('public.show');
+// // Rutas web para el sistema de alojamientos (para testing o vistas web futuras)
+// Route::prefix('accommodations')->name('accommodations.')->group(function () {
+//     // Rutas públicas
+//     // Route::get('/', [WebAccommodationController::class, 'index'])->name('public.index');
+//     Route::get('/{accommodation}', [WebAccommodationController::class, 'show'])->name('public.show');
 
-    // Rutas protegidas
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/my-bookings', [BookingAccommodationController::class, 'index'])->name('my-bookings');
-        Route::post('/book', [BookingAccommodationController::class, 'store'])->name('book');
-    });
-});
+//     // Rutas protegidas
+//     Route::middleware(['auth:sanctum'])->group(function () {
+//         Route::get('/my-bookings', [BookingAccommodationController::class, 'index'])->name('my-bookings');
+//         Route::post('/book', [BookingAccommodationController::class, 'store'])->name('book');
+//     });
+// });

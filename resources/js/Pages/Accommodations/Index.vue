@@ -1,15 +1,9 @@
 <template>
   <AppLayout title="Alojamientos">
     <div class="h-[90vh] md:h-[99vh] overflow-y-auto">
-      
-      <Datatable
-        :add="canCreateAccommodation ? add : null"
-        :columnas="Columns"
-        :data="accommodationsFormatted"
-        routecreate="accommodations.create"
-        :actions="buttons"
-        title="Alojamientos"
-      >
+
+      <Datatable :add="canCreateAccommodation ? add : null" :columnas="Columns" :data="accommodationsFormatted"
+        routecreate="accommodations.create" :actions="buttons" title="Alojamientos">
       </Datatable>
     </div>
   </AppLayout>
@@ -54,14 +48,14 @@ const accommodationsFormatted = computed(() => {
 
 const add = {
   action: () => {
-    router.visit(route("accommodations.create"));
+    router.visit(route("accommodation.create"));
   },
 };
 
 const buttons = [
   {
     action: (data) => {
-      router.visit(route("accommodations.show", data.id));
+      router.visit(route("accommodation.show", data.id));
     },
     severity: "primary",
     icon: "fa-solid fa-eye text-sm",
@@ -69,13 +63,13 @@ const buttons = [
   },
   {
     action: (data) => {
-      router.visit(route("accommodations.edit", data.id));
+      router.visit(route("accommodation.edit", data.id));
     },
     show: (data) => {
       const user = usePage().props.auth.user;
-      return user.id === data.user_id || 
-             user.rol === 'admin' || 
-             user.rol === 'superadmin';
+      return user.id === data.user_id ||
+        user.rol === 'admin' ||
+        user.rol === 'superadmin';
     },
     severity: "info",
     icon: "fa-solid fa-pencil text-sm",
@@ -92,7 +86,7 @@ const buttons = [
         rejectLabel: "Cancelar",
         acceptLabel: "Eliminar",
         accept: () => {
-          router.delete(route("accommodations.destroy", data.id), {
+          router.delete(route("accommodation.destroy", data.id), {
             onSuccess: () => {
               toast("success", "Alojamiento eliminado con éxito");
             },
@@ -102,9 +96,9 @@ const buttons = [
     },
     show: (data) => {
       const user = usePage().props.auth.user;
-      return user.id === data.user_id || 
-             user.rol === 'admin' || 
-             user.rol === 'superadmin';
+      return user.id === data.user_id ||
+        user.rol === 'admin' ||
+        user.rol === 'superadmin';
     },
     severity: "danger",
     icon: "fa-regular fa-trash-can text-sm",

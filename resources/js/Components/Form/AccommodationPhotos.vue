@@ -8,12 +8,12 @@
             <Input type="file-basic" v-model="form.portada" acceptFile="image/*" />
         </div>
 
-        <!-- Galería de fotos existentes -->
-        <div v-if="accommodation.images && accommodation.images.length > 0">
+      
+        <div v-if="accommodation.photos && accommodation.photos.length > 0">
             <h4 class="font-medium mb-2">Fotos Actuales</h4>
             <div class="grid grid-cols-6 gap-4 mb-4">
                 <div 
-                    v-for="image in accommodation.images" 
+                    v-for="image in accommodation.photos" 
                     :key="image.id" 
                     class="relative"
                 >
@@ -35,74 +35,7 @@
         <!-- Subir nuevas fotos -->
         <div>
             <h4 class="font-medium mb-2">Agregar Nuevas Fotos</h4>
-            <FileUpload 
-                name="accommodation-images" 
-                :multiple="true" 
-                accept="image/*"
-                :maxFileSize="1000000" 
-                @select="$emit('accommodationImagesSelect', $event)" 
-                customUpload
-            >
-                <template #header="{ chooseCallback, clearCallback, files }">
-                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
-                        <div class="flex gap-2">
-                            <Button 
-                                @click="chooseCallback()" 
-                                icon="pi pi-images" 
-                                size="small"
-                                severity="primary" 
-                                label="Seleccionar" 
-                            />
-                            <Button 
-                                label="Limpiar" 
-                                @click="clearCallback()" 
-                                icon="pi pi-times"
-                                size="small" 
-                                severity="danger"
-                                :disabled="!files || files.length === 0" 
-                            />
-                        </div>
-                        <span class="text-lg font-bold">Subir Imágenes del Alojamiento</span>
-                    </div>
-                </template>
-
-                <template #content="{ files, removeFileCallback }">
-                    <div v-if="files.length > 0" class="flex flex-wrap gap-4 pt-4">
-                        <div 
-                            v-for="(file, index) of files" 
-                            :key="file.name + file.type + file.size"
-                            class="p-4 rounded border flex flex-col items-center gap-2"
-                        >
-                            <img 
-                                :src="file.objectURL" 
-                                :alt="file.name"
-                                class="h-24 w-24 object-cover rounded" 
-                            />
-                            <span class="font-semibold text-sm truncate max-w-24">
-                                {{ file.name }}
-                            </span>
-                            <div class="text-xs text-gray-500">
-                                {{ formatSize(file.size) }}
-                            </div>
-                            <Button 
-                                icon="pi pi-times" 
-                                @click="removeFileCallback(index)" 
-                                outlined
-                                rounded 
-                                severity="danger" 
-                                size="small" 
-                            />
-                        </div>
-                    </div>
-                </template>
-
-                <template #empty>
-                    <div class="flex items-center justify-center flex-col">
-                        <i class="pi pi-cloud-upload border-2 rounded-full p-8 text-4xl text-gray-400" />
-                        <p class="mt-6 mb-0">Arrastra y suelta imágenes aquí.</p>
-                    </div>
-                </template>
-            </FileUpload>
+            <FileSelection :route="route('accommodations.photos.upload', accommodation.id)"></FileSelection>
         </div>
 
         <div class="flex gap-x-4 mt-8 justify-between">
@@ -129,6 +62,7 @@
 
 <script setup>
 import Input from "@/Components/Customs/Input.vue";
+import FileSelection from "@/Pages/Services/Form/FileSelection.vue";
 import Button from "primevue/button";
 import FileUpload from "primevue/fileupload";
 

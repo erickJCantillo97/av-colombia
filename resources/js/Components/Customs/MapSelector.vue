@@ -84,8 +84,6 @@
                         <LPopup>
                             <div class="text-sm">
                                 <strong>{{ popupText }}</strong><br>
-                                Lat: {{ markerPosition[0].toFixed(6) }}<br>
-                                Lng: {{ markerPosition[1].toFixed(6) }}
                             </div>
                         </LPopup>
                     </LMarker>

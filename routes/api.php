@@ -28,42 +28,42 @@ Route::get('obtenerHorariosByServiceBetweeDays/{serviceId}/{startDate}', [Servic
 Route::get('generateLinkToPayment/{userId}', [PaymentController::class, 'generateLinkToPayment'])->name('api.generate.link.payment');
 
 // Nuevas rutas para el sistema de alojamientos v1
-Route::prefix('v1')->group(function () {
+// Route::prefix('v1')->group(function () {
 
-    // Rutas públicas de alojamientos (no requieren autenticación)
-    Route::get('accommodations', [AccommodationController::class, 'index'])
-        ->name('api.accommodations.index');
-    Route::get('accommodations/{accommodation}', [AccommodationController::class, 'show'])
-        ->name('api.accommodations.show');
-    Route::get('accommodations/{accommodation}/availability', [AccommodationController::class, 'checkAvailability'])
-        ->name('api.accommodations.availability');
+//     // Rutas públicas de alojamientos (no requieren autenticación)
+//     Route::get('accommodations', [AccommodationController::class, 'index'])
+//         ->name('api.accommodations.index');
+//     Route::get('accommodations/{accommodation}', [AccommodationController::class, 'show'])
+//         ->name('api.accommodations.show');
+//     Route::get('accommodations/{accommodation}/availability', [AccommodationController::class, 'checkAvailability'])
+//         ->name('api.accommodations.availability');
 
-    // Rutas públicas de reseñas
-    Route::get('reviews', [ReviewController::class, 'index'])
-        ->name('api.reviews.index');
-    Route::get('reviews/{review}', [ReviewController::class, 'show'])
-        ->name('api.reviews.show');
+//     // Rutas públicas de reseñas
+//     Route::get('reviews', [ReviewController::class, 'index'])
+//         ->name('api.reviews.index');
+//     Route::get('reviews/{review}', [ReviewController::class, 'show'])
+//         ->name('api.reviews.show');
 
-    // Rutas protegidas que requieren autenticación
-    Route::middleware('auth:sanctum')->group(function () {
+//     // Rutas protegidas que requieren autenticación
+//     Route::middleware('auth:sanctum')->group(function () {
 
-        // Rutas de reservas
-        Route::apiResource('bookings', BookingController::class);
+//         // Rutas de reservas
+//         Route::apiResource('bookings', BookingController::class);
 
-        // Rutas de reseñas (crear, editar, eliminar)
-        Route::post('reviews', [ReviewController::class, 'store'])
-            ->name('api.reviews.store');
-        Route::put('reviews/{review}', [ReviewController::class, 'update'])
-            ->name('api.reviews.update');
-        Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])
-            ->name('api.reviews.destroy');
+//         // Rutas de reseñas (crear, editar, eliminar)
+//         Route::post('reviews', [ReviewController::class, 'store'])
+//             ->name('api.reviews.store');
+//         Route::put('reviews/{review}', [ReviewController::class, 'update'])
+//             ->name('api.reviews.update');
+//         Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])
+//             ->name('api.reviews.destroy');
 
-        // Rutas adicionales de alojamientos para propietarios (futuras implementaciones)
-        Route::post('accommodations', [AccommodationController::class, 'store'])
-            ->name('api.accommodations.store');
-        Route::put('accommodations/{accommodation}', [AccommodationController::class, 'update'])
-            ->name('api.accommodations.update');
-        Route::delete('accommodations/{accommodation}', [AccommodationController::class, 'destroy'])
-            ->name('api.accommodations.destroy');
-    });
-});
+//         // Rutas adicionales de alojamientos para propietarios (futuras implementaciones)
+//         Route::post('accommodations', [AccommodationController::class, 'store'])
+//             ->name('api.accommodations.store');
+//         Route::put('accommodations/{accommodation}', [AccommodationController::class, 'update'])
+//             ->name('api.accommodations.update');
+//         Route::delete('accommodations/{accommodation}', [AccommodationController::class, 'destroy'])
+//             ->name('api.accommodations.destroy');
+//     });
+// });
