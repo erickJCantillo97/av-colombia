@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Service\StoreServiceRequest;
 use App\Http\Requests\Service\UpdateServiceRequest;
 use App\Interfaces\ServiceRepositoryInterface;
+use App\Models\Accommodation;
 use App\Models\Availability;
 use App\Models\Feature;
 use App\Models\Horario;
@@ -119,8 +120,14 @@ class ServiceController extends Controller
         return redirect()->route('services.edit', $service->slug)->with('message', 'Servicio creado');
     }
 
-    public function show(Service $service)
+    public function show(string $id,string $type='TOUR')
     {
+        $service=null;
+        $service = $type !== "hospedaje" ?
+            $this->serviceRepository->getById($id):
+            Accommodation::with(['rooms', 'amenities', 'photos', 'reviews'])
+            ->find($id)->append(['average_rating', 'min_price']);;
+
         if(request()->wantsJson()) {
             return response()->json([
                 'service' => $service,
@@ -129,14 +136,19 @@ class ServiceController extends Controller
                 'features' => Feature::all()
             ]);
         }
-
-        return Inertia::render('Services/Show', [
-            'service' => $service,
-            'gallery' => $service->images,
-            'itineraries' => $service->itineraries()->with('images')->get(),
-            'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
-            'features' => Feature::all()
+        if ($type !== "hospedaje"){
+            return Inertia::render('Services/Show', [
+                'service' => $service,
+                'gallery' => $service->images,
+                'itineraries' =>$service->itineraries()->with('images')->get(),
+                'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
+                'features' => Feature::all()
+            ]);
+        }
+        return Inertia::render('Accommodations/Show', [
+            'accommodation' => $service,
         ]);
+
     }
 
     public function apiShow($slug, $userId)

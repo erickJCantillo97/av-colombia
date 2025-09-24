@@ -1,47 +1,50 @@
 <template>
-    <div class="p-4" v-if="products.length > 0">
-        <div class="mb-2 flex justify-between items-center">
-            <h1 class="font-bold text-xl">{{ title }}</h1>
-            <div class="flex items-center gap-2">
-                <!-- Botones para controlar el scroll del contenedor horizontal -->
-                <button @click="scrollLeft" aria-label="Scroll izquierda" class="px-2 py-1 bg-gray-100 rounded-md hover:bg-gray-200">
-                    
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700 transform rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12.293 16.293a1 1 0 010-1.414L15.586 11H5a1 1 0 110-2h10.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <button @click="scrollRight" aria-label="Scroll derecha" class="px-2 py-1 bg-gray-100 rounded-md hover:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12.293 16.293a1 1 0 010-1.414L15.586 11H5a1 1 0 110-2h10.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                    </svg>
-                </button>
+    <span v-if="searchStore.type.value.label!='Hospedaje'">
+        <div class="p-4" v-if="products.length > 0">
+            <div class="mb-2 flex justify-between items-center">
+                <h1 class="font-bold text-xl">{{ title }}</h1>
+                <div class="flex items-center gap-2">
+                    <!-- Botones para controlar el scroll del contenedor horizontal -->
+                    <button @click="scrollLeft" aria-label="Scroll izquierda" class="px-2 py-1 bg-gray-100 rounded-md hover:bg-gray-200">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700 transform rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.293 16.293a1 1 0 010-1.414L15.586 11H5a1 1 0 110-2h10.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <button @click="scrollRight" aria-label="Scroll derecha" class="px-2 py-1 bg-gray-100 rounded-md hover:bg-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.293 16.293a1 1 0 010-1.414L15.586 11H5a1 1 0 110-2h10.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        <div ref="scroller" class="flex gap-x-2 overflow-x-auto hide-scrollbar touch-scroll py-2 snap-x snap-mandatory" tabindex="0">
+                <a :href="route('show.services', data.id)" class="flex-shrink-0 px-1 snap-start w-1/2 md:w-1/6" v-for="data in products" :key="data.id || data.slug">
+                    <div class="bg-white  overflow-hidden w-full flex flex-col">
+                        <div class=" overflow-hidden rounded-xl bg-gray-200">
+                            <img v-if="data.portada != '/laravel/public/'" :src="'https://avcolombia.net/' + data.portada"
+                                class="w-full h-60 object-cover rounded-xl" />
+                            <div v-else class="h-60 w-full flex items-center  justify-center rounded-xl">
+                                <Logo class="w-16 h-16" />
+                            </div>
+                        </div>
+                        <div class="py-4 flex flex-col">
+                            <div class="flex items-start justify-between gap-2">
+                                <h3 class="text-md font-semibold text-gray-800 truncate">{{ data.title }}</h3>
+                            </div>
+                            <span v-if="data.adults_price || data.price || data.total"
+                                    class="text-sm font-bold text-gray-600 whitespace-nowrap">
+                                    Desde {{ currencyFormat(data.adults_price || data.price || data.total) }}
+                                </span>
+                            <p class="text-sm text-gray-500 truncate"><strong>{{  }}</strong></p>
+
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
-    <div ref="scroller" class="flex gap-x-2 overflow-x-auto hide-scrollbar touch-scroll py-2 snap-x snap-mandatory" tabindex="0">
-            <a :href="route('show.services', data.slug)" class="flex-shrink-0 px-1 snap-start w-1/2 md:w-1/6" v-for="data in products" :key="data.id || data.slug">
-                <div class="bg-white  overflow-hidden w-full flex flex-col">
-                    <div class=" overflow-hidden rounded-xl bg-gray-200">
-                        <img v-if="data.portada != '/laravel/public/'" :src="'https://avcolombia.net/' + data.portada"
-                            class="w-full h-60 object-cover rounded-xl" />
-                        <div v-else class="h-60 w-full flex items-center  justify-center rounded-xl">
-                            <Logo class="w-16 h-16" />
-                        </div>
-                    </div>
-                    <div class="py-4 flex flex-col">
-                        <div class="flex items-start justify-between gap-2">
-                            <h3 class="text-md font-semibold text-gray-800 truncate">{{ data.title }}</h3>
-                        </div>
-                        <span v-if="data.adults_price || data.price || data.total"
-                                class="text-sm font-bold text-gray-600 whitespace-nowrap">
-                                Desde {{ currencyFormat(data.adults_price || data.price || data.total) }}
-                            </span>
-                        <p class="text-sm text-gray-500 truncate"><strong>{{  }}</strong></p>
-                        
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
+    </span>
+    <AccomodationsList v-else/>
 </template>
 
 <script setup>
@@ -52,6 +55,7 @@ import Carousel from 'primevue/carousel';
 import Service from "@/Models/Services/Service";
 import Logo from '@/Components/logo.vue';
 import { currencyFormat } from '@/composable/useCommonUtilities';
+import AccomodationsList from '@/Pages/Welcome/AccomodationsList.vue';
 
 const products = ref([]);
 const scroller = ref(null);
@@ -62,11 +66,13 @@ const scroller = ref(null);
 const serviceModel = new Service();
 function getService() {
     serviceModel.getServicePagination(1, 10).then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         products.value = res.data;
     });
 }
 getService()
+
+
 
 function scrollLeft() {
     const el = scroller.value;

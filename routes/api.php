@@ -67,3 +67,28 @@ Route::get('generateLinkToPayment/{userId}', [PaymentController::class, 'generat
 //             ->name('api.accommodations.destroy');
 //     });
 // });
+
+// Descomenta o agrega estas rutas para la API
+Route::middleware('api')->group(function () {
+    Route::get('accommodations', [AccommodationController::class, 'index'])
+        ->name('api.accommodations.index');  // Ruta para listar con filtros y paginación
+
+    // Otras rutas si las necesitas (descomenta según sea necesario)
+    Route::get('accommodations/{accommodation}', [AccommodationController::class, 'show'])
+        ->name('api.accommodations.show');
+
+    Route::get('accommodations/{accommodation}/availability', [AccommodationController::class, 'checkAvailability'])
+        ->name('api.accommodations.availability');
+
+    // Rutas protegidas (si usas auth, como Sanctum)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('accommodations', [AccommodationController::class, 'store'])
+            ->name('api.accommodations.store');
+
+        Route::put('accommodations/{accommodation}', [AccommodationController::class, 'update'])
+            ->name('api.accommodations.update');
+
+        Route::delete('accommodations/{accommodation}', [AccommodationController::class, 'destroy'])
+            ->name('api.accommodations.destroy');
+    });
+});

@@ -103,7 +103,7 @@ Route::middleware([
     Route::resource('tickets', \App\Http\Controllers\TicketController::class)->only(['update', 'destroy']);
 
     Route::resource('accommodation', WebAccommodationController::class);
-    
+
     Route::post('photos/upload/{accommodationId}', [WebAccommodationController::class, 'uploadPhotos'])
         ->name('accommodations.photos.upload');
 
@@ -113,7 +113,7 @@ Route::middleware([
     // Ruta para eliminar imágenes de alojamientos
     Route::delete('accommodation/images/{imageId}', [WebAccommodationController::class, 'destroyImage'])
         ->name('accommodations.images.destroy');
-        
+
 
     // Rutas para amenidades
     Route::resource('amenities', AmenityController::class)->only(['store', 'index', 'destroy']);
@@ -143,7 +143,7 @@ Route::middleware([
 
 Route::get('getAllServices', [ServiceController::class, 'getServices'])->name('get.all.services');
 Route::post('get-service', [ServiceController::class, 'getServiceRecommendation']);
-Route::get('showservice/{service}', [ServiceController::class, 'show'])->name('show.services');
+Route::get('showservice/{id}/{type?}', [ServiceController::class, 'show'])->name('show.services');
 Route::get('services-home', [ServiceController::class, 'home'])->name('services.home');
 Route::get('check-out/{service}', [ServiceController::class, 'checkOut'])->name('check.out');
 Route::get('getServicePagination', [ServiceController::class, 'getServicePagination'])->name('services.get.paginated');
