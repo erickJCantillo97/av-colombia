@@ -277,7 +277,6 @@ class BookingServiceController extends Controller
     public function reservarByApi(BookingClientService $request, $userId = 8)
     {
         $data = $request->validated();
-
         $last_name = $data['cliente_last_name'];
         $email = $data['cliente_email'];
         $method = $data['payment_method'];

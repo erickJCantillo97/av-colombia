@@ -308,7 +308,7 @@ const handleSubmit = () => {
         }
     });
 
-    axios.post(`/BookingServices/reservarByApi/`, formData, {
+    axios.post(route('booking.reservar.by.api'), formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
