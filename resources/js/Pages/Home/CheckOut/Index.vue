@@ -319,7 +319,7 @@ const handleSubmit = () => {
         if (formReserva.value.payment_method === 2) {
             location.href = response.data.payment.data.payment.payment_url; // Redirigir al enlace de pago
         } else {
-            // router.get(route('booking.success', response.data.bookingService.id));
+            router.get(route('booking.success', response.data.bookingService.id));
         }
     })
     .catch(error => {
