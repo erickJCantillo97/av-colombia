@@ -141,9 +141,7 @@
                             <h2 class="text-lg  text-gray-900 mx-4 mt-2 font-bold text-center">Resumen de reserva</h2>
                             <span class="flex gap-2 justify-center">
                                 <p class="text-center  text-gray-500">Fecha:
-                                    <strong>
-                                        {{ formReserva.date }}
-                                    </strong>
+                               
                                 </p>
                                 <p class="text-center  text-gray-500">Hora:
                                     <strong>
