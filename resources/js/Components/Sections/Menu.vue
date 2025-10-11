@@ -162,27 +162,13 @@ const reservasItems = [
   },
   {
     label: "Alojamientos",
-    href: route('booking-accommodations.index'),
+    href: route('bookingAccommodations.index'),
     icon: "fa-solid fa-bed",
     permission: null
   }
 ];
 
-const alojamientosItems = [
-  {
-    label: "Buscar Alojamientos",
-    href: route('booking-accommodations.search'),
-    icon: "fa-solid fa-search",
-    permission: null
-  },
-  {
-    label: "Mis Reservas",
-    href: route('booking-accommodations.index'),
-    icon: "fa-solid fa-calendar-check",
-    permission: null
-  },
 
-];
 
 const contabilidadItems = [
 

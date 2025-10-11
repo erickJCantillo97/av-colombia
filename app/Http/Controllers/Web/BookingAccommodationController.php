@@ -29,20 +29,15 @@ class BookingAccommodationController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create(Request $request)
     {
-        $room = Room::with(['accommodation.amenities', 'accommodation.photos', 'photos'])
-            ->findOrFail($request->room_id);
+        $rooms = Accommodation::with(['rooms', 'photos'])
+            ->get();
 
         return Inertia::render('BookingAccommodations/Form', [
-            'room' => $room,
-            'checkIn' => $request->check_in,
-            'checkOut' => $request->check_out,
-            'adults' => $request->adults ?? 1,
-            'children' => $request->children ?? 0,
+            'rooms' => $rooms,
+            'booking' => null,
         ]);
     }
 

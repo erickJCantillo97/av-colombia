@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class BookingConfirmation extends Mailable
 {
-    use Queueable, SerializesModels;
+    use  SerializesModels;
 
     /**
      * Create a new message instance.

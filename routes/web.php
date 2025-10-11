@@ -119,16 +119,7 @@ Route::middleware([
     Route::resource('amenities', AmenityController::class)->only(['store', 'index', 'destroy']);
 
     // Rutas para reservas de alojamientos
-    Route::resource('booking-accommodations', BookingAccommodationController::class)
-        ->names([
-            'index' => 'booking-accommodations.index',
-            'create' => 'booking-accommodations.create',
-            'store' => 'booking-accommodations.store',
-            'show' => 'booking-accommodations.show',
-            'edit' => 'booking-accommodations.edit',
-            'update' => 'booking-accommodations.update',
-            'destroy' => 'booking-accommodations.destroy',
-        ]);
+    Route::resource('bookingAccommodations', BookingAccommodationController::class);
 
     // Rutas adicionales para reservas de alojamientos
     Route::get('search-accommodations', [BookingAccommodationController::class, 'search'])

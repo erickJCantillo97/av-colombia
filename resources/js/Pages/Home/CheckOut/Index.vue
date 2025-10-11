@@ -18,7 +18,7 @@
 
                         <div class="mt-4 grid grid-cols-1 gap-y-2 sm:grid-cols-2 sm:gap-x-4">
                             <Input label="Nombres" v-model="formReserva.cliente_name" :required="true" />
-                            <Input label="Apellidos" v-model="formReserva.last_name" :required="true" />
+                            <Input label="Apellidos" v-model="formReserva.cliente_last_name" :required="true" />
                             <Input label="Correo" v-model="formReserva.cliente_email" type="email" class="sm:col-span-2"
                                 :required="true" />
                             <Input label="Hotel" v-model="formReserva.cliente_building" class="sm:col-span-2"
@@ -51,13 +51,13 @@
                                                     'text-gray-900': !active
                                                 }">{{
                                                     deliveryMethod.title
-                                                }}</span>
+                                                    }}</span>
                                                 <span class="mt-1 flex items-center text-sm " :class="{
                                                     'text-white': active,
                                                     'text-gray-500': !active
                                                 }">{{
                                                     deliveryMethod.turnaround
-                                                }}</span>
+                                                    }}</span>
 
                                             </span>
                                         </span>
@@ -139,7 +139,7 @@
                     <div class="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
                         <div>
                             <h2 class="text-lg  text-gray-900 mx-4 mt-2 font-bold text-center">Resumen de reserva</h2>
-                            <span v-if="service.type == 'TRANSPORTE'" class="flex gap-2 justify-center">
+                            <span class="flex gap-2 justify-center">
                                 <p class="text-center  text-gray-500">Fecha:
                                     <strong>
                                         {{ formReserva.date }}
@@ -207,7 +207,8 @@
 
                             <div class="flex items-center justify-between border-t border-gray-200 pt-6">
                                 <dt class="text-base font-medium">Total</dt>
-                                <dd class="text-base font-medium text-gray-900">{{ formatCurrency(formReserva.total_real) }}</dd>
+                                <dd class="text-base font-medium text-gray-900">{{
+                                    formatCurrency(formReserva.total_real) }}</dd>
                             </div>
                         </dl>
                         <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
@@ -229,7 +230,7 @@ import { ref, computed, onMounted } from "vue";
 import { RadioGroup, RadioGroupOption } from "@headlessui/vue";
 import Input from "@/Components/Customs/Input.vue";
 import searchStore from "@/store/searchStore.js";
-
+import { router } from "@inertiajs/vue3";
 
 // #endregion
 const props = defineProps({
@@ -242,6 +243,7 @@ const formReserva = ref({
     infants: searchStore.guests.value.infants,
     price_service: 0,
     service_name: props.service.title,
+    service_id: props.service.id,
     total_real: 0,
     payment_method: 0,
     cliente_name: "",
@@ -249,6 +251,8 @@ const formReserva = ref({
     cliente_email: "",
     cliente_phone: "",
     extras: 0,
+    soporte: '',
+    date: searchStore.checkin.value,
 })
 
 
@@ -292,23 +296,41 @@ const deliveryMethods = [
 const selectedDeliveryMethod = ref(deliveryMethods[0]);
 
 const handleSubmit = () => {
-    //   formReserva.total_real = totalCost.value;
-    //   formReserva.payment_method = selectedDeliveryMethod.value.id;
-    //   axios.post(`/reservar/${route.params.id}`, formReserva)
-    //     .then(response => {
-    //       if (formReserva.payment_method === 2) {
-    //         location.href = response.data.payment.data.payment.payment_url; // Redirigir al enlace de pago
-    //       } else {
-    //         router.push({ name: "success", params: { id: response.data.bookingService.id } });
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.error("Error al generar el enlace de pago:", error);
-    //     });
+    formReserva.total_real = totalCost.value;
+    formReserva.payment_method = selectedDeliveryMethod.value.id;
+
+    const formData = new FormData();
+
+    // Agregar todos los campos del formulario
+    Object.keys(formReserva.value).forEach(key => {
+        if (key === 'soporte' && formReserva.value[key] instanceof File) {
+            formData.append(key, formReserva.value[key]);
+        } else if (key !== 'soporte') {
+            formData.append(key, formReserva.value[key]);
+        }
+    });
+
+    axios.post(`/BookingServices/reservarByApi/`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    .then(response => {
+        if (formReserva.value.payment_method === 2) {
+            location.href = response.data.payment.data.payment.payment_url; // Redirigir al enlace de pago
+        } else {
+            // router.get(route('booking.success', response.data.bookingService.id));
+        }
+    })
+    .catch(error => {
+        console.error("Error al generar el enlace de pago:", error);
+    });
 };
 
 function previewFiles(event) {
     soporte.value = event.target.files[0];
+    formReserva.value.soporte = event.target.files[0];
+    console.log(formReserva.value)
 }
 
 const formatCurrency = (value) => {

@@ -28,3 +28,5 @@ Route::middleware([
         Route::post('BookingServices/setStatus', 'setStatus')->name('set.states.booking');
     });
 });
+Route::post('BookingServices/reservarByApi/{userId?}', [BookingServiceController::class, 'reservarByApi'])->name('booking.reservar.by.api');
+Route::get('successBooking/{bookingService}', [BookingServiceController::class, 'successBooking'])->name('booking.success');

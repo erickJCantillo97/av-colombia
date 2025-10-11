@@ -1,7 +1,7 @@
 <template>
   <AppLayout title="Nueva Reserva">
     <div class="h-[90vh] md:h-[99vh] overflow-y-auto">
-      <div class="max-w-4xl mx-auto p-6">
+      <div class="p-6">
         
         <!-- Título -->
         <div class="mb-6">
@@ -13,10 +13,13 @@
         <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h2 class="text-lg font-semibold mb-4 flex items-center">
             <i class="fa-solid fa-building mr-2"></i>
-            Información del Alojamiento
+            Seleccione el Alojamiento
           </h2>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div>
+            <Input v-model="form.accommodation_id" type="dropdown" :options="rooms" option-label="name" option-value="id"/>
+          </div>
+          <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 class="font-semibold text-lg mb-2">{{ accommodation.name }}</h3>
               <div class="space-y-2 text-sm text-gray-600">
@@ -50,7 +53,7 @@
                 <i class="fa-solid fa-image text-gray-500 text-xl"></i>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <form @submit.prevent="submit" class="space-y-6">
@@ -138,7 +141,7 @@
               Seleccionar Habitación
             </h3>
             
-            <div v-if="availableRooms.length === 0" class="text-center py-8">
+            <div v-if="rooms.find(room => room.id === form.accommodation_id)?.rooms.length === 0" class="text-center py-8">
               <div class="text-gray-500 mb-2">
                 <i class="fa-solid fa-exclamation-triangle text-2xl"></i>
               </div>
@@ -147,7 +150,7 @@
             
             <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div 
-                v-for="room in availableRooms" 
+                v-for="room in rooms.find(room => room.id === form.accommodation_id)?.rooms " 
                 :key="room.id"
                 class="border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md"
                 :class="form.room_id === room.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200'"
@@ -325,7 +328,7 @@ const toast = useToast();
 const availableRooms = ref([]);
 
 const form = useForm({
-  accommodation_id: props.accommodation.id,
+  accommodation_id: null,
   room_id: null,
   check_in_date: null,
   check_out_date: null,

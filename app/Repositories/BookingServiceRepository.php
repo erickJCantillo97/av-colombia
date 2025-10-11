@@ -186,6 +186,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             'cliente_email' => $booking->cliente_email,
             'cliente_phone' => $booking->cliente_phone,
             'cliente_building' => $booking->cliente_building,
+            'vendedor_id' => $booking->vendedor_id,
             'cliente_city' => $booking->cliente_city,
             'notes' => $booking->notes->count(),
             'fecha_cancelacion' => $booking->fecha_cancelacion,

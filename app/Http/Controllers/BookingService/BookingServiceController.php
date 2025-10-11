@@ -274,16 +274,17 @@ class BookingServiceController extends Controller
         return back()->with('message', 'Reservación marcada como no show correctamente');
     }
 
-    public function reservarByApi(BookingClientService $request, $userId)
+    public function reservarByApi(BookingClientService $request, $userId = 8)
     {
         $data = $request->validated();
-        $last_name = $data['last_name'];
+
+        $last_name = $data['cliente_last_name'];
         $email = $data['cliente_email'];
         $method = $data['payment_method'];
         $data['saldo'] = 0;
         $data['hour'] = Horario::find($request->time)->start ?? null;
         unset($data['cliente_email']);
-        unset($data['last_name']);
+        unset($data['cliente_last_name']);
         unset($data['time']);
         unset($data['payment_method']);
         $data['adult_tarifa'] = 0;
@@ -295,17 +296,21 @@ class BookingServiceController extends Controller
         $data['boys_price'] = $service->boys_price;
         $data['adults_price'] = $service->adults_price;
         $data['service'] = $service->title;
-        if (request()->file('soporte')) {
-            $data['file'] = request()->file('soporte')->store('soportes');
+        if ($data['soporte']) {
+            $data['file'] = $data['soporte']->store('public/soportes');
         }
+        unset($data['soporte']);
+        $data['vendedor_id'] = $userId;
+        $data['hour'] = '08:00';
+        $data['cliente_name'] = $data['cliente_name'].' '.$last_name;
 
         $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
         // send mail
-        $data['last_name'] = $last_name;
+        $data['cliente_last_name'] = $last_name;
         $data['cliente_email'] = $email;
         $data['payment_method'] = $method;
-        $data['cliente_name'] = $data['cliente_name'].' '.$last_name;
-        $payment = $this->paymentRepository->createPayment($data, $userId, $booking->id);
+        
+        // $payment = $this->paymentRepository->createPayment($data, $userId, $booking->id);
 
         // Enviar correo de confirmación
         try {
@@ -318,7 +323,7 @@ class BookingServiceController extends Controller
             ];
 
             // Enviar correo de confirmación
-            Mail::to([$email, 'avacacionales@gmail.com'])->send(new BookingConfirmation($booking,  $customerData));
+            Mail::to([$email,  'avacacionales@gmail.com'])->send(new BookingConfirmation($booking,  $customerData));
 
         } catch (Exception $e) {
             // Log del error pero no fallar la reserva
@@ -332,9 +337,16 @@ class BookingServiceController extends Controller
         return response()->json([
             'message' => 'Reservación guardada correctamente',
             'bookingService' => $booking,
-            'payment' => $payment,
+            // 'payment' => $payment,
             'status' => true,
         ], 200);
+    }
+
+    public function successBooking(BookingService $bookingService)
+    {
+        return Inertia::render('Home/Success', [
+            'bookingService' => $bookingService,
+        ]);
     }
 
     public function setStatus()

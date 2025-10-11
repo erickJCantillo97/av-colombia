@@ -59,7 +59,7 @@ Hello, nice to talk to you  I'm Sandra the coordinator for  your activity`">{{ s
         <p>{{ COP.format(service.total_real) }}</p>
       </div>
       <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>{{ service.user.rol == "vendedor" ? "Vendedor" : "Usuario" }}:</strong>
+        <strong>{{ service.vendedor_id  ? "Vendedor" : "Usuario" }}:</strong>
         <p>{{ service.user?.name }}</p>
       </div>
       <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">

@@ -1,8 +1,10 @@
 <template>
   <AppLayout title="Mis Reservas de Alojamientos">
-    
+    <div class="h-[95vh]">
+      <Datatable :data="bookings" :add="add" :columnas="columns" responsiveLayout="scroll" title="Reservas de Alojamientos" class="p-datatable-sm"
+        emptyMessage="No tienes reservas de alojamientos." />
+    </div>
   </AppLayout>
-
   <ConfirmPopup></ConfirmPopup>
 </template>
 
@@ -14,6 +16,15 @@ import Badge from "primevue/badge";
 import ConfirmPopup from "primevue/confirmpopup";
 import { useConfirm } from "primevue/useconfirm";
 import { alerts } from "@/composable/toasts";
+import Datatable from "@/Components/Customs/Datatable.vue";
+import { columns } from "./Columns";
+
+const add = {
+    action: () => {
+        router.get(route("bookingAccommodations.create"));
+    },
+};
+
 
 const { toast } = alerts();
 const confirm = useConfirm();

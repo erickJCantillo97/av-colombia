@@ -38,7 +38,8 @@ class Booking extends Model
     // Relación con User
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        $column = isset($this->vendedor_id) ? 'vendedor_id' : 'user_id';
+        return $this->belongsTo(User::class, $column);
     }
 
     // Relación con Room
