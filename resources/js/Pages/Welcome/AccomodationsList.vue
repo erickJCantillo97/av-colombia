@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4" v-if="store.getAccommodations.length > 0">
+  <div class="p-4" v-if="accommodations.length > 0">
     <div class="mb-2 flex justify-between items-center">
       <h1 class="font-bold text-xl">¡Hospedajes Recomendados!</h1>
       <div class="flex items-center gap-2">
@@ -18,7 +18,7 @@
     </div>
     <div ref="scroller" class="flex gap-x-2 overflow-x-auto hide-scrollbar touch-scroll py-2 snap-x snap-mandatory justify-center" tabindex="0">
       <a :href="route('show.services', {id: accommodation.id, type: 'hospedaje'})" class="flex-shrink-0 px-1 snap-start w-1/2 md:w-1/6"
-      v-for="accommodation in store.getAccommodations" :key="accommodation.id">
+      v-for="accommodation in accommodations" :key="accommodation.id">
         <div class="bg-white overflow-hidden w-full flex flex-col">
           <div class="overflow-hidden rounded-xl bg-gray-200">
             <img v-if="accommodation.photos && accommodation.photos.length > 0" :src="'https://avcolombia.net/' + accommodation.photos[0].url"
@@ -74,7 +74,7 @@ onMounted(() => {
     accommodations.value = props.data;
     return;
   }else{
-    accommodations.value =store.getAccommodations();
+    accommodations.value =store.getAccommodations;
   }
 });
 

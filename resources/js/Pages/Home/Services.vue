@@ -33,7 +33,7 @@ import Loading from "@/Components/Loading.vue";
 import Service from "@/Models/Services/Service";
 import AccomodationsList from "../Welcome/AccomodationsList.vue";
 
-const available_accommodations = reactive([]);
+const available_accommodations = ref([]);
 const type = ref("");
 const serviceModel = new Service();
 const search = ref("");
@@ -64,7 +64,8 @@ async function fetchServices(reset = false) {
       hasMore.value = false;
     } else if (result && result.available_accommodations && Array.isArray(result.available_accommodations)) {
       type.value = "HOSPEDAJE";
-      available_accommodations.push(...result.available_accommodations);
+      console.log(result.available_accommodations);
+      available_accommodations.value=result.available_accommodations;
     }
     page.value++;
   } finally {
@@ -91,9 +92,9 @@ const servicesFilter = computed(() => {
 });
 
 const accommodationsFilter = computed(() => {
-  if (!search.value) return available_accommodations;
+  if (!search.value) return available_accommodations.value;
   const term = search.value.toLowerCase();
-  return available_accommodations.filter(s => s.title.toLowerCase().includes(term)
+  return available_accommodations.value.filter(s => s.title.toLowerCase().includes(term)
     || s.description.toLowerCase().includes(term)
   );
 });
