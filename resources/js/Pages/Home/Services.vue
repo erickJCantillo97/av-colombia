@@ -2,22 +2,22 @@
   <GuestLayout>
     <div class="sticky top-16 z-20 bg-white  py-2 px-4">
       <div class="w-full flex justify-between items-center md:px-4">
-        <span class="font-bold text-xs md:text-lg">
+        <span v-if="type === 'HOSPEDAJE'" class="font-bold text-xs md:text-lg">
+          {{ accommodationsFilter.length }} alojamientos encontrados
+        </span>
+        <span v-else class="font-bold text-xs md:text-lg">
           {{ servicesFilter.length }} servicios encontrados
         </span>
-        <input
-        v-model="search"
-        type="text"
-        placeholder="Buscar..."
-        class="w-1/2 lg:w-1/3 xl:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
+        <input v-model="search" type="text" placeholder="Buscar..."
+          class="w-1/2 lg:w-1/3 xl:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
       </div>
-      
+
     </div>
     <div class="w-full flex flex-col items-center justify-center gap-y-4 mt-4">
-      <ul class="w-full gap-2 md:gap-4 py-1 grid grid-cols-1 md:grid-cols-6 px-4">
+      <ul v-if="type != 'HOSPEDAJE'" class="w-full gap-2 md:gap-4 py-1 grid grid-cols-1 md:grid-cols-6 px-4">
         <Product :service="service" v-for="service in servicesFilter" :key="service.id" />
       </ul>
+      <AccomodationsList class="w-full" v-else :data="accommodationsFilter" />
       <div class="w-full flex items-center justify-center py-4" v-if="searching">
         <Loading v-if="searching" />
       </div>
@@ -27,11 +27,14 @@
 
 <script setup>
 import GuestLayout from "@/Layouts/GuestLayout.vue";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import Product from "./Product.vue";
 import Loading from "@/Components/Loading.vue";
 import Service from "@/Models/Services/Service";
+import AccomodationsList from "../Welcome/AccomodationsList.vue";
 
+const available_accommodations = reactive([]);
+const type = ref("");
 const serviceModel = new Service();
 const search = ref("");
 const services = ref([]);
@@ -48,8 +51,8 @@ async function fetchServices(reset = false) {
     hasMore.value = true;
   }
   try {
+
     const result = await serviceModel.getServicePagination(page.value, 10);
-    console.log(result);
     if (result && Array.isArray(result.data)) {
       if (reset) services.value = result.data;
       else services.value.push(...result.data);
@@ -59,6 +62,9 @@ async function fetchServices(reset = false) {
       if (reset) services.value = result;
       else services.value.push(...result);
       hasMore.value = false;
+    } else if (result && result.available_accommodations && Array.isArray(result.available_accommodations)) {
+      type.value = "HOSPEDAJE";
+      available_accommodations.push(...result.available_accommodations);
     }
     page.value++;
   } finally {
@@ -80,6 +86,14 @@ const servicesFilter = computed(() => {
   if (!search.value) return services.value;
   const term = search.value.toLowerCase();
   return services.value.filter(s => s.title.toLowerCase().includes(term)
+    || s.description.toLowerCase().includes(term)
+  );
+});
+
+const accommodationsFilter = computed(() => {
+  if (!search.value) return available_accommodations;
+  const term = search.value.toLowerCase();
+  return available_accommodations.filter(s => s.title.toLowerCase().includes(term)
     || s.description.toLowerCase().includes(term)
   );
 });

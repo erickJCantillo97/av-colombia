@@ -2,7 +2,7 @@ import { router, useForm } from "@inertiajs/vue3";
 import axios from "axios";
 import GeneralService from "../GeneralService";
 import { getErrorMessage, getSuccessMessage } from "@/composable/Toats";
-import  state  from "@/store/searchStore";
+import state from "@/store/searchStore";
 export default class Service extends GeneralService {
     loading = false;
     service = [];
@@ -31,8 +31,8 @@ export default class Service extends GeneralService {
         origen: '',
         destino: '',
         tarifa_vehiculo: '',
-        motor:'',
-        size:''
+        motor: '',
+        size: ''
     });
 
     constructor(service) {
@@ -59,17 +59,38 @@ export default class Service extends GeneralService {
         return data.services;
     }
 
-    async getAllFeatures(){
-        const {data}=await axios.get(route('get.all.features'))
+    async getAllFeatures() {
+        const { data } = await axios.get(route('get.all.features'))
         return data
     }
 
     async getServicePagination(page = 1, perPage = 10) {
-        const params = { page: page, location: state.location.value, type: state.type.value.value, checkin: state.checkin.value, checkout: state.checkout.value, guests: state.guests.value, perPage: perPage };
+        if (state.type.value.value == "HOSPEDAJE") {
+            const { data } = await axios.get(route("api.accommodations.available"), {
+                params: {
+                    page: page, location: state.location.value,
+                    check_in: state.checkin.value,
+                    check_out: state.checkout.value,
+                    guests: state.guests.value.adults,
+                    perPage: perPage
+                }
+            });
+            return data;
+        }else{
 
-        const { data } = await axios.get(route("services.get.paginated"), { params });
-
-        return data;
+            const params = {
+                page: page, location: state.location.value,
+                type: state.type.value.value,
+                checkin: state.checkin.value,
+                checkout: state.checkout.value,
+                guests: state.guests.value,
+                perPage: perPage
+            };
+    
+            const { data } = await axios.get(route("services.get.paginated"), { params });
+    
+            return data;
+        }
     }
 
     async submit() {
@@ -98,7 +119,7 @@ export default class Service extends GeneralService {
                 getSuccessMessage("Portada actualizada exitosamente");
             },
             onError: (error) => {
-                getErrorMessage( "Error al actualizar la portada");
+                getErrorMessage("Error al actualizar la portada");
             }
         });
     }
@@ -111,14 +132,14 @@ export default class Service extends GeneralService {
         return `${year}-${month}-${day}`;
     }
 
-    getPrice(){
-       const precios = this.service.availabilities.find(av => {
-       return  this.formatDate(av.start_date) <= this.formatDate(state.checkin.value)  && this.formatDate(av.end_date) >= this.formatDate(state.checkout.value)
-       })?.precies ?? [];
+    getPrice() {
+        const precios = this.service.availabilities.find(av => {
+            return this.formatDate(av.start_date) <= this.formatDate(state.checkin.value) && this.formatDate(av.end_date) >= this.formatDate(state.checkout.value)
+        })?.precies ?? [];
 
-    if (!precios.length) return 0;
+        if (!precios.length) return 0;
 
-    return precios.reduce((max, obj) => obj.value > max.value ? obj : max, precios[0]).value;
+        return precios.reduce((max, obj) => obj.value > max.value ? obj : max, precios[0]).value;
     }
 
 

@@ -19,7 +19,7 @@
     <div ref="scroller" class="flex gap-x-2 overflow-x-auto hide-scrollbar touch-scroll py-2 snap-x snap-mandatory justify-center" tabindex="0">
       <a :href="route('show.services', {id: accommodation.id, type: 'hospedaje'})" class="flex-shrink-0 px-1 snap-start w-1/2 md:w-1/6"
       v-for="accommodation in store.getAccommodations" :key="accommodation.id">
-        <div class="bg-white overflow-hidden w-full flex flex-col p-1">
+        <div class="bg-white overflow-hidden w-full flex flex-col">
           <div class="overflow-hidden rounded-xl bg-gray-200">
             <img v-if="accommodation.photos && accommodation.photos.length > 0" :src="'https://avcolombia.net/' + accommodation.photos[0].url"
                  class="w-full h-60 object-cover rounded-xl" />
@@ -55,9 +55,27 @@ import { currencyFormat } from '@/composable/useCommonUtilities'; // Importa la 
 const store = useAccommodationsStore();
 const scroller = ref(null);
 
+
+const props = defineProps({
+  data: {
+    type: Array,
+    required: false,
+    default: () => []
+  }
+});
+// Fetch inicial de alojamientos
+
+const accommodations = ref([]);
+
 // Fetch inicial de alojamientos
 onMounted(() => {
   store.fetchAccommodations();
+  if (props.data && props.data.length > 0) {
+    accommodations.value = props.data;
+    return;
+  }else{
+    accommodations.value =store.getAccommodations();
+  }
 });
 
 /**

@@ -28,17 +28,8 @@ Route::get('obtenerHorariosByServiceBetweeDays/{serviceId}/{startDate}', [Servic
 Route::get('generateLinkToPayment/{userId}', [PaymentController::class, 'generateLinkToPayment'])->name('api.generate.link.payment');
 
 // Nuevas rutas para el sistema de alojamientos v1
-// Route::prefix('v1')->group(function () {
-
-//     // Rutas públicas de alojamientos (no requieren autenticación)
-//     Route::get('accommodations', [AccommodationController::class, 'index'])
-//         ->name('api.accommodations.index');
-//     Route::get('accommodations/{accommodation}', [AccommodationController::class, 'show'])
-//         ->name('api.accommodations.show');
-//     Route::get('accommodations/{accommodation}/availability', [AccommodationController::class, 'checkAvailability'])
-//         ->name('api.accommodations.availability');
-
-//     // Rutas públicas de reseñas
+Route::get('accommodations/available', [AccommodationController::class, 'availableAccommodations'])
+    ->name('api.accommodations.available');
 //     Route::get('reviews', [ReviewController::class, 'index'])
 //         ->name('api.reviews.index');
 //     Route::get('reviews/{review}', [ReviewController::class, 'show'])

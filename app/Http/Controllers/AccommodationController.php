@@ -9,6 +9,62 @@ use Illuminate\Http\Request;
 class AccommodationController extends Controller
 {
     /**
+     * Retorna hoteles con habitaciones disponibles según check_in, check_out y guests.
+     */
+    public function availableAccommodations(Request $request): JsonResponse
+    {
+        $request->validate([
+            'check_in' => 'required|date|after_or_equal:today',
+            'check_out' => 'required|date|after:check_in',
+            'guests' => 'integer|min:1',
+        ]);
+
+        $checkIn = $request->check_in;
+        $checkOut = $request->check_out;
+        $guests = $request->guests ?? 1;
+
+        // Buscar alojamientos con al menos una habitación disponible
+        $accommodations = Accommodation::whereHas('rooms', function ($roomQuery) use ($checkIn, $checkOut, $guests) {
+            $roomQuery->where('is_available', true)
+                ->where('capacity_adults', '>=', $guests)
+                ->whereDoesntHave('bookings', function ($query) use ($checkIn, $checkOut) {
+                    $query->where('status', '!=', 'cancelada')
+                        ->where(function ($dateQuery) use ($checkIn, $checkOut) {
+                            $dateQuery->whereBetween('check_in_date', [$checkIn, $checkOut])
+                                ->orWhereBetween('check_out_date', [$checkIn, $checkOut])
+                                ->orWhere(function ($overlapQuery) use ($checkIn, $checkOut) {
+                                    $overlapQuery->where('check_in_date', '<=', $checkIn)
+                                        ->where('check_out_date', '>=', $checkOut);
+                                });
+                        });
+                });
+        })
+            ->with(['rooms' => function ($roomQuery) use ($checkIn, $checkOut, $guests) {
+                $roomQuery->where('is_available', true)
+                    ->where('capacity_adults', '>=', $guests)
+                    ->whereDoesntHave('bookings', function ($query) use ($checkIn, $checkOut) {
+                        $query->where('status', '!=', 'cancelada')
+                            ->where(function ($dateQuery) use ($checkIn, $checkOut) {
+                                $dateQuery->whereBetween('check_in_date', [$checkIn, $checkOut])
+                                    ->orWhereBetween('check_out_date', [$checkIn, $checkOut])
+                                    ->orWhere(function ($overlapQuery) use ($checkIn, $checkOut) {
+                                        $overlapQuery->where('check_in_date', '<=', $checkIn)
+                                            ->where('check_out_date', '>=', $checkOut);
+                                    });
+                            });
+                    });
+            }])
+            ->get();
+
+        return response()->json([
+            'available_accommodations' => $accommodations,
+            'total_available' => $accommodations->count(),
+            'check_in' => $checkIn,
+            'check_out' => $checkOut,
+            'guests' => $guests,
+        ]);
+    }
+    /**
      * Display a listing of the resource with filters.
      *
      * Permite filtrar por city, country, type, star_rating y rango de precios.
@@ -16,11 +72,12 @@ class AccommodationController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        // dd($request->all());
         $query = Accommodation::with(['rooms', 'amenities', 'photos', 'reviews'])
             ->published(); // Solo alojamientos publicados
 
         // Filtrar por ciudad
-        if ($request->filled('city')) {
+        if ($request->filled('Location')) {
             $query->inLocation($request->city);
         }
 
@@ -53,9 +110,9 @@ class AccommodationController extends Controller
         }
 
         // Filtrar por capacidad de huéspedes
-        if ($request->filled('guests_adults') || $request->filled('guests_children')) {
-            $adults = $request->guests_adults ?? 1;
-            $children = $request->guests_children ?? 0;
+        if ($request->filled('guests')) {
+            $adults = $request->guests?->adults ?? 1;
+            $children = $request->guests?->children ?? 0;
 
             $query->whereHas('rooms', function ($roomQuery) use ($adults, $children) {
                 $roomQuery->withCapacity($adults, $children);
@@ -67,12 +124,10 @@ class AccommodationController extends Controller
             $amenityIds = is_array($request->amenities)
                 ? $request->amenities
                 : explode(',', $request->amenities);
-
             $query->whereHas('amenities', function ($amenityQuery) use ($amenityIds) {
                 $amenityQuery->whereIn('amenities.id', $amenityIds);
             }, '=', count($amenityIds)); // Debe tener TODAS las amenidades solicitadas
         }
-
         // Ordenamiento
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
@@ -82,7 +137,7 @@ class AccommodationController extends Controller
             $query->leftJoin('rooms', 'accommodations.id', '=', 'rooms.accommodation_id')
                 ->where('rooms.is_available', true)
                 ->groupBy('accommodations.id')
-                ->orderByRaw('MIN(rooms.price_per_night) '.$sortOrder);
+                ->orderByRaw('MIN(rooms.price_per_night) ' . $sortOrder);
         } else {
             $query->orderBy($sortBy, $sortOrder);
         }

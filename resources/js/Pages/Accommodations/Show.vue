@@ -147,7 +147,7 @@
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-map-marker-alt text-gray-500"></i>
                         <span>{{ accommodation.address_line_1 }}, {{ accommodation.city }}, {{ accommodation.state
-                            }}</span>
+                        }}</span>
                     </div>
                 </div>
             </div>
@@ -211,7 +211,6 @@
 </template>
 
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
 import { Head, router, usePage } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import Rating from "primevue/rating";
@@ -221,6 +220,7 @@ import Modal from "@/Components/Customs/Modal.vue";
 import Input from "@/Components/Customs/Input.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import Header from "@/Components/Sections/Header.vue";
+import axios from "axios";
 
 const props = defineProps({
     accommodation: Object,
@@ -280,16 +280,23 @@ const performSearch = () => {
         return;
     }
 
-    //   router.visit(route('booking-accommodations.search'), {
-    //     method: 'get',
-    //     data: {
-    //       accommodation_id: props.accommodation.id,
-    //       check_in_date: searchForm.value.check_in_date,
-    //       check_out_date: searchForm.value.check_out_date,
-    //       guests_adults: searchForm.value.guests_adults,
-    //       guests_children: searchForm.value.guests_children,
-    //     }
-    //   });
+    axios.get(route('api.accommodations.availability', props.accommodation.id), {
+        params: {
+            accommodation_id: props.accommodation.id,
+            check_in: searchForm.value.check_in_date,
+            check_out: searchForm.value.check_out_date,
+            guests: searchForm.value.guests_adults,
+            guests_children: searchForm.value.guests_children,
+        }
+    }).then(response => {
+        // Manejar la respuesta, por ejemplo, mostrar las habitaciones disponibles
+        console.log(response.data);
+        showSearchModal.value = false;
+        // Aquí podrías redirigir a una página de resultados o actualizar el estado local
+    }).catch(error => {
+        console.error('Error al buscar habitaciones:', error);
+        alert('Ocurrió un error al buscar habitaciones. Por favor, intenta nuevamente.');
+    })
 };
 
 const bookRoom = (room) => {
@@ -319,7 +326,7 @@ const mainImage = ref(props.accommodation.photos?.[0]?.url || '/images/house.png
  * @returns {Array} Array de hasta 3 fotos.
  */
 const smallPhotos = computed(() => {
-  return props.accommodation.photos?.slice(0, 3) || [];
+    return props.accommodation.photos?.slice(0, 3) || [];
 });
 
 /**
@@ -327,6 +334,6 @@ const smallPhotos = computed(() => {
  * @param {string} url - URL de la imagen seleccionada.
  */
 const setMainImage = (url) => {
-  mainImage.value = url;
+    mainImage.value = url;
 };
 </script>
