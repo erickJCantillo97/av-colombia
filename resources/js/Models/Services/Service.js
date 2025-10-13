@@ -72,7 +72,8 @@ export default class Service extends GeneralService {
                     check_in: state.checkin.value,
                     check_out: state.checkout.value,
                     guests: state.guests.value.adults,
-                    perPage: perPage
+                    perPage: perPage,
+                    city: state.location.value
                 }
             });
             return data;

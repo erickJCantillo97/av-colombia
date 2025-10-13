@@ -51,10 +51,10 @@
                     </div>
 
                     <div class="flex space-x-4">
-                        <Button @click="editAccommodation" v-if="canEdit" icon="fa-solid fa-edit" label="Editar"
-                            severity="info" outlined />
-                        <Button @click="searchRooms" icon="fa-solid fa-search" label="Buscar Disponibilidad"
-                            severity="success" />
+                        <!-- <Button @click="editAccommodation" v-if="canEdit" icon="fa-solid fa-edit" label="Editar"
+                            severity="info" outlined /> -->
+                        <!-- <Button @click="searchRooms" icon="fa-solid fa-search" label="Buscar Disponibilidad"
+                            severity="success" /> -->
                     </div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-xl font-semibold mb-4">Habitaciones Disponibles</h2>
                 <div class="space-y-4">
-                    <div v-for="room in accommodation.rooms" :key="room.id"
+                    <div v-for="room in rooms.available_rooms" :key="room.id"
                         class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                             <div class="md:col-span-2">
@@ -172,42 +172,6 @@
             </div>
         </div>
     </div>
-    <!-- </AppLayout> -->
-
-    <!-- Modal de Búsqueda -->
-    <Modal v-model:visible="showSearchModal">
-        <template #title>
-            <span class="text-xl font-bold">Buscar Disponibilidad</span>
-        </template>
-        <template #icon>
-            <i class="fa-solid fa-search" />
-        </template>
-
-        <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-in</label>
-                    <VueDatePicker v-model="searchForm.check_in_date" :min-date="new Date()" :teleport="true" auto-apply
-                        :enable-time-picker="false" timezone="America/Bogota" />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Check-out</label>
-                    <VueDatePicker v-model="searchForm.check_out_date" :min-date="searchForm.check_in_date"
-                        :teleport="true" auto-apply :enable-time-picker="false" timezone="America/Bogota" />
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <Input label="Adultos" v-model="searchForm.guests_adults" type="number" min="1" />
-                <Input label="Niños" v-model="searchForm.guests_children" type="number" min="0" />
-            </div>
-        </div>
-
-        <template #footer>
-            <Button @click="performSearch" label="Buscar" icon="fa-solid fa-search" severity="success" />
-            <Button @click="showSearchModal = false" label="Cancelar" severity="secondary" outlined />
-        </template>
-    </Modal>
 </template>
 
 <script setup>
@@ -216,16 +180,14 @@ import { computed, ref } from "vue";
 import Rating from "primevue/rating";
 import Badge from "primevue/badge";
 import Button from "primevue/button";
-import Modal from "@/Components/Customs/Modal.vue";
-import Input from "@/Components/Customs/Input.vue";
-import VueDatePicker from '@vuepic/vue-datepicker';
 import Header from "@/Components/Sections/Header.vue";
 import axios from "axios";
-
+import state from "@/store/searchStore";
 const props = defineProps({
     accommodation: Object,
 });
 
+const rooms = ref([]);
 const showSearchModal = ref(false);
 const searchForm = ref({
     check_in_date: null,
@@ -257,47 +219,35 @@ const getStatusSeverity = (status) => {
     }
 };
 
-const canEdit = computed(() => {
-    const user = usePage().props.auth.user;
-    return user && (
-        user.id === props.accommodation.user_id ||
-        user.rol === 'admin' ||
-        user.rol === 'superadmin'
-    );
-});
-
-const editAccommodation = () => {
-    router.visit(route('accommodations.edit', props.accommodation.id));
-};
+// const editAccommodation = () => {
+//     router.visit(route('accommodations.edit', props.accommodation.id));
+// };
 
 const searchRooms = () => {
     showSearchModal.value = true;
 };
 
-const performSearch = () => {
-    if (!searchForm.value.check_in_date || !searchForm.value.check_out_date) {
-        alert('Por favor selecciona las fechas de entrada y salida');
-        return;
-    }
-
+const getRoomAvailability = () => {
+    // Lógica para obtener la disponibilidad de habitaciones
+    console.log(state)
     axios.get(route('api.accommodations.availability', props.accommodation.id), {
         params: {
             accommodation_id: props.accommodation.id,
-            check_in: searchForm.value.check_in_date,
-            check_out: searchForm.value.check_out_date,
-            guests: searchForm.value.guests_adults,
-            guests_children: searchForm.value.guests_children,
+            check_in: state.checkin.value,
+            check_out: state.checkout.value,
+            guests: state.guests.value.adults + state.guests.value.children,
         }
     }).then(response => {
         // Manejar la respuesta, por ejemplo, mostrar las habitaciones disponibles
         console.log(response.data);
-        showSearchModal.value = false;
+        rooms.value = response.data;
         // Aquí podrías redirigir a una página de resultados o actualizar el estado local
     }).catch(error => {
         console.error('Error al buscar habitaciones:', error);
         alert('Ocurrió un error al buscar habitaciones. Por favor, intenta nuevamente.');
     })
 };
+getRoomAvailability()
 
 const bookRoom = (room) => {
     if (!searchForm.value.check_in_date || !searchForm.value.check_out_date) {
