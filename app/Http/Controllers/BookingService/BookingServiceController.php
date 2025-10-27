@@ -295,7 +295,7 @@ class BookingServiceController extends Controller
         $data['boys_price'] = $service->boys_price;
         $data['adults_price'] = $service->adults_price;
         $data['service'] = $service->title;
-        if ($data['soporte']) {
+        if (isset($data['soporte'])) {
             $data['file'] = $data['soporte']->store('public/soportes');
         }
         unset($data['soporte']);
@@ -309,7 +309,7 @@ class BookingServiceController extends Controller
         $data['cliente_email'] = $email;
         $data['payment_method'] = $method;
         
-        // $payment = $this->paymentRepository->createPayment($data, $userId, $booking->id);
+        $payment = $this->paymentRepository->createPayment($data, $userId, $booking->id);
 
         // Enviar correo de confirmación
         try {
