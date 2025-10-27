@@ -336,7 +336,7 @@ class BookingServiceController extends Controller
         return response()->json([
             'message' => 'Reservación guardada correctamente',
             'bookingService' => $booking,
-            // 'payment' => $payment,
+            'payment' => $payment,
             'status' => true,
         ], 200);
     }
