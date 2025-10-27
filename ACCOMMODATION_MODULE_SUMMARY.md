@@ -16,7 +16,7 @@ database/migrations/2025_09_09_144404_create_photos_table.php
 - ✅ Tabla `accommodations` con todos los campos requeridos
 - ✅ Tabla `rooms` con capacidad y precios
 - ✅ Tabla `amenities` con nombres y slugs únicos
-- ✅ Tabla pivote `amenity_accommodation` para relación muchos a muchos
+- ✅ Tabla pivote `amenity_accommodation` para relación muc hos a muchos
 - ✅ Tabla `reviews` con rating y comentarios
 - ✅ Tabla `photos` polimórfica para alojamientos y habitaciones
 - ✅ Índices optimizados para búsquedas rápidas
