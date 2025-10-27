@@ -62,7 +62,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
                 "id" => $user->id, 
                 "email" => $data['cliente_email'],
                 "name" => $data['cliente_name'],
-                "last_name" => $data['last_name']
+                "last_name" => $data['cliente_name']
             ],
             "order" => [
                 "dev_reference" => "1",
