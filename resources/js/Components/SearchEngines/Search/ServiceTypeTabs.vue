@@ -34,7 +34,7 @@
 <script setup>
 import { ref, watch, nextTick, onMounted } from 'vue';
 import state from '@/store/searchStore';
-
+import { router } from '@inertiajs/vue3';
 const props = defineProps({
   modelValue: Object
 });
@@ -93,6 +93,8 @@ function updateSlider() {
 
 function selectTab(serviceType, index) {
   type.value = serviceType;
+  
+  router.visit(route('services.home'));
 }
 
 watch(() => type, updateSlider, { deep: true });

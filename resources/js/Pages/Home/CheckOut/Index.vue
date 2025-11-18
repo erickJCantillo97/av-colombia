@@ -295,7 +295,7 @@ const selectedDeliveryMethod = ref(deliveryMethods[0]);
 
 const handleSubmit = () => {
     formReserva.total_real = totalCost.value;
-    formReserva.payment_method = selectedDeliveryMethod.value.id;
+   
 
     const formData = new FormData();
 
@@ -308,13 +308,15 @@ const handleSubmit = () => {
         }
     });
 
+    formData.append('payment_method', selectedDeliveryMethod.value.id);
+
     axios.post(route('booking.reservar.by.api'), formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
     })
     .then(response => {
-        if (formReserva.value.payment_method === 2) {
+        if (response.data.payment.data.payment.payment_url) {
             location.href = response.data.payment.data.payment.payment_url; // Redirigir al enlace de pago
         } else {
             router.get(route('booking.success', response.data.bookingService.id));

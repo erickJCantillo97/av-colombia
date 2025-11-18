@@ -65,7 +65,7 @@ const props = defineProps({
     }
 });
 
-const routerRequest = props.route || route('services.photos.upload', props.service.id);
+const routerRequest = props.route;
 
 const $primevue = usePrimeVue();
 const toast = useToast();
