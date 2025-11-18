@@ -19,8 +19,10 @@ class Booking extends Model
         'guests_adults',
         'guests_children',
         'guest_name',
+        'guest_last_name',
         'guest_email',
         'guest_phone',
+        'guest_country',
         'guest_document',
         'special_requests',
         'total_price',
@@ -39,6 +41,7 @@ class Booking extends Model
     public function user(): BelongsTo
     {
         $column = isset($this->vendedor_id) ? 'vendedor_id' : 'user_id';
+
         return $this->belongsTo(User::class, $column);
     }
 

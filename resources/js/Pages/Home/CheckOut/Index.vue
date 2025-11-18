@@ -141,7 +141,7 @@
                             <h2 class="text-lg  text-gray-900 mx-4 mt-2 font-bold text-center">Resumen de reserva</h2>
                             <span class="flex gap-2 justify-center">
                                 <p class="text-center  text-gray-500">Fecha:
-                               
+
                                 </p>
                                 <p class="text-center  text-gray-500">Hora:
                                     <strong>
@@ -210,9 +210,13 @@
                             </div>
                         </dl>
                         <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
-                            <button :disabled="totalCost == 0" type="submit"
-                                class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                                Confirmar el Pago y Reservar
+                            <button :disabled="totalCost == 0 || isLoading" type="submit"
+                                class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                <svg v-if="isLoading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>{{ isLoading ? 'Procesando...' : 'Confirmar el Pago y Reservar' }}</span>
                             </button>
                         </div>
                     </div>
@@ -272,6 +276,7 @@ onMounted(() => {
 })
 
 const soporte = ref('');
+const isLoading = ref(false);
 
 const totalCost = computed(() => {
     return formReserva.adults * formReserva.price_service;
@@ -294,11 +299,10 @@ const deliveryMethods = [
 const selectedDeliveryMethod = ref(deliveryMethods[0]);
 
 const handleSubmit = () => {
+    isLoading.value = true;
     formReserva.total_real = totalCost.value;
-   
 
     const formData = new FormData();
-
     // Agregar todos los campos del formulario
     Object.keys(formReserva.value).forEach(key => {
         if (key === 'soporte' && formReserva.value[key] instanceof File) {
@@ -307,24 +311,29 @@ const handleSubmit = () => {
             formData.append(key, formReserva.value[key]);
         }
     });
-
     formData.append('payment_method', selectedDeliveryMethod.value.id);
-
     axios.post(route('booking.reservar.by.api'), formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
-    })
-    .then(response => {
-        if (response.data.payment.data.payment.payment_url) {
+    }).then(response => {
+        if (response.data.payment.data.payment?.payment_url) {
             location.href = response.data.payment.data.payment.payment_url; // Redirigir al enlace de pago
         } else {
+            console.log(response.data)
             router.get(route('booking.success', response.data.bookingService.id));
         }
     })
-    .catch(error => {
-        console.error("Error al generar el enlace de pago:", error);
-    });
+        .catch(error => {
+            console.error("Error al generar el enlace de pago:", error);
+            isLoading.value = false;
+        })
+        .finally(() => {
+            // Solo desactivar si no hay redirección
+            if (!response?.data?.payment?.data?.payment?.payment_url) {
+                isLoading.value = false;
+            }
+        });
 };
 
 function previewFiles(event) {

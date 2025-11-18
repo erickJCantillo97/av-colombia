@@ -41,6 +41,13 @@ class BookingController extends Controller
             'check_out_date' => 'required|date|after:check_in_date',
             'guests_adults' => 'required|integer|min:1',
             'guests_children' => 'integer|min:0',
+            'guest_name' => 'required|string|max:255',
+            'guest_last_name' => 'required|string|max:255',
+            'guest_email' => 'required|email',
+            'guest_phone' => 'required|string|max:20',
+            'guest_country' => 'nullable|string|max:100',
+            'payment_method' => 'required|integer|in:1,2,3',
+            'soporte' => 'nullable|file|max:5120',
         ]);
 
         $room = Room::findOrFail($validatedData['room_id']);
@@ -77,16 +84,27 @@ class BookingController extends Controller
         DB::beginTransaction();
 
         try {
-            $booking = Booking::create([
-                'user_id' => Auth::id(),
+            $bookingData = [
                 'room_id' => $room->id,
                 'check_in_date' => $checkIn,
                 'check_out_date' => $checkOut,
                 'guests_adults' => $guestsAdults,
                 'guests_children' => $guestsChildren,
                 'total_price' => $totalPrice,
+                'guest_name' => $validatedData['guest_name'],
+                'guest_last_name' => $validatedData['guest_last_name'],
+                'guest_email' => $validatedData['guest_email'],
+                'guest_phone' => $validatedData['guest_phone'],
+                'guest_country' => $validatedData['guest_country'] ?? null,
                 'status' => 'confirmada',
-            ]);
+            ];
+
+            // Si hay usuario autenticado, agregar su ID
+            if (Auth::check()) {
+                $bookingData['user_id'] = Auth::id();
+            }
+
+            $booking = Booking::create($bookingData);
 
             // Verificar una vez más la disponibilidad después de crear la reserva
             // para evitar condiciones de carrera
@@ -118,11 +136,27 @@ class BookingController extends Controller
             DB::commit();
 
             // Cargar las relaciones para la respuesta
-            $booking->load(['room.accommodation', 'user']);
+            $booking->load(['room.accommodation']);
+
+            // Procesar según método de pago
+            $paymentMethod = $validatedData['payment_method'];
+            $paymentUrl = null;
+
+            if ($paymentMethod == 2) {
+                // Pago en línea - aquí iría la integración con pasarela de pago
+                // Por ahora, simular que se genera un URL de pago
+                // TODO: Integrar con la pasarela de pago real
+                $paymentUrl = null; // En producción, aquí iría la URL de pago generada
+            } elseif ($paymentMethod == 3 && $request->hasFile('soporte')) {
+                // Guardar el comprobante de pago
+                $path = $request->file('soporte')->store('public/payment_receipts');
+                // Aquí podrías crear un registro de pago pendiente de validación
+            }
 
             return response()->json([
                 'message' => 'Reserva creada exitosamente.',
-                'data' => $booking,
+                'booking' => $booking,
+                'payment_url' => $paymentUrl,
             ], 201);
 
         } catch (\Exception $e) {

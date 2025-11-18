@@ -105,8 +105,46 @@ class AccommodationController extends Controller
 
         $accommodation->append(['average_rating', 'min_price']);
 
-        return Inertia::render('Accommodations/Show', [
+        return Inertia::render('Home/AccommodationShow', [
             'accommodation' => $accommodation,
+        ]);
+    }
+
+    /**
+     * Show checkout page for accommodation booking.
+     */
+    public function checkout(Request $request, Accommodation $accommodation, Room $room)
+    {
+        // Validar que la habitación pertenezca al alojamiento
+        if ($room->accommodation_id !== $accommodation->id) {
+            abort(404, 'Habitación no encontrada en este alojamiento.');
+        }
+
+        $accommodation->load(['photos', 'amenities']);
+        $room->load(['photos']);
+
+        return Inertia::render('Home/CheckOut/AccommodationCheckout', [
+            'accommodation' => $accommodation,
+            'room' => $room,
+            'checkIn' => $request->query('check_in'),
+            'checkOut' => $request->query('check_out'),
+            'guests' => $request->query('guests', 2),
+        ]);
+    }
+
+    /**
+     * Show booking success page.
+     */
+    public function bookingSuccess(\App\Models\Booking $booking)
+    {
+        $booking->load([
+            'room.accommodation.photos',
+            'room.photos',
+            'user',
+        ]);
+
+        return Inertia::render('Home/CheckOut/AccommodationBookingSuccess', [
+            'booking' => $booking,
         ]);
     }
 
@@ -232,7 +270,6 @@ class AccommodationController extends Controller
                 'path' => $path,
             ];
 
-
             $accommodation = Accommodation::find($accommodationId);
             $photo = $accommodation->photos()->create($photoData);
             $uploadedPhotos[] = $photo;
@@ -250,7 +287,7 @@ class AccommodationController extends Controller
             // Buscar la imagen
             $photo = \App\Models\Photo::find($imageId);
 
-            if (!$photo) {
+            if (! $photo) {
                 return response()->json(['error' => 'Imagen no encontrada'], 404);
             }
 
@@ -270,15 +307,16 @@ class AccommodationController extends Controller
             }
 
             // Eliminar archivo físico si existe
-            $fullPath = storage_path('app/public/' . $photo->path);
+            $fullPath = storage_path('app/public/'.$photo->path);
             if (file_exists($fullPath)) {
                 unlink($fullPath);
             }
 
             $photo->delete();
+
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al eliminar imagen: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al eliminar imagen: '.$e->getMessage()], 500);
         }
     }
 }

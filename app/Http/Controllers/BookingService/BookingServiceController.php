@@ -277,13 +277,9 @@ class BookingServiceController extends Controller
     public function reservarByApi(BookingClientService $request, $userId = 8)
     {
         $data = $request->validated();
-
-        // Extract commonly used values
         $lastName = $data['cliente_last_name'] ?? null;
         $email = $data['cliente_email'] ?? null;
         $paymentMethod = $data['payment_method'] ?? null;
-
-        // Normalize and prepare payload
         $data['saldo'] = 0;
         $hora = Horario::find($request->time)->start ?? '08:00';
         $data['hour'] = $hora;
@@ -292,64 +288,55 @@ class BookingServiceController extends Controller
         $data['channel_id'] = Channel::where('name', 'Vendedor')->first()?->id ?? null;
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
         $data['vendedor_id'] = $userId;
-        $data['cliente_name'] = ($data['cliente_name'] ?? '') . ' ' . ($lastName ?? '');
+        $data['cliente_name'] = ($data['cliente_name'] ?? '').' '.($lastName ?? '');
+        // Handle optional uploaded soporte
+        if (isset($data['soporte']) && $data['soporte']) {
+            $data['file'] = $data['soporte']->store('public/soportes');
+        }
 
         // Remove fields not needed by repository/store
-        unset($data['cliente_email'], $data['cliente_last_name'], $data['time'], $data['payment_method']);
-
+        unset($data['cliente_email'], $data['cliente_last_name'], $data['time'], $data['payment_method'], $data['soporte']);
         // Resolve service specific pricing and meta
         $service = Service::findOrFail($data['service_id']);
         $data['boys_tarifa'] = $service->boy_tarifa;
         $data['boys_price'] = $service->boys_price;
         $data['adults_price'] = $service->adults_price;
         $data['service'] = $service->title;
-
-        // Handle optional uploaded soporte
-        if (isset($data['soporte']) && $data['soporte']) {
-            $data['file'] = $data['soporte']->store('public/soportes');
-        }
-        unset($data['soporte']);
-
         // Use transaction for booking + payment creation
         try {
-            $result = DB::transaction(function () use ($data, $userId, $paymentMethod) {
-            $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
+            $result = DB::transaction(function () use ($data, $userId, $paymentMethod, $email, $lastName) {
+                $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
+                // Reattach minimal data needed by payment repository
+                $paymentPayload = array_merge($data, [
+                    'cliente_email' => $email,
+                    'cliente_last_name' => $lastName,
+                    'payment_method' => $paymentMethod,
+                    'cliente_name' => $data['cliente_name'] ?? null,
+                ]);
+                $payment = $this->paymentRepository->createPayment($paymentPayload, $userId, $booking->id);
 
-            // Reattach minimal data needed by payment repository
-            $paymentPayload = array_merge($data, [
-                'cliente_email' => $data['cliente_email'] ?? null,
-                'cliente_last_name' => null,
-                'payment_method' => $paymentMethod,
-            ]);
-
-            $payment = $this->paymentRepository->createPayment($paymentPayload, $userId, $booking->id);
-
-            return compact('booking', 'payment');
+                return compact('booking', 'payment');
             });
         } catch (Exception $e) {
             Log::error('Error creando reservación o pago', ['error' => $e->getMessage(), 'payload' => $data]);
+
             return response()->json(['message' => 'Error al guardar la reservación'], 500);
         }
-
         $booking = $result['booking'];
         $payment = $result['payment'];
-
-        // Prepare customer data for email (keep minimal)
         $customerData = [
             'cliente_name' => $data['cliente_name'],
             'cliente_email' => $email,
             'payment_method' => $paymentMethod,
             'last_name' => $lastName,
         ];
-
-        // Send confirmation email but do not fail the request if email fails
         try {
             Mail::to([$email, 'avacacionales@gmail.com'])->send(new BookingConfirmation($booking, $customerData));
         } catch (Exception $e) {
             Log::error('Error al enviar correo de confirmación', [
-            'booking_id' => $booking->id,
-            'email' => $email,
-            'error' => $e->getMessage(),
+                'booking_id' => $booking->id,
+                'email' => $email,
+                'error' => $e->getMessage(),
             ]);
         }
 

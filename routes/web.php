@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AmenityController;
 use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ContabilidadController;
@@ -16,7 +17,6 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Web\AccommodationController as WebAccommodationController;
 use App\Http\Controllers\Web\BookingAccommodationController;
-use App\Http\Controllers\AmenityController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -103,7 +103,7 @@ Route::middleware([
     Route::resource('tickets', \App\Http\Controllers\TicketController::class)->only(['update', 'destroy']);
 
     Route::resource('accommodation', WebAccommodationController::class);
-    
+
     Route::post('photos/upload/{accommodationId}', [WebAccommodationController::class, 'uploadPhotos'])
         ->name('accommodations.photos.upload');
 
@@ -113,7 +113,6 @@ Route::middleware([
     // Ruta para eliminar imágenes de alojamientos
     Route::delete('accommodation/images/{imageId}', [WebAccommodationController::class, 'destroyImage'])
         ->name('accommodations.images.destroy');
-        
 
     // Rutas para amenidades
     Route::resource('amenities', AmenityController::class)->only(['store', 'index', 'destroy']);
@@ -141,6 +140,15 @@ Route::get('getServicePagination', [ServiceController::class, 'getServicePaginat
 Route::get('getAllFeatures', [ServiceController::class, 'getAllFeatures'])->name('get.all.features');
 Route::get('getAllDestinations', [ServiceController::class, 'getAllDestinations'])->name('get.all.destinations');
 Route::get('getAllOrigins', [ServiceController::class, 'getAllOrigins'])->name('get.all.origins');
+
+// Ruta pública para ver detalle de alojamiento
+Route::get('accommodations/{accommodation}', [WebAccommodationController::class, 'show'])->name('accommodations.show');
+
+// Ruta pública para checkout de alojamiento
+Route::get('accommodation-checkout/{accommodation}/{room}', [WebAccommodationController::class, 'checkout'])->name('accommodations.checkout');
+
+// Ruta pública para confirmación de reserva de alojamiento
+Route::get('accommodation-booking-success/{booking}', [WebAccommodationController::class, 'bookingSuccess'])->name('accommodations.booking.success');
 
 // // Rutas web para el sistema de alojamientos (para testing o vistas web futuras)
 // Route::prefix('accommodations')->name('accommodations.')->group(function () {

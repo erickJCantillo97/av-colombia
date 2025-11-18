@@ -27,6 +27,14 @@ Route::get('getService/{slug}/{userId}', [ServiceController::class, 'apiShow'])-
 Route::get('obtenerHorariosByServiceBetweeDays/{serviceId}/{startDate}', [ServiceController::class, 'obtenerHorariosByServiceBetweeDays'])->name('api.get.horarios');
 Route::get('generateLinkToPayment/{userId}', [PaymentController::class, 'generateLinkToPayment'])->name('api.generate.link.payment');
 
+// Ruta pública para chequear disponibilidad de habitaciones en un alojamiento
+Route::get('accommodations/{accommodation}/availability', [AccommodationController::class, 'checkAvailability'])
+    ->name('api.accommodations.availability');
+
+// Ruta para procesar reserva de alojamiento
+Route::post('accommodations/booking', [BookingController::class, 'store'])
+    ->name('api.accommodations.booking');
+
 // Nuevas rutas para el sistema de alojamientos v1
 // Route::prefix('v1')->group(function () {
 
