@@ -31,8 +31,8 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
 
     private function getTokenToPayment()
     {
-        $server_application_code = env('API_LOGIN_DEV', 'AVCOLCARTAGENA-STG-RE-SERVER');
-        $server_app_key = env('APP_KEY_SERVER', 'qWu2xFF8y0iLRPmvZ69oUs7ejoC2Cp');
+        $server_application_code = env('API_LOGIN_DEV', 'AVCOLOMBIACTG76-RE-SERVER');
+        $server_app_key = env('APP_KEY_SERVER', 'wBNX4A570rFMSFCIePTrTXhn4PXHBW');
         $date = new Carbon;
         $unix_timestamp = $date->getTimestamp();
         $uniq_token_string = $server_app_key.$unix_timestamp;
@@ -47,7 +47,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
         $token = $this->getTokenToPayment();
         $user = User::find($userId);
         $service = $this->serviceRepository->getById($data['service_id']);
-        $link = Http::withHeaders(headers: ['auth-token' => $token, 'content-type' => 'application/json'])->post('https://noccapi-stg.redeban.com/linktopay/init_order/', [
+        $link = Http::withHeaders(headers: ['auth-token' => $token, 'content-type' => 'application/json'])->post('https://noccapi.redeban.com/linktopay/init_order/', [
             'user' => [
                 'id' => $user->id,
                 'email' => $data['cliente_email'],

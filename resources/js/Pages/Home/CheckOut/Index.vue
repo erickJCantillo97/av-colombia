@@ -273,7 +273,7 @@ const formReserva = ref({
 function getPrice() {
    const maxCapacity = parseInt(props.service.capacidad_max)
    if (props.service.type === 'TOUR') {
-       formReserva.value.price_service =   props.service.adults_price * formReserva.value.adults  + formReserva.value.children;
+       formReserva.value.price_service =   props.service.adults_price * (formReserva.value.adults  + formReserva.value.children);
     } else if (props.service.type === 'EMBARCACION') {
         formReserva.value.price_service =   props.service.adults_price;
     }if (props.service.type === 'TRANSFER') {
