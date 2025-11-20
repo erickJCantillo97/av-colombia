@@ -448,15 +448,15 @@ const product = {
               <div class="border-t pt-3">
                 <div class="flex items-center justify-between text-sm text-gray-600">
                   <div>{{ USDollar.format(props.service.price) }} x {{ guests }} huésped{{ guests > 1 ? 'es' : '' }}</div>
-                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.price * guests) }}</div>
+                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.price) }}</div>
                 </div>
                 <div class="flex items-center justify-between text-sm text-gray-600 mt-1">
                   <div>Tarifa de servicio</div>
-                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.price * guests * 0.1) }}</div>
+                  <div class="font-medium text-gray-900">{{ USDollar.format(props.service.price * guests) }}</div>
                 </div>
                 <div class="flex items-center justify-between text-base font-semibold text-gray-900 mt-3 pt-3 border-t">
                   <div>Total</div>
-                  <div>{{ USDollar.format(props.service.price * guests * 1.1) }}</div>
+                  <div>{{ USDollar.format(props.service.price * guests) }}</div>
                 </div>
               </div>
             </div>

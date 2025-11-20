@@ -57,18 +57,21 @@
         confirmar la reserva.
       </p>
       <p class="text-lg mt-4 text-center">Gracias por elegirnos</p>
-      <div class="w-full flex justify-center mt-4">
-        <router-link :to="`/${bookingService.user_id}`" class="text-teal-800"
-          >Volver al inicio</router-link
-        >
+      <div class="w-full flex flex-col sm:flex-row gap-3 justify-center items-center mt-4">
+        <a :href="route('services.home')" 
+          class="px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors shadow-md w-full sm:w-auto text-center">
+          Volver a Comprar
+        </a>
+     
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import "vue3-carousel/dist/carousel.css";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
+import confetti from 'canvas-confetti';
 
 const props = defineProps({
     bookingService: Object,
@@ -79,6 +82,44 @@ const USDollar = new Intl.NumberFormat("es-CO", {
   style: "currency",
   currency: "COP",
   maximumFractionDigits: 0,
+});
+
+// Función para lanzar confeti
+const launchConfetti = () => {
+  const duration = 3000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  const interval = setInterval(function() {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    const particleCount = 50 * (timeLeft / duration);
+
+    // Lanzar confeti desde diferentes posiciones
+    confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+    });
+    confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+    });
+  }, 250);
+};
+
+// Lanzar confeti cuando se monta el componente
+onMounted(() => {
+  launchConfetti();
 });
 
 // const getBookingService = () => {

@@ -51,13 +51,13 @@
                                                     'text-gray-900': !active
                                                 }">{{
                                                     deliveryMethod.title
-                                                    }}</span>
+                                                }}</span>
                                                 <span class="mt-1 flex items-center text-sm " :class="{
                                                     'text-white': active,
                                                     'text-gray-500': !active
                                                 }">{{
                                                     deliveryMethod.turnaround
-                                                    }}</span>
+                                                }}</span>
 
                                             </span>
                                         </span>
@@ -209,15 +209,26 @@
                                     formatCurrency(formReserva.total_real) }}</dd>
                             </div>
                         </dl>
-                        <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
+                        <div class="border-t border-gray-200 px-4 py-6 sm:px-6 space-y-3">
                             <button :disabled="totalCost == 0 || isLoading" type="submit"
                                 class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                                <svg v-if="isLoading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                <svg v-if="isLoading" class="animate-spin h-5 w-5 text-white"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
                                 </svg>
                                 <span>{{ isLoading ? 'Procesando...' : 'Confirmar el Pago y Reservar' }}</span>
                             </button>
+                            <a :href="route('show.services', props.service.slug)" 
+                                class="w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                <span>Volver a Comprar</span>
+                            </a>
                         </div>
                     </div>
 
@@ -233,6 +244,7 @@ import { RadioGroup, RadioGroupOption } from "@headlessui/vue";
 import Input from "@/Components/Customs/Input.vue";
 import searchStore from "@/store/searchStore.js";
 import { router } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
 // #endregion
 const props = defineProps({
@@ -259,16 +271,16 @@ const formReserva = ref({
 
 
 function getPrice() {
-    if (props.service.type == "EMBARCACION") {
-        formReserva.value.price_service = props.service.adult_tarifa;
-        formReserva.value.total_real = props.service.adult_tarifa;
-    } else {
-        var totalAdults = searchStore.guests.value.adults * props.service.adult_tarifa;
-        var totalChildren = searchStore.guests.value.children * props.service.boy_tarifa;
-        formReserva.value.price_service = totalAdults + totalChildren;
-        formReserva.value.total_real = totalAdults + totalChildren;
+   const maxCapacity = parseInt(props.service.capacidad_max)
+   if (props.service.type === 'TOUR') {
+       formReserva.value.price_service =   props.service.adults_price * formReserva.value.adults  + formReserva.value.children;
+    } else if (props.service.type === 'EMBARCACION') {
+        formReserva.value.price_service =   props.service.adults_price;
+    }if (props.service.type === 'TRANSFER') {
+        formReserva.value.price_service =  props.service.adults_price * Math.ceil((formReserva.value.adults + formReserva.value.children) / maxCapacity);
     }
-    // console.log(props.service.type );
+    formReserva.value.total_real = formReserva.value.price_service;
+    return props.service.adults_price * formReserva.adults;
 }
 
 onMounted(() => {
@@ -278,9 +290,7 @@ onMounted(() => {
 const soporte = ref('');
 const isLoading = ref(false);
 
-const totalCost = computed(() => {
-    return formReserva.adults * formReserva.price_service;
-});
+
 
 const deliveryMethods = [
     { id: 2, title: "T.Debito, T. Credito, PSE", turnaround: "El Pago se refleja de inmediato" },
@@ -299,11 +309,20 @@ const deliveryMethods = [
 const selectedDeliveryMethod = ref(deliveryMethods[0]);
 
 const handleSubmit = () => {
+
+    if(selectedDeliveryMethod.value.id == 3 && !formReserva.value.soporte){
+        Swal.fire({
+            title: "Comprobante Requerido",
+            text: "Por favor adjunte el comprobante de pago.",
+            icon: "warning",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Entendido",
+        });
+        return;
+    }
     isLoading.value = true;
-    formReserva.total_real = totalCost.value;
 
     const formData = new FormData();
-    // Agregar todos los campos del formulario
     Object.keys(formReserva.value).forEach(key => {
         if (key === 'soporte' && formReserva.value[key] instanceof File) {
             formData.append(key, formReserva.value[key]);
@@ -317,7 +336,7 @@ const handleSubmit = () => {
             'Content-Type': 'multipart/form-data'
         }
     }).then(response => {
-        if (response.data.payment.data.payment?.payment_url) {
+        if (response.data.payment != null) {
             location.href = response.data.payment.data.payment.payment_url; // Redirigir al enlace de pago
         } else {
             console.log(response.data)
@@ -330,9 +349,8 @@ const handleSubmit = () => {
         })
         .finally(() => {
             // Solo desactivar si no hay redirección
-            if (!response?.data?.payment?.data?.payment?.payment_url) {
-                isLoading.value = false;
-            }
+            isLoading.value = false;
+
         });
 };
 

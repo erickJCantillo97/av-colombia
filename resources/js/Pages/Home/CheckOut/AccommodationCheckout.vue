@@ -162,6 +162,13 @@
                                 </svg>
                                 <span>{{ isLoading ? 'Procesando...' : 'Confirmar Reserva y Pagar' }}</span>
                             </button>
+                            <a :href="route('services.home')" 
+                                class="w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                <span>Volver a Comprar</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -176,6 +183,7 @@ import { RadioGroup, RadioGroupOption } from "@headlessui/vue";
 import Input from "@/Components/Customs/Input.vue";
 import { router } from "@inertiajs/vue3";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     accommodation: Object,
@@ -283,7 +291,13 @@ const handleSubmit = async () => {
         }
     } catch (error) {
         console.error("Error al procesar la reserva:", error);
-        alert(error.response?.data?.message || 'Error al procesar la reserva. Por favor intente de nuevo.');
+        Swal.fire({
+            title: "Error en la Reserva",
+            text: error.response?.data?.message || 'Error al procesar la reserva. Por favor intente de nuevo.',
+            icon: "error",
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Cerrar",
+        });
         isLoading.value = false;
     }
 };

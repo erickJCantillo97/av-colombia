@@ -6,6 +6,7 @@ import searchStore from '@/store/searchStore.js';
 import OverlayPanel from 'primevue/overlaypanel';
 import Header from "@/Components/Sections/Header.vue";
 import { Head, router } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     accommodation: Object,
@@ -243,11 +244,23 @@ const totalPrice = computed(() => {
 
 const goToCheckout = () => {
     if (!selectedRoom.value) {
-        alert('Por favor selecciona una habitación');
+        Swal.fire({
+            title: "Habitación Requerida",
+            text: "Por favor selecciona una habitación",
+            icon: "warning",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Entendido",
+        });
         return;
     }
     if (!checkIn.value || !checkOut.value) {
-        alert('Por favor selecciona las fechas de check-in y check-out');
+        Swal.fire({
+            title: "Fechas Requeridas",
+            text: "Por favor selecciona las fechas de check-in y check-out",
+            icon: "warning",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Entendido",
+        });
         return;
     }
     

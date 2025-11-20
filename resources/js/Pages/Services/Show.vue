@@ -16,6 +16,7 @@ import GuestSelector from "@/Components/SearchEngines/Search/GuestSelector.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import ServicesMain from "./Components/ServicesMain.vue";
 import ItineraryView from "./Components/ItineraryView.vue";
+import { max } from "date-fns";
 
 const props = defineProps({
     service: Object,
@@ -212,7 +213,7 @@ function incrementGuests(type) {
     const maxCapacity = props.service.capacidad_max
     if (maxCapacity) {
         const total = current.adults + current.children + current.infants
-        if (total + 1 > maxCapacity) {
+        if (total + 1 > maxCapacity && props.service.type === 'TRANSFER ') {
             return;
         }
     }
@@ -269,12 +270,15 @@ const product = {
 };
 
 const priceService = computed(() => {
+    const maxCapacity = props.service.capacidad_max
     if (props.service.type === 'TOUR') {
         return props.service.adults_price * guests.value;
     } else if (props.service.type === 'EMBARCACION') {
         return props.service.adults_price;
+    }if (props.service.type === 'TRANSFER') {
+        return props.service.adults_price * Math.ceil(guests.value / maxCapacity);
     }
-    return product.price * guests.value;
+    return props.service.adults_price * guests.value;
 });
 
 
@@ -625,14 +629,14 @@ const goToCheckout = () => {
                                     <div class="text-sm text-gray-900 font-medium">
                                         {{ guests }} viajero{{ guests > 1 ? 's' : '' }}
                                     </div>
-                                </button>
+                                </button>   
                             </div>
 
                             <!-- Totales móvil -->
                             <div v-if="checkIn && checkOut && service.type != 'EMBARCACION'" class="border-t pt-4 mt-6">
                                 <div class="space-y-2">
                                     <div class="flex items-center justify-between text-sm text-gray-600">
-                                        <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} huésped{{
+                                        <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} Personas{{
                                             guests > 1 ? 'es' :
                                                 '' }}</div>
                                         <div class="font-medium text-gray-900">{{

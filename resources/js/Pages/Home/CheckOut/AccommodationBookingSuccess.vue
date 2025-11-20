@@ -121,12 +121,15 @@
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex gap-4 pt-4">
-                            <a :href="route('home')" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition text-center">
-                                Volver al Inicio
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <a :href="route('services.home')" class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition text-center shadow-md">
+                                🏠 Volver a Comprar
                             </a>
-                            <a v-if="$page.props.auth.user" :href="route('my-bookings.index')" class="flex-1 bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition text-center">
-                                Ver Mis Reservas
+                            <a v-if="$page.props.auth.user" :href="route('my-bookings.index')" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition text-center shadow-md">
+                                📋 Ver Mis Reservas
+                            </a>
+                            <a v-else :href="route('services.home')" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition text-center shadow-md">
+                                🏡 Volver al Inicio
                             </a>
                         </div>
                     </div>
@@ -144,8 +147,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import confetti from 'canvas-confetti';
 
 const props = defineProps({
     booking: Object
@@ -192,4 +196,42 @@ const formatDate = (date) => {
         day: 'numeric'
     });
 };
+
+// Función para lanzar confeti
+const launchConfetti = () => {
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+
+        // Lanzar confeti desde diferentes posiciones
+        confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+        });
+        confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        });
+    }, 250);
+};
+
+// Lanzar confeti cuando se monta el componente
+onMounted(() => {
+    launchConfetti();
+});
 </script>
