@@ -565,7 +565,8 @@ const removeImage = (id) => {
                     </div>
                   </div>
                 </div>
-                <FileSelection v-model="files" :service />
+                {{ route('upload.images', service.id)  }} dkjfsdklfjzdaksjdk
+                <FileSelection v-model="files" :service  />
               </div>
               <div class="flex gap-x-4 mt-6 justify-between">
                 <Button

@@ -20,7 +20,7 @@
           </div>
         </div>
       </div>
-      <FileSelection v-model="files" :service="props.service" />    
+      <FileSelection v-model="files" :service="props.service" :route="route('upload.images', service.service.slug)" />    
     </div>
   </div>
 </template>

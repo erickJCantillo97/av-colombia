@@ -112,11 +112,11 @@ const formatSize = (bytes) => {
 };
 
 const uploadArchives = (event) => {
-
+  
     let files = event.files
     router.post(routerRequest, { images: files }, {
         onSuccess: () => {
-            alert('subidos')
+           alert('Imagenes subidas correctamente');
         },
 
     })
