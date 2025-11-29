@@ -8,7 +8,6 @@
                 </Link>
                 <div>
                     <h1 class="text-3xl font-bold">Crear Reserva</h1>
-                    <p class="text-xs font-extralight">Reservas / Crear Reserva</p>
                 </div>
             </div>
         </div>

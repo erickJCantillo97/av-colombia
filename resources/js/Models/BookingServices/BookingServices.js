@@ -30,8 +30,12 @@ export default class BookingServices {
         service_id: "",
         date: "",
         adults: 1,
+        adults_nacionales: 0,
+        adults_extranjeros: 0,
         time_service: "",
         boys: 0,
+        boys_nacionales: 0,
+        boys_extranjeros: 0,
         cliente_name: "",
         cliente_phone: "",
         cliente_city: "",
@@ -56,6 +60,7 @@ export default class BookingServices {
     constructor(bookingServices) {
         this.bookingService = bookingServices;
         if (bookingServices) {
+            console.log(bookingServices);
             Object.keys(this.form).forEach(key => {
                 if (bookingServices[key] !== undefined) {
                     this.form[key] = bookingServices[key];
@@ -134,7 +139,18 @@ export default class BookingServices {
         return currencyFormat(this.form.total * chanelValue);
     });
 
+    updateTotals() {
+        // Calcular total de adultos
+        this.form.adults = (parseInt(this.form.adults_nacionales) || 0) + (parseInt(this.form.adults_extranjeros) || 0);
+        
+        // Calcular total de niños
+        this.form.boys = (parseInt(this.form.boys_nacionales) || 0) + (parseInt(this.form.boys_extranjeros) || 0);
+    }
+
     submit() {
+        // Actualizar totales antes de enviar
+        this.updateTotals();
+        
         if (this.bookingService) return this.update();
         return this.create();
     }

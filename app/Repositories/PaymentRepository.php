@@ -55,7 +55,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
                 'last_name' => $data['cliente_name'],
             ],
             'order' => [
-                'dev_reference' => '1',
+                'dev_reference' => $bookingId,
                 'description' => $service->title,
                 'amount' => $data['total_real'],
                 'installments_type' => 0,
@@ -64,8 +64,8 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             'configuration' => [
                 'partial_payment' => false,
                 'expiration_days' => 1,
-                'allowed_payment_methods' => ['All'],
-                'success_url' => "https://vendedores-site.netlify.app/success/{$bookingId}",
+                'allowed_payment_methods' => ['Card', 'BankTransfer', 'Cash', 'Rappi', 'ApplePay'],
+                'success_url' => route('booking.success', ['bookingService' => $bookingId]),
                 'failure_url' => 'https://url-to-failure.com',
                 'pending_url' => 'https://url-to-pending.com',
                 'review_url' => 'https://url-to-review.com',

@@ -51,13 +51,13 @@
                                                     'text-gray-900': !active
                                                 }">{{
                                                     deliveryMethod.title
-                                                }}</span>
+                                                    }}</span>
                                                 <span class="mt-1 flex items-center text-sm " :class="{
                                                     'text-white': active,
                                                     'text-gray-500': !active
                                                 }">{{
                                                     deliveryMethod.turnaround
-                                                }}</span>
+                                                    }}</span>
 
                                             </span>
                                         </span>
@@ -222,10 +222,11 @@
                                 </svg>
                                 <span>{{ isLoading ? 'Procesando...' : 'Confirmar el Pago y Reservar' }}</span>
                             </button>
-                            <a :href="route('show.services', props.service.slug)" 
+                            <a :href="route('show.services', props.service.slug)"
                                 class="w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                 </svg>
                                 <span>Volver a Comprar</span>
                             </a>
@@ -271,13 +272,13 @@ const formReserva = ref({
 
 
 function getPrice() {
-   const maxCapacity = parseInt(props.service.capacidad_max)
-   if (props.service.type === 'TOUR') {
-       formReserva.value.price_service =   props.service.adults_price * (formReserva.value.adults  + formReserva.value.children);
+    const maxCapacity = parseInt(props.service.capacidad_max)
+    if (props.service.type === 'TOUR') {
+        formReserva.value.price_service = props.service.adults_price * (formReserva.value.adults + formReserva.value.children);
     } else if (props.service.type === 'EMBARCACION') {
-        formReserva.value.price_service =   props.service.adults_price;
-    }if (props.service.type === 'TRANSFER') {
-        formReserva.value.price_service =  props.service.adults_price * Math.ceil((formReserva.value.adults + formReserva.value.children) / maxCapacity);
+        formReserva.value.price_service = props.service.adults_price;
+    } if (props.service.type === 'TRANSFER') {
+        formReserva.value.price_service = props.service.adults_price * Math.ceil((formReserva.value.adults + formReserva.value.children) / maxCapacity);
     }
     formReserva.value.total_real = formReserva.value.price_service;
     return props.service.adults_price * formReserva.adults;
@@ -310,7 +311,7 @@ const selectedDeliveryMethod = ref(deliveryMethods[0]);
 
 const handleSubmit = () => {
 
-    if(selectedDeliveryMethod.value.id == 3 && !formReserva.value.soporte){
+    if (selectedDeliveryMethod.value.id == 3 && !formReserva.value.soporte) {
         Swal.fire({
             title: "Comprobante Requerido",
             text: "Por favor adjunte el comprobante de pago.",
@@ -339,18 +340,12 @@ const handleSubmit = () => {
         if (response.data.payment != null) {
             location.href = response.data.payment.data.payment.payment_url; // Redirigir al enlace de pago
         } else {
-            console.log(response.data)
             router.get(route('booking.success', response.data.bookingService.id));
         }
     })
         .catch(error => {
             console.error("Error al generar el enlace de pago:", error);
             isLoading.value = false;
-        })
-        .finally(() => {
-            // Solo desactivar si no hay redirección
-            isLoading.value = false;
-
         });
 };
 
@@ -361,10 +356,8 @@ function previewFiles(event) {
 }
 
 const formatCurrency = (value) => {
-    // Convert input to number, defaulting to 0 if invalid
     const number = Number(value) || 0;
 
-    // Format as Colombian Peso
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',

@@ -155,9 +155,21 @@ const serviciosItems = [
 
 const reservasItems = [
   {
-    label: "Experiencias",
-    href: route('BookingServices.index'),
+    label: "Tours",
+    href: route('BookingServices.index', { type: 'TOUR' }),
     icon: "fa-solid fa-person-hiking",
+    permission: "ver experiencas"
+  },
+  {
+    label: "Embarcaciones",
+    href: route('BookingServices.index', { type: 'EMBARCACION' }),
+    icon: "fa-solid fa-ship",
+    permission: "ver experiencas"
+  },
+  {
+    label: "Transportes",
+    href: route('BookingServices.index', { type: 'TRANSFER' }),
+    icon: "fa-solid fa-bus",
     permission: "ver experiencas"
   },
   {

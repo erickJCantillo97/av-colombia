@@ -173,9 +173,6 @@ class AccommodationController extends Controller
     public function update(Request $request, Accommodation $accommodation)
     {
         // Verificar que el usuario sea propietario
-        if ($accommodation->user_id !== Auth::id()) {
-            abort(403, 'No tienes permiso para editar este alojamiento.');
-        }
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -242,10 +239,6 @@ class AccommodationController extends Controller
      */
     public function destroy(Accommodation $accommodation)
     {
-        // Verificar que el usuario sea propietario
-        if ($accommodation->user_id !== Auth::id()) {
-            abort(403, 'No tienes permiso para eliminar este alojamiento.');
-        }
 
         $accommodation->delete();
 

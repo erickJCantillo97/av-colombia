@@ -6,8 +6,10 @@ use App\Interfaces\BookingServiceRepositoryInterface;
 use App\Interfaces\NoteRepositoryInterface;
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\BookingService;
+use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BookingServiceRepository extends BaseRepository implements BookingServiceRepositoryInterface
 {
@@ -70,38 +72,84 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         return $booking->get()->map(fn ($booking) => $this->map($booking));
     }
 
-    public function getAllByDate($dates)
+    public function getAllByDate($dates, ?string $type = null)
     {
         $star_date = Carbon::parse($dates[0])->format('Y-m-d');
-        $end_date =    Carbon::parse($dates[1])->format('Y-m-d');
+        $end_date = Carbon::parse($dates[1])->format('Y-m-d');
         $booking = $this->model->whereBetween('date', [
             $star_date,
-            $end_date
+            $end_date,
         ])->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
             ->orderBy('date', 'DESC');
-        
+
         if (Auth::user()->rol === 'vendedor') {
             $booking->where('user_id', Auth::id());
+        }
+
+        if ($type) {
+            $booking->whereHas('service', function ($query) use ($type) {
+                $query->where('type', $type);
+            });
         }
 
         return $booking->get()->map(fn ($booking) => $this->map($booking));
     }
 
-    public function getAllByDateCreated($dates)
+    public function getAllByDateCreated($dates, ?string $type = null)
     {
         $star_date = Carbon::parse($dates[0])->format('Y-m-d');
-        $end_date =    Carbon::parse($dates[1])->format('Y-m-d');
+        $end_date = Carbon::parse($dates[1])->format('Y-m-d');
         $booking = $this->model->whereBetween('created_at', [
             $star_date,
-            $end_date
+            $end_date,
         ])->with('service', 'extras', 'user', 'payments', 'payments.metohdPayment', 'proveedors', 'proveedors.proveedor', 'channel', 'notes')
             ->orderBy('created_at', 'DESC');
-        
+
         if (Auth::user()->rol === 'vendedor') {
             $booking->where('user_id', Auth::id());
         }
 
+        if ($type) {
+            $booking->whereHas('service', function ($query) use ($type) {
+                $query->where('type', $type);
+            });
+        }
+
         return $booking->get()->map(fn ($booking) => $this->map($booking));
+    }
+
+    public function getAllFromStoredProcedure(?string $type = null)
+    {
+        $userId = Auth::id();
+        $userRol = Auth::user()->rol;
+
+        $results = DB::select('CALL get_all_booking_services(?, ?, ?)', [
+            $userId,
+            $userRol,
+            $type,
+        ]);
+
+        // Convertir los resultados en una colección y cargar las relaciones necesarias
+        $bookingIds = collect($results)->pluck('id')->toArray();
+
+        $bookings = $this->model
+            ->whereIn('id', $bookingIds)
+            ->with([
+                'service:id,title,type',
+                'extras:id,booking_service_id',
+                'user:id,name,email',
+                'payments:id,booking_service_id',
+                'payments.metohdPayment:id,name',
+                'proveedors:id,booking_service_id,proveedor_id,cost,concept',
+                'proveedors.proveedor:id,nombre',
+                'channel:id,name',
+                'notes:id,booking_service_id',
+                'changes:id,booking_service_id',
+            ])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return $bookings->map(fn ($booking) => $this->map($booking));
     }
 
     public function create(array $data)
@@ -117,8 +165,11 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $data['boys_tarifa'] = $service->boy_tarifa;
         $status = Auth::user()->rol == 'vendedor' ? 'SIN CONFIRMAR' : 'reservado';
 
-        return $this->store($data, $status);
+        $bookingService = $this->store($data, $status);
 
+        $this->createTickets($bookingService);
+
+        return $bookingService;
     }
 
     public function update($id, array $data): bool
@@ -200,7 +251,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             'total_pago_proveedor' => $booking->total_pago_proveedor,
             'total' => $booking->total,
             'total_price_sales' => $booking->total_price_sales,
-            // 'service_type' => $booking->service->type,
+            'service_type' => $booking->service->type ?? null,
             'proveedors_names' => $booking->proveedors->map(function ($proveedor) {
                 return $proveedor->proveedor->nombre;
             })->implode(', '),
@@ -227,5 +278,85 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $bookingService->extras()->delete();
         $bookingService->proveedors()->delete();
         $bookingService->delete();
+    }
+
+    private function createTickets(BookingService $bookingService)
+    {
+
+        $ticktTypes = $bookingService->service()->first()->ticketTypes()->get();
+        // dd($ticktTypes);
+        if ($ticktTypes->isEmpty()) {
+            return;
+        }
+        if ($bookingService->adults > 0) {
+            if ($bookingService->adults_nacionales > 0) {
+                $ticktAdultNacional = $ticktTypes
+                    ->filter(function ($item) {
+                        return str_contains(strtoupper($item->name), 'ADULTO') && str_contains(strtoupper($item->name), 'NACIONAL');
+                    })
+                    ->first();
+                //  dd($ticktAdultNacional);
+
+                if ($ticktAdultNacional) {
+
+                    Ticket::create([
+                        'booking_service_id' => $bookingService->id,
+                        'ticket_type_id' => $ticktAdultNacional->id,
+                        'cantidad' => $bookingService->adults_nacionales,
+                        'costo_total' => $ticktAdultNacional->price * $bookingService->adults_nacionales,
+                        'tipo_movimiento' => 'salida',
+                    ]);
+                }
+            }
+            if ($bookingService->adults_extranjeros > 0) {
+                $ticktAdultExtranjero = $ticktTypes
+                    ->filter(function ($item) {
+                        return str_contains(strtoupper($item->name), 'ADULTO') && str_contains(strtoupper($item->name), 'EXTRANJERO');
+                    })
+                    ->first();
+                if ($ticktAdultExtranjero) {
+                    Ticket::create([
+                        'booking_service_id' => $bookingService->id,
+                        'ticket_type_id' => $ticktAdultExtranjero->id,
+                        'cantidad' => $bookingService->adults_extranjeros,
+                        'costo_total' => $ticktAdultExtranjero->price * $bookingService->adults_extranjeros,
+                        'tipo_movimiento' => 'salida',
+                    ]);
+                }
+            }
+            if ($bookingService->boys_nacionales > 0) {
+                $ticktboyNacional = $ticktTypes
+                    ->filter(function ($item) {
+                        return str_contains(strtoupper($item->name), 'NIÑO') && str_contains(strtoupper($item->name), 'NACIONAL');
+                    })
+                    ->first();
+                if ($ticktboyNacional) {
+                    Ticket::create([
+                        'booking_service_id' => $bookingService->id,
+                        'ticket_type_id' => $ticktboyNacional->id,
+                        'cantidad' => $bookingService->boys_nacionales,
+                        'costo_total' => $ticktboyNacional->price * $bookingService->boys_nacionales,
+                        'tipo_movimiento' => 'salida',
+                    ]);
+                }
+            }
+            if ($bookingService->boys_extranjeros > 0) {
+                // Crear tickets para niños extranjeros
+                $ticktboyExtranjero = $ticktTypes
+                    ->filter(function ($item) {
+                        return str_contains(strtoupper($item->name), 'NIÑO') && str_contains(strtoupper($item->name), 'EXTRANJERO');
+                    })
+                    ->first();
+                if ($ticktboyExtranjero) {
+                    Ticket::create([
+                        'booking_service_id' => $bookingService->id,
+                        'ticket_type_id' => $ticktboyExtranjero->id,
+                        'cantidad' => $bookingService->boys_extranjeros,
+                        'costo_total' => $ticktboyExtranjero->price * $bookingService->boys_extranjeros,
+                        'tipo_movimiento' => 'salida',
+                    ]);
+                }
+            }
+        }
     }
 }

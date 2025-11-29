@@ -1,12 +1,12 @@
 <template>
-    <AppLayout title="Reservas">
+    <AppLayout :title="pageTitle">
         <div
             class="hidden bg-amber-200 bg-orange-200 bg-blue-200 !bg-green-200 !bg-gray-200 !bg-orange-200 !bg-amber-200">
         </div>
         <div class="h-[92vh]">
             <div class="flex py-2 px-4 justify-between items-center">
                 <div class="italic flex flex-col">
-                    <h1 class="text-2xl font-bold">Reservas</h1>
+                    <h1 class="text-2xl font-bold">{{ pageTitle }}</h1>
                     <Changes />
                 </div>
                 <!-- <div class="flex gap-x-2">
@@ -59,7 +59,7 @@
 import Datatable from "@/Components/Customs/Datatable.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import {  router,  usePage } from "@inertiajs/vue3";
-import {  ref, watch } from "vue";
+import {  ref, watch, computed } from "vue";
 import { alerts } from "@/composable/toasts";
 import Swal from "sweetalert2";
 import ViewBooking from "@/Components/viewBooking.vue";
@@ -72,6 +72,7 @@ import { columns } from "./Columns";
 
 const props = defineProps({
     bookingServices: Array,
+    serviceType: String,
 });
 
 const { toast } = alerts();
@@ -91,6 +92,15 @@ const store = useBookingServiceStore();
 
 const { selectDate, statusFilter } = storeToRefs(store);
 
+const pageTitle = computed(() => {
+    const titles = {
+        'TOUR': 'Reservas de Tours',
+        'EMBARCACION': 'Reservas de Embarcaciones',
+        'TRANSFER': 'Reservas de Transportes'
+    };
+    return titles[props.serviceType] || 'Reservas';
+});
+
 const statues = [
     { text: "RESERVADO", color: "blue" },
     { text: "CAMBIO DE FECHA", color: "gray" },
@@ -107,9 +117,13 @@ const add = {
 };
 
 const getReservas = async (dates) => {
-    const {data} = await axios.get(route("get.all.booking.services.dates", {
-        dates
-    }));
+    const params = { dates };
+    if (props.serviceType) {
+        params.type = props.serviceType;
+    }
+    const {data} = await axios.get(route("get.all.booking.services.dates"), {
+        params
+    });
     return data.bookingServices;
 };
 
@@ -144,7 +158,6 @@ const buttons = [
         action: async (data) => {
             service.value = data;
             info.value = true;
-            await getProveedors();
         },
         icon: "fa-solid fa-circle-info text-sm",
         severity: "info",

@@ -17,6 +17,7 @@ use App\Models\Note;
 use App\Models\PagoSaldos;
 use App\Models\Service;
 use App\Models\State;
+use App\Models\Ticket;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -33,10 +34,13 @@ class BookingServiceController extends Controller
         private PaymentRepositoryInterface $paymentRepository
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
+        $type = $request->query('type');
+
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => $this->bookingServiceRepository->getAllByDateCreated([Carbon::now()->subDays(15), Carbon::tomorrow()]),
+            'bookingServices' => $this->bookingServiceRepository->getAllByDateCreated([Carbon::now()->subDays(15), Carbon::tomorrow()], $type),
+            'serviceType' => $type,
         ]);
     }
 
@@ -58,9 +62,10 @@ class BookingServiceController extends Controller
             'dates' => 'required|array',
             'dates.0' => 'required|date',
             'dates.1' => 'required|date',
+            'type' => 'nullable|string|in:TOUR,EMBARCACION,TRANSFER',
         ]);
 
-        $booking = $this->bookingServiceRepository->getAllByDate($validated['dates']);
+        $booking = $this->bookingServiceRepository->getAllByDate($validated['dates'], $validated['type'] ?? null);
 
         return response()->json(['bookingServices' => $booking], 200);
     }
@@ -70,6 +75,7 @@ class BookingServiceController extends Controller
         DB::beginTransaction();
         try {
             $booking = $this->bookingServiceRepository->create($request->validated());
+            
             DB::commit();
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $booking], 201);
@@ -79,7 +85,7 @@ class BookingServiceController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response()->json(['message' => 'Error al guardar la reservación'], 500);
+            return response()->json(['message' => 'Error al guardar la reservación + ' . $e->getMessage()], 500);
         }
     }
 
@@ -99,7 +105,6 @@ class BookingServiceController extends Controller
             'bookingServiceExtras' => $bookingService->extras,
             'changes' => $bookingService->changes->load('user'),
         ]);
-
     }
 
     /**
@@ -224,7 +229,6 @@ class BookingServiceController extends Controller
                     'booking_service_id' => $booking->id,
                 ]);
             }
-
         }
         storeState($booking, request('status'), Auth::user()->id, 1);
 
@@ -293,7 +297,7 @@ class BookingServiceController extends Controller
         if (isset($data['soporte']) && $data['soporte']) {
             $data['file'] = $data['soporte']->store('public/soportes');
         }
-
+        $data['total'] = $data['total_real'];
         // Remove fields not needed by repository/store
         unset($data['cliente_email'], $data['cliente_last_name'], $data['time'], $data['payment_method'], $data['soporte']);
         // Resolve service specific pricing and meta
@@ -302,16 +306,18 @@ class BookingServiceController extends Controller
         $data['boys_price'] = $service->boys_price;
         $data['adults_price'] = $service->adults_price;
         $data['service'] = $service->title;
-        // Use transaction for booking + payment creation
+
         try {
             $result = DB::transaction(function () use ($data, $userId, $paymentMethod, $email, $lastName) {
                 $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
                 // Reattach minimal data needed by payment repository
                 $paymentPayload = array_merge($data, [
+
                     'cliente_email' => $email,
                     'cliente_last_name' => $lastName,
                     'payment_method' => $paymentMethod,
                     'cliente_name' => $data['cliente_name'] ?? null,
+
                 ]);
                 $payment = $this->paymentRepository->createPayment($paymentPayload, $userId, $booking->id);
 
