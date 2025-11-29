@@ -85,6 +85,24 @@ Route::middleware([
 
     Route::get('getTotalReservas', [ContabilidadController::class, 'getTotalReservas'])->name('get.total.reservas');
 
+    Route::get('getPagosProveedores', [ContabilidadController::class, 'getPagosProveedores'])->name('get.pagos.proveedores');
+
+    Route::get('getReservasPorTipoServicio', [ContabilidadController::class, 'getReservasPorTipoServicio'])->name('get.reservas.tipo.servicio');
+
+    Route::get('getTopServicios', [ContabilidadController::class, 'getTopServicios'])->name('get.top.servicios');
+
+    Route::get('getProveedorTopReservas', [ContabilidadController::class, 'getProveedorTopReservas'])->name('get.proveedor.top.reservas');
+
+    Route::get('getVendedorTopReservas', [ContabilidadController::class, 'getVendedorTopReservas'])->name('get.vendedor.top.reservas');
+
+    Route::get('getEstadisticasEstados', [ContabilidadController::class, 'getEstadisticasEstados'])->name('get.estadisticas.estados');
+
+    Route::get('getReservasAdelantadas', [ContabilidadController::class, 'getReservasAdelantadas'])->name('get.reservas.adelantadas');
+
+    Route::get('getProveedorMasPagado', [ContabilidadController::class, 'getProveedorMasPagado'])->name('get.proveedor.mas.pagado');
+
+    Route::get('getReservasPorCanal', [ContabilidadController::class, 'getReservasPorCanal'])->name('get.reservas.por.canal');
+
     Route::get('addConcept', [ProveedorController::class, 'addConcept'])->name('add.concept');
 
     Route::get('getProvedorsService/{service}', [ProveedorController::class, 'getProvedorsService'])->name('get.provedors.service');
