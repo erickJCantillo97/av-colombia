@@ -1,155 +1,281 @@
 <template>
- <Modal
+  <Modal
     v-model:visible="visible"
     :close-on-escape="true"
-    title="Añadir Proveedor"
-    width="80vw"
+    width="90vw"
+    :maximizable="true"
   >
-    <div class="flex gap-4">
-      <div class="flex flex-col w-1/3 gap-y-4">
-        <h1
-          class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
-        >
-          Datos del Proveedor
-        </h1>
-        <Input label="Nombre" class="w-full" v-model="form.nombre" />
-        <!-- <Input label="Direccion" v-model="form.direccion" /> -->
-        <Input label="NIT" class="w-full" v-model="form.nit" />
-        <Input label="Telefono" class="w-full" v-model="form.telefono" />
-        <Input label="Número de Cuenta Bancanria" class="w-full" v-model="form.account_number" />
-        <div class="flex flex-col" >
-            <div class="rounded-md border border-gray-100 bg-white p-4 shadow-md">
-              <label for="upload" class="flex flex-col items-center gap-2 cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-10 w-10 fill-white stroke-indigo-500"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+    <template #header>
+      <div class="flex items-center gap-3 px-6 py-4 border-b border-gray-200">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+          <i class="fa-solid fa-truck-field text-white"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">
+            {{ form.id ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
+          </h3>
+          <p class="text-xs text-gray-500">Complete la información del proveedor</p>
+        </div>
+      </div>
+    </template>
+
+    <div class="p-6">
+      <div class="space-y-6">
+        <!-- Datos del Proveedor -->
+        <div>
+          <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-6">
+              <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                <i class="fa-solid fa-building text-white text-sm"></i>
+              </div>
+              <h2 class="text-lg font-bold text-gray-900">Datos del Proveedor</h2>
+            </div>
+
+            <div class="space-y-6">
+              <!-- Primera fila: Nombre y NIT -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Nombre" class="w-full" v-model="form.nombre" />
+                <Input label="NIT" class="w-full" v-model="form.nit" />
+              </div>
+
+              <!-- Segunda fila: Teléfono y Cuenta Bancaria -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Teléfono" class="w-full" v-model="form.telefono" />
+                <Input label="Número de Cuenta Bancaria" class="w-full" v-model="form.account_number" />
+              </div>
+
+              <!-- Upload Cámara de Comercio -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700 block">Cámara de Comercio</label>
+                <div class="group relative">
+                  <input
+                    id="upload"
+                    accept=".pdf"
+                    @change="subirCuenta"
+                    type="file"
+                    class="hidden"
                   />
-                </svg>
-                <span class="text-gray-600 font-medium text-sm truncate w-full">
-                  {{ form.cuenta ? form.cuenta.name : "Seleccionar Camara de Comercio" }}
-                </span>
-              </label>
-              <input
-                id="upload"
-                accept=".pdf"
-                @change="subirCuenta"
-                type="file"
-                class="hidden"
-              />
+                  <label 
+                    for="upload" 
+                    class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 bg-white"
+                  >
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors duration-200">
+                      <i class="fa-solid fa-file-pdf text-2xl text-blue-600"></i>
+                    </div>
+                    <div class="text-center">
+                      <p class="text-sm font-medium text-gray-900 truncate max-w-full px-2">
+                        {{ form.cuenta ? form.cuenta.name : "Click para seleccionar PDF" }}
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">PDF máximo 10MB</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Políticas -->
+              <div class="space-y-3 pt-4 border-t border-gray-200">
+                <label class="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <i class="fa-solid fa-shield-halved text-blue-600"></i>
+                  Tipo de Penalización
+                </label>
+                <div class="flex gap-4">
+                  <div class="flex items-center gap-2 flex-1">
+                    <RadioButton
+                      v-model="politicas"
+                      inputId="Dinero"
+                      name="Dinero"
+                      value="Dinero"
+                    />
+                    <label for="Dinero" class="text-sm font-medium text-gray-700 cursor-pointer">Dinero</label>
+                  </div>
+                  <div class="flex items-center gap-2 flex-1">
+                    <RadioButton
+                      v-model="politicas"
+                      inputId="Porcentaje"
+                      name="Porcentaje"
+                      value="Porcentaje"
+                    />
+                    <label for="Porcentaje" class="text-sm font-medium text-gray-700 cursor-pointer">Porcentaje</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Penalizaciones en dos columnas -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label="Penalización por NO SHOW"
+                  type="number"
+                  v-model="form.penalidad_no_show"
+                  :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
+                  :suffix="politicas == 'Dinero' ? '' : '%'"
+                  min="0"
+                  :max="politicas == 'Dinero' ? 100000 : 100"
+                  :step="0.25"
+                  :minFractionDigits="0"
+                  :max-fraction-digits="2"
+                />
+                <Input
+                  label="Penalización por CANCELACIÓN"
+                  type="number"
+                  v-model="form.penalidad_cancelacion"
+                  :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
+                  :suffix="politicas == 'Dinero' ? '' : '%'"
+                  min="0"
+                  :max="politicas == 'Dinero' ? 100000 : 100"
+                  :step="0.25"
+                  :minFractionDigits="0"
+                  :max-fraction-digits="2"
+                />
+              </div>
             </div>
           </div>
-        <div class="flex flex-wrap gap-4 w-full justify-between">
-          <label for="">Politicas</label>
-          <div class="flex items-center gap-2">
-            <RadioButton
-              v-model="politicas"
-              inputId="Dinero"
-              name="Dinero"
-              value="Dinero"
-            />
-            <label for="Dinero">Dinero</label>
-          </div>
-          <div class="flex items-center gap-2">
-            <RadioButton
-              v-model="politicas"
-              inputId="Porcentaje"
-              name="Porcentaje"
-              value="Porcentaje"
-              size="Normal"
-            />
-            <label for="Porcentaje" class="text-sm">Porcentaje</label>
-          </div>
         </div>
-        <Input
-          label="Penalización por NO SHOW"
-          type="number"
-          v-model="form.penalidad_no_show"
-          :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
-          :suffix="politicas == 'Dinero' ? '' : '%'"
-          min="0"
-          :max="politicas == 'Dinero' ? 100000 : 100"
-          :step="0.25"
-          :minFractionDigits="0"
-          :max-fraction-digits="2"
-        ></Input>
-        <Input
-          label="Penalización por CANCELACIÓN"
-          type="number"
-          v-model="form.penalidad_cancelacion"
-          :mode="politicas == 'Dinero' ? 'currency' : 'decimal'"
-          :suffix="politicas == 'Dinero' ? '' : '%'"
-          min="0"
-          :max="politicas == 'Dinero' ? 100000 : 100"
-          :step="0.25"
-          :minFractionDigits="0"
-          :max-fraction-digits="2"
-        ></Input>
-      </div>
-      <div
-        class="w-2/3 col-sapn-1 md:col-span-3 border rounded-lg "
-        v-if="
-          $page.props.auth.user.rol == 'admin' ||
-          $page.props.auth.user.rol == 'superadmin'
-        "
-      >
-        <h1
-          class="text-2xl font-mono font-semibold text-center bg-black rounded-t-lg text-white gap-x-3 p-2"
+
+        <!-- Servicios -->
+        <div
+          v-if="
+            $page.props.auth.user.rol == 'admin' ||
+            $page.props.auth.user.rol == 'superadmin'
+          "
         >
-          Servicios
-          <Button
-            icon="fa-solid fa-plus"
-            outlined=""
-            severity="success"
-            class="size-6"
-            @click="addService()"
-          />
-        </h1>
-        <div class="grid grid-cols-8 w-full font-bold px-2 text-left ">
-          <div class="col-span-3 w-full">Servicio</div>
-          <div class="col-span-2">Concepto</div>
-          <div class="">Tarifa</div>
-          <div class=""></div>
-        </div>
-        <div class="h-[50vh] overflow-y-auto">
-          <div
-            v-for="(p, index) in form.services"
-            class="justify-between w-full px-2 gap-x-2 grid grid-cols-8"
-          >
-            <Input
-              type="dropdown"
-              class="col-span-3"
-              v-model="p.service_id"
-              option-label="title"
-              option-value="id"
-              :options="services"
-            ></Input>
-            <Input class="w-full col-span-2" v-model="p.concept"></Input>
-            <input type="number"  class="w-full rounded-md h-10 col-span-2" v-model="p.value"></input>
-            <Button
-              icon="fa-solid fa-xmark-circle"
-              class="w-full"
-              v-tooltip="`Quitar`"
-              text
-              severity="danger"
-              @click="removeService(index)"
-            />
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden h-full flex flex-col">
+            <!-- Header de Servicios -->
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                  <i class="fa-solid fa-list-check text-white text-sm"></i>
+                </div>
+                <div>
+                  <h2 class="text-lg font-bold text-white">Servicios</h2>
+                  <p class="text-xs text-blue-100">{{ form.services.length }} servicio(s) configurado(s)</p>
+                </div>
+              </div>
+              <button
+                @click="addService()"
+                class="px-4 py-2 bg-white hover:bg-blue-50 text-blue-600 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors duration-200 shadow-md hover:shadow-lg"
+              >
+                <i class="fa-solid fa-plus"></i>
+                Agregar Servicio
+              </button>
+            </div>
+
+            <!-- Services List -->
+            <div class="flex-1 overflow-y-auto max-h-[calc(60vh-140px)]">
+              <!-- Empty State -->
+              <div v-if="form.services.length === 0" class="flex flex-col items-center justify-center py-12 px-6 text-center">
+                <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                  <i class="fa-solid fa-inbox text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">No hay servicios</h3>
+                <p class="text-sm text-gray-500 mb-4">Agrega servicios para este proveedor</p>
+                <button
+                  @click="addService()"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm flex items-center gap-2 tra  nsition-colors duration-200"
+                >
+                  <i class="fa-solid fa-plus"></i>
+                  Agregar Primer Servicio
+                </button>
+              </div>
+
+              <!-- Services Items -->
+              <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+                <div
+                  v-for="(p, index) in form.services"
+                  :key="index"
+                  class="relative bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200 group"
+                >
+                  <!-- Badge de número -->
+                  <div class="absolute -top-2 -left-2 w-7 h-7 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                    <span class="text-white text-xs font-bold">{{ index + 1 }}</span>
+                  </div>
+
+                  <!-- Botón eliminar -->
+                  <button
+                    @click="removeService(index)"
+                    class="absolute -top-2 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10"
+                    title="Eliminar servicio"
+                  >
+                    <i class="fa-solid fa-xmark text-white text-xs"></i>
+                  </button>
+
+                  <div class="space-y-3">
+                    <!-- Servicio -->
+                    <div>
+                      <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-700 mb-1.5">
+                        <i class="fa-solid fa-tag text-blue-600"></i>
+                        Servicio
+                      </label>
+                      <Input
+                        type="dropdown"
+                        class="w-full"
+                        v-model="p.service_id"
+                        option-label="title"
+                        option-value="id"
+                        :options="services"
+                        placeholder="Seleccionar..."
+                      />
+                    </div>
+
+                    <!-- Concepto -->
+                    <div>
+                      <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-700 mb-1.5">
+                        <i class="fa-solid fa-file-lines text-green-600"></i>
+                        Concepto
+                      </label>
+                      <Input 
+                        class="w-full" 
+                        v-model="p.concept"
+                        placeholder="Ej: Transporte, Guía..."
+                      />
+                    </div>
+
+                    <!-- Tarifa -->
+                    <div>
+                      <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-700 mb-1.5">
+                        <i class="fa-solid fa-dollar-sign text-amber-600"></i>
+                        Tarifa (COP)
+                      </label>
+                      <div class="relative group-tarifa">
+                        <div class="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-amber-100 to-amber-50 border-r border-amber-200 rounded-l-lg flex items-center justify-center">
+                          <span class="text-amber-700 font-bold text-xs">$</span>
+                        </div>
+                        <input 
+                          type="number"  
+                          class="w-full pl-12 pr-3 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 font-medium text-gray-900 text-sm"
+                          v-model="p.value"
+                          placeholder="0.00"
+                          step="0.01"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Visual Divider -->
+                  <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <template #footer>
-      <div class="flex gap-x-2">
-        <Button severity="success" label="Guardar" @click="submit"></Button>
-        <Button severity="danger" label="Cancelar" @click="visible = false"></Button>
+      <div class="flex items-center justify-end gap-3">
+        <button
+          @click="visible = false"
+          class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
+        >
+          <i class="fa-solid fa-xmark mr-2"></i>
+          Cancelar
+        </button>
+        <button
+          @click="submit"
+          class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200"
+        >
+          <i class="fa-solid fa-check mr-2"></i>
+          {{ form.id ? 'Actualizar' : 'Guardar' }} Proveedor
+        </button>
       </div>
     </template>
   </Modal>
@@ -205,8 +331,14 @@ const removeService = (index) => {
 
 const submit = () => {
   form.type_penalidad_cost = politicas.value;
+  form.transform((data) => ({
+    ...data,
+    _method: form.id ? 'PUT' : 'POST',
+  }));
+  
   if (form.id) {
-    form.put(route("proveedors.update", form.id), {
+    form.post(route("proveedors.update", form.id), {
+      forceFormData: true,
       onSuccess: () => {
         form.reset();
         visible.value = false;
@@ -215,6 +347,7 @@ const submit = () => {
     });
   } else {
     form.post(route("proveedors.store"), {
+      forceFormData: true,
       onSuccess: () => {
         form.reset();
         toast("success", "Proveedor Creado");

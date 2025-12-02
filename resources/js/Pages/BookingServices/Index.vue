@@ -80,15 +80,38 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-if="filteredBookings.length === 0">
+                            <!-- Skeleton Loader -->
+                            <template v-if="isLoading">
+                                <tr v-for="i in perPage" :key="`skeleton-${i}`" class="animate-pulse">
+                                    <td v-for="col in columns" :key="`skeleton-col-${col.field}`" 
+                                        class="px-4 py-3"
+                                        :class="col.class">
+                                        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <div class="h-8 w-8 bg-gray-200 rounded-md"></div>
+                                            <div class="h-8 w-8 bg-gray-200 rounded-md"></div>
+                                            <div class="h-8 w-8 bg-gray-200 rounded-md"></div>
+                                            <div class="h-8 w-8 bg-gray-200 rounded-md"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+
+                            <!-- Empty State -->
+                            <tr v-else-if="filteredBookings.length === 0">
                                 <td :colspan="columns.length + 1" class="px-4 py-8 text-center text-gray-500">
-                                    <i class="fa-solid fa-inbox text-4xl mb-2 text-gray-300"></i>
+                                    <i class="fa-solid fa-inbox text-4xl mb-2 text-gray-300 animate-bounce"></i>
                                     <p class="font-medium">No se encontraron resultados</p>
                                 </td>
                             </tr>
-                            <tr v-for="booking in filteredBookings" :key="booking.id"
+
+                            <!-- Data Rows -->
+                            <tr v-else v-for="(booking, index) in filteredBookings" :key="booking.id"
                                 :class="getRowClass(booking)"
-                                class="hover:bg-gray-50 transition-colors duration-150">
+                                class="hover:bg-gray-50 transition-all duration-200 animate-fade-in"
+                                :style="{ animationDelay: `${index * 30}ms` }">
                                 <td v-for="col in columns" :key="col.field" 
                                     class="px-4 py-3 text-sm"
                                     :class="col.class">
@@ -267,6 +290,7 @@ const cachedPerPage = getFromCache('perPage', 10);
 const searchQuery = ref(props.filters?.search || cachedSearch);
 const currentPage = ref(props.bookingServices.current_page || cachedPage);
 const perPage = ref(props.filters?.per_page || cachedPerPage);
+const isLoading = ref(false);
 
 // Debounce function
 const debounce = (func, wait) => {
@@ -340,10 +364,15 @@ const updateFilters = debounce(() => {
         page: currentPage.value,
     };
     
+    isLoading.value = true;
+    
     router.get(route('BookingServices.index'), params, {
         preserveState: true,
         preserveScroll: true,
         only: ['bookingServices'],
+        onFinish: () => {
+            isLoading.value = false;
+        },
     });
 }, 500);
 
@@ -523,7 +552,7 @@ const getStatusClass = (status) => {
         'COMPLETADA': 'bg-green-100 text-green-800',
         'NO SHOW': 'bg-yellow-100 text-yellow-800',
         'REUBICADO': 'bg-orange-100 text-orange-800',
-        'CANCELADA': 'bg-red-100 text-red-800',
+        'CANCELADA': 'bg-green-100 text-green-800',
         'PROBLEMATICA': 'bg-red-200 text-red-900 animate-pulse',
         'SIN CONFIRMAR': 'bg-purple-100 text-purple-800'
     };
@@ -542,3 +571,21 @@ const getButtonClass = (severity) => {
     return severityClasses[severity] || 'text-gray-600 hover:bg-gray-100';
 };
 </script>
+
+<style scoped>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+    opacity: 0;
+}
+</style>

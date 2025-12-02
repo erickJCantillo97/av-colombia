@@ -66,9 +66,17 @@ class BookingServiceController extends Controller
             'dates.0' => 'required|date',
             'dates.1' => 'required|date',
             'type' => 'nullable|string|in:TOUR,EMBARCACION,TRANSFER',
+            'search' => 'nullable|string',
+            'per_page' => 'nullable|integer|min:1|max:500',
+            'page' => 'nullable|integer|min:1',
         ]);
 
-        $booking = $this->bookingServiceRepository->getAllByDate($validated['dates'], $validated['type'] ?? null);
+        $booking = $this->bookingServiceRepository->getPaginated(
+            $validated['type'] ?? null,
+            $validated['search'] ?? null,
+            $validated['per_page'] ?? 100,
+            $validated['dates']
+        );
 
         return response()->json(['bookingServices' => $booking], 200);
     }

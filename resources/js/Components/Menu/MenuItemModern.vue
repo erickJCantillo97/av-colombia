@@ -67,6 +67,7 @@
             :key="item.label"
             :href="item.href"
             v-if="!item.permission || hasPermissionTo(item.permission)"
+            prefetch
             class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
           >
             <i :class="item.icon" class="mr-3 text-gray-500 text-xs"></i>

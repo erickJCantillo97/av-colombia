@@ -1,17 +1,55 @@
 <template>
-    <div class="flex mt-4 flex-col">
-        <div class="">
-            <Logo></Logo>
+    <div class="loading-container">
+        <!-- Círculos decorativos de fondo -->
+        <div class="background-circles">
+            <div class="circle circle-1"></div>
+            <div class="circle circle-2"></div>
+            <div class="circle circle-3"></div>
         </div>
 
-        <div class="loaderRectangle">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+        <!-- Logo con múltiples capas de pulso -->
+        <div class="logo-wrapper">
+            <div class="logo-pulse pulse-1"></div>
+            <div class="logo-pulse pulse-2"></div>
+            <div class="logo-pulse pulse-3"></div>
+            <div class="logo-content">
+                <Logo />
+            </div>
         </div>
 
+        <!-- Spinner circular con doble anillo -->
+        <div class="spinner-container">
+            <svg class="spinner spinner-outer" viewBox="0 0 50 50">
+                <circle
+                    class="spinner-path"
+                    cx="25"
+                    cy="25"
+                    r="20"
+                    fill="none"
+                    stroke-width="2.5"
+                ></circle>
+            </svg>
+            <svg class="spinner spinner-inner" viewBox="0 0 50 50">
+                <circle
+                    class="spinner-path-inner"
+                    cx="25"
+                    cy="25"
+                    r="15"
+                    fill="none"
+                    stroke-width="2"
+                ></circle>
+            </svg>
+        </div>
+
+        <!-- Texto de carga con efecto mejorado -->
+        <div class="loading-text">
+            <span class="loading-label">Cargando</span>
+            <div class="dots-wrapper">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -19,115 +57,295 @@
 import Logo from './logo.vue';
 </script>
 
-<style>
-/* From Uiverse.io by abrahamcalsin */
-.loaderRectangle {
+<style scoped>
+.loading-container {
+    position: relative;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    gap: 0 3px;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 3rem;
+    min-height: 300px;
+    overflow: hidden;
 }
 
-.loaderRectangle div {
-    width: 10px;
-    height: 16px;
-    animation: .9s ease-in-out infinite;
-    background: #183153;
-    box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
+/* Círculos decorativos de fondo */
+.background-circles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
 }
 
-.loaderRectangle div:nth-child(1) {
-    animation-name: rectangleOneAnim;
-    animation-delay: 1s;
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    animation: float-circle 8s ease-in-out infinite;
 }
 
-@keyframes rectangleOneAnim {
-    0% {
-        height: 15px;
+.circle-1 {
+    width: 150px;
+    height: 150px;
+    top: -30px;
+    left: -30px;
+    animation-delay: 0s;
+}
+
+.circle-2 {
+    width: 100px;
+    height: 100px;
+    bottom: -20px;
+    right: -20px;
+    animation-delay: 2s;
+}
+
+.circle-3 {
+    width: 80px;
+    height: 80px;
+    top: 50%;
+    right: 10%;
+    animation-delay: 4s;
+}
+
+/* Logo con múltiples pulsos */
+.logo-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: float 3s ease-in-out infinite;
+    z-index: 2;
+}
+
+.logo-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.pulse-1 {
+    opacity: 0.3;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.pulse-2 {
+    opacity: 0.2;
+    animation: pulse 2s ease-in-out infinite 0.4s;
+}
+
+.pulse-3 {
+    opacity: 0.15;
+    animation: pulse 2s ease-in-out infinite 0.8s;
+}
+
+.logo-content {
+    position: relative;
+    z-index: 3;
+    filter: drop-shadow(0 8px 16px rgba(59, 130, 246, 0.4));
+}
+
+/* Spinner circular doble */
+.spinner-container {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    z-index: 2;
+}
+
+.spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.spinner-outer {
+    animation: rotate 2s linear infinite;
+}
+
+.spinner-inner {
+    animation: rotate 1.5s linear infinite reverse;
+}
+
+.spinner-path {
+    stroke: #010102;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.5));
+}
+
+.spinner-path-inner {
+    stroke: #60a5fa;
+    stroke-linecap: round;
+    animation: dash-inner 1.2s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.5));
+}
+
+/* Texto de carga mejorado */
+.loading-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 2;
+}
+
+.loading-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.dots-wrapper {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #000000);
+    animation: bounce-dot 1.4s ease-in-out infinite;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Barra de progreso decorativa */
+.progress-bar {
+    width: 200px;
+    height: 3px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        #3b82f6 50%, 
+        transparent 100%
+    );
+    border-radius: 10px;
+    animation: progress-slide 1.5s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+/* Animaciones */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
     }
-
-    40% {
-        height: 30px;
+    50% {
+        transform: translateY(-12px);
     }
+}
 
+@keyframes float-circle {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(20px, -20px) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.4);
+        opacity: 0.05;
+    }
+}
+
+@keyframes rotate {
     100% {
-        height: 15px;
+        transform: rotate(360deg);
     }
 }
 
-.loaderRectangle div:nth-child(2) {
-    animation-name: rectangleTwoAnim;
-    animation-delay: 1.1s;
-}
-
-@keyframes rectangleTwoAnim {
+@keyframes dash {
     0% {
-        height: 15px;
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
     }
-
-    40% {
-        height: 40px;
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
     }
-
     100% {
-        height: 15px;
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
     }
 }
 
-.loaderRectangle div:nth-child(3) {
-    animation-name: rectangleThreeAnim;
-    animation-delay: 1.2s;
-}
-
-@keyframes rectangleThreeAnim {
+@keyframes dash-inner {
     0% {
-        height: 15px;
+        stroke-dasharray: 1, 120;
+        stroke-dashoffset: 0;
     }
-
-    40% {
-        height: 50px;
+    50% {
+        stroke-dasharray: 70, 120;
+        stroke-dashoffset: -30;
     }
-
     100% {
-        height: 15px;
+        stroke-dasharray: 70, 120;
+        stroke-dashoffset: -100;
     }
 }
 
-.loaderRectangle div:nth-child(4) {
-    animation-name: rectangleFourAnim;
-    animation-delay: 1.3s;
+@keyframes bounce-dot {
+    0%, 80%, 100% {
+        transform: scale(0.8) translateY(0);
+        opacity: 0.6;
+    }
+    40% {
+        transform: scale(1.2) translateY(-8px);
+        opacity: 1;
+    }
 }
 
-@keyframes rectangleFourAnim {
+@keyframes progress-slide {
     0% {
-        height: 15px;
+        transform: translateX(-100%);
     }
-
-    40% {
-        height: 40px;
-    }
-
     100% {
-        height: 15px;
+        transform: translateX(200%);
     }
 }
+</style>
 
-.loaderRectangle div:nth-child(5) {
-    animation-name: rectangleFiveAnim;
-    animation-delay: 1.4s;
-}
-
-@keyframes rectangleFiveAnim {
-    0% {
-        height: 15px;
-    }
-
-    40% {
-        height: 30px;
-    }
-
-    100% {
-        height: 15px;
-    }
+<style>
+/* Estilos globales para el spinner */
+.spinner-path,
+.spinner-path-inner {
+    stroke-linecap: round;
 }
 </style>

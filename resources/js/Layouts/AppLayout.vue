@@ -70,7 +70,7 @@ const logout = () => {
       </div>
       <!-- Page Content -->
       <main
-        class="px-2 bg-white h-[100vh] overflow-y-auto overflow-x-hidden animate-zoomin animate-once animate-duration-300 transition-all duration-300"
+        class="px-2 bg-white h-[100vh] overflow-y-auto overflow-x-hidden "
         :class="isMenuCollapsed ? 'lg:ml-16' : 'lg:ml-64'"
       >
         <slot />

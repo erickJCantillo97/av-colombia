@@ -66,7 +66,47 @@
                             <Input label="Hotel" v-model="formReserva.cliente_building" class="sm:col-span-2" :required="true" />
                             <Input label="País o Ciudad de Origen" v-model="formReserva.cliente_city" :required="true" />
                             <div>
-                                <Input label="Teléfono" type="number" v-model="formReserva.cliente_phone" :required="true" @blur="validateField('cliente_phone')" @input="validateField('cliente_phone')" />
+                                <label class="text-sm font-medium text-gray-700 block mb-1.5">Teléfono</label>
+                                <div class="flex gap-2">
+                                    <!-- Select filtrable de código de país -->
+                                    <div class="relative w-40">
+                                        <input 
+                                            type="text"
+                                            v-model="countrySearch"
+                                            @focus="showCountryDropdown = true"
+                                            @blur="hideCountryDropdown"
+                                            :placeholder="selectedCountry ? `${selectedCountry.flag} ${selectedCountry.dial}` : 'Buscar...'"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+                                        />
+                                        <div 
+                                            v-if="showCountryDropdown" 
+                                            class="absolute z-100 w-80 mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+                                        >
+                                            <div 
+                                                v-for="country in filteredCountries" 
+                                                :key="country.code"
+                                                @mousedown.prevent="selectCountry(country)"
+                                                class="px-4 py-2 hover:bg-indigo-50 cursor-pointer transition-colors flex items-center gap-2 text-sm"
+                                            >
+                                                <span class="text-xl">{{ country.flag }}</span>
+                                                <span class="font-medium">{{ country.dial }}</span>
+                                                <span class="text-gray-600">{{ country.name }}</span>
+                                            </div>
+                                            <div v-if="filteredCountries.length === 0" class="px-4 py-3 text-gray-500 text-sm text-center">
+                                                No se encontraron países
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="number" 
+                                        v-model="phoneNumber"
+                                        @blur="validateField('cliente_phone')" 
+                                        @input="validateField('cliente_phone')"
+                                        placeholder="Número de teléfono"
+                                        required
+                                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+                                    />
+                                </div>
                                 <div v-if="fieldValid.cliente_phone" class="mt-1 flex items-center gap-1 text-green-600 text-xs">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -565,7 +605,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { RadioGroup, RadioGroupOption } from "@headlessui/vue";
 import Input from "@/Components/Customs/Input.vue";
 import searchStore from "@/store/searchStore.js";
@@ -616,6 +656,8 @@ function getPrice() {
 
 onMounted(() => {
     getPrice();
+    // Seleccionar Colombia por defecto
+    selectedCountry.value = countryCodes.value.find(c => c.code === 'CO');
 })
 
 const soporte = ref('');
@@ -624,6 +666,11 @@ const showPoliciesModal = ref(false);
 const filePreview = ref(null);
 const fileName = ref('');
 const sendWhatsApp = ref(false);
+const countryCode = ref('+57'); // Colombia por defecto
+const phoneNumber = ref('');
+const countrySearch = ref('');
+const showCountryDropdown = ref(false);
+const selectedCountry = ref(null);
 const fieldErrors = ref({
     cliente_name: '',
     cliente_last_name: '',
@@ -637,7 +684,138 @@ const fieldValid = ref({
     cliente_phone: false
 });
 
+// Lista completa de códigos de país
+const countryCodes = ref([
+    { code: 'CO', dial: '+57', flag: '🇨🇴', name: 'Colombia' },
+    { code: 'US', dial: '+1', flag: '🇺🇸', name: 'Estados Unidos' },
+    { code: 'CA', dial: '+1', flag: '🇨🇦', name: 'Canadá' },
+    { code: 'MX', dial: '+52', flag: '🇲🇽', name: 'México' },
+    { code: 'AR', dial: '+54', flag: '🇦🇷', name: 'Argentina' },
+    { code: 'BR', dial: '+55', flag: '🇧🇷', name: 'Brasil' },
+    { code: 'CL', dial: '+56', flag: '🇨🇱', name: 'Chile' },
+    { code: 'PE', dial: '+51', flag: '🇵🇪', name: 'Perú' },
+    { code: 'EC', dial: '+593', flag: '🇪🇨', name: 'Ecuador' },
+    { code: 'VE', dial: '+58', flag: '🇻🇪', name: 'Venezuela' },
+    { code: 'PA', dial: '+507', flag: '🇵🇦', name: 'Panamá' },
+    { code: 'CR', dial: '+506', flag: '🇨🇷', name: 'Costa Rica' },
+    { code: 'DO', dial: '+1', flag: '🇩🇴', name: 'República Dominicana' },
+    { code: 'ES', dial: '+34', flag: '🇪🇸', name: 'España' },
+    { code: 'FR', dial: '+33', flag: '🇫🇷', name: 'Francia' },
+    { code: 'DE', dial: '+49', flag: '🇩🇪', name: 'Alemania' },
+    { code: 'IT', dial: '+39', flag: '🇮🇹', name: 'Italia' },
+    { code: 'GB', dial: '+44', flag: '🇬🇧', name: 'Reino Unido' },
+    { code: 'CN', dial: '+86', flag: '🇨🇳', name: 'China' },
+    { code: 'JP', dial: '+81', flag: '🇯🇵', name: 'Japón' },
+    { code: 'KR', dial: '+82', flag: '🇰🇷', name: 'Corea del Sur' },
+    { code: 'AU', dial: '+61', flag: '🇦🇺', name: 'Australia' },
+    { code: 'NZ', dial: '+64', flag: '🇳🇿', name: 'Nueva Zelanda' },
+    { code: 'IN', dial: '+91', flag: '🇮🇳', name: 'India' },
+    { code: 'RU', dial: '+7', flag: '🇷🇺', name: 'Rusia' },
+    { code: 'AF', dial: '+93', flag: '🇦🇫', name: 'Afganistán' },
+    { code: 'AL', dial: '+355', flag: '🇦🇱', name: 'Albania' },
+    { code: 'DZ', dial: '+213', flag: '🇩🇿', name: 'Argelia' },
+    { code: 'AD', dial: '+376', flag: '🇦🇩', name: 'Andorra' },
+    { code: 'AO', dial: '+244', flag: '🇦🇴', name: 'Angola' },
+    { code: 'AT', dial: '+43', flag: '🇦🇹', name: 'Austria' },
+    { code: 'BE', dial: '+32', flag: '🇧🇪', name: 'Bélgica' },
+    { code: 'BO', dial: '+591', flag: '🇧🇴', name: 'Bolivia' },
+    { code: 'BA', dial: '+387', flag: '🇧🇦', name: 'Bosnia y Herzegovina' },
+    { code: 'BG', dial: '+359', flag: '🇧🇬', name: 'Bulgaria' },
+    { code: 'CU', dial: '+53', flag: '🇨🇺', name: 'Cuba' },
+    { code: 'CY', dial: '+357', flag: '🇨🇾', name: 'Chipre' },
+    { code: 'CZ', dial: '+420', flag: '🇨🇿', name: 'República Checa' },
+    { code: 'DK', dial: '+45', flag: '🇩🇰', name: 'Dinamarca' },
+    { code: 'EG', dial: '+20', flag: '🇪🇬', name: 'Egipto' },
+    { code: 'SV', dial: '+503', flag: '🇸🇻', name: 'El Salvador' },
+    { code: 'FI', dial: '+358', flag: '🇫🇮', name: 'Finlandia' },
+    { code: 'GR', dial: '+30', flag: '🇬🇷', name: 'Grecia' },
+    { code: 'GT', dial: '+502', flag: '🇬🇹', name: 'Guatemala' },
+    { code: 'HN', dial: '+504', flag: '🇭🇳', name: 'Honduras' },
+    { code: 'HU', dial: '+36', flag: '🇭🇺', name: 'Hungría' },
+    { code: 'IS', dial: '+354', flag: '🇮🇸', name: 'Islandia' },
+    { code: 'ID', dial: '+62', flag: '🇮🇩', name: 'Indonesia' },
+    { code: 'IR', dial: '+98', flag: '🇮🇷', name: 'Irán' },
+    { code: 'IQ', dial: '+964', flag: '🇮🇶', name: 'Irak' },
+    { code: 'IE', dial: '+353', flag: '🇮🇪', name: 'Irlanda' },
+    { code: 'IL', dial: '+972', flag: '🇮🇱', name: 'Israel' },
+    { code: 'JM', dial: '+1', flag: '🇯🇲', name: 'Jamaica' },
+    { code: 'JO', dial: '+962', flag: '🇯🇴', name: 'Jordania' },
+    { code: 'KZ', dial: '+7', flag: '🇰🇿', name: 'Kazajistán' },
+    { code: 'KE', dial: '+254', flag: '🇰🇪', name: 'Kenia' },
+    { code: 'LV', dial: '+371', flag: '🇱🇻', name: 'Letonia' },
+    { code: 'LB', dial: '+961', flag: '🇱🇧', name: 'Líbano' },
+    { code: 'LT', dial: '+370', flag: '🇱🇹', name: 'Lituania' },
+    { code: 'LU', dial: '+352', flag: '🇱🇺', name: 'Luxemburgo' },
+    { code: 'MY', dial: '+60', flag: '🇲🇾', name: 'Malasia' },
+    { code: 'MA', dial: '+212', flag: '🇲🇦', name: 'Marruecos' },
+    { code: 'NL', dial: '+31', flag: '🇳🇱', name: 'Países Bajos' },
+    { code: 'NI', dial: '+505', flag: '🇳🇮', name: 'Nicaragua' },
+    { code: 'NG', dial: '+234', flag: '🇳🇬', name: 'Nigeria' },
+    { code: 'NO', dial: '+47', flag: '🇳🇴', name: 'Noruega' },
+    { code: 'PK', dial: '+92', flag: '🇵🇰', name: 'Pakistán' },
+    { code: 'PY', dial: '+595', flag: '🇵🇾', name: 'Paraguay' },
+    { code: 'PH', dial: '+63', flag: '🇵🇭', name: 'Filipinas' },
+    { code: 'PL', dial: '+48', flag: '🇵🇱', name: 'Polonia' },
+    { code: 'PT', dial: '+351', flag: '🇵🇹', name: 'Portugal' },
+    { code: 'PR', dial: '+1', flag: '🇵🇷', name: 'Puerto Rico' },
+    { code: 'RO', dial: '+40', flag: '🇷🇴', name: 'Rumania' },
+    { code: 'SA', dial: '+966', flag: '🇸🇦', name: 'Arabia Saudita' },
+    { code: 'RS', dial: '+381', flag: '🇷🇸', name: 'Serbia' },
+    { code: 'SG', dial: '+65', flag: '🇸🇬', name: 'Singapur' },
+    { code: 'SK', dial: '+421', flag: '🇸🇰', name: 'Eslovaquia' },
+    { code: 'SI', dial: '+386', flag: '🇸🇮', name: 'Eslovenia' },
+    { code: 'ZA', dial: '+27', flag: '🇿🇦', name: 'Sudáfrica' },
+    { code: 'SE', dial: '+46', flag: '🇸🇪', name: 'Suecia' },
+    { code: 'CH', dial: '+41', flag: '🇨🇭', name: 'Suiza' },
+    { code: 'TH', dial: '+66', flag: '🇹🇭', name: 'Tailandia' },
+    { code: 'TR', dial: '+90', flag: '🇹🇷', name: 'Turquía' },
+    { code: 'UA', dial: '+380', flag: '🇺🇦', name: 'Ucrania' },
+    { code: 'AE', dial: '+971', flag: '🇦🇪', name: 'Emiratos Árabes Unidos' },
+    { code: 'UY', dial: '+598', flag: '🇺🇾', name: 'Uruguay' },
+    { code: 'VN', dial: '+84', flag: '🇻🇳', name: 'Vietnam' },
+]);
 
+// Filtrar países por búsqueda
+const filteredCountries = computed(() => {
+    if (!countrySearch.value) return countryCodes.value;
+    const search = countrySearch.value.toLowerCase();
+    return countryCodes.value.filter(country => 
+        country.name.toLowerCase().includes(search) ||
+        country.dial.includes(search) ||
+        country.code.toLowerCase().includes(search)
+    );
+});
+
+// Seleccionar país del dropdown
+function selectCountry(country) {
+    selectedCountry.value = country;
+    countryCode.value = country.dial;
+    countrySearch.value = '';
+    showCountryDropdown.value = false;
+    updatePhoneNumber();
+}
+
+// Ocultar dropdown con delay para permitir click
+function hideCountryDropdown() {
+    setTimeout(() => {
+        showCountryDropdown.value = false;
+    }, 200);
+}
+
+// Concatenar código de país con número
+function updatePhoneNumber() {
+    if (phoneNumber.value) {
+        formReserva.value.cliente_phone = countryCode.value + phoneNumber.value;
+    } else {
+        formReserva.value.cliente_phone = '';
+    }
+}
+
+// Observar cambios en countryCode y phoneNumber
+watch([countryCode, phoneNumber], () => {
+    updatePhoneNumber();
+    validateField('cliente_phone');
+});
 
 const deliveryMethods = [
     { id: 2, title: "T.Debito, T. Credito, PSE", turnaround: "El Pago se refleja de inmediato" },
@@ -752,12 +930,11 @@ function validateField(fieldName) {
             }
             break;
         case 'cliente_phone':
-            const phoneRegex = /^[0-9]{10}$/;
-            if (!formReserva.value.cliente_phone) {
+            if (!phoneNumber.value) {
                 fieldErrors.value.cliente_phone = 'El teléfono es requerido';
                 fieldValid.value.cliente_phone = false;
-            } else if (!phoneRegex.test(formReserva.value.cliente_phone)) {
-                fieldErrors.value.cliente_phone = 'Debe ser un número de 10 dígitos';
+            } else if (phoneNumber.value.length < 7) {
+                fieldErrors.value.cliente_phone = 'Ingresa un número válido';
                 fieldValid.value.cliente_phone = false;
             } else {
                 fieldErrors.value.cliente_phone = '';

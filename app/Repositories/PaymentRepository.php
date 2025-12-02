@@ -64,7 +64,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             'configuration' => [
                 'partial_payment' => false,
                 'expiration_days' => 1,
-                'allowed_payment_methods' => ['Card', 'BankTransfer', 'Cash', 'Rappi', 'ApplePay'],
+                'allowed_payment_methods' => ['All'],
                 'success_url' => route('booking.success', ['bookingService' => $bookingId]),
                 'failure_url' => 'https://url-to-failure.com',
                 'pending_url' => 'https://url-to-pending.com',

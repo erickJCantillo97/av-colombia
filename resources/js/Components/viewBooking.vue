@@ -1,165 +1,219 @@
 <template>
-  <Drawer v-model:visible="show" :pt:root:class="`!bg-${statues[service.status]}-200`" header="Detalles de la actividad"
-    position="right">
+  <Drawer v-model:visible="show" header="Detalles de la Reserva" position="right" class="!w-full md:!w-[500px]">
     <template #header>
-      <div class="flex items-center gap-2">
-        <span class="font-bold text-lg">{{ service.service }}</span>
+      <div class="flex flex-col gap-1 w-full">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-bold text-gray-800">{{ service.service }}</h2>
+          <span :class="getStatusBadge(service.status)" class="px-3 py-1 text-xs font-semibold rounded-full">
+            {{ service.status }}
+          </span>
+        </div>
+        <p class="text-sm text-gray-500">ID: {{ service.id.substring(0, 8) }}</p>
       </div>
     </template>
-    <div class="flex flex-col gap-y-1.5 text-sm">
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Fecha del Servicio:</strong>
-        <p>{{ formatDate(service.date) }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Hora del Servicio:</strong>
-        <p>{{ service.hour }}</p>
-      </div>
-      <div v-if="service.time_service" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Duración del Servicio:</strong>
-        <p>{{ service.time_service }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Canal de Venta:</strong>
-        <p>{{ service.channel.name }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Cliente:</strong>
-        <p>{{ service.cliente_name }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Ciudad:</strong>
-        <p>{{ service.cliente_city }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Telefono:</strong>
-        <a target="_blank" :href="`https://wa.me/${service.cliente_phone}?text=Hola  mucho gusto yo soy Sandra la coordinadora de su actividad 
-Hello, nice to talk to you  I'm Sandra the coordinator for  your activity`">{{ service.cliente_phone }}</a>
-      </div>
 
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Edificio:</strong>
-        <p>{{ service.cliente_building }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Adultos:</strong>
-        <p>{{ service.adults }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Niños:</strong>
-        <p>{{ service.boys }}</p>
-      </div>
+    <div class="space-y-6">
+      <!-- Información del Servicio -->
+      <section>
+        <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-calendar-days text-blue-500"></i>
+          Información del Servicio
+        </h3>
+        <div class="space-y-2">
+          <DetailRow icon="fa-calendar" label="Fecha" :value="formatDate(service.date)" />
+          <DetailRow icon="fa-clock" label="Hora" :value="service.hour" />
+          <DetailRow v-if="service.time_service" icon="fa-hourglass-half" label="Duración" :value="service.time_service" />
+          <DetailRow icon="fa-store" label="Canal" :value="service.channel.name" />
+        </div>
+      </section>
 
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Total:</strong>
-        <p>{{ COP.format(service.total) }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Total Real:</strong>
-        <p>{{ COP.format(service.total_real) }}</p>
-      </div>
-      <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>{{ service.vendedor_id  ? "Vendedor" : "Usuario" }}:</strong>
-        <p>{{ service.user?.name }}</p>
-      </div>
-      <div v-if="service.user" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Fecha de reserva:</strong>
-        <p>{{ new Date(service.created_at).toLocaleDateString("es-CO") }}</p>
-      </div>
+      <!-- Información del Cliente -->
+      <section>
+        <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-user text-blue-500"></i>
+          Información del Cliente
+        </h3>
+        <div class="space-y-2">
+          <DetailRow icon="fa-user-circle" label="Cliente" :value="service.cliente_name" />
+          <DetailRow icon="fa-city" label="Ciudad" :value="service.cliente_city" />
+          <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <div class="flex items-center gap-3">
+              <i class="fa-brands fa-whatsapp text-green-500 text-sm"></i>
+              <span class="text-sm text-gray-600">Teléfono</span>
+            </div>
+            <a 
+              target="_blank" 
+              :href="`https://wa.me/${service.cliente_phone}?text=Hola mucho gusto yo soy Sandra la coordinadora de su actividad. Hello, nice to talk to you I'm Sandra the coordinator for your activity`"
+              class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              {{ service.cliente_phone }}
+            </a>
+          </div>
+          <DetailRow icon="fa-building" label="Edificio" :value="service.cliente_building" />
+        </div>
+      </section>
 
-      <div v-if="service.conductor" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>conductor:</strong>
-        <p>{{ service.conductor }}</p>
-      </div>
-      <div v-if="service.placa" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>conductor:</strong>
-        <p>{{ service.placa }}</p>
-      </div>
-      <div v-if="service.total_pago_proveedor" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Valor del Servicio:</strong>
-        <p>{{ COP.format(service.total_pago_proveedor) }}</p>
-      </div>
-      <div v-if="service.fecha_cancelacion" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Fecha de Cancelación:</strong>
-        <p>
-          {{
-            new Date(
-              new Date(service.fecha_cancelacion).setDate(
-                new Date(service.fecha_cancelacion).getDate() + 1
-              )
-            ).toLocaleDateString("es-CO", {
-              day: "numeric",
-              month: "numeric",
-              year: "numeric",
-            })
-          }}
-        </p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Saldo:</strong>
-        <p>{{ COP.format(service.saldo) }}</p>
-      </div>
-      <div class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <strong>Soporte:</strong>
-        <a target="_blank" :href="service.file">Ver Archivo</a>
-      </div>
-      <div class="flex flex-col border py-1 bg-white/30 rounded-md px-2">
-        <strong>Observacion:</strong>
-        <p>{{ service.observations }}</p>
-      </div>
+      <!-- Participantes -->
+      <section>
+        <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-users text-blue-500"></i>
+          Participantes
+        </h3>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-blue-50 rounded-lg p-3 text-center">
+            <i class="fa-solid fa-user text-blue-600 text-lg mb-1"></i>
+            <p class="text-2xl font-bold text-blue-600">{{ service.adults }}</p>
+            <p class="text-xs text-gray-600">Adultos</p>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-3 text-center">
+            <i class="fa-solid fa-child text-purple-600 text-lg mb-1"></i>
+            <p class="text-2xl font-bold text-purple-600">{{ service.boys }}</p>
+            <p class="text-xs text-gray-600">Niños</p>
+          </div>
+        </div>
+      </section>
 
-      <div class="text-lg flex w-full justify-between items-center mt-2 ">
-        <p class="font-bold">Proveedores</p>
-        <p class="rounded-full bg-green-800 text-white px-1.5 py-0.5 text-xs fles items-center justify-center">
-          {{ service.proveedors.length }}
-        </p>
-      </div>
-      <div v-for="proveedor in service.proveedors" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <p>
-          {{ proveedor.proveedor.proveedor.nombre }}
-        </p>
-        <p>
-          {{ COP.format(proveedor.cost) }}
-        </p>
-      </div>
-      <div class="text-lg flex w-full justify-between items-center mt-2">
-        <p class="font-bold">Extras</p>
-        <p class="rounded-full bg-sky-800 text-white px-1.5 py-0.5 text-xs flex items-center justify-center">
-          {{ service.extras.length }}
-        </p>
-      </div>
-      <div v-for="extra in service.extras" class="flex justify-between border py-1 bg-white/30 rounded-md px-2">
-        <p>
-          {{ extra.cantidad }} {{ extra.description }}
-        </p>
-        <p class="font-semibold">
-          {{ COP.format(extra.total_price) }}
-        </p>
-      </div>
+      <!-- Información Financiera -->
+      <section>
+        <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-dollar-sign text-blue-500"></i>
+          Información Financiera
+        </h3>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between py-2 px-3 bg-green-50 rounded-lg">
+            <span class="text-sm text-gray-600">Total</span>
+            <span class="text-lg font-bold text-green-700">{{ COP.format(service.total) }}</span>
+          </div>
+          <DetailRow icon="fa-receipt" label="Total Real" :value="COP.format(service.total_real)" />
+          <DetailRow icon="fa-wallet" label="Saldo" :value="COP.format(service.saldo)" />
+          <div v-if="service.file != '/laravel/public/'" class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-paperclip text-gray-500 text-sm"></i>
+              <span class="text-sm text-gray-600">Soporte</span>
+            </div>
+            <a target="_blank" :href="service.file" class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+              Ver Archivo
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Información Adicional -->
+      <section v-if="service.user || service.conductor || service.fecha_cancelacion">
+        <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-info-circle text-blue-500"></i>
+          Información Adicional
+        </h3>
+        <div class="space-y-2">
+          <DetailRow v-if="service.user" icon="fa-user-tie" :label="service.vendedor_id ? 'Vendedor' : 'Usuario'" :value="service.user?.name" />
+          <DetailRow v-if="service.user" icon="fa-calendar-plus" label="Fecha de Reserva" :value="new Date(service.created_at).toLocaleDateString('es-CO')" />
+          <DetailRow v-if="service.conductor" icon="fa-car" label="Conductor" :value="service.conductor" />
+          <DetailRow v-if="service.placa" icon="fa-id-card" label="Placa" :value="service.placa" />
+          <DetailRow v-if="service.total_pago_proveedor" icon="fa-money-bill" label="Valor del Servicio" :value="COP.format(service.total_pago_proveedor)" />
+          <DetailRow v-if="service.fecha_cancelacion" icon="fa-calendar-xmark" label="Fecha de Cancelación" 
+            :value="new Date(new Date(service.fecha_cancelacion).setDate(new Date(service.fecha_cancelacion).getDate() + 1)).toLocaleDateString('es-CO')" />
+        </div>
+      </section>
+
+      <!-- Observaciones -->
+      <section v-if="service.observations">
+        <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-note-sticky text-blue-500"></i>
+          Observaciones
+        </h3>
+        <div class="bg-amber-50 border-l-4 border-amber-400 p-3 rounded">
+          <p class="text-sm text-gray-700">{{ service.observations }}</p>
+        </div>
+      </section>
+
+      <!-- Proveedores -->
+      <section v-if="service.proveedors.length > 0">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i class="fa-solid fa-handshake text-blue-500"></i>
+            Proveedores
+          </h3>
+          <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+            {{ service.proveedors.length }}
+          </span>
+        </div>
+        <div class="space-y-2">
+          <div v-for="proveedor in service.proveedors" :key="proveedor.id" 
+            class="flex items-center justify-between py-2 px-3 bg-green-50 rounded-lg border border-green-100">
+            <span class="text-sm text-gray-700">{{ proveedor.proveedor.proveedor.nombre }}</span>
+            <span class="text-sm font-semibold text-green-700">{{ COP.format(proveedor.cost) }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Extras -->
+      <section v-if="service.extras.length > 0">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-blue-500"></i>
+            Extras
+          </h3>
+          <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+            {{ service.extras.length }}
+          </span>
+        </div>
+        <div class="space-y-2">
+          <div v-for="extra in service.extras" :key="extra.id" 
+            class="flex items-center justify-between py-2 px-3 bg-blue-50 rounded-lg border border-blue-100">
+            <span class="text-sm text-gray-700">{{ extra.cantidad }} {{ extra.description }}</span>
+            <span class="text-sm font-semibold text-blue-700">{{ COP.format(extra.total_price) }}</span>
+          </div>
+        </div>
+      </section>
     </div>
 
     <template #footer>
-      <div class="flex flex-col items-center" v-if="hasRole(['admin', 'superadmin'])">
-        <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
-          <Button @click="setState('reservado', true)" icon="fa-solid fa-circle-check" v-tooltip.top="'Reservada'"
-            severity="info" />
-          <Button @click="showNoShow = true" icon="fa-solid fa-eye-slash" v-tooltip.top="'Servicio No show'"
-            class="!text-white !bg-yellow-600" />
-          <Button @click="dateChange()" icon="fa-solid fa-calendar-week" v-tooltip.top="'Cambio de Fecha'"
-            class="!bg-gray-600 !text-white" />
-          <Button @click="reubicarServicio()" icon="fa-solid fa-people-arrows" v-tooltip.top="'Cambio de proveedor'"
-            severity="warn" />
-          <Button @click="cancelarServicio()" icon="fa-solid fa-xmark-circle" v-tooltip.top="'Cancelar Servicio'"
-            severity="danger" />
-          <Button @click="setState('PROBLEMATICA', false)" icon="fa-solid fa-person-dress-burst"
-            v-tooltip.top="'Servicio Problematico'" class="flex-auto" severity="danger" />
+      <div v-if="hasRole(['admin', 'superadmin'])" class="border-t pt-4">
+        <p class="text-xs text-gray-500 mb-3 font-medium">Acciones Rápidas</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <button @click="setState('reservado', true)" 
+            class="flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-all duration-200 hover:shadow-md group"
+            title="Confirmar Reserva">
+            <i class="fa-solid fa-circle-check text-sm group-hover:scale-110 transition-transform"></i>
+            <span class="text-xs font-medium hidden md:inline">Confirmar</span>
+          </button>
+          
+          <button @click="showNoShow = true" 
+            class="flex items-center justify-center gap-2 px-3 py-2.5 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 rounded-lg transition-all duration-200 hover:shadow-md group"
+            title="No Show">
+            <i class="fa-solid fa-eye-slash text-sm group-hover:scale-110 transition-transform"></i>
+            <span class="text-xs font-medium hidden md:inline">No Show</span>
+          </button>
+          
+          <button @click="dateChange()" 
+            class="flex items-center justify-center gap-2 px-3 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-all duration-200 hover:shadow-md group"
+            title="Cambio de Fecha">
+            <i class="fa-solid fa-calendar-week text-sm group-hover:scale-110 transition-transform"></i>
+            <span class="text-xs font-medium hidden md:inline">Fecha</span>
+          </button>
+          
+          <button @click="reubicarServicio()" 
+            class="flex items-center justify-center gap-2 px-3 py-2.5 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg transition-all duration-200 hover:shadow-md group"
+            title="Reubicar">
+            <i class="fa-solid fa-people-arrows text-sm group-hover:scale-110 transition-transform"></i>
+            <span class="text-xs font-medium hidden md:inline">Reubicar</span>
+          </button>
+          
+          <button @click="cancelarServicio()" 
+            class="flex items-center justify-center gap-2 px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-all duration-200 hover:shadow-md group"
+            title="Cancelar">
+            <i class="fa-solid fa-xmark-circle text-sm group-hover:scale-110 transition-transform"></i>
+            <span class="text-xs font-medium hidden md:inline">Cancelar</span>
+          </button>
+          
+          <button @click="setState('PROBLEMATICA', false)" 
+            class="flex items-center justify-center gap-2 px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-all duration-200 hover:shadow-md group"
+            title="Problemática">
+            <i class="fa-solid fa-triangle-exclamation text-sm group-hover:scale-110 transition-transform"></i>
+            <span class="text-xs font-medium hidden md:inline">Problema</span>
+          </button>
         </div>
       </div>
-      <!-- <div v-else class="flex items-center w-full justify-center">
-        <div class="bg-black text-white rounded-lg p-4 uppercase shadow-2xl">
-          Reserva {{ service.status }}
-        </div>
-      </div> -->
     </template>
   </Drawer>
 
@@ -207,7 +261,7 @@ Hello, nice to talk to you  I'm Sandra the coordinator for  your activity`">{{ s
 import Swal from "sweetalert2";
 import { router, useForm } from "@inertiajs/vue3";
 import { alerts } from "@/composable/toasts";
-import { ref } from "vue";
+import { ref, h } from "vue";
 import Modal from "./Customs/Modal.vue";
 import Input from "./Customs/Input.vue";
 import ServiceCancel from "./ServiceCancel.vue";
@@ -218,6 +272,19 @@ import { usePermissions } from '@/composable/Auth.js';
 const { hasRole } = usePermissions();
 const serviceModel = new Service();
 const { toast } = alerts();
+
+// Componente funcional inline
+const DetailRow = (props, { attrs }) => {
+  return h('div', {
+    class: 'flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors'
+  }, [
+    h('div', { class: 'flex items-center gap-3' }, [
+      h('i', { class: `fa-solid fa-${props.icon} text-gray-500 text-sm` }),
+      h('span', { class: 'text-sm text-gray-600' }, props.label)
+    ]),
+    h('span', { class: 'text-sm font-medium text-gray-900' }, props.value)
+  ]);
+};
 const props = defineProps({
   service: Object,
 });
@@ -366,4 +433,22 @@ const reubicarServicio = () => {
   reubicar.value = true;
   getProveedorsByService();
 };
+
+const getStatusBadge = (status) => {
+  const badges = {
+    'RESERVADO': 'bg-blue-100 text-blue-800',
+    'CAMBIO DE FECHA': 'bg-gray-100 text-gray-800',
+    'NO SHOW': 'bg-yellow-100 text-yellow-800',
+    'REUBICADO': 'bg-orange-100 text-orange-800',
+    'CANCELADA': 'bg-red-100 text-red-800',
+    'PROBLEMATICA': 'bg-red-200 text-red-900',
+    'SIN CONFIRMAR': 'bg-purple-100 text-purple-800',
+    'COMPLETADA': 'bg-green-100 text-green-800'
+  };
+  return badges[status] || 'bg-gray-100 text-gray-800';
+};
 </script>
+
+<style scoped>
+/* Componente auxiliar para las filas de detalles */
+</style>

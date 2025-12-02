@@ -1,16 +1,17 @@
 <template>
-    <div class="flex justify-center w-full px-4 sm:px-6 lg:px-8">
-        <div class="relative w-full" ref="searchContainer">
+    <div class="flex justify-center w-full px-4 md:px-6 lg:px-8">
+        <div class="relative w-full max-w-5xl" ref="searchContainer">
             <!-- Service Types Section -->
             <transition name="fade-slide">
-                <div v-if="showServiceTypeTabs" key="tabs" class="mb-3 sm:mb-4 w-full items-center flex justify-center">
+                <div v-if="showServiceTypeTabs" key="tabs" class="mb-4 lg:mb-6 w-full items-center flex justify-center">
                     <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="searchStore.type" />
-                    <Link class=" sm:hidden fixed right-0 top-9 bg-white/90 rounded-full px-2 py-1"
+                    <Link class="sm:hidden fixed right-4 top-9 bg-white shadow-lg rounded-full p-2.5 z-50 hover:bg-gray-50 transition-all"
                         :href="route('login')">
-                    <i class="fa-solid fa-right-to-bracket"></i>
+                        <i class="fa-solid fa-right-to-bracket text-gray-700"></i>
                     </Link>
                 </div>
             </transition>
+            
             <!-- Search Bar -->
             <div class="relative">
                 <SearchBar :type="searchStore.type.value.label" :isPanelOpen="isPanelOpen" :activeTab="activeTab"
@@ -18,6 +19,7 @@
                     :selectedCheckout="selectedCheckout" :guestSummary="guestSummary" :setActiveTab="setActiveTab"
                     :formatDate="formatDate" :dateRange="dateRangeDisplay" :selectedOrigin />
             </div>
+            
             <!-- Dropdown Panels -->
             <DropdownPanels :isPanelOpen="isPanelOpen" :activeTab="activeTab" v-model:locationQuery="locationQuery"
                 v-model:selectedCheckin="selectedCheckin" v-model:selectedCheckout="selectedCheckout" :guests="guests"
@@ -39,7 +41,6 @@ import AiModal from './Search/AiModal.vue';
 import searchStore from '@/store/searchStore';
 import { Link } from "@inertiajs/vue3";
 
-// Estado del panel
 const isPanelOpen = ref(false);
 const activeTab = ref('donde');
 const isModalVisible = ref(false);
@@ -47,17 +48,14 @@ const isLoading = ref(false);
 const generatedContent = ref('');
 const searchContainer = ref(null);
 
-// Datos de búsqueda
 const locationQuery = ref('');
 
-// Reemplazar refs por el store
 const selectedLocation = searchStore.location;
 const selectedCheckin = searchStore.checkin;
 const selectedCheckout = searchStore.checkout;
 const guests = searchStore.guests;
 const selectedOrigin = searchStore.origen;
 
-// Tipo de servicio
 const type = ref({
     label: 'Tours',
     value: 'TOUR',
