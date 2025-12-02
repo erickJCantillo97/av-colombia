@@ -118,6 +118,68 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         return $booking->get()->map(fn ($booking) => $this->map($booking));
     }
 
+    public function getPaginated(?string $type = null, ?string $search = null, int $perPage = 100, ?array $dates = null)
+    {
+        $query = $this->model
+            ->with([
+                'service:id,title,type',
+                'extras',
+                'user:id,name,email',
+                'payments',
+                'payments.metohdPayment:id,name',
+                'proveedors',
+                'proveedors.proveedor:id,nombre',
+                'channel:id,name',
+                'notes',
+                'changes',
+            ])
+            ->orderBy('created_at', 'DESC');
+
+        // Filter by user role
+        if (Auth::user()->rol === 'vendedor') {
+            $query->where('user_id', Auth::id());
+        }
+
+        // Filter by service type
+        if ($type) {
+            $query->whereHas('service', function ($q) use ($type) {
+                $q->where('type', $type);
+            });
+        }
+
+        // Filter by date range if provided
+        if ($dates && is_array($dates) && count($dates) === 2) {
+            $startDate = Carbon::parse($dates[0])->format('Y-m-d');
+            $endDate = Carbon::parse($dates[1])->format('Y-m-d');
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+
+        // Global search
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('cliente_name', 'like', "%{$search}%")
+                    ->orWhere('cliente_phone', 'like', "%{$search}%")
+                    ->orWhere('cliente_city', 'like', "%{$search}%")
+                    ->orWhere('cliente_building', 'like', "%{$search}%")
+                    ->orWhere('service', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        $paginated = $query->paginate($perPage)->withQueryString();
+
+        return [
+            'data' => $paginated->map(fn ($booking) => $this->map($booking)),
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
+            'per_page' => $paginated->perPage(),
+            'total' => $paginated->total(),
+            'from' => $paginated->firstItem(),
+            'to' => $paginated->lastItem(),
+        ];
+    }
+
     public function getAllFromStoredProcedure(?string $type = null)
     {
         $userId = Auth::id();

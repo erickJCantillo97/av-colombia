@@ -13,4 +13,6 @@ interface BookingServiceRepositoryInterface extends BaseRepositoryInterface
     public function store(array $data, string $status, $userId): BookingService;
 
     public function getAllByDateCreated($date, ?string $type = null);
+
+    public function getPaginated(?string $type = null, ?string $search = null, int $perPage = 100, ?array $dates = null);
 }

@@ -17,7 +17,6 @@ use App\Models\Note;
 use App\Models\PagoSaldos;
 use App\Models\Service;
 use App\Models\State;
-use App\Models\Ticket;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -37,10 +36,14 @@ class BookingServiceController extends Controller
     public function index(Request $request)
     {
         $type = $request->query('type');
+        $search = $request->query('search');
+        $perPage = $request->query('per_page', 100);
+        $dates = $request->query('dates');
 
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => $this->bookingServiceRepository->getAllByDateCreated([Carbon::now()->subDays(15), Carbon::tomorrow()], $type),
+            'bookingServices' => $this->bookingServiceRepository->getPaginated($type, $search, $perPage, $dates),
             'serviceType' => $type,
+            'filters' => $request->only(['search', 'dates', 'per_page']),
         ]);
     }
 
@@ -75,7 +78,7 @@ class BookingServiceController extends Controller
         DB::beginTransaction();
         try {
             $booking = $this->bookingServiceRepository->create($request->validated());
-            
+
             DB::commit();
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Reservación guardada correctamente', 'bookingService' => $booking], 201);
@@ -85,7 +88,7 @@ class BookingServiceController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response()->json(['message' => 'Error al guardar la reservación + ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Error al guardar la reservación + '.$e->getMessage()], 500);
         }
     }
 
@@ -298,9 +301,7 @@ class BookingServiceController extends Controller
             $data['file'] = $data['soporte']->store('public/soportes');
         }
         $data['total'] = $data['total_real'];
-        // Remove fields not needed by repository/store
         unset($data['cliente_email'], $data['cliente_last_name'], $data['time'], $data['payment_method'], $data['soporte']);
-        // Resolve service specific pricing and meta
         $service = Service::findOrFail($data['service_id']);
         $data['boys_tarifa'] = $service->boy_tarifa;
         $data['boys_price'] = $service->boys_price;
