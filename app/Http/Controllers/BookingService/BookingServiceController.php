@@ -15,6 +15,8 @@ use App\Models\Channel;
 use App\Models\Horario;
 use App\Models\Note;
 use App\Models\PagoSaldos;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
 use App\Models\Service;
 use App\Models\State;
 use Carbon\Carbon;
@@ -300,7 +302,14 @@ class BookingServiceController extends Controller
         $data['hour'] = $hora;
         $data['adult_tarifa'] = 0;
         $data['boys'] = 0;
-        $data['channel_id'] = Channel::where('name', 'Vendedor')->first()?->id ?? null;
+        $data['adults_nacionales'] = $data['adults'];
+        $data['boys_nacionales'] = $data['boys'];
+
+        if($userId == 8){
+            $data['channel_id'] = Channel::where('name', 'Pagina Web')->first()?->id ?? null;
+        }else {
+            $data['channel_id'] = Channel::where('name', 'Vendedor')->first()?->id ?? null;
+        }
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
         $data['vendedor_id'] = $userId;
         $data['cliente_name'] = ($data['cliente_name'] ?? '').' '.($lastName ?? '');
@@ -310,6 +319,7 @@ class BookingServiceController extends Controller
         }
         $data['total'] = $data['total_real'];
         unset($data['cliente_email'], $data['cliente_last_name'], $data['time'], $data['payment_method'], $data['soporte']);
+        
         $service = Service::findOrFail($data['service_id']);
         $data['boys_tarifa'] = $service->boy_tarifa;
         $data['boys_price'] = $service->boys_price;
@@ -318,6 +328,7 @@ class BookingServiceController extends Controller
 
         try {
             $result = DB::transaction(function () use ($data, $userId, $paymentMethod, $email, $lastName) {
+                $data['payment_method'] = ;
                 $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
                 // Reattach minimal data needed by payment repository
                 $paymentPayload = array_merge($data, [
@@ -368,6 +379,16 @@ class BookingServiceController extends Controller
         return Inertia::render('Home/Success', [
             'bookingService' => $bookingService,
         ]);
+    }
+
+    private function getPaymentMethodId($method)
+    {
+        if($method == 1){
+            return PaymentMethod::where('name', 'EFECTIVO')->first()->id;
+        }elseif($method == 2){
+            return PaymentMethod::where('name', 'REDEBAN')->first()->id;
+        }
+        return PaymentMethod::where('name', 'TRANSFERENCIA')->first()->id;
     }
 
     public function setStatus()

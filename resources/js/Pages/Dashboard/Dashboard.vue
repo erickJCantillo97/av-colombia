@@ -212,7 +212,7 @@ const totalBoys = computed(() => {
             <strong class="uppercase text-blue-600"> {{ $page.props.auth.user.name }} </strong>,
             Bienvenido a tu panel de control
           </h1>
-          <a target="_blank" :href="`https://vendedores-site.netlify.app/${$page.props.auth.user.id}`">
+          <a target="_blank" :href="`https://tourscolombia.online/${$page.props.auth.user.id}`">
             <Button label="Ver Portafolio" class="text-sm" />
           </a>
         </div>

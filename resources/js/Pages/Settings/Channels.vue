@@ -1,29 +1,34 @@
 <template>
-    <div class="h-[80vh]">
+    <div class="bg-white rounded-xl">
         <Datatable :columnas="columns" :add :data="channels" routecreate="services.create" :actions="buttons">
         </Datatable>
     </div>
 
-    <Modal v-model:visible="visible" :close-on-escape="true">
+    <Modal v-model:visible="visible" :close-on-escape="true" width="500px">
         <template #title>
-            <span class="text-xl font-bold white-space-nowrap">
-                Agregar Canal</span>
+            <span class="text-xl font-bold">
+                {{ editor ? 'Editar' : 'Agregar' }} Canal</span>
         </template>
         <template #icon>
-            <i class="fa-solid fa-plus" />
+            <i :class="editor ? 'fa-solid fa-pencil' : 'fa-solid fa-plus'" />
         </template>
-        <div class="space-y-3">
-            <Input label="Nombre del Canal" v-model="form.name" />
-            <Input label="Iniciales" v-model="form.abreviacion" />
-            <Input type="number" label="Porcentaje" v-model="form.percent" suffix=" %" min-fraction-digits="2"
-                max-fraction-digits="2" />
-
+        <div class="space-y-4 p-2">
+            <div class="bg-gray-50 rounded-xl p-4 space-y-4">
+                <Input label="Nombre del Canal" v-model="form.name" placeholder="Ej: Canal Directo" />
+                <Input label="Iniciales" v-model="form.abreviacion" placeholder="Ej: CD" />
+                <Input type="number" label="Porcentaje de Comisión" v-model="form.percent" suffix=" %" 
+                    min-fraction-digits="2" max-fraction-digits="2" placeholder="0.00" />
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+                <i class="fa-solid fa-circle-info text-blue-600 mt-0.5"></i>
+                <p class="text-sm text-blue-800">El porcentaje se aplicará como comisión sobre las ventas realizadas por este canal.</p>
+            </div>
         </div>
         <template #footer>
             <Button @click="submit" title="Guardar" severity="success" label="Guardar" outlined icon="fa-solid fa-save"
-                class="!h-8" />
-            <Button @click="visible = false" title="Cancel" severity="danger" label="Cancelar" outlined
-                icon="fa-solid fa-times" class="!h-8" />
+                class="!h-9" />
+            <Button @click="visible = false" title="Cancelar" severity="danger" label="Cancelar" outlined
+                icon="fa-solid fa-times" class="!h-9" />
         </template>
     </Modal>
     <ConfirmPopup></ConfirmPopup>

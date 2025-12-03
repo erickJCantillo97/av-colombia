@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function getUrlAttribute(): string
     {
-        return 'https://vendedores-site.netlify.app/'.$this->id;
+        return 'https://tourscolombia.online/'.$this->id;
     }
 
     protected function camaraComercio(): Attribute

@@ -1,19 +1,29 @@
 <template>
-    <Datatable :add :data :columnas="columns" :actions="buttons">
+    <div class="bg-white rounded-xl">
+        <Datatable :add :data :columnas="columns" :actions="buttons">
+        </Datatable>
+    </div>
 
-    </DataTable>
-
-    <Modal v-model="visible" title="Crear Metodo de Pago" :close-on-escape="true">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input label="Nombre" v-model="form.name" />
-            <Input label="Porcentaje de pago" type="number" suffix=" %" min-fraction-digits="0" max-fraction-digits="2"
-                v-model="form.parcent_charge" />
+    <Modal v-model="visible" :title="form.id ? 'Editar Método de Pago' : 'Crear Método de Pago'" :close-on-escape="true" width="500px">
+        <template #icon>
+            <i :class="form.id ? 'fa-solid fa-pencil' : 'fa-solid fa-plus'"></i>
+        </template>
+        <div class="space-y-4 p-2">
+            <div class="bg-gray-50 rounded-xl p-4 space-y-4">
+                <Input label="Nombre del Método" v-model="form.name" placeholder="Ej: Tarjeta de Crédito, PSE, Efectivo" />
+                <Input label="Porcentaje de Cargo" type="number" suffix=" %" min-fraction-digits="0" max-fraction-digits="2"
+                    v-model="form.parcent_charge" placeholder="0.00" />
+            </div>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
+                <i class="fa-solid fa-circle-exclamation text-amber-600 mt-0.5"></i>
+                <p class="text-sm text-amber-800">Este porcentaje se agregará al total de la transacción como cargo adicional.</p>
+            </div>
         </div>
         <template #footer>
-            <Button @click="submit" title="Save" severity="success" label="Save" outlined icon="fa-solid fa-save"
-                class="!h-8" />
-            <Button @click="visible = false" title="Cancel" severity="danger" label="Cancel" outlined
-                icon="fa-solid fa-times" class="!h-8" />
+            <Button @click="submit" title="Guardar" severity="success" label="Guardar" outlined icon="fa-solid fa-save"
+                class="!h-9" />
+            <Button @click="visible = false" title="Cancelar" severity="danger" label="Cancelar" outlined
+                icon="fa-solid fa-times" class="!h-9" />
         </template>
     </Modal>
 </template>

@@ -1,12 +1,12 @@
 <template>
-    <div class="h-[99vh]">
+    <div class="bg-white rounded-xl">
         <Datatable :columnas="columns" :add :data="ticketTypes" :actions="buttons">
         </Datatable>
     </div>
 
-    <Modal v-model:visible="visible" width="70vw" close-on-escape>
+    <Modal v-model:visible="visible" width="900px" close-on-escape>
         <template #title>
-            <span class="text-xl font-bold white-space-nowrap">
+            <span class="text-xl font-bold">
                 {{ editor ? 'Editar' : 'Agregar' }} Tipo de Ticket
             </span>
         </template>
@@ -15,51 +15,70 @@
             <i class="fa-solid fa-pencil" v-else />
         </template>
 
-        <div class="flex gap-x-3 py-2">
-            <div class="grid grid-cols-1 w-full shadow-2xl border rounded-md gap-4 p-6">
+        <div class="space-y-6 py-2">
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 space-y-6">
                 <!-- Nombre del tipo de ticket -->
-                <Input label="Nombre del Tipo de Ticket" v-model="form.name" :error-message="form.errors.name"
-                    placeholder="Ej: Ticket VIP, Ticket Estándar, etc." />
+                <div>
+                    <h3 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-tag text-rose-500"></i>
+                        Información del Ticket
+                    </h3>
+                    <Input label="Nombre del Tipo de Ticket" v-model="form.name" :error-message="form.errors.name"
+                        placeholder="Ej: Ticket VIP, Ticket Estándar, etc." />
+                </div>
 
                 <!-- Selección de servicios -->
                 <div class="w-full">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <h3 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-blue-500"></i>
                         Servicios Asociados
-                    </label>
-                    <Input v-model="serviceSearch" placeholder="Buscar servicios..." class="mb-3" />
+                    </h3>
+                    <Input v-model="serviceSearch" placeholder="Buscar servicios..." class="mb-3">
+                        <template #prefix>
+                            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                        </template>
+                    </Input>
 
-                    <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-md p-2">
-                        <div class="grid grid-cols-1 gap-2">
-                            <div v-for="service in filteredServices" :key="service.id"
-                                @click="toggleService(service.id)" :class="{
-                                    'bg-blue-100 border-blue-500': form.services.includes(service.id),
-                                    'bg-gray-50 border-gray-200': !form.services.includes(service.id),
-                                }" class="p-3 rounded-md cursor-pointer border-2 hover:bg-blue-50 transition-colors duration-200">
+                    <div class="max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-xl p-3">
+                        <div class="space-y-2">
+                            <button
+                                v-for="service in filteredServices" 
+                                :key="service.id"
+                                @click="toggleService(service.id)" 
+                                :class="[
+                                    'w-full p-3 rounded-lg border-2 transition-all duration-200 text-left',
+                                    form.services.includes(service.id)
+                                        ? 'bg-blue-50 border-blue-500 shadow-sm'
+                                        : 'bg-gray-50 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                                ]">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-medium text-sm">{{ service.title }}</span>
+                                    <span class="font-medium text-sm text-gray-900">{{ service.title }}</span>
                                     <i v-if="form.services.includes(service.id)"
-                                        class="fa-solid fa-check text-blue-600"></i>
+                                        class="fa-solid fa-check-circle text-blue-600"></i>
+                                    <i v-else class="fa-regular fa-circle text-gray-400"></i>
                                 </div>
-                            </div>
+                            </button>
                         </div>
                     </div>
 
-                    <div v-if="form.errors.services" class="text-red-500 text-sm mt-1">
+                    <div v-if="form.errors.services" class="text-red-500 text-sm mt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-exclamation"></i>
                         {{ form.errors.services }}
                     </div>
 
                     <!-- Servicios seleccionados -->
-                    <div v-if="selectedServices.length > 0" class="mt-4">
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">
+                    <div v-if="selectedServices.length > 0" class="mt-4 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4">
+                        <h4 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-check-double text-blue-600"></i>
                             Servicios Seleccionados ({{ selectedServices.length }})
                         </h4>
                         <div class="flex flex-wrap gap-2">
                             <span v-for="service in selectedServices" :key="service.id"
-                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500 text-white shadow-sm hover:bg-blue-600 transition-colors">
                                 {{ service.title }}
                                 <button @click="toggleService(service.id)"
-                                    class="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-blue-200 hover:bg-blue-300">
-                                    <i class="fa-solid fa-times text-xs"></i>
+                                    class="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors">
+                                    <i class="fa-solid fa-xmark text-xs"></i>
                                 </button>
                             </span>
                         </div>
@@ -70,9 +89,9 @@
 
         <template #footer>
             <Button @click="submit" title="Guardar" severity="success" label="Guardar" outlined icon="fa-solid fa-save"
-                class="!h-8" :loading="form.processing" />
+                class="!h-9" :loading="form.processing" />
             <Button @click="visible = false" title="Cancelar" severity="danger" label="Cancelar" outlined
-                icon="fa-solid fa-times" class="!h-8" />
+                icon="fa-solid fa-times" class="!h-9" />
         </template>
     </Modal>
 

@@ -1,63 +1,91 @@
 <template>
-  <div class="h-[99vh]">
-    <div class="flex justify-center w-full gap-x-3 py-2">
-      <span
-        v-for="type in usersType"
-        class="bg-black p-1 rounded-md cursor-pointer text-center uppercase hover:text-black font-bold"
-        :class="[
-          `bg-${type.color}-200 p-2 rounded-lg`,
-          typeSelected == type.value
-            ? 'border-2 border-gray-500 scale-105'
-            : 'border-2 border-transparent scale-95',
-        ]"
-        @click="typeSelected = type.value"
-        >{{ type.label }}</span
-      >
+  <div>
+    <!-- Filtros por tipo de usuario -->
+    <div class="mb-6">
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-for="type in usersType"
+          :key="type.value"
+          @click="typeSelected = type.value"
+          :class="[
+            'px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 border-2',
+            typeSelected == type.value
+              ? `bg-${type.color}-100 border-${type.color}-500 text-${type.color}-700 shadow-md scale-105`
+              : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:shadow-sm',
+          ]"
+        >
+          <i :class="type.icon" class="mr-2"></i>
+          {{ type.label }}
+        </button>
+      </div>
     </div>
-    <Datatable
-      :columnas="filterColumns"
-      :add
-      :data
-      routecreate="services.create"
-      :actions="buttons"
-    >
-    </Datatable>
+
+    <!-- Tabla de usuarios -->
+    <div class="bg-white rounded-xl overflow-hidden">
+      <Datatable
+        :columnas="filterColumns"
+        :add
+        :data
+        routecreate="services.create"
+        :actions="buttons"
+      >
+      </Datatable>
+    </div>
   </div>
 
   <Modal v-model:visible="visible" width="90vw" close-on-escape>
     <template #title>
-      <span class="text-xl font-bold white-space-nowrap"> Agregar Usuario</span>
+      <span class="text-xl font-bold"> {{ editor ? 'Editar' : 'Agregar' }} Usuario</span>
     </template>
     <template #icon>
-      <i class="fa-solid fa-plus" />
+      <i :class="editor ? 'fa-solid fa-pencil' : 'fa-solid fa-plus'" />
     </template>
-    <div class="flex gap-x-3 py-2">
-      <div class="grid grid-cols-2 w-full shadow-2xl border rounded-md gap-2 p-4">
-        <Input
-          label="Tipo de Usuario"
-          v-model="form.rol"
-          @value-change="selectedRol"
-          type="dropdown"
-          option-value="value"
-          option-label="label"
-          :options="roles"
-        />
-        <Input label="Nombre" v-model="form.name" :error-message="form.errors.name" />
-        <Input label="Email" v-model="form.email" />
-
-        <Input label="Contraseña" type="password" v-model="form.password" />
-        <Input
-          label="Confirmar contraseña"
-          type="password"
-          v-model="form.password_confirmation"
-        />
-        <Input label="Telefono" v-model="form.phone" />
+    <div class="flex flex-col lg:flex-row gap-4 py-2">
+      <!-- Información del Usuario -->
+      <div class="lg:w-2/3 space-y-4">
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-user-circle text-rose-500"></i>
+            Información del Usuario
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Tipo de Usuario"
+              v-model="form.rol"
+              @value-change="selectedRol"
+              type="dropdown"
+              option-value="value"
+              option-label="label"
+              :options="roles"
+            />
+            <Input label="Nombre Completo" v-model="form.name" :error-message="form.errors.name" placeholder="Ej: Juan Pérez" />
+            <Input label="Correo Electrónico" v-model="form.email" type="email" placeholder="correo@ejemplo.com" />
+            <Input label="Teléfono" v-model="form.phone" placeholder="+57 300 123 4567" />
+            <Input label="Contraseña" type="password" v-model="form.password" placeholder="Mínimo 8 caracteres" />
+            <Input
+              label="Confirmar Contraseña"
+              type="password"
+              v-model="form.password_confirmation"
+              placeholder="Repite la contraseña"
+            />
+          </div>
+        </div>
+        <!-- QR Code -->
         <div
-          class="w-full flex flex-col justify-center items-center col-span-2 my-4"
+          class="bg-gradient-to-br from-teal-50 to-cyan-50 border-2 border-teal-200 rounded-xl p-6"
           v-if="!(form.rol == 'superadmin' || form.rol == 'admin' || form.rol == 'cordinador')"
         >
-        <div class="text-lg font-bold font-mono flex justify-between items-center gap-x-16"><p> Ver Portafolio </p><i @click="downloadQR" class="fa-solid fa-download cursor-pointer text-gray-800 text-xs"></i></div>
-        <a target="_blank" id="qrCode" :href="form.url" class="rounded-md border flex flex-col gap-y-2 p-1 items-center  shadow-lg shadow-[rgba(6,74,89,0.5)] hover:scale-105 transition-all duration-300 ease-in-out">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <i class="fa-solid fa-qrcode text-teal-600"></i>
+              Portafolio Digital
+            </h3>
+            <button @click="downloadQR" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-download"></i>
+              <span>Descargar</span>
+            </button>
+          </div>
+          <a target="_blank" id="qrCode" :href="form.url" class="flex flex-col items-center gap-3 bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
             <qrcode-vue
               ref="qrCodeRef"
               :value="form.url" 
@@ -65,130 +93,96 @@
               level="L" 
               render-as="svg" 
               foreground="#064a59" 
-              class="rounded-md" 
+              class="rounded-lg" 
               :image-settings="{
                 src: '/images/logo.webp',
                 width: 30,
                 height: 30,
                 excavate: true
               }" />
-          <span class="text-xs italic text-gray-600 text-center font-mono">Scanear QR </span>
+            <span class="text-sm font-medium text-gray-600">Escanea para ver el portafolio</span>
           </a>
         </div>
-        <div class="flex flex-col" v-if="form.rol == 'vendedor'">
-          <div class="rounded-md border border-gray-100 bg-white p-4 shadow-md">
-            <label for="upload" class="flex flex-col items-center gap-2 cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-10 w-10 fill-white stroke-indigo-500"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span class="text-gray-600 font-medium text-sm truncate w-full">
-                {{ form.camara ? form.camara.name : "Seleccionar Camara de Comercio" }}
-              </span>
-            </label>
-            <input
-              id="upload"
-              accept=".pdf"
-              @change="subirCamara"
-              type="file"
-              class="hidden"
-            />
-          </div>
-        </div>
-        <div class="flex flex-col" v-if="form.rol == 'vendedor'">
-          <div class="rounded-md border border-gray-100 bg-white p-4 shadow-md">
-            <label
-              for="uploadRut"
-              class="flex flex-col items-center gap-2 cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-10 w-10 fill-white stroke-indigo-500"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span class="text-gray-600 font-medium text-sm truncate w-full text-center">
-                {{ form.rut ? form.rut.name : "Seleccionar Rut" }}
-              </span>
-            </label>
-            <input
-              id="uploadRut"
-              accept=".pdf"
-              @change="subirRut"
-              type="file"
-              class="hidden"
-            />
-          </div>
-        </div>
-        <div class="flex flex-col" v-if="form.rol == 'vendedor'">
-          <div class="rounded-md border border-gray-100 bg-white p-4 shadow-md">
-            <label
-              for="uploadCuenta"
-              class="flex flex-col items-center gap-2 cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-10 w-10 fill-white stroke-indigo-500"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span class="text-gray-600 font-medium text-sm truncate w-full text-center">
-                {{
-                  form.cuenta
-                    ? form.cuenta.name
-                    : "Seleccionar Certificado de Cuenta Bancari"
-                }}
-              </span>
-            </label>
-            <input
-              id="uploadCuenta"
-              accept=".pdf"
-              @change="subirCuenta"
-              type="file"
-              class="hidden"
-            />
-          </div>
-        </div>
+        <!-- Documentos (solo para vendedores) -->
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-6" v-if="form.rol == 'vendedor'">
+          <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-file-pdf text-rose-500"></i>
+            Documentos Requeridos
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Cámara de Comercio -->
+            <div class="bg-white rounded-lg border-2 border-dashed border-gray-300 hover:border-rose-500 transition-colors p-4">
+              <label for="upload" class="flex flex-col items-center gap-3 cursor-pointer">
+                <div class="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center">
+                  <i class="fa-solid fa-building text-rose-600 text-xl"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700 text-center">
+                  {{ form.camara ? form.camara.name : "Cámara de Comercio" }}
+                </span>
+                <span class="text-xs text-gray-500">Haz clic para subir (PDF)</span>
+              </label>
+              <input id="upload" accept=".pdf" @change="subirCamara" type="file" class="hidden" />
+            </div>
 
-        
+            <!-- RUT -->
+            <div class="bg-white rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors p-4">
+              <label for="uploadRut" class="flex flex-col items-center gap-3 cursor-pointer">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <i class="fa-solid fa-file-lines text-blue-600 text-xl"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700 text-center">
+                  {{ form.rut ? form.rut.name : "RUT" }}
+                </span>
+                <span class="text-xs text-gray-500">Haz clic para subir (PDF)</span>
+              </label>
+              <input id="uploadRut" accept=".pdf" @change="subirRut" type="file" class="hidden" />
+            </div>
+
+            <!-- Certificado Bancario -->
+            <div class="bg-white rounded-lg border-2 border-dashed border-gray-300 hover:border-green-500 transition-colors p-4">
+              <label for="uploadCuenta" class="flex flex-col items-center gap-3 cursor-pointer">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <i class="fa-solid fa-money-check text-green-600 text-xl"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700 text-center">
+                  {{ form.cuenta ? form.cuenta.name : "Certificado Bancario" }}
+                </span>
+                <span class="text-xs text-gray-500">Haz clic para subir (PDF)</span>
+              </label>
+              <input id="uploadCuenta" accept=".pdf" @change="subirCuenta" type="file" class="hidden" />
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="w-full shadow-2xl border rounded-md gap-2 p-4">
-        <h3 class="text-center font-semibold text-lg">Permisos</h3>
-        <Input class="my-1" v-model="search"></Input>
-        <div class="grid grid-cols-3 gap-2">
-          <span
-            @click="selectPermmision(permiso.name)"
-            :class="{
-              'bg-black text-white': form.permissions.includes(permiso.name),
-              'bg-gray-100': !form.permissions.includes(permiso.name),
-            }"
-            class="p-1 rounded-md cursor-pointer border border-black text-center uppercase hover:bg-black hover:text-white"
-            v-for="permiso in filterPermissions"
-            >{{ permiso.name }}</span
-          >
+
+      <!-- Permisos -->
+      <div class="lg:w-1/3">
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 sticky top-4">
+          <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-purple-600"></i>
+            Permisos
+          </h3>
+          <Input class="mb-4" v-model="search" placeholder="Buscar permisos...">
+            <template #prefix>
+              <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+            </template>
+          </Input>
+          <div class="max-h-96 overflow-y-auto space-y-2 pr-2">
+            <button
+              v-for="permiso in filterPermissions"
+              :key="permiso.name"
+              @click="selectPermmision(permiso.name)"
+              :class="[
+                'w-full px-3 py-2.5 rounded-lg text-xs font-medium text-left transition-all duration-200 border-2',
+                form.permissions.includes(permiso.name)
+                  ? 'bg-purple-100 border-purple-500 text-purple-700 shadow-sm'
+                  : 'bg-white border-gray-200 text-gray-700 hover:border-purple-300 hover:bg-purple-50'
+              ]"
+            >
+              <i :class="form.permissions.includes(permiso.name) ? 'fa-solid fa-check-circle' : 'fa-regular fa-circle'" class="mr-2"></i>
+              {{ permiso.name }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -229,11 +223,11 @@ import { useToast } from "primevue/usetoast";
 import QrcodeVue from "qrcode.vue";
 
 const usersType = [
-  { label: "Usuarios AV Colombia", value: "av", color: "green" },
-  { label: "Vendedores", value: "vendedor", color: "blue" },
-  { label: "Proveedores", value: "proveedor", color: "yellow" },
-  { label: "Hoteles", value: "Hotel", color: "orange" },
-  { label: "Agencias", value: "agencia", color: "gray" },
+  { label: "Usuarios AV Colombia", value: "av", color: "green", icon: "fa-solid fa-user-shield" },
+  { label: "Vendedores", value: "vendedor", color: "blue", icon: "fa-solid fa-user-tie" },
+  { label: "Proveedores", value: "proveedor", color: "yellow", icon: "fa-solid fa-truck" },
+  { label: "Hoteles", value: "Hotel", color: "orange", icon: "fa-solid fa-hotel" },
+  { label: "Agencias", value: "agencia", color: "gray", icon: "fa-solid fa-building" },
 ];
 
 const typeSelected = ref("vendedor");
