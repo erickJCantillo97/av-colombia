@@ -21,6 +21,8 @@ const isLoading = ref(false);
 const searchQuery = ref('');
 const currentPage = ref(1);
 const perPage = ref(100);
+const statusFilter = ref(null);
+const columnFilters = ref({});
 const pagination = ref({
   current_page: 1,
   last_page: 1,
@@ -51,12 +53,21 @@ const debounce = (func, wait) => {
 const getReservas = async () => {
   isLoading.value = true;
   try {
-    const { data } = await axios.get(route("get.all.booking.services.dates", {
+    // Filtrar solo los columnFilters que tienen valor
+    const activeColumnFilters = Object.entries(columnFilters.value)
+      .filter(([_, value]) => value && value.trim() !== '')
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+    const params = {
       dates: selectDate.value,
       search: searchQuery.value || undefined,
       per_page: perPage.value,
       page: currentPage.value,
-    }));
+      column_filters: Object.keys(activeColumnFilters).length > 0 ? activeColumnFilters : undefined,
+      status: statusFilter.value || undefined,
+    };
+
+    const { data } = await axios.get(route("get.all.booking.services.dates", params));
 
     dateActivities.value = data.bookingServices.data || [];
     pagination.value = {
@@ -91,6 +102,16 @@ watch(selectDate, () => {
   getReservas();
 });
 
+watch(columnFilters, () => {
+  currentPage.value = 1;
+  updateFilters();
+}, { deep: true });
+
+watch(statusFilter, () => {
+  currentPage.value = 1;
+  getReservas();
+});
+
 const goToPage = (page) => {
   currentPage.value = page;
   getReservas();
@@ -101,18 +122,48 @@ const editBooking = (data) => {
   visible.value = true;
 };
 
+const clearColumnFilter = (field) => {
+  columnFilters.value[field] = '';
+};
+
+const clearAllFilters = () => {
+  Object.keys(columnFilters.value).forEach(field => {
+    columnFilters.value[field] = '';
+  });
+};
+
+const filteringByStatus = (status) => {
+  statusFilter.value = status;
+};
+
 getReservas();
 
 const columns = [
-  { field: "cliente_name", header: "Nombre del pasajero", class: "min-w-[200px]" },
-  { field: "adults", header: "Adultos", class: "text-center" },
-  { field: "boys", header: "Niños", class: "text-center" },
-  { field: "service", header: "Actividad", class: "min-w-[150px]" },
-  { field: "proveedors_names", header: "Proveedores", class: "text-center" },
-  { field: "cliente_building", header: "Edificio" },
-  { field: "cliente_phone", header: "Teléfono" },
-  { field: "hour", header: "Hora", class: "text-center" },
-  { field: "status", header: "Estado", type: "tag", class: "text-center" },
+  { field: "cliente_name", header: "Nombre del pasajero", class: "min-w-[200px]", filter: true },
+  { field: "adults", header: "Adultos", class: "text-center", filter: true },
+  { field: "boys", header: "Niños", class: "text-center", filter: true },
+  { field: "service", header: "Actividad", class: "min-w-[150px]", filter: true },
+  { field: "proveedors_names", header: "Proveedores", class: "text-center", filter: true },
+  { field: "cliente_building", header: "Edificio", filter: true },
+  { field: "cliente_phone", header: "Teléfono", filter: true },
+  { field: "hour", header: "Hora", class: "text-center", filter: true },
+  { field: "status", header: "Estado", type: "tag", class: "text-center", filter: true },
+];
+
+// Inicializar filtros
+columns.forEach(col => {
+  if (col.filter) {
+    columnFilters.value[col.field] = '';
+  }
+});
+
+const statues = [
+  { text: "RESERVADO", color: "blue" },
+  { text: "CAMBIO DE FECHA", color: "gray" },
+  { text: "NO SHOW", color: "amber" },
+  { text: "REUBICADO", color: "orange" },
+  { text: "CANCELADA", color: "green" },
+  { text: "SIN CONFIRMAR", color: "red" },
 ];
 
 const getPageNumbers = () => {
@@ -221,6 +272,31 @@ const totalBoys = computed(() => {
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <!-- Header con búsqueda y fecha -->
           <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+            <!-- Botones de filtro de estado -->
+            <div class="flex items-center gap-2 flex-wrap mb-3">
+              <span class="text-xs font-medium text-gray-600">Filtrar por estado:</span>
+              <button
+                v-for="status in statues"
+                :key="status.text"
+                @click="filteringByStatus(status.text)"
+                :class="[
+                  statusFilter === status.text 
+                    ? `bg-${status.color}-600 text-white ring-2 ring-${status.color}-400` 
+                    : `bg-${status.color}-100 text-${status.color}-700 hover:bg-${status.color}-200`,
+                  'px-3 py-1 rounded-md text-xs font-medium transition-all duration-200 shadow-sm'
+                ]"
+              >
+                {{ status.text }}
+              </button>
+              <button
+                v-if="statusFilter"
+                @click="statusFilter = null"
+                class="px-3 py-1 rounded-md text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+              >
+                <i class="fa-solid fa-times mr-1"></i>
+                Limpiar filtro
+              </button>
+            </div>
             <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
               <div class="flex-1 w-full md:w-auto">
                 <div class="relative">
@@ -233,6 +309,25 @@ const totalBoys = computed(() => {
                     placeholder="Buscar por nombre, teléfono, servicio, estado..." 
                     class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                   />
+                </div>
+                <!-- Indicador de filtros activos -->
+                <div v-if="Object.values(columnFilters).some(v => v)" class="mt-2 flex items-center gap-2 flex-wrap">
+                  <span class="text-xs text-gray-600 font-medium">Filtros activos:</span>
+                  <span 
+                    v-for="(value, field) in columnFilters" 
+                    :key="field"
+                    v-show="value"
+                    class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs"
+                  >
+                    <span class="font-medium">{{ columns.find(c => c.field === field)?.header }}:</span>
+                    <span>{{ value }}</span>
+                    <button 
+                      @click="clearColumnFilter(field)"
+                      class="ml-1 hover:text-blue-900"
+                    >
+                      <i class="fa-solid fa-times text-xs"></i>
+                    </button>
+                  </span>
                 </div>
               </div>
               <div class="flex items-center gap-2">
@@ -265,10 +360,39 @@ const totalBoys = computed(() => {
                   <th v-for="col in columns" :key="col.field" 
                     class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
                     :class="col.class">
-                    {{ col.header }}
+                    <div class="flex flex-col gap-2">
+                      <span>{{ col.header }}</span>
+                      <div v-if="col.filter" class="relative">
+                        <input 
+                          v-model="columnFilters[col.field]"
+                          type="text"
+                          :placeholder="`Filtrar ${col.header.toLowerCase()}...`"
+                          class="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 normal-case font-normal"
+                          @click.stop
+                        />
+                        <button
+                          v-if="columnFilters[col.field]"
+                          @click.stop="clearColumnFilter(col.field)"
+                          class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          title="Limpiar filtro"
+                        >
+                          <i class="fa-solid fa-times text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
                   </th>
                   <th class="px-4 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Acciones
+                    <div class="flex flex-col gap-2">
+                      <span>Acciones</span>
+                      <button
+                        v-if="Object.values(columnFilters).some(v => v)"
+                        @click="clearAllFilters"
+                        class="px-2 py-1 text-xs bg-red-100 text-red-700 hover:bg-red-200 rounded font-normal normal-case transition-colors"
+                      >
+                        <i class="fa-solid fa-filter-circle-xmark mr-1"></i>
+                        Limpiar filtros
+                      </button>
+                    </div>
                   </th>
                 </tr>
               </thead>

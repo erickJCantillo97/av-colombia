@@ -10,6 +10,7 @@ use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BookingServiceRepository extends BaseRepository implements BookingServiceRepositoryInterface
 {
@@ -118,7 +119,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         return $booking->get()->map(fn ($booking) => $this->map($booking));
     }
 
-    public function getPaginated(?string $type = null, ?string $search = null, int $perPage = 100, ?array $dates = null)
+    public function getPaginated(?string $type = null, ?string $search = null, int $perPage = 100, ?array $dates = null, array $columnFilters = [], ?string $status = null)
     {
         $query = $this->model
             ->with([
@@ -164,6 +165,50 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                     ->orWhere('service', 'like', "%{$search}%")
                     ->orWhere('status', 'like', "%{$search}%")
                     ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        // Column-specific filters
+        if (!empty($columnFilters)) {
+            foreach ($columnFilters as $field => $value) {
+                if (empty($value)) {
+                    continue;
+                }
+
+                // Handle nested relationships (e.g., 'channel.name')
+                if (str_contains($field, '.')) {
+                    $parts = explode('.', $field);
+                    $relation = $parts[0];
+                    $column = $parts[1];
+                    
+                    $query->whereHas($relation, function ($q) use ($column, $value) {
+                        $q->where($column, 'like', "%{$value}%");
+                    });
+                } elseif ($field === 'proveedors_names') {
+                    // Special handling for proveedors_names (computed field)
+                    $query->whereHas('proveedors.proveedor', function ($q) use ($value) {
+                        $q->where('nombre', 'like', "%{$value}%");
+                    });
+                
+                }
+                 else {
+                    // Direct column filter
+                    $query->where($field, 'like', "%{$value}%");
+                }
+            }
+        }
+
+        // Status filter - Verifica que el último estado coincida
+        if ($status) {
+            $query->whereHas('states', function ($q) use ($status) {
+                $q->whereIn('id', function ($subQuery) {
+                    $subQuery->select(DB::raw('MAX(id)'))
+                        ->from('states')
+                        ->whereColumn('statable_id', 'booking_services.id')
+                        ->where('statable_type', 'App\Models\BookingService')
+                        ->groupBy('statable_id');
+                })
+                ->where('state', $status);
             });
         }
 

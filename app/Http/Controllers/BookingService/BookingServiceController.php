@@ -41,11 +41,13 @@ class BookingServiceController extends Controller
         $search = $request->query('search');
         $perPage = $request->query('per_page', 100);
         $dates = $request->query('dates');
+        $columnFilters = $request->query('column_filters', []);
+        $status = $request->query('status');
 
         return Inertia::render('BookingServices/Index', [
-            'bookingServices' => $this->bookingServiceRepository->getPaginated($type, $search, $perPage, $dates),
+            'bookingServices' => $this->bookingServiceRepository->getPaginated($type, $search, $perPage, $dates, $columnFilters, $status),
             'serviceType' => $type,
-            'filters' => $request->only(['search', 'dates', 'per_page']),
+            'filters' => $request->only(['search', 'dates', 'per_page', 'column_filters', 'status']),
         ]);
     }
 
@@ -71,13 +73,17 @@ class BookingServiceController extends Controller
             'search' => 'nullable|string',
             'per_page' => 'nullable|integer|min:1|max:500',
             'page' => 'nullable|integer|min:1',
+            'column_filters' => 'nullable|array',
+            'status' => 'nullable|string',
         ]);
 
         $booking = $this->bookingServiceRepository->getPaginated(
             $validated['type'] ?? null,
             $validated['search'] ?? null,
             $validated['per_page'] ?? 100,
-            $validated['dates']
+            $validated['dates'],
+            $validated['column_filters'] ?? [],
+            $validated['status'] ?? null
         );
 
         return response()->json(['bookingServices' => $booking], 200);

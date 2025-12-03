@@ -64,7 +64,7 @@
 
             <!-- Content Area -->
             <div class="flex-1 overflow-y-auto bg-gray-50">
-                <div class="max-w-7xl mx-auto p-6">
+                <div class="mx-auto p-6">
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div class="p-6">
                             <div v-if="value === 1">
