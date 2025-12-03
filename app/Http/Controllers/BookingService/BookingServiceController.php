@@ -328,7 +328,7 @@ class BookingServiceController extends Controller
 
         try {
             $result = DB::transaction(function () use ($data, $userId, $paymentMethod, $email, $lastName) {
-                $data['payment_method'] = ;
+                $data['payment_method'] = $this->getPaymentMethodId($paymentMethod);
                 $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
                 // Reattach minimal data needed by payment repository
                 $paymentPayload = array_merge($data, [
