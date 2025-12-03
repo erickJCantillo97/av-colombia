@@ -1,18 +1,21 @@
 <template>
-  <header class="bg-transparent z-30" :class="{ scrolled: isScrolled }">
-    <nav class="flex items-center justify-between p-0 lg:px-8 " aria-label="Global">
-      <div class="hidden md:flex  w-1/5 ">
-      <Link href="/" >
-          <Logo width="60" height="60"></Logo>
+  <header class="z-50" :class="{ scrolled: isScrolled }">
+    <nav class="flex items-center justify-between px-4 lg:px-8 py-4" aria-label="Global">
+      <div class="flex items-center gap-8">
+        <Link href="/" class="flex items-center">
+          <Logo width="50" height="50"></Logo>
         </Link>
       </div>
-      <div class="rounded-md w-full">
-        <Experiencias   />
+      
+      <!-- Motor de búsqueda: se muestra cuando se hace scroll en Welcome o siempre en otras páginas -->
+      <div v-if="showSearch" class="flex-1 max-w-3xl mx-8 transition-all duration-500" :class="showSearch ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'">
+        <Experiencias />
       </div>
-      <Link class="rounded-md w-1/5 sm:flex hidden justify-center" :href="route('login')">
-        <div class="flex items-center gap-x-3 justify-center h-full bg-white/90 rounded-md px-2 py-1">
+      
+      <Link class="flex items-center" :href="route('login')">
+        <div class="flex items-center gap-x-2 px-4 py-2 rounded-lg transition-all duration-300" :class="isScrolled ? 'bg-black text-white hover:bg-gray-800' : 'bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20'">
           <i class="fa-solid fa-right-to-bracket"></i>
-          <span class="text-lg font-bold  text-gray-800">Entrar</span>
+          <span class="text-sm font-semibold">Entrar</span>
         </div>
       </Link>
     </nav>
@@ -21,9 +24,16 @@
 
 <script setup>
 import Experiencias from "@/Components/SearchEngines/Search.vue";
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import Logo from "../logo.vue";
+
+const props = defineProps({
+  isWelcomePage: {
+    type: Boolean,
+    default: false
+  }
+});
 
 const navigation = [
   { name: "Inicio", href: "welcome" },
@@ -38,9 +48,19 @@ const isScrolled = ref(false);
 
 const mobileMenuOpen = ref(false);
 
+// Computed para controlar cuándo mostrar el buscador
+const showSearch = computed(() => {
+  // Si es la página Welcome, mostrar solo cuando se hace scroll
+  if (props.isWelcomePage) {
+    return isScrolled.value;
+  }
+  // En otras páginas, mostrar siempre
+  return true;
+});
+
 const handleScroll = () => {
   if (window.scrollY > 300) {
-    isScrolled.value = true; // Si se ha hecho scroll más de 50px, cambiamos el estado
+    isScrolled.value = true; // Si se ha hecho scroll más de 300px, cambiamos el estado
   } else {
     isScrolled.value = false; // Si no, lo dejamos en el estado inicial
   }
@@ -58,33 +78,24 @@ onBeforeUnmount(() => {
 
 <style scoped>
 header {
-  padding: 30px 0;
   position: fixed;
   width: 100%;
   top: 0;
-  transition:
-    background-color 0.3s ease,
-    box-shadow 0.3s,
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 30;
-  transform: translateY(-20px); /* Por defecto, un poco arriba */
+  background: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 50;
 }
 
 .scrolled {
-  background-color: rgb(255, 255, 255);
-  color: rgb(0, 0, 0);
-  padding: 0px;
-  transform: translateY(0); /* Cuando scrolled, baja a su lugar */
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 1024px) {
   .scrolled {
     width: 100%;
-    margin: 0;
-    border-radius: 0;
   }
 }
-
-/* Contenido principal */
-
 </style>

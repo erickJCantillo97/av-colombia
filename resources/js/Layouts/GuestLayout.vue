@@ -2,19 +2,7 @@
   <Head title="Inicio" />
   
   <div class="">
-    <div
-      class="justify-center w-full  flex flex-col items-center transition-all duration-1000 ease-in-out"
-      :style="backgroundStyle"
-    >
-      <Header :isScrolled="isScrolled" />
-      <div
-        class="mt-10 flex items-center justify-between rounded-lg px-10 md:px-12 h-full"
-      >
-        <div class="py-24 space-y-10 mt-4 w-full">
-        
-        </div>
-      </div>
-    </div>
+    <Header :isScrolled="isScrolled" :isWelcomePage="isWelcomePage" />
     <slot />
   </div>
   <FooterSection></FooterSection>
@@ -185,6 +173,10 @@ defineProps({
   canLogin: {
     type: Boolean,
   },
+  isWelcomePage: {
+    type: Boolean,
+    default: false
+  }
 });
 
 </script>
