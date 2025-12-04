@@ -138,7 +138,7 @@ class BookingServiceController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response()->json(['message' => 'Error al actualizar la reservación'], 500);
+            return response()->json(['message' => 'Error al actualizar la reservación: '.$e->getMessage()], 500);
         }
     }
 

@@ -1,113 +1,85 @@
 <template>
-  <footer class="">
-    <div class="mx-auto max-w-7xl px-6 pb-8 pt-20 sm:pt-24 lg:px-8 lg:pt-32">
-      <div class="xl:grid xl:grid-cols-3 xl:gap-8">
-        <div class="grid grid-cols-2 gap-8 xl:col-span-2">
-          <div class="md:grid md:grid-cols-2 md:gap-8">
-            <div>
-              <h3 class="text-sm/6 font-semibold text-gray-900">Aliados</h3>
-              <ul role="list" class="mt-6 space-y-4">
-                <li v-for="item in navigation.solutions" :key="item.name">
-                  <a
-                    :href="item.href"
-                    class="text-sm/6 text-gray-600 hover:text-gray-900"
-                    >{{ item.name }}</a
-                  >
-                </li>
-              </ul>
-            </div>
-            <div class="mt-10 md:mt-0">
-              <h3 class="text-sm/6 font-semibold text-gray-900">Support</h3>
-              <ul role="list" class="mt-6 space-y-4">
-                <li v-for="item in navigation.support" :key="item.name">
-                  <a
-                    :href="item.href"
-                    class="text-sm/6 text-gray-600 hover:text-gray-900"
-                    >{{ item.name }}</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="md:grid md:grid-cols-2 md:gap-8">
-            <div>
-              <h3 class="text-sm/6 font-semibold text-gray-900">Company</h3>
-              <ul role="list" class="mt-6 space-y-4">
-                <li v-for="item in navigation.company" :key="item.name">
-                  <a
-                    :href="item.href"
-                    class="text-sm/6 text-gray-600 hover:text-gray-900"
-                    >{{ item.name }}</a
-                  >
-                </li>
-              </ul>
-            </div>
-            <div class="mt-10 md:mt-0">
-              <h3 class="text-sm/6 font-semibold text-gray-900">Legal</h3>
-              <ul role="list" class="mt-6 space-y-4">
-                <li v-for="item in navigation.legal" :key="item.name">
-                  <a
-                    :href="item.href"
-                    class="text-sm/6 text-gray-600 hover:text-gray-900"
-                    >{{ item.name }}</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="mt-10 xl:mt-0">
-          <h3 class="text-sm/6 font-semibold text-gray-900">
-            Subscribe to our newsletter
-          </h3>
-          <p class="mt-2 text-sm/6 text-gray-600">
-            The latest news, articles, and resources, sent to your inbox weekly.
+  <footer class="relative bg-black border-t border-gray-800">
+    <!-- Fondo con gradiente sutil -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black"></div>
+    
+    <div class="relative mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+      <!-- Grid principal -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <!-- Columna 1: Logo -->
+        <div>
+          <Logo :width="130" :height="100" color="#fff"></Logo>
+          <p class="text-sm text-gray-400 leading-relaxed pt-4">
+            Descubre las mejores experiencias turísticas en el Caribe colombiano.
           </p>
-          <form class="mt-6 sm:flex sm:max-w-md">
-            <label for="email-address" class="sr-only">Email address</label>
-            <input
-              type="email"
-              name="email-address"
-              id="email-address"
-              autocomplete="email"
-              required=""
-              class="w-full min-w-0 rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:w-64 sm:text-sm/6 xl:w-full"
-              placeholder="Enter your email"
-            />
-            <div class="mt-4 sm:ml-4 sm:mt-0 sm:shrink-0">
-              <button
-                type="submit"
-                class="flex w-full items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Subscribe
-              </button>
-            </div>
-          </form>
+        </div>
+        <!-- Columna 2: Aliados -->
+        <div>
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Aliados</h3>
+          <ul role="list" class="space-y-3">
+            <li v-for="item in navigation.solutions" :key="item.name">
+              <a :href="item.href" class="text-sm text-gray-400 hover:text-rose-400 transition-colors">
+                {{ item.name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Soporte -->
+        <div>
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Soporte</h3>
+          <ul role="list" class="space-y-3">
+            <li v-for="item in navigation.support" :key="item.name">
+              <a :href="item.href" class="text-sm text-gray-400 hover:text-rose-400 transition-colors">
+                {{ item.name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Compañía -->
+        <div>
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Compañía</h3>
+          <ul role="list" class="space-y-3">
+            <li v-for="item in navigation.company" :key="item.name">
+              <a :href="item.href" class="text-sm text-gray-400 hover:text-rose-400 transition-colors">
+                {{ item.name }}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-      <div
-        class="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 md:flex md:items-center md:justify-between lg:mt-24"
-      >
-        <div class="flex gap-x-6 md:order-2">
-          <a
-            v-for="item in navigation.social"
-            :key="item.name"
-            :href="item.href"
-            class="text-gray-600 hover:text-gray-800"
-          >
-            <span class="sr-only">{{ item.name }}</span>
-            <component :is="item.icon" class="size-6" aria-hidden="true" />
-          </a>
+
+      <!-- Separador -->
+      <div class="mt-12 pt-8 border-t border-gray-800">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <!-- Redes sociales -->
+          <div class="flex gap-6 md:order-2">
+            <a
+              v-for="item in navigation.social"
+              :key="item.name"
+              :href="item.href"
+              class="text-gray-400 hover:text-rose-400 transition-colors"
+            >
+              <span class="sr-only">{{ item.name }}</span>
+              <component :is="item.icon" class="h-6 w-6" aria-hidden="true" />
+            </a>
+          </div>
+
+          <!-- Copyright -->
+          <div class="md:order-1">
+            <p class="text-sm text-gray-400">
+              &copy; {{ new Date().getFullYear() }} <span class="text-white font-semibold">AV Colombia</span>. Todos los derechos reservados.
+            </p>
+          </div>
         </div>
-        <p class="mt-8 text-sm/6 text-gray-600 md:order-1 md:mt-0">
-          &copy; 2024 Av Colombia, Inc. All rights reserved.
-        </p>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup>
+import Logo from "@/Components/logo.vue";
 import { defineComponent, h } from "vue";
 
 const navigation = {
@@ -118,20 +90,16 @@ const navigation = {
     { name: "Hoteles", href: "#" },
   ],
   support: [
-    { name: "Submit ticket", href: "#" },
-    { name: "Documentation", href: "#" },
-    { name: "Guides", href: "#" },
+    { name: "Centro de Ayuda", href: "#" },
+    { name: "Preguntas Frecuentes", href: "#" },
+    { name: "Guías de Viaje", href: "#" },
+    { name: "Contacto", href: "#" },
   ],
   company: [
-    { name: "About", href: "#" },
+    { name: "Nosotros", href: "#" },
     { name: "Blog", href: "#" },
-    { name: "Jobs", href: "#" },
-    { name: "Press", href: "#" },
-  ],
-  legal: [
-    { name: "Terms of service", href: "#" },
-    { name: "Privacy policy", href: "#" },
-    { name: "License", href: "#" },
+    { name: "Carreras", href: "#" },
+    { name: "Prensa", href: "#" },
   ],
   social: [
     {

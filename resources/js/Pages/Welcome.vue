@@ -1,16 +1,24 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import ContactSection from './Welcome/ContactSection.vue';
 import Experiencias from '@/Components/SearchEngines/Search.vue';
+import searchStore from '@/store/searchStore';
+
+
 
 defineProps({
     canLogin: {
         type: Boolean,
     }
 });
+
+const changeType = (newType) => {
+    searchStore.type.value = newType;
+    router.visit(route('services.home'));
+};
 
 // Configuración para el fondo dinámico del Hero
 const cartagenaImages = ref(['/images/cartagena.webp']);
@@ -65,38 +73,38 @@ onMounted(() => {
     // Cambiar imagen cada 10 segundos
     setInterval(() => {
         currentImageIndex.value = (currentImageIndex.value + 1) % cartagenaImages.value.length;
-    }, 10000);
+    }, 5000);
 });
 
 // Servicios principales
 const services = ref([
     {
         icon: 'fa-map-marked-alt',
-        title: 'Tours Personalizados',
+        label: 'Tours Personalizados',
         description: 'Explora Cartagena con experiencias únicas diseñadas para ti',
         color: 'blue',
-        link: '/services?type=TOUR'
+        value: 'TOUR'
     },
     {
         icon: 'fa-hotel',
-        title: 'Alojamiento Premium',
+        label: 'Alojamiento Premium',
         description: 'Hoteles y hospedajes seleccionados en las mejores ubicaciones',
         color: 'amber',
-        link: '/accommodations'
+        value:  'EMBARCACION'
     },
     {
         icon: 'fa-ship',
-        title: 'Experiencias Náuticas',
+        label: 'Experiencias Náuticas',
         description: 'Navega por las aguas cristalinas del Caribe colombiano',
         color: 'cyan',
-        link: '/services?type=EMBARCACION'
+        value:  'HOSPEDAJE'
     },
     {
         icon: 'fa-van-shuttle',
-        title: 'Transporte Privado',
+        label: 'Transporte Privado',
         description: 'Traslados seguros y cómodos a cualquier destino',
         color: 'green',
-        link: '/services?type=TRANSFER'
+        value:  'TRANSFER'
     }
 ]);
 
@@ -168,7 +176,18 @@ const scrollToSection = (sectionId) => {
 <template>
     <GuestLayout :isWelcomePage="true">
         <!-- Hero Section Integrado -->
-        <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-fixed" :style="heroBackgroundStyle">
+        <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+            <!-- Fondos con crossfade -->
+            <div class="absolute inset-0">
+                <div 
+                    v-for="(image, index) in cartagenaImages" 
+                    :key="index"
+                    class="absolute inset-0 hero-background-layer"
+                    :class="{ 'active': index === currentImageIndex }"
+                    :style="{ backgroundImage: `url('${image}')` }"
+                ></div>
+            </div>
+            
             <!-- Overlay gradiente elegante -->
             <div class="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/30"></div>
             
@@ -259,11 +278,11 @@ const scrollToSection = (sectionId) => {
 
                 <!-- Cards de servicios -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <a 
+                    <div 
                         v-for="service in services" 
-                        :key="service.title"
-                        :href="service.link"
-                        class="group relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 overflow-hidden border border-gray-200 hover:border-transparent"
+                        :key="service.label"
+                        @click="changeType(service)"
+                        class="group relative cursor-pointer bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 overflow-hidden border border-gray-200 hover:border-transparent"
                     >
                         <!-- Efecto de brillo animado -->
                         <div class="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -282,7 +301,7 @@ const scrollToSection = (sectionId) => {
                             
                             <!-- Contenido -->
                             <h3 class="text-2xl font-bold text-black group-hover:text-white mb-3 transition-colors duration-300">
-                                {{ service.title }}
+                                {{ service.label }}
                             </h3>
                             <p class="text-gray-600 group-hover:text-gray-300 leading-relaxed mb-6 transition-colors duration-300 min-h-[60px]">
                                 {{ service.description }}
@@ -300,7 +319,7 @@ const scrollToSection = (sectionId) => {
                         
                         <!-- Patrón decorativo en esquina -->
                         <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-black/5 group-hover:bg-yellow-400/20 rounded-full blur-2xl transition-all duration-500 group-hover:scale-150"></div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -402,7 +421,7 @@ const scrollToSection = (sectionId) => {
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a 
-                        href="/services"
+                        :href="route('services.home')"
                         class="px-8 py-4 bg-black text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
                     >
                         Ver Todos los Tours
@@ -438,6 +457,19 @@ const scrollToSection = (sectionId) => {
 
 .animate-fade-in {
     animation: fade-in 1s ease-out;
+}
+
+/* Efecto crossfade para el fondo del Hero */
+.hero-background-layer {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+.hero-background-layer.active {
+    opacity: 1;
 }
 
 /* Safelist para Tailwind (agregar al tailwind.config.js si es necesario) */

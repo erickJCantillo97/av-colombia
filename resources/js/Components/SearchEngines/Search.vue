@@ -1,14 +1,10 @@
 <template>
     <div class="flex justify-center w-full px-4 md:px-6 lg:px-8">
         <div class="relative w-full max-w-5xl" ref="searchContainer">
-            <!-- Service Types Section -->
+            <!-- Service Types Section (oculto en móvil) -->
             <transition name="fade-slide">
-                <div v-if="showServiceTypeTabs" key="tabs" class="mb-4 lg:mb-6 w-full items-center flex justify-center">
+                <div v-if="showServiceTypeTabs" key="tabs" class="mb-4 lg:mb-6 w-full items-center justify-center hidden md:flex">
                     <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="searchStore.type" />
-                    <Link class="sm:hidden fixed right-4 top-9 bg-white shadow-lg rounded-full p-2.5 z-50 hover:bg-gray-50 transition-all"
-                        :href="route('login')">
-                        <i class="fa-solid fa-right-to-bracket text-gray-700"></i>
-                    </Link>
                 </div>
             </transition>
             
@@ -17,7 +13,7 @@
                 <SearchBar :type="searchStore.type.value.label" :isPanelOpen="isPanelOpen" :activeTab="activeTab"
                     :selectedLocation="selectedLocation" :selectedCheckin="selectedCheckin"
                     :selectedCheckout="selectedCheckout" :guestSummary="guestSummary" :setActiveTab="setActiveTab"
-                    :formatDate="formatDate" :dateRange="dateRangeDisplay" :selectedOrigin />
+                    :formatDate="formatDate" :dateRange="dateRangeDisplay" :selectedOrigin :origenes />
             </div>
             
             <!-- Dropdown Panels -->

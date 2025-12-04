@@ -285,7 +285,6 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         $service = $this->service->getById($data['service_id']);
         $data['boys'] = $data['boys'] ?? 0;
         $data['hour'] = explode(',', request('date'))[1];
-        $data['user_id'] = request('user_id') ?? Auth::id();
         $data['service'] = $service->title;
         $data['adults_price'] = $service->adults_price;
         $data['adult_tarifa'] = $service->adult_tarifa;

@@ -64,8 +64,17 @@ export default class Service extends GeneralService {
         return data
     }
 
-    async getServicePagination(page = 1, perPage = 10) {
-        const params = { page: page, location: state.location.value, type: state.type.value.value, checkin: state.checkin.value, checkout: state.checkout.value, guests: state.guests.value, perPage: perPage };
+    async getServicePagination(page = 1, perPage = 10, search = "") {
+        const params = { 
+            page: page, 
+            location: state.location.value, 
+            type: state.type.value.value, 
+            checkin: state.checkin.value, 
+            checkout: state.checkout.value, 
+            guests: state.guests.value, 
+            perPage: perPage,
+            search: search
+        };
 
         const { data } = await axios.get(route("services.get.paginated"), { params });
 

@@ -1,21 +1,24 @@
 <template>
-  <header class="z-50" :class="{ scrolled: isScrolled }">
-    <nav class="flex items-center justify-between px-4 lg:px-8 py-4" aria-label="Global">
-      <div class="flex items-center gap-8">
+  <header class="z-50" :class="{ scrolled: isScrolled, 'compact-header': !isWelcomePage }">
+    <nav class="flex items-center justify-between px-4 lg:px-8 transition-all duration-300" :class="isWelcomePage ? 'py-4' : 'py-3'">
+      <div class="flex items-center flex-shrink-0">
         <Link href="/" class="flex items-center">
-          <Logo width="50" height="50"></Logo>
+          <Logo :width="isWelcomePage ? 50 : 40" :height="isWelcomePage ? 50 : 40"></Logo>
         </Link>
       </div>
       
-      <!-- Motor de búsqueda: se muestra cuando se hace scroll en Welcome o siempre en otras páginas -->
-      <div v-if="showSearch" class="flex-1 max-w-3xl mx-8 transition-all duration-500" :class="showSearch ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'">
+      <!-- Motor de búsqueda centrado: se muestra cuando se hace scroll en Welcome o siempre en otras páginas -->
+      <div v-if="showSearch" class="flex-1 max-w-2xl mx-8 transition-all duration-500" :class="showSearch ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'">
         <Experiencias />
       </div>
       
-      <Link class="flex items-center" :href="route('login')">
-        <div class="flex items-center gap-x-2 px-4 py-2 rounded-lg transition-all duration-300" :class="isScrolled ? 'bg-black text-white hover:bg-gray-800' : 'bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20'">
+      <Link class="flex items-center flex-shrink-0" :href="route('login')">
+        <div class="flex items-center gap-x-2 rounded-lg transition-all duration-300" :class="[
+          isScrolled || !isWelcomePage ? 'bg-black text-white hover:bg-gray-800 px-4 py-2' : 'bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 px-4 py-2',
+          !isWelcomePage ? 'text-xs' : 'text-sm'
+        ]">
           <i class="fa-solid fa-right-to-bracket"></i>
-          <span class="text-sm font-semibold">Entrar</span>
+          <span class="font-semibold">Entrar</span>
         </div>
       </Link>
     </nav>
@@ -89,8 +92,12 @@ header {
 .scrolled {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Header compacto para páginas que no son Welcome */
+.compact-header {
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
 }
 
 @media (max-width: 1024px) {

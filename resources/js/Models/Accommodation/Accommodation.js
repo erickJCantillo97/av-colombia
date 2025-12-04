@@ -33,7 +33,7 @@ export default class Accommodation extends GeneralService {
         }
     }
 
-    async getAccommodationPagination(page = 1, perPage = 10) {
+    async getAccommodationPagination(page = 1, perPage = 10, search = "") {
         const params = {
             page: page,
             location: state.location.value,
@@ -41,7 +41,8 @@ export default class Accommodation extends GeneralService {
             checkin: state.checkin.value,
             checkout: state.checkout.value,
             guests: state.guests.value,
-            perPage: perPage
+            perPage: perPage,
+            search: search
         };
 
         const { data } = await axios.get(route("services.get.paginated"), { params });

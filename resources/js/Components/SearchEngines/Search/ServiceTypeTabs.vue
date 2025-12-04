@@ -75,7 +75,6 @@ const servicesType = [
 function updateSlider() {
   nextTick(() => {
     const idx = servicesType.findIndex(s => s.value == type.value.value);
-
     const el = tabRefs.value[idx];
     const container = containerRef.value;
     if (el && container) {

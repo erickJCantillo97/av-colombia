@@ -3,7 +3,9 @@
   
   <div class="">
     <Header :isScrolled="isScrolled" :isWelcomePage="isWelcomePage" />
-    <slot />
+    <div :class="isWelcomePage ? '' : 'pt-44'">
+      <slot />
+    </div>
   </div>
   <FooterSection></FooterSection>
 </template>
