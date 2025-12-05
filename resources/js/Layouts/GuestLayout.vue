@@ -8,6 +8,23 @@
     </div>
   </div>
   <FooterSection></FooterSection>
+
+  <!-- Botón flotante Scroll to Top -->
+  <Transition name="fade-scale">
+    <button 
+      v-if="showScrollTop"
+      @click="scrollToTop"
+      class="fixed bottom-8 right-8 z-50 group scroll-top-button"
+      aria-label="Volver arriba"
+    >
+      <div class="scroll-top-float">
+        <i class="fa-solid fa-arrow-up text-white text-lg"></i>
+      </div>
+      <div class="scroll-top-tooltip">
+        Volver arriba
+      </div>
+    </button>
+  </Transition>
 </template>
 <script setup>
 import Experiencias from "@/Components/SearchEngines/Search.vue";
@@ -147,6 +164,20 @@ const preloadNextImage = () => {
   }
 };
 
+// Scroll to top functionality
+const showScrollTop = ref(false);
+
+const handleScroll = () => {
+  showScrollTop.value = window.scrollY > 500;
+};
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+};
+
 onMounted(async () => {
   console.log('🚀 Iniciando GuestLayout...');
   
@@ -162,6 +193,9 @@ onMounted(async () => {
     preloadNextImage(); // Precargar la siguiente
   }, 45000);
   
+  // Scroll to top button visibility
+  window.addEventListener('scroll', handleScroll);
+  
   console.log('✅ GuestLayout listo con', cartagenaImages.value.length, 'imágenes');
 });
 
@@ -169,6 +203,7 @@ onUnmounted(() => {
   if (imageInterval) {
     clearInterval(imageInterval);
   }
+  window.removeEventListener('scroll', handleScroll);
 });
 
 defineProps({
@@ -182,3 +217,111 @@ defineProps({
 });
 
 </script>
+
+<style scoped>
+/* ===== SCROLL TO TOP BUTTON ===== */
+.scroll-top-button {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.scroll-top-float {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.scroll-top-float i {
+  color: #ffffff;
+  transition: transform 0.3s ease;
+}
+
+.scroll-top-button:hover .scroll-top-float {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  background: rgba(17, 24, 39, 1);
+  border-color: rgba(251, 191, 36, 0.5);
+}
+
+.scroll-top-button:hover .scroll-top-float i {
+  transform: translateY(-2px);
+  color: #fbbf24;
+}
+
+.scroll-top-button:active .scroll-top-float {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Tooltip del botón */
+.scroll-top-tooltip {
+  position: absolute;
+  right: 72px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(17, 24, 39, 0.95);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-top-button:hover .scroll-top-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+/* Fade Scale Transition */
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+}
+
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+}
+
+.fade-scale-enter-to,
+.fade-scale-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive - ocultar en móvil si hay barra sticky */
+@media (max-width: 1023px) {
+  .scroll-top-button {
+    bottom: 88px; /* Ajustar posición para no chocar con barras sticky móviles */
+  }
+}
+</style>

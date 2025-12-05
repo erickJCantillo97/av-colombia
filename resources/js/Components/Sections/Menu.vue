@@ -1,31 +1,39 @@
 <template>
   <div
-    class="flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-300 relative z-[1000] overflow-hidden"
-    :class="isCollapsed ? 'w-16' : 'w-64'">
+    class="menu-sidebar flex flex-col h-full transition-all duration-300 relative z-[1000] overflow-hidden"
+    :class="isCollapsed ? 'w-20' : 'w-72'">
+    
+    <!-- Decorative gradient line at top -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700"></div>
+    
     <!-- Header with Logo and Toggle -->
-    <div class="flex items-center p-4 border-b border-gray-200"
-      :class="isCollapsed ? 'flex-col space-y-2' : 'justify-between'">
+    <div class="menu-header flex items-center p-5 border-b border-white/10"
+      :class="isCollapsed ? 'flex-col space-y-3' : 'justify-between'">
       <div v-if="!isCollapsed" class="flex items-center gap-3">
-        <div class="flex items-center justify-center w-8 h-8 bg-gray-900 rounded">
-          <span class="text-white font-bold text-sm">AV</span>
+        <div class="logo-box">
+          <span class="text-white font-bold text-base">AV</span>
         </div>
-        <span class="font-bold text-xl text-gray-900">AV COLOMBIA</span>
+        <div class="flex flex-col">
+          <span class="font-black text-xl text-gray-900 tracking-tight">AV COLOMBIA</span>
+          <span class="text-xs text-gray-500 font-medium">Travel Agency</span>
+        </div>
       </div>
-      <div v-else class="flex items-center justify-center w-8 h-8 bg-gray-900 rounded">
-        <span class="text-white font-bold text-sm">AV</span>
+      <div v-else class="logo-box">
+        <span class="text-white font-bold text-base">AV</span>
       </div>
-      <button @click="toggleMenu" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-        <i class="pi pi-bars text-gray-600"></i>
+      <button @click="toggleMenu" class="toggle-button">
+        <i class="pi pi-bars text-white"></i>
       </button>
     </div>
 
     <!-- Main Menu Section -->
-    <div class="flex-1 overflow-y-auto px-3 py-4">
-      <!-- <div v-if="!isCollapsed" class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-        MAIN MENU
-      </div> -->
+    <div class="flex-1 overflow-y-auto px-4 py-6 menu-scroll">
+      <div v-if="!isCollapsed" class="menu-section-title">
+        <i class="fa-solid fa-grip text-xs mr-2"></i>
+        MENÚ PRINCIPAL
+      </div>
 
-      <nav class="space-y-1 overflow-hidden">
+      <nav class="space-y-2 overflow-hidden">
         <!-- Dashboard -->
         <MenuItemModern label="Home" :href="route('dashboard')" v-tooltip="`Dashboard`" icon="pi pi-home"
           :is-collapsed="isCollapsed" />
@@ -63,6 +71,117 @@
     <MenuUserPanelModern :is-collapsed="isCollapsed" />
   </div>
 </template>
+
+<style scoped>
+/* ===== MENU SIDEBAR BASE ===== */
+.menu-sidebar {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  box-shadow: 2px 0 30px rgba(0, 0, 0, 0.08);
+  border-right: 1px solid #e2e8f0;
+}
+
+/* ===== HEADER ===== */
+.menu-header {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* ===== LOGO BOX ===== */
+.logo-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo-box:hover {
+  transform: translateY(-2px) rotate(5deg);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.5);
+  background: linear-gradient(135deg, #1e293b, #334155);
+}
+
+/* ===== TOGGLE BUTTON ===== */
+.toggle-button {
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.toggle-button:hover {
+  background: rgba(15, 23, 42, 0.1);
+  border-color: rgba(15, 23, 42, 0.3);
+  transform: scale(1.05);
+}
+
+.toggle-button i {
+  transition: transform 0.3s ease;
+  color: #1e293b;
+}
+
+.toggle-button:hover i {
+  transform: rotate(90deg);
+  color: #0f172a;
+}
+
+/* ===== MENU SECTION TITLE ===== */
+.menu-section-title {
+  display: flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+}
+
+/* ===== CUSTOM SCROLLBAR ===== */
+.menu-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu-scroll::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 10px;
+}
+
+.menu-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #64748b, #475569);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.menu-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #475569, #334155);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.menu-sidebar nav {
+  animation: slideIn 0.4s ease-out;
+}
+</style>
+
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import { usePermissions } from "@/composable/Auth";
