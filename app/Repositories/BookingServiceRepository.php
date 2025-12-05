@@ -137,7 +137,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             ->orderBy('created_at', 'DESC');
 
         // Filter by user role
-        if (Auth::user()->rol === 'vendedor') {
+        if (Auth::user()->rol != 'superadmin' && Auth::user()->rol != 'admin' && Auth::user()->rol != 'cordinador') {
             $query->where('user_id', Auth::id());
         }
 
