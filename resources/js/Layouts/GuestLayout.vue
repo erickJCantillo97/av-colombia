@@ -9,6 +9,31 @@
   </div>
   <FooterSection></FooterSection>
 
+  <!-- Botón flotante de WhatsApp -->
+  <Transition name="fade-scale">
+    <a 
+      href="https://wa.me/573046790115?text=Hola%2C%20necesito%20información%20sobre%20sus%20servicios"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fixed bottom-28 right-8 z-50 group whatsapp-button"
+      aria-label="Contactar por WhatsApp"
+      @mouseenter="showWhatsappTooltipTemporarily"
+    >
+      <div class="whatsapp-float">
+        <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
+      </div>
+      <Transition name="slide-fade-right">
+        <div 
+          v-if="showWhatsappTooltip" 
+          class="whatsapp-tooltip"
+        >
+          <span class="tooltip-text">¿Necesitas ayuda?</span>
+          <div class="tooltip-subtext">Haz clic para chatear</div>
+        </div>
+      </Transition>
+    </a>
+  </Transition>
+
   <!-- Botón flotante Scroll to Top -->
   <Transition name="fade-scale">
     <button 
@@ -178,6 +203,18 @@ const scrollToTop = () => {
   });
 };
 
+// WhatsApp button functionality
+const showWhatsappTooltip = ref(true);
+let whatsappTooltipTimeout = null;
+
+const hideWhatsappTooltipTemporarily = () => {
+  showWhatsappTooltip.value = false;
+};
+
+const showWhatsappTooltipTemporarily = () => {
+  showWhatsappTooltip.value = true;
+};
+
 onMounted(async () => {
   console.log('🚀 Iniciando GuestLayout...');
   
@@ -196,12 +233,20 @@ onMounted(async () => {
   // Scroll to top button visibility
   window.addEventListener('scroll', handleScroll);
   
+  // WhatsApp tooltip: Mostrar por 5 segundos al cargar, luego solo con hover
+  whatsappTooltipTimeout = setTimeout(() => {
+    hideWhatsappTooltipTemporarily();
+  }, 5000);
+  
   console.log('✅ GuestLayout listo con', cartagenaImages.value.length, 'imágenes');
 });
 
 onUnmounted(() => {
   if (imageInterval) {
     clearInterval(imageInterval);
+  }
+  if (whatsappTooltipTimeout) {
+    clearTimeout(whatsappTooltipTimeout);
   }
   window.removeEventListener('scroll', handleScroll);
 });
@@ -219,6 +264,193 @@ defineProps({
 </script>
 
 <style scoped>
+/* ===== WHATSAPP BUTTON ===== */
+.whatsapp-button {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.whatsapp-float {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25D366 0%, #1EBE57 50%, #128C7E 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5), 
+              0 0 0 0 rgba(37, 211, 102, 0.7);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: visible;
+  animation: whatsappPulse 2.5s infinite;
+}
+
+.whatsapp-float::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.4s ease;
+}
+
+.whatsapp-float::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 50%);
+  pointer-events: none;
+}
+
+.whatsapp-button:hover .whatsapp-float {
+  transform: translateY(-6px) scale(1.1);
+  box-shadow: 0 12px 40px rgba(37, 211, 102, 0.7),
+              0 0 0 8px rgba(37, 211, 102, 0.15),
+              0 0 0 16px rgba(37, 211, 102, 0.08);
+  animation: none;
+}
+
+.whatsapp-button:hover .whatsapp-float::before {
+  opacity: 1;
+}
+
+.whatsapp-button:hover .whatsapp-float i {
+  transform: scale(1.2) rotate(-10deg);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.whatsapp-button:active .whatsapp-float {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.whatsapp-float i {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  z-index: 1;
+}
+
+/* Tooltip mejorado del botón WhatsApp */
+.whatsapp-tooltip {
+  position: absolute;
+  right: 85px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  color: #128C7E;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15),
+              0 0 0 1px rgba(37, 211, 102, 0.1);
+  pointer-events: none;
+  z-index: 10;
+  min-width: 200px;
+  border: 2px solid rgba(37, 211, 102, 0.2);
+}
+
+.tooltip-text {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #128C7E;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.tooltip-subtext {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #25D366;
+  opacity: 0.8;
+}
+
+.whatsapp-tooltip::before {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 12px;
+  border-color: transparent transparent transparent rgba(37, 211, 102, 0.2);
+  z-index: -1;
+}
+
+.whatsapp-tooltip::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-2px);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 8px 0 8px 10px;
+  border-color: transparent transparent transparent #ffffff;
+}
+
+.whatsapp-button:hover .whatsapp-tooltip {
+  animation: bounceRight 0.6s ease-out;
+}
+
+/* Animación de pulso mejorada */
+@keyframes whatsappPulse {
+  0%, 100% {
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5),
+                0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  50% {
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5),
+                0 0 0 12px rgba(37, 211, 102, 0);
+  }
+}
+
+@keyframes bounceRight {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  25% {
+    transform: translateY(-50%) translateX(-8px);
+  }
+  50% {
+    transform: translateY(-50%) translateX(0);
+  }
+  75% {
+    transform: translateY(-50%) translateX(-4px);
+  }
+}
+
+/* Slide Fade Right Transition para tooltip */
+.slide-fade-right-enter-active {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-fade-right-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-fade-right-enter-from {
+  opacity: 0;
+  transform: translateY(-50%) translateX(20px);
+}
+
+.slide-fade-right-leave-to {
+  opacity: 0;
+  transform: translateY(-50%) translateX(10px);
+}
+
+.slide-fade-right-enter-to,
+.slide-fade-right-leave-from {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
 /* ===== SCROLL TO TOP BUTTON ===== */
 .scroll-top-button {
   animation: fadeInUp 0.3s ease-out;
@@ -321,7 +553,46 @@ defineProps({
 /* Responsive - ocultar en móvil si hay barra sticky */
 @media (max-width: 1023px) {
   .scroll-top-button {
-    bottom: 88px; /* Ajustar posición para no chocar con barras sticky móviles */
+    bottom: 24px;
+    right: 20px;
+  }
+  
+  .whatsapp-button {
+    bottom: 108px;
+    right: 20px;
+  }
+  
+  .whatsapp-float {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .whatsapp-float i {
+    font-size: 1.75rem;
+  }
+  
+  .whatsapp-tooltip {
+    right: 75px;
+    min-width: 160px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .tooltip-text {
+    font-size: 0.875rem;
+  }
+  
+  .tooltip-subtext {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .whatsapp-button {
+    bottom: 100px;
+  }
+  
+  .scroll-top-button {
+    bottom: 20px;
   }
 }
 </style>

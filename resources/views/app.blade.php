@@ -28,6 +28,20 @@
 <body class="font-sans antialiased overflow-auto overflow-x-hidden">
     @inertia
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2KX9XRCWK">
+    </script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-Z2KX9XRCWK');
+    </script>
 </body>
 
 </html>

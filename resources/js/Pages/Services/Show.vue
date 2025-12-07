@@ -317,7 +317,15 @@ onMounted(() => {
             currentImageIndex.value = (currentImageIndex.value + 1) % galleryImages.value.length;
         }, 5000);
     }
+    
+    // WhatsApp tooltip: Mostrar por 5 segundos al cargar, luego solo con hover
+    setTimeout(() => {
+        showWhatsappTooltip.value = false;
+    }, 5000);
 });
+
+// WhatsApp button functionality
+const showWhatsappTooltip = ref(true);
 </script>
 
 <template>
@@ -325,6 +333,31 @@ onMounted(() => {
     
     <!-- Header transparente integrado sobre el Hero -->
     <Header :isWelcomePage="true" />
+    
+    <!-- Botón flotante de WhatsApp -->
+    <Transition name="fade-scale">
+        <a 
+            href="https://wa.me/573046790115?text=Hola%2C%20necesito%20información%20sobre%20sus%20servicios"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="fixed bottom-28 right-8 z-50 group whatsapp-button"
+            aria-label="Contactar por WhatsApp"
+            @mouseenter="showWhatsappTooltip = true"
+        >
+            <div class="whatsapp-float">
+                <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
+            </div>
+            <Transition name="slide-fade-right">
+                <div 
+                    v-if="showWhatsappTooltip" 
+                    class="whatsapp-tooltip"
+                >
+                    <span class="tooltip-text">¿Necesitas ayuda?</span>
+                    <div class="tooltip-subtext">Haz clic para chatear</div>
+                </div>
+            </Transition>
+        </a>
+    </Transition>
 
     <!-- HERO FULLSCREEN con imagen de fondo (estilo Welcome Premium integrado con Header) -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -779,9 +812,9 @@ onMounted(() => {
                     <!-- Info adicional con mapa -->
                     <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-indigo-100">
                         <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                            <|div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
                                 <i class="fa-solid fa-circle-info text-white text-xl"></i>
-                            </div>
+                            </|div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-bold text-gray-900 mb-2">Información de Recogida</h3>
                                 <ul class="space-y-2 text-sm text-gray-700">
@@ -826,149 +859,10 @@ onMounted(() => {
             </div>
         </Link>
 
-        <!-- Booking card (móvil) -->
-        <div class="booking-card-hero flex-1 flex items-center justify-between px-6 py-4 shadow-2xl cursor-pointer" @click="showMobileBooking = true">
-            <div>
-                <div class="text-2xl font-extrabold text-white">{{ USDollar.format(props.service.adults_price) }}</div>
-                <div class="text-sm text-white/80">{{ props.service.type == 'TOUR' ? 'por persona' : 'por embarcación' }}</div>
-            </div>
-            <button class="btn-hero-action px-6 py-3 text-sm">
-                <i class="fa-solid fa-calendar-check mr-2"></i>
-                Reservar
-            </button>
-        </div>
+        
     </div>
 
-        <!-- Mobile booking modal -->
-        <Transition name="mobile-modal">
-            <div v-if="showMobileBooking" class="lg:hidden fixed inset-0 z-50 overflow-hidden"
-                @click="showMobileBooking = false">
-                <!-- Backdrop -->
-                <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity"></div>
-
-                <!-- Modal content -->
-                <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl max-h-[90vh] overflow-y-auto transform transition-transform mobile-booking-content"
-                    @click.stop>
-                    <!-- Header -->
-                        <div class="sticky top-0 px-4 py-4 flex items-center justify-between rounded-t-2xl modal-header-gradient">
-                            <h2 class="text-lg font-semibold text-white">Reservar experiencia</h2>
-                            <button @click="showMobileBooking = false" class="p-2 bg-white/18 hover:bg-white/25 rounded-full transition-colors">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                    <!-- Content -->
-                    <div class="p-4 pb-20">
-                        <div class="mb-6">
-                            <div class="flex items-baseline justify-start gap-x-2">
-                                <div class="text-2xl font-bold text-gray-900">{{
-                                    USDollar.format(props.service.adults_price) }}</div>
-                                <div class="text-sm text-gray-600">{{ props.service.type == 'TOUR' ? 'por persona' :
-                                    'por Embarcación'
-                                    }}</div>
-                            </div>
-                        </div>
-
-                        <form class="space-y-4">
-                            <!-- Selector de fechas móvil -->
-                            <div class="space-y-3">
-                                <h3 class="text-base font-medium text-gray-900">{{
-                                    service.type != 'EMBARCACION' ? 'Fechas' : 'Dia a reservar'
-                                    }}
-                                </h3>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <!-- Check-in móvil -->
-                                    <div :class="service.type != 'HOSPEDAJE' ? 'col-span-2 w-full' : ''">
-                                        <label v-if="service.type == 'HOSPEDAJE'"
-                                            class="text-xs font-medium text-gray-700 block mb-1">LLEGADA</label>
-                                        <button type="button"
-                                            class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                                            @click="op?.toggle($event)">
-                                            <div v-if="service.type != 'EMBARCACION'"
-                                                class="text-sm text-gray-900 font-medium">
-                                                {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', {
-                                                    day:
-                                                        'numeric', month: 'short'
-                                                }) :
-                                                    'Agregar fecha' }}
-                                            </div>
-                                            <div v-else class="text-sm text-gray-900 font-medium w-full text-center">
-                                                {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', {
-                                                    day:
-                                                        'numeric', month: 'long', year: 'numeric'
-                                                }) :
-                                                    'Agregar fecha' }}
-                                            </div>
-                                        </button>
-                                    </div>
-
-                                    <!-- Check-out móvil -->
-                                    <div v-if="service.type == 'HOSPEDAJE'">
-                                        <label class="text-xs font-medium text-gray-700 block mb-1">SALIDA</label>
-                                        <button type="button"
-                                            class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                                            @click="op?.toggle($event)">
-                                            <div class="text-sm text-gray-900 font-medium">
-                                                {{ checkOut ? new Date(checkOut).toLocaleDateString('es-ES', {
-                                                    day:
-                                                        'numeric', month: 'short'
-                                                })
-                                                    : 'Agregar fecha' }}
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Selector de huéspedes móvil -->
-                            <div class="space-y-3">
-                                <h3 class="text-base font-medium text-gray-900">{{
-                                    service.type != 'EMBARCACION' ? 'Viajeros' : 'Pasajeros' }}</h3>
-                                <button type="button"
-                                    class="w-full text-left border border-gray-300 rounded-lg px-3 py-3 bg-white hover:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                                    @click="guestsOp?.toggle($event)">
-                                    <div class="text-sm text-gray-900 font-medium">
-                                        {{ guests }} viajero{{ guests > 1 ? 's' : '' }}
-                                    </div>
-                                </button>   
-                            </div>
-
-                            <!-- Totales móvil -->
-                            <div v-if="checkIn && checkOut && service.type != 'EMBARCACION'" class="border-t pt-4 mt-6">
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between text-sm text-gray-600">
-                                        <div>{{ USDollar.format(props.service.adults_price) }} x {{ guests }} Personas{{
-                                            guests > 1 ? 'es' :
-                                                '' }}</div>
-                                        <div class="font-medium text-gray-900">{{
-                                            USDollar.format(props.service.adults_price * guests) }}
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="flex items-center justify-between text-base font-semibold text-gray-900 pt-2 border-t">
-                                        <div>Total</div>
-                                        <div>{{ USDollar.format(props.service.adults_price * guests) }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Fixed bottom button -->
-                    <div class="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-                        <button v-if="!checkIn || !checkOut" type="button"
-                            class="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white rounded-lg py-3 font-semibold transition duration-200"
-                            @click="op?.toggle($event)">
-                            Revisa las fechas
-                        </button>
-                        <Button class="w-full" @click="router.get(route('check.out', props.service))"
-                            label="Reservar"></Button>
-                    </div>
-                </div>
-            </div>
-        </Transition>
+      
 </template>
 <style scoped>
 /* ===== ANIMACIONES GENERALES ===== */
@@ -1542,5 +1436,251 @@ onMounted(() => {
 
 .hero-background-layer.active {
     opacity: 1;
+}
+
+/* ===== WHATSAPP BUTTON ===== */
+.whatsapp-button {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.whatsapp-float {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #25D366 0%, #1EBE57 50%, #128C7E 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5), 
+                0 0 0 0 rgba(37, 211, 102, 0.7);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: visible;
+    animation: whatsappPulse 2.5s infinite;
+}
+
+.whatsapp-float::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    opacity: 0;
+    filter: blur(8px);
+    transition: opacity 0.4s ease;
+}
+
+.whatsapp-float::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 50%);
+    pointer-events: none;
+}
+
+.whatsapp-button:hover .whatsapp-float {
+    transform: translateY(-6px) scale(1.1);
+    box-shadow: 0 12px 40px rgba(37, 211, 102, 0.7),
+                0 0 0 8px rgba(37, 211, 102, 0.15),
+                0 0 0 16px rgba(37, 211, 102, 0.08);
+    animation: none;
+}
+
+.whatsapp-button:hover .whatsapp-float::before {
+    opacity: 1;
+}
+
+.whatsapp-button:hover .whatsapp-float i {
+    transform: scale(1.2) rotate(-10deg);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.whatsapp-button:active .whatsapp-float {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.whatsapp-float i {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    z-index: 1;
+}
+
+/* Tooltip mejorado del botón WhatsApp */
+.whatsapp-tooltip {
+    position: absolute;
+    right: 85px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    color: #128C7E;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(37, 211, 102, 0.1);
+    pointer-events: none;
+    z-index: 10;
+    min-width: 200px;
+    border: 2px solid rgba(37, 211, 102, 0.2);
+}
+
+.tooltip-text {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #128C7E;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.02em;
+}
+
+.tooltip-subtext {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #25D366;
+    opacity: 0.8;
+}
+
+.whatsapp-tooltip::before {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 12px;
+    border-color: transparent transparent transparent rgba(37, 211, 102, 0.2);
+    z-index: -1;
+}
+
+.whatsapp-tooltip::after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(-2px);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0 8px 10px;
+    border-color: transparent transparent transparent #ffffff;
+}
+
+.whatsapp-button:hover .whatsapp-tooltip {
+    animation: bounceRight 0.6s ease-out;
+}
+
+/* Animación de pulso mejorada */
+@keyframes whatsappPulse {
+    0%, 100% {
+        box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5),
+                    0 0 0 0 rgba(37, 211, 102, 0.7);
+    }
+    50% {
+        box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5),
+                    0 0 0 12px rgba(37, 211, 102, 0);
+    }
+}
+
+@keyframes bounceRight {
+    0%, 100% {
+        transform: translateY(-50%) translateX(0);
+    }
+    25% {
+        transform: translateY(-50%) translateX(-8px);
+    }
+    50% {
+        transform: translateY(-50%) translateX(0);
+    }
+    75% {
+        transform: translateY(-50%) translateX(-4px);
+    }
+}
+
+/* Slide Fade Right Transition para tooltip */
+.slide-fade-right-enter-active {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-fade-right-leave-active {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-fade-right-enter-from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+}
+
+.slide-fade-right-leave-to {
+    opacity: 0;
+    transform: translateY(-50%) translateX(10px);
+}
+
+.slide-fade-right-enter-to,
+.slide-fade-right-leave-from {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Fade Scale Transition */
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-scale-enter-from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+}
+
+.fade-scale-leave-to {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+}
+
+.fade-scale-enter-to,
+.fade-scale-leave-from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Responsive WhatsApp Button */
+@media (max-width: 1023px) {
+    .whatsapp-button {
+        bottom: 108px;
+        right: 20px;
+    }
+    
+    .whatsapp-float {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .whatsapp-float i {
+        font-size: 1.75rem;
+    }
+    
+    .whatsapp-tooltip {
+        right: 75px;
+        min-width: 160px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .tooltip-text {
+        font-size: 0.875rem;
+    }
+    
+    .tooltip-subtext {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .whatsapp-button {
+        bottom: 100px;
+    }
 }
 </style>
