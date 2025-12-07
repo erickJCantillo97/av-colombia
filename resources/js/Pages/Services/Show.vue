@@ -812,9 +812,9 @@ const showWhatsappTooltip = ref(true);
                     <!-- Info adicional con mapa -->
                     <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-indigo-100">
                         <div class="flex items-start gap-4">
-                            <|div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
                                 <i class="fa-solid fa-circle-info text-white text-xl"></i>
-                            </|div>
+                            </div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-bold text-gray-900 mb-2">Información de Recogida</h3>
                                 <ul class="space-y-2 text-sm text-gray-700">
