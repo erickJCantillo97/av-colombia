@@ -69,7 +69,7 @@
                                 <h3 class="text-sm font-semibold text-white">Dirección</h3>
                             </div>
                             <p class="text-xs text-gray-400 leading-relaxed">
-                                Av. Santander Cra 1 #46-50, Marbella, Cartagena
+                                Crespo carrera 1 en toda la avenida principal y justo frente al CAI de policia
                             </p>
                         </div>
 
@@ -107,16 +107,7 @@
                 <!-- Columna derecha: Mapa -->
                 <div class="lg:sticky lg:top-24 h-fit">
                     <div class="rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3923.8273031643866!2d-75.54070168872555!3d10.435275089650524!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef62f8fcb1386dd%3A0xb7ae39a6302e773b!2sCra.%201%20%2346-50%2C%20Cartagena%20de%20Indias%2C%20Provincia%20de%20Cartagena%2C%20Bol%C3%ADvar!5e0!3m2!1ses-419!2sco!4v1764851106435!5m2!1ses-419!2sco"
-                            width="100%" 
-                            height="600" 
-                            style="border:0;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade"
-                            class="w-full h-[600px]">
-                        </iframe>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3923.7273402729857!2d-75.52660498872557!3d10.443197689642997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa8a0f87c75b0e2cd%3A0x9383ed6d369d7ac1!2sAV%20COLOMBIA%20plataforma%20y%20agencia%20de%20viajes%20operadora%20de%20tours!5e0!3m2!1ses-419!2sco!4v1765289612649!5m2!1ses-419!2sco" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>
