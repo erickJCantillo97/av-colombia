@@ -26,6 +26,7 @@ Route::middleware([
         Route::post('noShowServico/{service}', 'noShowServicio')->name('noshow.servicio');
         Route::post('completarReserva', 'completarReserva')->name('completar.reserva');
         Route::post('BookingServices/setStatus', 'setStatus')->name('set.states.booking');
+        Route::get('getPendingActivities', 'getPendingActivities')->name('get.pending.activities');
     });
 });
 Route::post('BookingServices/reservarweb/{userId?}', [BookingServiceController::class, 'reservarByApi'])->name('booking.reservar.by.api');

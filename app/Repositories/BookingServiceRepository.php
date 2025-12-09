@@ -6,6 +6,7 @@ use App\Interfaces\BookingServiceRepositoryInterface;
 use App\Interfaces\NoteRepositoryInterface;
 use App\Interfaces\ServiceRepositoryInterface;
 use App\Models\BookingService;
+use App\Models\Service;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -464,5 +465,32 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                 }
             }
         }
+    }
+
+    public function getPendingActivitiesCount(): array
+    {
+        $query = $this->model
+            ->whereHas('states', function ($q) {
+                $q->where('state', 'SIN CONFIRMAR')
+                    ->whereRaw('id = (SELECT MAX(id) FROM states WHERE statable_id = booking_services.id AND statable_type = ?)', ['App\Models\BookingService']);
+            })
+            ->with('service:id,type');
+
+        if (Auth::user()->rol === 'vendedor') {
+            $query->where('user_id', Auth::id());
+        }
+
+        $bookings = $query->get();
+        
+
+        $activities = $bookings->groupBy('service.type')->map(function ($group, $type) {
+         
+            return [
+                'type' => $type,
+                'count' => $group->count(),
+            ];
+        })->values()->toArray();
+
+        return $activities;
     }
 }

@@ -432,4 +432,11 @@ class BookingServiceController extends Controller
 
         return back()->with('message', 'Estado actualizado');
     }
+
+    public function getPendingActivities()
+    {
+        $activities = $this->bookingServiceRepository->getPendingActivitiesCount();
+
+        return response()->json(['activities' => $activities], 200);
+    }
 }

@@ -217,40 +217,134 @@
     </template>
   </Drawer>
 
-  <Modal v-model="reubicar" title="Cambio de proveedor" close-on-escape>
-    <div class="flex flex-col gap-y-2">
-      <span class="flex flex-col gap-y-1">
-        <label for="" class="font-bold"> Proveedor Actual</label>
-        <Select placeholder="Proveedor Actual" :options="service.proveedors" label="Proveedor Actual"
-          v-model="current_proveedors" option-label="proveedor.name">
+  <Modal v-model="reubicar" title="Cambio de Proveedor" width="65vw" close-on-escape>
+    <div class="px-8 py-6 space-y-6">
+      <!-- Header Section -->
+      <div class="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl p-6 border border-orange-100 dark:border-orange-800">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="bg-orange-100 dark:bg-orange-900/40 rounded-full p-3">
+            <i class="fa-solid fa-people-arrows text-orange-600 dark:text-orange-400 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">
+              Reubicación de Proveedor
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {{ service.service }} - {{ service.cliente_name }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proveedor Actual -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-handshake text-blue-500"></i>
+          Proveedor Actual
+        </label>
+        <Select 
+          placeholder="Seleccione el proveedor actual" 
+          :options="service.proveedors" 
+          v-model="current_proveedors" 
+          option-label="proveedor.name"
+          class="w-full"
+        >
           <template #value="slotProps">
-            <div v-if="slotProps.value" class="flex items-center gap-x-2">
-              <div>{{ current_proveedors.proveedor.proveedor.nombre }}</div>
-              <span>-</span>
-              <div>{{ COP.format(current_proveedors.cost) }}</div>
+            <div v-if="slotProps.value" class="flex items-center justify-between py-1">
+              <span class="font-medium text-gray-900 dark:text-gray-100">
+                {{ current_proveedors.proveedor.proveedor.nombre }}
+              </span>
+              <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                {{ COP.format(current_proveedors.cost) }}
+              </span>
             </div>
-            <span v-else>
+            <span v-else class="text-gray-500">
               {{ slotProps.placeholder }}
             </span>
           </template>
           <template #option="{ option }">
-            <div class="flex items-center gap-2">
-              <span>{{ option.proveedor.proveedor.nombre }}</span>
-              <span>-</span>
-              <span>{{ COP.format(option.cost) }}</span>
+            <div class="flex items-center justify-between py-2">
+              <span class="font-medium">{{ option.proveedor.proveedor.nombre }}</span>
+              <span class="text-sm font-semibold text-blue-600">
+                {{ COP.format(option.cost) }}
+              </span>
             </div>
           </template>
         </Select>
-      </span>
-      <Input option-label="nombre" type="dropdown" label="Nuevo Proveedor" v-model="formReu.new_id"
-        :options="proveedors"></Input>
-      <Input label="Valor" v-model="formReu.value" type="number" mode="currency"></Input>
-      <Input label="Nota" v-model="formReu.note" type="textarea" mode="currency"></Input>
-
-      <div class="flex justify-end gap-2">
-        <Button @click="reubicar = false" label="Cancelar" severity="danger" icon="fa-solid fa-xmark" />
-        <Button @click="sendReubicar()" label="Guardar" severity="success" icon="fa-solid fa-save" />
       </div>
+
+      <!-- Nuevo Proveedor y Valor -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <Input 
+            option-label="nombre" 
+            type="dropdown" 
+            label="Nuevo Proveedor" 
+            v-model="formReu.new_id"
+            :options="proveedors"
+            class="text-gray-900 dark:text-gray-100"
+          >
+            <template #label>
+              <span class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <i class="fa-solid fa-exchange-alt text-green-500"></i>
+                Nuevo Proveedor
+              </span>
+            </template>
+          </Input>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <Input 
+            label="Valor del Servicio" 
+            v-model="formReu.value" 
+            type="number" 
+            mode="currency"
+            class="text-gray-900 dark:text-gray-100"
+          >
+            <template #label>
+              <span class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <i class="fa-solid fa-dollar-sign text-green-500"></i>
+                Valor del Servicio
+              </span>
+            </template>
+          </Input>
+        </div>
+      </div>
+
+      <!-- Nota -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <Input 
+          label="Nota o Motivo" 
+          v-model="formReu.note" 
+          type="textarea"
+          class="text-gray-900 dark:text-gray-100"
+        >
+          <template #label>
+            <span class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <i class="fa-solid fa-note-sticky text-amber-500"></i>
+              Nota o Motivo del Cambio
+            </span>
+          </template>
+        </Input>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3 px-8 py-6 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
+      <Button 
+        @click="reubicar = false" 
+        label="Cancelar" 
+        severity="danger" 
+        icon="fa-solid fa-xmark"
+        class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+      />
+      <Button 
+        @click="sendReubicar()" 
+        label="Guardar Cambios" 
+        severity="success" 
+        icon="fa-solid fa-save"
+        class="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
+      />
     </div>
   </Modal>
   <ServiceCancel v-model="showCancel" v-model:view="show" :service="service" v-if="showCancel" />

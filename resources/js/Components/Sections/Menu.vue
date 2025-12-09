@@ -67,6 +67,7 @@
 
     </div>
     <Tickets v-if="!isCollapsed"></Tickets>
+    <PendingActivitiesAlert v-if="!isCollapsed"></PendingActivitiesAlert>
 
     <MenuUserPanelModern :is-collapsed="isCollapsed" />
   </div>
@@ -189,6 +190,7 @@ import { ref, watch, onMounted } from "vue";
 import MenuItemModern from "@/Components/Menu/MenuItemModern.vue";
 import MenuUserPanelModern from "@/Components/Menu/MenuUserPanelModern.vue";
 import Tickets from "../Tickets.vue";
+import PendingActivitiesAlert from "../PendingActivitiesAlert.vue";
 
 const { hasPermissionTo } = usePermissions();
 

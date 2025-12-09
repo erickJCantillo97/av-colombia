@@ -15,4 +15,6 @@ interface BookingServiceRepositoryInterface extends BaseRepositoryInterface
     public function getAllByDateCreated($date, ?string $type = null);
 
     public function getPaginated(?string $type = null, ?string $search = null, int $perPage = 100, ?array $dates = null, array $columnFilters = [], ?string $status = null);
+
+    public function getPendingActivitiesCount(): array;
 }
