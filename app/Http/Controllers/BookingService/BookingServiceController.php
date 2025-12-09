@@ -332,9 +332,9 @@ class BookingServiceController extends Controller
         $data['adults_price'] = $service->adults_price;
         $data['service'] = $service->title;
 
-        try {
+        // try {
             $result = DB::transaction(function () use ($data, $userId, $paymentMethod, $email, $lastName) {
-                $data['payment_method'] = $this->getPaymentMethodId($paymentMethod);
+                // $data['payment_method'] = $this->getPaymentMethodId($paymentMethod);
                 $booking = $this->bookingServiceRepository->store($data, 'SIN CONFIRMAR', $userId);
                 // Reattach minimal data needed by payment repository
                 $paymentPayload = array_merge($data, [
@@ -349,11 +349,11 @@ class BookingServiceController extends Controller
 
                 return compact('booking', 'payment');
             });
-        } catch (Exception $e) {
-            Log::error('Error creando reservación o pago', ['error' => $e->getMessage(), 'payload' => $data]);
+        // } catch (Exception $e) {
+        //     Log::error('Error creando reservación o pago', ['error' => $e->getMessage(), 'payload' => $data]);
 
-            return response()->json(['message' => 'Error al guardar la reservación'], 500);
-        }
+        //     return response()->json(['message' => 'Error al guardar la reservación'], 500);
+        // }
         $booking = $result['booking'];
         $payment = $result['payment'];
         $customerData = [
