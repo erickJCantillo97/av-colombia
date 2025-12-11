@@ -331,7 +331,7 @@
                 <div class="payment-box-title">💵 Información de Pago en Efectivo</div>
                 <div class="payment-address">
                     <div class="payment-address-title">📍 Dónde Pagar</div>
-                    <p><strong>Dirección:</strong> Av. Santander Cra 1 #46-50, Marbella</p>
+                    <p><strong>Dirección:</strong>Barrio crespo carrera 1 No. 62 -105 (en toda la avenida Santander, justo en frente del cai de policía de crespo)</p>
                     <p><strong>Ciudad:</strong> Cartagena de Indias, Colombia</p>
                     <p style="margin-top: 12px;"><strong>Horario de atención:</strong> Lunes a Viernes de 8:00 AM a 6:00 PM</p>
                 </div>

@@ -482,9 +482,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
 
         $bookings = $query->get();
         
-
         $activities = $bookings->groupBy('service.type')->map(function ($group, $type) {
-         
             return [
                 'type' => $type,
                 'count' => $group->count(),

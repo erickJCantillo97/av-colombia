@@ -199,7 +199,7 @@
                                     <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     </svg>
-                                    Av. Santander Cra 1 #46-50, Marbella, Cartagena de Indias
+                                    Barrio crespo carrera 1 No. 62 -105 (en toda la avenida Santander, justo en frente del cai de policía de crespo)
                                 </p>
                             </div>
                             <p class="text-gray-600 mt-3 text-sm">Una vez confirmado el pago, recibirá un comprobante y los detalles de su reserva por correo electrónico.</p>
