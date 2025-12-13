@@ -94,12 +94,7 @@
               render-as="svg" 
               foreground="#064a59" 
               class="rounded-lg" 
-              :image-settings="{
-                src: '/images/logo.webp',
-                width: 30,
-                height: 30,
-                excavate: true
-              }" />
+               />
             <span class="text-sm font-medium text-gray-600">Escanea para ver el portafolio</span>
           </a>
         </div>

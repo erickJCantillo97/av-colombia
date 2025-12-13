@@ -7,6 +7,9 @@ import QRCodeVue3 from "qrcode-vue3";
 const text = ref('Bienvenido');
 const verQr = ref(false);
 const verImagen = ref(true);
+// Imagen seleccionada por el usuario (data URL)
+const selectedImage = ref<string | null>(null);
+const selectedImageName = ref<string | null>(null);
 
 // Opciones de personalización
 const qrSize = ref(300);
@@ -39,9 +42,36 @@ const errorLevels = [
 ];
 
 const generateQR = async () => {
+    // Fuerza re-render del componente QR para que tome la nueva imagen
     verQr.value = false;
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     verQr.value = true;
+};
+
+const onFileChange = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+        return;
+    }
+
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+        selectedImage.value = reader.result as string;
+        selectedImageName.value = file.name;
+        // Aseguramos que el QR use la imagen recién seleccionada
+        verImagen.value = true;
+        generateQR();
+    };
+    reader.readAsDataURL(file);
+};
+
+const removeSelectedImage = () => {
+    selectedImage.value = null;
+    selectedImageName.value = null;
+    // Mantener la opción desactivada si no hay imagen
+    verImagen.value = false;
+    generateQR();
 };
 </script>
 
@@ -86,17 +116,38 @@ const generateQR = async () => {
                             </div>
 
                             <!-- Mostrar logo -->
-                            <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <input 
-                                    type="checkbox" 
-                                    id="verImagen" 
-                                    class="rounded size-5 text-[#064a59] focus:ring-[#064a59] cursor-pointer" 
-                                    v-model="verImagen"
-                                    @change="generateQR"
-                                >
-                                <label for="verImagen" class="font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                                    Mostrar logo en el centro
-                                </label>
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <input 
+                                        type="checkbox" 
+                                        id="verImagen" 
+                                        class="rounded size-5 text-[#064a59] focus:ring-[#064a59] cursor-pointer" 
+                                        v-model="verImagen"
+                                        @change="generateQR"
+                                    >
+                                    <label for="verImagen" class="font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                                        Mostrar logo en el centro
+                                    </label>
+                                </div>
+
+                                <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subir imagen (opcional)</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        @change="onFileChange"
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#064a59] file:text-white hover:file:bg-[#053d49]"
+                                    />
+
+                                    <div v-if="selectedImage" class="mt-3 flex items-center gap-3">
+                                        <img :src="selectedImage" alt="Preview" class="w-16 h-16 object-contain rounded-md border" />
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ selectedImageName }}</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">La imagen se incrustará en el centro del QR</div>
+                                        </div>
+                                        <button @click="removeSelectedImage" type="button" class="text-sm text-red-600 hover:underline">Quitar</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -221,30 +272,24 @@ const generateQR = async () => {
                         </button>
                     </div>
 
-                    <div v-if="verQr" class="flex flex-col items-center justify-center min-h-[400px]">
+                            <div v-if="verQr" class="flex flex-col items-center justify-center min-h-[400px]">
                         <div class="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
-                            <QRCodeVue3 
-                                :width="qrSize" 
-                                :height="qrSize" 
-                                :value="text"
-                                :downloadOptions="{ name: `qr-${text.slice(0, 20)}`, extension: 'png' }" 
-                                :backgroundOptions="{ color: backgroundColor }"
-                                :qrOptions="{ typeNumber: 0, mode: 'Byte', errorCorrectionLevel: errorCorrectionLevel }" 
-                                :image="verImagen ? '/images/logo.webp' : undefined"
-                                :cornersSquareOptions="{
-                                    type: cornersType,
-                                    color: cornersColor
-                                }" 
-                                :dotsOptions="{
-                                    type: dotsType,
-                                    color: dotsColor
-                                }" 
-                                fileExt="png" 
-                                :download="true" 
-                                myclass="my-qur" 
-                                imgclass="img-qr"
-                                downloadButton="mt-4 w-full bg-gray-800 hover:bg-gray-900 dark:bg-gray-600 dark:hover:bg-gray-500 p-3 text-white rounded-md flex justify-center items-center gap-2 transition-colors duration-200 font-medium shadow-sm" 
-                            />
+                                <QRCodeVue3
+                                    :width="qrSize"
+                                    :height="qrSize"
+                                    :value="text"
+                                    :downloadOptions="{ name: `qr-${String(text).slice(0, 20)}`, extension: 'png' }"
+                                    :backgroundOptions="{ color: backgroundColor }"
+                                    :qrOptions="{ typeNumber: 0, mode: 'Byte', errorCorrectionLevel: errorCorrectionLevel }"
+                                    :image="selectedImage || (verImagen ? '/images/logo.webp' : undefined)"
+                                    :cornersSquareOptions="{ type: cornersType, color: cornersColor }"
+                                    :dotsOptions="{ type: dotsType, color: dotsColor }"
+                                    fileExt="png"
+                                    :download="true"
+                                    myclass="my-qur"
+                                    imgclass="img-qr"
+                                    downloadButton="mt-4 w-full bg-gray-800 hover:bg-gray-900 dark:bg-gray-600 dark:hover:bg-gray-500 p-3 text-white rounded-md flex justify-center items-center gap-2 transition-colors duration-200 font-medium shadow-sm"
+                                />
                         </div>
 
                         <!-- Información adicional -->
