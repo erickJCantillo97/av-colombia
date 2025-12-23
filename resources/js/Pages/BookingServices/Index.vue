@@ -72,7 +72,7 @@
                                     v-show="value"
                                     class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs"
                                 >
-                                    <span class="font-medium">{{ columns.find(c => c.field === field)?.header }}:</span>
+                                    <span class="font-medium">{{ visibleColumns.find(c => c.field === field)?.header }}:</span>
                                     <span>{{ value }}</span>
                                     <button 
                                         @click="clearColumnFilter(field)"
@@ -111,7 +111,7 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th v-for="col in columns" :key="col.field" 
+                                <th v-for="col in visibleColumns" :key="col.field" 
                                     class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
                                     :class="col.class">
                                     <div class="flex flex-col gap-2">
@@ -154,7 +154,7 @@
                             <!-- Skeleton Loader -->
                             <template v-if="isLoading">
                                 <tr v-for="i in perPage" :key="`skeleton-${i}`" class="animate-pulse">
-                                    <td v-for="col in columns" :key="`skeleton-col-${col.field}`" 
+                                    <td v-for="col in visibleColumns" :key="`skeleton-col-${col.field}`" 
                                         class="px-4 py-3"
                                         :class="col.class">
                                         <div class="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -172,7 +172,7 @@
 
                             <!-- Empty State -->
                             <tr v-else-if="filteredBookings.length === 0">
-                                <td :colspan="columns.length + 1" class="px-4 py-8 text-center text-gray-500">
+                                <td :colspan="visibleColumns.length + 1" class="px-4 py-8 text-center text-gray-500">
                                     <i class="fa-solid fa-inbox text-4xl mb-2 text-gray-300 animate-bounce"></i>
                                     <p class="font-medium">No se encontraron resultados</p>
                                 </td>
@@ -183,7 +183,7 @@
                                 :class="getRowClass(booking)"
                                 class="hover:bg-gray-50 transition-all duration-200 animate-fade-in"
                                 :style="{ animationDelay: `${index * 30}ms` }">
-                                <td v-for="col in columns" :key="col.field" 
+                                <td v-for="col in visibleColumns" :key="col.field" 
                                     class="px-4 py-3 text-sm"
                                     :class="col.class">
                                     <!-- Date -->
@@ -304,6 +304,7 @@ import Notas from "@/Components/Customs/Notas.vue";
 import { storeToRefs } from "pinia";
 import { useBookingServiceStore } from "@/stores/BookingService";
 import { columns } from "./Columns";
+import { usePermissions } from "@/composable/Auth";
 
 const props = defineProps({
     bookingServices: Object,
@@ -312,6 +313,7 @@ const props = defineProps({
 });
 
 const { toast } = alerts();
+const { hasRole } = usePermissions();
 const proveedors = ref([]);
 const notes = ref([]);
 const note = ref("");
@@ -319,6 +321,16 @@ const serviceSelected = ref([]);
 const info = ref(false);
 const service = ref(null);
 const todayActivity = ref(false);
+
+// Filtrar columnas basándose en el rol del usuario
+const visibleColumns = computed(() => {
+    return columns.filter(col => {
+        if (typeof col.visible === 'function') {
+            return col.visible(hasRole);
+        }
+        return col.visible !== false;
+    });
+});
 
 const bookings = computed(() => props.bookingServices.data || []);
 const pagination = computed(() => ({
@@ -362,7 +374,7 @@ const saveToCache = (key, value) => {
 const columnFilters = ref({});
 
 // Inicializar filtros desde los props o vacíos
-columns.forEach(col => {
+visibleColumns.value.forEach(col => {
     if (col.filter) {
         columnFilters.value[col.field] = props.filters?.column_filters?.[col.field] || '';
     }

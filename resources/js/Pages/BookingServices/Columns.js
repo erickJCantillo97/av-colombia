@@ -48,6 +48,7 @@ export const columns = [
         header: "proveedores",
         class: "text-center font-semibold text-sm",
         filter: true,
+        visible: (hasRole) => !hasRole('Vendedor'),
     },
     {
         field: "status",
