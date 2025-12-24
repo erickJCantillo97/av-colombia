@@ -1,5 +1,0 @@
-<<<<<<<< HEAD:public/build/assets/Auth-J1K_Pasp.js
-import{R as e}from"./app-DzJl4gLA.js";import"./marked.esm-BPgSS2IS.js";const t=()=>{try{return e().props.auth.user.permissions||[]}catch(o){return console.error("Error obteniendo permisos:",o),[]}},i=()=>{try{return e().props.auth.user.rol||""}catch(o){return console.error("Error obteniendo roles:",o),""}};function l(){return{hasPermissionTo:r=>{const s=t();return Array.isArray(r)?r.some(n=>s.includes(n)):s.includes(r)},hasRole:r=>{const s=i();return Array.isArray(r)?r.includes(s):s==r}}}export{l as u};
-========
-import{R as e}from"./app-D9lkms6O.js";import"./marked.esm-BPgSS2IS.js";const t=()=>{try{return e().props.auth.user.permissions||[]}catch(o){return console.error("Error obteniendo permisos:",o),[]}},i=()=>{try{return e().props.auth.user.rol||""}catch(o){return console.error("Error obteniendo roles:",o),""}};function l(){return{hasPermissionTo:r=>{const s=t();return Array.isArray(r)?r.some(n=>s.includes(n)):s.includes(r)},hasRole:r=>{const s=i();return Array.isArray(r)?r.includes(s):s==r}}}export{l as u};
->>>>>>>> efb0f671a72f15515ef4495222d2fbc72bb3e3d1:public/build/assets/Auth-CfPWUaUI.js
