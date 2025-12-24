@@ -115,9 +115,9 @@ class UserController extends Controller
                 'email' => $request->input('email'),
                 'rol' => $request->input('rol'),
                 'phone' => $request->input('phone'),
-                'camara_comercio' => $user->camara_comercio == '/laravel/public/' ? null : $user->camara_comercio,
-                'rut' => $user->rut == '/laravel/public/' ? null : $user->rut,
-                'cuenta' => $user->cuenta == '/laravel/public/' ? null : $user->cuenta,
+                'camara_comercio' =>'',
+                'rut' => '',
+                'cuenta' =>  '',
             ]);
 
             // Sync permissions
