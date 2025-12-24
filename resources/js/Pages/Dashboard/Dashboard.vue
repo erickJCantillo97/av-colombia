@@ -7,6 +7,7 @@ import ViewBooking from "@/Components/viewBooking.vue";
 import Notas from "@/Components/Customs/Notas.vue";
 import Completar from "@/Components/Customs/Completar.vue";
 import { OverlayBadge } from "primevue";
+import { usePermissions } from "@/composable/Auth";
 // #endregion
 
 // #region Variables
@@ -136,6 +137,8 @@ const filteringByStatus = (status) => {
   statusFilter.value = status;
 };
 
+const { hasRole } = usePermissions();
+
 getReservas();
 
 const columns = [
@@ -143,15 +146,25 @@ const columns = [
   { field: "adults", header: "Adultos", class: "text-center", filter: true },
   { field: "boys", header: "Niños", class: "text-center", filter: true },
   { field: "service", header: "Actividad", class: "min-w-[150px]", filter: true },
-  { field: "proveedors_names", header: "Proveedores", class: "text-center", filter: true },
+  { field: "proveedors_names", header: "Proveedores", class: "text-center", filter: true, visible: (hasRole) => !hasRole('vendedor') },
   { field: "cliente_building", header: "Edificio", filter: true },
   { field: "cliente_phone", header: "Teléfono", filter: true },
   { field: "hour", header: "Hora", class: "text-center", filter: true },
   { field: "status", header: "Estado", type: "tag", class: "text-center", filter: true },
 ];
 
+// Filtrar columnas basándose en el rol del usuario
+const visibleColumns = computed(() => {
+  return columns.filter(col => {
+    if (typeof col.visible === 'function') {
+      return col.visible(hasRole);
+    }
+    return col.visible !== false;
+  });
+});
+
 // Inicializar filtros
-columns.forEach(col => {
+visibleColumns.value.forEach(col => {
   if (col.filter) {
     columnFilters.value[col.field] = '';
   }
@@ -269,7 +282,7 @@ const totalBoys = computed(() => {
         </div>
         
         <!-- Table Container -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden" v-if="!hasRole('vendedor')">
           <!-- Header con búsqueda y fecha -->
           <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
             <!-- Botones de filtro de estado -->
@@ -319,7 +332,7 @@ const totalBoys = computed(() => {
                     v-show="value"
                     class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs"
                   >
-                    <span class="font-medium">{{ columns.find(c => c.field === field)?.header }}:</span>
+                    <span class="font-medium">{{ visibleColumns.find(c => c.field === field)?.header }}:</span>
                     <span>{{ value }}</span>
                     <button 
                       @click="clearColumnFilter(field)"
@@ -357,7 +370,7 @@ const totalBoys = computed(() => {
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50 sticky top-0 z-10">
                 <tr>
-                  <th v-for="col in columns" :key="col.field" 
+                  <th v-for="col in visibleColumns" :key="col.field" 
                     class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
                     :class="col.class">
                     <div class="flex flex-col gap-2">
@@ -400,7 +413,7 @@ const totalBoys = computed(() => {
                 <!-- Skeleton Loader -->
                 <template v-if="isLoading">
                   <tr v-for="i in perPage" :key="`skeleton-${i}`" class="animate-pulse">
-                    <td v-for="col in columns" :key="`skeleton-col-${col.field}`" 
+                    <td v-for="col in visibleColumns" :key="`skeleton-col-${col.field}`" 
                       class="px-4 py-3"
                       :class="col.class">
                       <div class="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -415,7 +428,7 @@ const totalBoys = computed(() => {
 
                 <!-- Empty State -->
                 <tr v-else-if="dateActivities.length === 0">
-                  <td :colspan="columns.length + 1" class="px-4 py-8 text-center text-gray-500">
+                  <td :colspan="visibleColumns.length + 1" class="px-4 py-8 text-center text-gray-500">
                     <i class="fa-solid fa-inbox text-4xl mb-2 text-gray-300 animate-bounce"></i>
                     <p class="font-medium">No se encontraron resultados</p>
                   </td>
@@ -426,7 +439,7 @@ const totalBoys = computed(() => {
                   :class="getRowClass(booking)"
                   class="hover:bg-gray-50 transition-all duration-200 animate-fade-in"
                   :style="{ animationDelay: `${index * 30}ms` }">
-                  <td v-for="col in columns" :key="col.field" 
+                  <td v-for="col in visibleColumns" :key="col.field" 
                     class="px-4 py-3 text-sm"
                     :class="col.class">
                     <!-- Status Tag -->
@@ -501,7 +514,7 @@ const totalBoys = computed(() => {
                   <td class="px-4 py-3 text-sm text-gray-900">Totales:</td>
                   <td class="px-4 py-3 text-sm text-center text-gray-900">{{ totalAdults }}</td>
                   <td class="px-4 py-3 text-sm text-center text-gray-900">{{ totalBoys }}</td>
-                  <td :colspan="columns.length - 2" class="px-4 py-3"></td>
+                  <td :colspan="visibleColumns.length - 2" class="px-4 py-3"></td>
                 </tr>
               </tfoot>
             </table>
