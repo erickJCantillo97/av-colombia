@@ -106,7 +106,9 @@ class UserController extends Controller
                     $user->{$fileField} = $request->file($fileField)->store('users/files');
                 }
             }
-            str_replace('/laravel/public//laravel/public/', '', $user->camara_comercio);
+            str_replace('/laravel/public', '', $user->camara_comercio);
+            str_replace('/laravel/public', '', $user->rut);
+            str_replace('/laravel/public', '', $user->cuenta);
             // Update user details
             $user->update([
                 'name' => $request->input('name'),
