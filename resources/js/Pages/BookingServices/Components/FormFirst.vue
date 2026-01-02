@@ -45,6 +45,53 @@ onMounted(async () => {
     console.log(channels.value);
 })
 
+const minPricePax = ref(0);
+const minPriceBoys = ref(0);
+const valorPorAdulto = ref(0);
+const valorPorNino = ref(0);
+
+function selectedService() {
+    const selected = services.value.find(s => s.id === form.service_id);
+    if (selected) {
+        minPricePax.value = selected.adults_price || 0;
+        minPriceBoys.value = selected.boys_price || 0;
+        // Autorellenar con precios del servicio si es vendedor
+        if (hasRole('vendedor')) {
+            valorPorAdulto.value = selected.adults_price || 0;
+            valorPorNino.value = selected.boys_price || 0;
+        }
+    } else {
+        minPricePax.value = 0;
+        minPriceBoys.value = 0;
+    }
+}
+
+// Computed para calcular el total automáticamente cuando es vendedor
+const totalCalculado = computed(() => {
+    if (hasRole('vendedor')) {
+        const totalAdultos = totalAdults.value * (parseFloat(valorPorAdulto.value) || 0);
+        const totalNinos = totalBoys.value * (parseFloat(valorPorNino.value) || 0);
+        return totalAdultos + totalNinos;
+    }
+    return parseFloat(form.total) || 0;
+});
+
+// Watch para actualizar form.total cuando cambia el cálculo
+watch(totalCalculado, (newTotal) => {
+    if (hasRole('vendedor')) {
+        form.total = newTotal;
+    }
+});
+
+// Watch para actualizar cuando cambian los valores por pasajero
+watch([valorPorAdulto, valorPorNino], () => {
+    if (hasRole('vendedor')) {
+        const totalAdultos = totalAdults.value * (parseFloat(valorPorAdulto.value) || 0);
+        const totalNinos = totalBoys.value * (parseFloat(valorPorNino.value) || 0);
+        form.total = totalAdultos + totalNinos;
+    }
+});
+
 </script>
 <template>
     <div class="">
@@ -56,7 +103,8 @@ onMounted(async () => {
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
                     <Input v-model="form.service_id" class="md:col-span-2" type="dropdown" label="Servicio" 
-                           option-label="title" option-value="id" :options="services"></Input>
+                           option-label="title" option-value="id" @value-change="selectedService" :options="services"></Input>
+
                     <Input label="Fecha de Reserva" v-model="form.date" :enableTimePicker="true" type="datetime" class="md:col-span-1" />
                     <Input label="Tiempo del Servicio" type="dropdown" v-model="form.time_service" :options="[
                         '20 Minutos',
@@ -116,12 +164,36 @@ onMounted(async () => {
                     💳 Información de Pago
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-                    <Input label="Valor Total" type="number" mode="currency" :required="true" v-model="form.total"></Input>
+                    <!-- Para vendedores: ingresar valores por adulto y niño -->
+                    <Input v-if="hasRole('vendedor')" label="Valor por Adulto" type="number" mode="currency" :required="true" v-model="valorPorAdulto"></Input>
+                    <Input v-if="hasRole('vendedor')" label="Valor por Niño" type="number" mode="currency" v-model="valorPorNino"></Input>
+                    
+                    <!-- Para otros roles: ingresar valor total directamente -->
+                    <Input v-else label="Valor Total" type="number" mode="currency" :required="true" v-model="form.total"></Input>
+
                     <Input label="Saldo en Sitio" type="number" mode="currency" v-model="form.saldo" :step="1000" :min="0" :max="form.total"/>
+
                     <Input v-if="!hasRole('vendedor')" type="dropdown" option-label="name" option-value="id" 
                            :options="methods" v-model="form.method_id" label="Medio de Pago" />
+
                     <Input v-if="!hasRole('vendedor')" type="dropdown" option-label="name" option-value="id" 
                            :options="channels" v-model="form.channel_id" label="Canal de Venta" />
+                </div>
+                
+                <!-- Mostrar valor total calculado para vendedores -->
+                <div v-if="hasRole('vendedor')" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-blue-700 dark:text-blue-300">💰 Valor Total:</span>
+                        <span class="text-xl font-bold text-blue-900 dark:text-blue-100">${{ totalCalculado.toLocaleString('es-CO') }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <p class="text-xs text-blue-600 dark:text-blue-400">
+                            👨 {{ totalAdults }} adulto(s) × ${{ parseFloat(valorPorAdulto || 0).toLocaleString('es-CO') }} = ${{ (totalAdults * (parseFloat(valorPorAdulto || 0))).toLocaleString('es-CO') }}
+                        </p>
+                        <p class="text-xs text-blue-600 dark:text-blue-400">
+                            👶 {{ totalBoys }} niño(s) × ${{ parseFloat(valorPorNino || 0).toLocaleString('es-CO') }} = ${{ (totalBoys * (parseFloat(valorPorNino || 0))).toLocaleString('es-CO') }}
+                        </p>
+                    </div>
                 </div>
                 
                 <!-- Resumen Financiero -->
