@@ -489,7 +489,7 @@ const showWhatsappTooltip = ref(true);
                         <!-- Totales -->
                         <div v-if="checkIn && checkOut" class="mt-6 pt-6 border-t border-white/20">
                             <div class="flex justify-between text-white/80 text-sm mb-2">
-                                <span>{{ USDollar.format(props.service.adults_price) }} x {{ guests }}</span>
+                                <span>{{ USDollar.format(getPrice()) }} x {{ guests }}</span>
                                 <span class="font-semibold">{{ USDollar.format(priceService) }}</span>
                             </div>
                             <div class="flex justify-between text-white font-bold text-xl">
