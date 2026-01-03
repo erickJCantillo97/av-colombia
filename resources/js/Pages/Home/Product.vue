@@ -41,7 +41,7 @@
     <Button>Ver más</Button>
     </Link>
   </div>
-  <Link :href="route('show.services', service.slug)" v-else
+  <Link :href="route('show.services', service.slug)" v-else-if="serviceModel.getPrice() > 0"
     class="group relative flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200 hover:border-black h-full hover:-translate-y-2">
     
     <!-- Imagen con hover effect -->
