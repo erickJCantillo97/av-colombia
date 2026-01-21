@@ -11,7 +11,6 @@ use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class BookingServiceRepository extends BaseRepository implements BookingServiceRepositoryInterface
 {
@@ -43,6 +42,9 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                 'channel:id,name',
                 'notes:id,booking_service_id',
                 'changes:id,booking_service_id',
+                'pagosSaldos',
+                'pagosSaldos.proveedor',
+                'pagosSaldos.proveedor.proveedor',
             ])
             ->orderByDesc('created_at')
             ->where('created_at', '>=', now()->subDays(15));
@@ -68,6 +70,9 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                 'channel:id,name',
                 'notes:id,booking_service_id',
                 'changes:id,booking_service_id',
+                'pagosSaldos',
+                'pagosSaldos.proveedor',
+                'pagosSaldos.proveedor.proveedor',
             ])
             ->orderByDesc('created_at');
 
@@ -134,6 +139,9 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                 'channel:id,name',
                 'notes',
                 'changes',
+                'pagosSaldos',
+                'pagosSaldos.proveedor',
+                'pagosSaldos.proveedor.proveedor',
             ])
             ->orderBy('created_at', 'DESC');
 
@@ -170,7 +178,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         }
 
         // Column-specific filters
-        if (!empty($columnFilters)) {
+        if (! empty($columnFilters)) {
             foreach ($columnFilters as $field => $value) {
                 if (empty($value)) {
                     continue;
@@ -181,7 +189,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                     $parts = explode('.', $field);
                     $relation = $parts[0];
                     $column = $parts[1];
-                    
+
                     $query->whereHas($relation, function ($q) use ($column, $value) {
                         $q->where($column, 'like', "%{$value}%");
                     });
@@ -190,9 +198,8 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                     $query->whereHas('proveedors.proveedor', function ($q) use ($value) {
                         $q->where('nombre', 'like', "%{$value}%");
                     });
-                
-                }
-                 else {
+
+                } else {
                     // Direct column filter
                     $query->where($field, 'like', "%{$value}%");
                 }
@@ -209,7 +216,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                         ->where('statable_type', 'App\Models\BookingService')
                         ->groupBy('statable_id');
                 })
-                ->where('state', $status);
+                    ->where('state', $status);
             });
         }
 
@@ -373,6 +380,16 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
                 ];
             }),
             'extras' => $booking->extras,
+            'pagos_saldos' => $booking->pagosSaldos->map(function ($pago) {
+                return [
+                    'id' => $pago->id,
+                    'amount' => $pago->amount,
+                    'proveedor_id' => $pago->proveedor_id,
+                    'booking_service_id' => $pago->booking_service_id,
+                    'created_at' => $pago->created_at,
+                    'proveedor' => $pago->proveedor,
+                ];
+            }),
         ];
     }
 
@@ -481,7 +498,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
         }
 
         $bookings = $query->get();
-        
+
         $activities = $bookings->groupBy('service.type')->map(function ($group, $type) {
             return [
                 'type' => $type,

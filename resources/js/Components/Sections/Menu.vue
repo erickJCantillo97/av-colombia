@@ -317,16 +317,16 @@ const contabilidadItems = [
     icon: "fa-solid fa-calendar-check",
     permission: "ver pagos"
   },
-  // {
-  //   label: "Entradas",
-  //   href: route('BookingServices.index'),
-  //   icon: "fa-solid fa-person-hiking",
-  //   permission: "ver entradas"
-  // },
   {
     label: "Informe",
     href: route('contabilidad'),
     icon: "fa-solid fa-gauge",
+    permission: "ver pagos"
+  },
+  {
+    label: "Vendedores",
+    href: route('vendedor.report.index'),
+    icon: "fa-solid fa-users",
     permission: "ver pagos"
   },
 ];

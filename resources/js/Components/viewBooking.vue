@@ -165,6 +165,67 @@
           </div>
         </div>
       </section>
+
+     
+      <section v-if="service.pagos_saldos && service.pagos_saldos.length > 0">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i class="fa-solid fa-money-bill-transfer text-blue-500"></i>
+            Historial de Pagos de saldos
+          </h3>
+          <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+            {{ service.pagos_saldos.length }}
+          </span>
+        </div>
+        <div class="space-y-2">
+          <div v-for="pago in service.pagos_saldos" :key="pago.id" 
+            class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg border border-emerald-100 p-3 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <div class="bg-emerald-100 rounded-full p-1.5">
+                  <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-800">
+                  {{ pago.proveedor?.proveedor?.nombre || 'Proveedor' }}
+                </span>
+              </div>
+              <span class="text-base font-bold text-emerald-700">
+                {{ COP.format(pago.amount) }}
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 pl-8">
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-calendar-day"></i>
+                {{ new Date(pago.created_at).toLocaleDateString('es-CO', { 
+                  year: 'numeric', 
+                  month: 'short', 
+                  day: 'numeric' 
+                }) }}
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-clock"></i>
+                {{ new Date(pago.created_at).toLocaleTimeString('es-CO', { 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                }) }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total de Pagos Realizados -->
+        <div class="mt-3 bg-gradient-to-r from-emerald-600 to-green-600 rounded-lg p-4 shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-semibold text-white flex items-center gap-2">
+              <i class="fa-solid fa-receipt"></i>
+              Total Pagado a Proveedores
+            </span>
+            <span class="text-lg font-bold text-white">
+              {{ COP.format(getTotalPagosSaldos()) }}
+            </span>
+          </div>
+        </div>
+      </section>
     </div>
 
     <template #footer>
@@ -480,10 +541,18 @@ const formatDate = (date) => {
     ).toLocaleString("es-CO", {
       day: "2-digit",
       month: "2-digit",
+
       year: "numeric",
     });
     return fecha == "30/11/2" ? "INDEFINIDO" : fecha;
   }
+};
+
+const getTotalPagosSaldos = () => {
+  if (!props.service.pagos_saldos || props.service.pagos_saldos.length === 0) {
+    return 0;
+  }
+  return props.service.pagos_saldos.reduce((total, pago) => total + parseFloat(pago.amount || 0), 0);
 };
 
 const sendReubicar = () => {
