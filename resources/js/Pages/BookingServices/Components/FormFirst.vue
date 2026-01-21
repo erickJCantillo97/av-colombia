@@ -53,12 +53,13 @@ const valorPorNino = ref(0);
 function selectedService() {
     const selected = services.value.find(s => s.id === form.service_id);
     if (selected) {
+        console.log(selected);
         minPricePax.value = selected.adults_price || 0;
         minPriceBoys.value = selected.boys_price || 0;
         // Autorellenar con precios del servicio si es vendedor
         if (hasRole('vendedor')) {
-            valorPorAdulto.value = selected.adults_price || 0;
-            valorPorNino.value = selected.boys_price || 0;
+            valorPorAdulto.value = selected.adult_tarifa || 0;
+            valorPorNino.value = selected.boy_tarifa || 0;
         }
     } else {
         minPricePax.value = 0;
@@ -165,8 +166,8 @@ watch([valorPorAdulto, valorPorNino], () => {
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
                     <!-- Para vendedores: ingresar valores por adulto y niño -->
-                    <Input v-if="hasRole('vendedor')" label="Valor por Adulto" type="number" mode="currency" :required="true" v-model="valorPorAdulto"></Input>
-                    <Input v-if="hasRole('vendedor')" label="Valor por Niño" type="number" mode="currency" v-model="valorPorNino"></Input>
+                    <Input v-if="hasRole('vendedor')" :min="minPricePax" label="Valor por Adulto" type="number" mode="currency" :required="true" v-model="valorPorAdulto"></Input>
+                    <Input v-if="hasRole('vendedor')" :min="minPriceBoys" label="Valor por Niño" type="number" mode="currency" v-model="valorPorNino"></Input>
                     
                     <!-- Para otros roles: ingresar valor total directamente -->
                     <Input v-else label="Valor Total" type="number" mode="currency" :required="true" v-model="form.total"></Input>

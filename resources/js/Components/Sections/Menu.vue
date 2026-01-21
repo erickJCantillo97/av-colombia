@@ -53,7 +53,7 @@
           :submenu-items="contabilidadItems" :is-collapsed="isCollapsed" @submenu-toggle="handleSubmenuToggle" />
 
         <!-- Generador de QR -->
-        <MenuItemModern label="Generador de QR" v-tooltip="`Generador de QR`" :href="route('qr.generator')"
+        <MenuItemModern label="Generador de QR" v-if="$page.props.auth.user.rol != 'vendedor'" v-tooltip="`Generador de QR`" :href="route('qr.generator')"
           icon="pi pi-qrcode" :is-collapsed="isCollapsed" />
 
         <!-- Proveedores -->

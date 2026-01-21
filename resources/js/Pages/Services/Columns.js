@@ -5,8 +5,14 @@ const  columns = [
     filter: true,
   },
   {
-    header: "Tarifa Neta",
+    header: "Tarifa Comercial",
     field: "adult_tarifa",
+    type: "currency",
+    role: "vendedor",
+  },
+  {
+    header: "Tarifa Neta AV",
+    field: "adults_price",
     type: "currency",
   },
   {
