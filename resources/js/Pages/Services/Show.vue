@@ -16,7 +16,8 @@ import GuestSelector from "@/Components/SearchEngines/Search/GuestSelector.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import ServicesMain from "./Components/ServicesMain.vue";
 import ItineraryView from "./Components/ItineraryView.vue";
-import { max } from "date-fns";
+import Service from "@/Models/Services/Service";
+import  state  from "@/store/searchStore";
 
 const props = defineProps({
     service: Object,
@@ -24,6 +25,8 @@ const props = defineProps({
     features: Array,
     itineraries: Array,
 });
+
+const serviceModel = new Service(props.service);
 
 const showFullDescription = ref(false);
 // datepicker state (range)
@@ -278,22 +281,34 @@ const heroImage = computed(() => {
     }
 });
 
+function getPrice(){
+     const precios = props.availabilities.find(av => {
+            return serviceModel.formatDate(av.start_date) <= serviceModel.formatDate(state.checkin.value) && serviceModel.formatDate(av.end_date) >= serviceModel.formatDate(state.checkout.value)
+        })?.precies ?? [];
+
+        if (!precios.length) return 0;
+
+        return precios.reduce((max, obj) => obj.value > max.value ? obj : max, precios[0]).value;
+}
+
+
+
 const priceService = computed(() => {
     const maxCapacity = Number(props.service.capacidad_max) || 1;
     // TOUR: precio por persona * # viajeros
     if (props.service.type === 'TOUR') {
-        return props.service.adults_price * guests.value;
+        return getPrice() * guests.value;
     }
     // EMBARCACION: tarifa por embarcación (fijo)
     else if (props.service.type === 'EMBARCACION') {
-        return props.service.adults_price;
+        return getPrice();
     }
     // TRANSFER: calcular número de unidades según capacidad
     else if (props.service.type === 'TRANSFER') {
-        return props.service.adults_price * Math.ceil(guests.value / maxCapacity);
+        return getPrice() * Math.ceil(guests.value / maxCapacity);
     }
     // fallback: por persona
-    return props.service.adults_price * guests.value;
+    return getPrice() * guests.value;
 });
 
 
@@ -408,7 +423,7 @@ const showWhatsappTooltip = ref(true);
                     <div class="booking-card-hero">
                         <div class="text-center mb-6">
                             <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500">
-                                {{ USDollar.format(props.service.adults_price) }}
+                                {{ USDollar.format(getPrice()) }}
                             </div>
                             <div class="text-white text-sm mt-2">{{ props.service.type == 'TOUR' ? 'por persona' : 'por embarcación' }}</div>
                         </div>
@@ -474,7 +489,7 @@ const showWhatsappTooltip = ref(true);
                         <!-- Totales -->
                         <div v-if="checkIn && checkOut" class="mt-6 pt-6 border-t border-white/20">
                             <div class="flex justify-between text-white/80 text-sm mb-2">
-                                <span>{{ USDollar.format(props.service.adults_price) }} x {{ guests }}</span>
+                                <span>{{ USDollar.format(getPrice()) }} x {{ guests }}</span>
                                 <span class="font-semibold">{{ USDollar.format(priceService) }}</span>
                             </div>
                             <div class="flex justify-between text-white font-bold text-xl">

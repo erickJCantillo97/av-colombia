@@ -16,6 +16,7 @@ class BookingProveedor extends Model
     protected $appends = [
         'cost_total',
     ];
+
     public function bookingService()
     {
         return $this->belongsTo(BookingService::class);
@@ -28,10 +29,19 @@ class BookingProveedor extends Model
 
     public function getCostTotalAttribute($value)
     {
-        if($this->discount == 0){
+        if ($this->discount == 0) {
             return $this->cost;
         }
         $pax = $this->bookingService->adults;
-        return  $this->cost - ($this->discount * $pax);
+
+        return $this->cost - ($this->discount * $pax);
+    }
+
+    /**
+     * Relación con los pagos de saldos realizados a este proveedor
+     */
+    public function pagosSaldos()
+    {
+        return $this->hasMany(PagoSaldos::class, 'proveedor_id');
     }
 }

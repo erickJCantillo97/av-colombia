@@ -53,7 +53,7 @@
           :submenu-items="contabilidadItems" :is-collapsed="isCollapsed" @submenu-toggle="handleSubmenuToggle" />
 
         <!-- Generador de QR -->
-        <MenuItemModern label="Generador de QR" v-tooltip="`Generador de QR`" :href="route('qr.generator')"
+        <MenuItemModern label="Generador de QR" v-if="$page.props.auth.user.rol != 'vendedor'" v-tooltip="`Generador de QR`" :href="route('qr.generator')"
           icon="pi pi-qrcode" :is-collapsed="isCollapsed" />
 
         <!-- Proveedores -->
@@ -317,16 +317,16 @@ const contabilidadItems = [
     icon: "fa-solid fa-calendar-check",
     permission: "ver pagos"
   },
-  // {
-  //   label: "Entradas",
-  //   href: route('BookingServices.index'),
-  //   icon: "fa-solid fa-person-hiking",
-  //   permission: "ver entradas"
-  // },
   {
     label: "Informe",
     href: route('contabilidad'),
     icon: "fa-solid fa-gauge",
+    permission: "ver pagos"
+  },
+  {
+    label: "Vendedores",
+    href: route('vendedor.report.index'),
+    icon: "fa-solid fa-users",
     permission: "ver pagos"
   },
 ];

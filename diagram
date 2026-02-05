@@ -1,0 +1,32 @@
+flowchart LR
+  Browser[Browser (usuario)]
+  InertiaClient[Inertia / resources/js/app.js]
+  Page[QrGenerator Index.vue\nresources/js/Pages/QrGenerator/Index.vue]
+  Layout[AppLayout\nresources/js/Layouts/AppLayout.vue]
+  Components[Components\nresources/js/Components/*]
+  QRLib[QRCodeVue3 (npm)]
+  FileAPI[Imagen local / public/images/logo.webp]
+  Vite[Vite / public/build / node_modules]
+  Laravel[Laravel (Servidor)]
+  Routes[routes/web.php / routes/api.php]
+  Controller[Controller / app/Http/Controllers/*]
+  Models[Models / app/Models/*]
+  DB[(Base de datos / migrations)]
+  Assets[public/, storage/]
+  Composer[composer.json / php (Laravel 11)]
+
+  Browser -->|navega| Routes
+  Routes -->|Inertia::render| Controller
+  Controller -->|render| Laravel
+  Controller --> Page
+  Page --> InertiaClient
+  InertiaClient --> Page
+  Page --> Layout
+  Page --> Components
+  Page --> QRLib
+  Page --> FileAPI
+  Page --> Vite
+  Vite --> Assets
+  Controller --> Models
+  Models --> DB
+  Laravel --> Composer

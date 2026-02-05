@@ -15,6 +15,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VendedorReportController;
 use App\Http\Controllers\Web\AccommodationController as WebAccommodationController;
 use App\Http\Controllers\Web\BookingAccommodationController;
 use Illuminate\Foundation\Application;
@@ -46,6 +47,9 @@ Route::middleware([
     Route::controller(UserController::class)->group(function () {
         Route::post('users/{user}/update', 'update')->name('users.update');
     });
+    // Ruta para informe de vendedores
+    Route::get('vendedor-report', [VendedorReportController::class, 'index'])->name('vendedor.report.index');
+    Route::get('vendedor-report/{vendedor}', [VendedorReportController::class, 'show'])->name('vendedor.report.show');
 
     Route::get('portafolio', function () {
         return Inertia::render('Portafolio/Index');

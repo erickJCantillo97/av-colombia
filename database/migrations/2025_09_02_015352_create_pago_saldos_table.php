@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('pago_saldos', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->double('amount');
-            $table->uuid('proveedor_id');
-            $table->foreignUuid('booking_service_id')->constrained()->cascadeOnDelete();
+            $table->decimal('amount', 15, 2);
+            $table->foreignUuid('proveedor_id')->constrained('booking_proveedors')->cascadeOnDelete();
+            $table->foreignUuid('booking_service_id')->constrained('booking_services')->cascadeOnDelete();
             $table->timestamps();
         });
     }
