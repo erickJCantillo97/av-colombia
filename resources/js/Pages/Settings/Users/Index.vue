@@ -220,10 +220,7 @@ import QrcodeVue from "qrcode.vue";
 const usersType = [
   { label: "Usuarios AV Colombia", value: "av", color: "green", icon: "fa-solid fa-user-shield" },
   { label: "Vendedores", value: "vendedor", color: "blue", icon: "fa-solid fa-user-tie" },
-  { label: "Proveedores", value: "proveedor", color: "yellow", icon: "fa-solid fa-truck" },
-  { label: "Hoteles", value: "Hotel", color: "orange", icon: "fa-solid fa-hotel" },
-  { label: "Agencias", value: "agencia", color: "gray", icon: "fa-solid fa-building" },
-];
+2];
 
 const typeSelected = ref("vendedor");
 
@@ -409,9 +406,6 @@ const roles = [
   { label: "Administrador", value: "admin" },
   { label: "Cordinador", value: "cordinador" },
   { label: "Vendedor", value: "vendedor" },
-  { label: "Proveedor", value: "proveedor" },
-  { label: "Hotel", value: "Hotel" },
-  { label: "Agencia", value: "agencia" },
 ];
 
 function selectedRol() {
