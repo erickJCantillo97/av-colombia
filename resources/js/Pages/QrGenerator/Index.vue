@@ -59,7 +59,6 @@ const onFileChange = (e: Event) => {
     reader.onload = () => {
         selectedImage.value = reader.result as string;
         selectedImageName.value = file.name;
-        // Aseguramos que el QR use la imagen recién seleccionada
         verImagen.value = true;
         generateQR();
     };
@@ -69,7 +68,6 @@ const onFileChange = (e: Event) => {
 const removeSelectedImage = () => {
     selectedImage.value = null;
     selectedImageName.value = null;
-    // Mantener la opción desactivada si no hay imagen
     verImagen.value = false;
     generateQR();
 };

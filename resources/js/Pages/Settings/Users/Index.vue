@@ -220,7 +220,7 @@ import QrcodeVue from "qrcode.vue";
 const usersType = [
   { label: "Usuarios AV Colombia", value: "av", color: "green", icon: "fa-solid fa-user-shield" },
   { label: "Vendedores", value: "vendedor", color: "blue", icon: "fa-solid fa-user-tie" },
-2];
+];
 
 const typeSelected = ref("vendedor");
 
