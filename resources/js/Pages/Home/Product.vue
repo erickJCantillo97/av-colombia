@@ -41,7 +41,7 @@
     <Button>Ver más</Button>
     </Link>
   </div>
-  <Link :href="route('show.services', service.slug)" v-else-if="serviceModel.getPrice() > 0"
+  <Link :href="route('show.services', service.slug)"
     class="group relative flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200 hover:border-black h-full hover:-translate-y-2">
     
     <!-- Imagen con hover effect -->
@@ -98,8 +98,8 @@
 
       <!-- Precio y CTA -->
       <div class="space-y-4 mt-auto">
-        <div class="flex items-end justify-between pt-4 border-t border-gray-200">
-          <div>
+        <div class="flex items-end justify-between pt-4 border-t border-gray-200" >
+          <div v-if="serviceModel.getPrice() > 0">
             <p class="text-xs text-gray-500 font-medium mb-1">Desde</p>
             <div class="flex items-baseline gap-1">
               <span class="text-3xl font-bold text-black">
@@ -107,6 +107,9 @@
               </span>
               <span class="text-sm text-gray-500 font-medium">/ persona</span>
             </div>
+          </div>
+          <div v-else>
+            <p class="text-sm text-gray-500 font-medium">Servicio No Disponible </p>
           </div>
         </div>
 

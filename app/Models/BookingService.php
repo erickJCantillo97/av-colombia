@@ -47,6 +47,11 @@ class BookingService extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function vendedor()
+    {
+        return $this->belongsTo(User::class, 'vendedor_id');
+    }
+
     public function getTotalPriceAttribute()
     {
         return $this->adults * $this->adults_price + $this->boys * $this->boys_price;

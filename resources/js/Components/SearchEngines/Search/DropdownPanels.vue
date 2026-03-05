@@ -1,7 +1,7 @@
 <template>
     <Transition name="panel">
         <div v-if="isPanelOpen"
-            class="absolute z-50 mt-3 lg:mt-4 w-full origin-top rounded-2xl lg:rounded-3xl border border-gray-100 bg-white shadow-2xl max-h-[70vh] lg:max-h-[80vh] overflow-y-auto">
+            class="absolute z-50 mt-3 lg:mt-4 w-full origin-top rounded-2xl lg:rounded-xl border border-gray-100 bg-white shadow-2xl max-h-[70vh] lg:max-h-[80vh] overflow-y-auto">
             <!-- Panel Dónde -->
             <div v-if="activeTab === 'donde'" class="p-5 lg:p-8 panel-content">
                 <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-5 lg:mb-6">¿A dónde quieres ir?</h3>
@@ -82,9 +82,9 @@
             </div>
 
             <!-- Panel Check-in -->
-            <div v-if="activeTab === 'checkin'" class="p-5 lg:p-8 panel-content">
-                <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-6">{{ mensajePrincipal }}</h3>
-                <div class="bg-gray-50 rounded-2xl p-4 lg:p-6">
+            <div v-if="activeTab === 'checkin'" class="p-1 panel-content">
+                <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-6 p-6">{{ mensajePrincipal }}</h3>
+                <div class="bg-gray-50 rounded-xl">
                     <CalendarSelector class="w-full" :value="dates" :min-date="new Date().toISOString().split('T')[0]"
                         :placeholder="'Selecciona rango de fechas'" @update:value="val => valueDateChange(val)"
                         @update:checkin="val => searchStore.checkin.value = val"

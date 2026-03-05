@@ -1,5 +1,5 @@
 import { getErrorMessage, getSuccessMessage } from "@/composable/Toats";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import axios from "axios";
 import { computed, ref } from "vue";
 import { useCommonUtilities } from "@/composable/useCommonUtilities";
@@ -45,10 +45,12 @@ export default class BookingServices {
         channel_id: hasRole('vendedor') ? "9d75e9d5-6e8f-48c1-9f56-276fd185297e" : "9d99a95f-6c3d-48fd-aa7d-6ef4e6860123",
         saldo: 0,
         total: 0,
+        vendedor_id: usePage().props.auth.user.id,
         total_real: 0,
         percent_channel: 0,
         observations: "",
         code_booking: "",
+
     });
 
     formatDateTime(date, time) {

@@ -49,6 +49,7 @@ class StoreBookingServiceRequest extends FormRequest
             'observations' => 'nullable|string',
             'method_id' => 'nullable|uuid',
             'time_service' => 'nullable|string',
+            'vendedor_id' => 'nullable',
             'duration' => 'nullable|string',
         ];
     }

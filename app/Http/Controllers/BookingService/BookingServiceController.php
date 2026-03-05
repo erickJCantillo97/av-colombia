@@ -19,6 +19,7 @@ use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\Service;
 use App\Models\State;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -60,7 +61,10 @@ class BookingServiceController extends Controller
 
     public function create()
     {
-        return Inertia::render('BookingServices/Create');
+        $users = User::where('rol', 'vendedor')->get();
+        return Inertia::render('BookingServices/Create', [
+            'users' => $users
+        ]);
     }
 
     public function getAllBookingServices(Request $request)
@@ -116,6 +120,7 @@ class BookingServiceController extends Controller
     public function edit($bookingService)
     {
         $bookingService = $this->bookingServiceRepository->getById($bookingService);
+        $users = User::where('rol', 'vendedor')->get();
 
         // dd($bookingService);
         return Inertia::render('BookingServices/Edit', [
@@ -123,6 +128,7 @@ class BookingServiceController extends Controller
             'bookingServiceProveedors' => $bookingService->proveedors->load('proveedor'),
             'bookingServiceExtras' => $bookingService->extras,
             'changes' => $bookingService->changes->load('user'),
+            'users' => $users, 
         ]);
     }
 

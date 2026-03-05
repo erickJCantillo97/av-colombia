@@ -68,7 +68,7 @@
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div class="p-6">
                             <div v-if="value === 1">
-                                <Form :bookingService></Form>
+                                <Form :bookingService="bookingService" :users="users"></Form>
                             </div>
                             <div v-if="value === 2 && hasRole(['admin', 'superadmin'])">
                                 <Index :bookingService></Index>
@@ -106,7 +106,8 @@ const { hasRole } = usePermissions();
 const value = ref(1);
 
 const props = defineProps({
-    bookingService: Object
+    bookingService: Object,
+    users: Array
 })
 
 const bookingServices = new BookingServices(props.bookingService);

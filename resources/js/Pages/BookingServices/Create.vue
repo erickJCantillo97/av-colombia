@@ -11,7 +11,7 @@
                 </div>
             </div>
         </div>
-        <Form class="mx-4"></Form>
+        <Form class="mx-4" :users="users"></Form>
     </div>
     </AppLayout>
 </template>
@@ -20,5 +20,9 @@ import { Link } from '@inertiajs/vue3';
 import Form from './Components/FormFirst.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
+
+defineProps({
+    users: Array,
+})
 
 </script>

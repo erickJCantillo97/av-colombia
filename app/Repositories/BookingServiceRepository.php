@@ -131,6 +131,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             ->with([
                 'service:id,title,type',
                 'extras',
+                'vendedor:id,name,email',
                 'user:id,name,email',
                 'payments',
                 'payments.metohdPayment:id,name',
@@ -147,7 +148,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
 
         // Filter by user role
         if (Auth::user()->rol != 'superadmin' && Auth::user()->rol != 'admin' && Auth::user()->rol != 'cordinador') {
-            $query->where('user_id', Auth::id());
+            $query->where('vendedor_id', Auth::id());
         }
 
         // Filter by service type
@@ -340,6 +341,7 @@ class BookingServiceRepository extends BaseRepository implements BookingServiceR
             'channel_id' => $booking->channel_id,
             'service' => $booking->service,
             'user' => $booking->user,
+            'vendedor' => $booking->vendedor,
             'channel' => $booking->channel,
             'date' => $booking->date,
             'hour' => $booking->hour,

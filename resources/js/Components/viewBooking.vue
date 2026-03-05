@@ -105,7 +105,8 @@
           Información Adicional
         </h3>
         <div class="space-y-2">
-          <DetailRow v-if="service.user" icon="fa-user-tie" :label="service.vendedor_id ? 'Vendedor' : 'Usuario'" :value="service.user?.name" />
+          <DetailRow v-if="service.user" icon="fa-user-tie" label="Usuario" :value="service.user?.name" />
+          <DetailRow v-if="service.vendedor" icon="fa-user-tag" label="Vendedor" :value="service.vendedor?.name" />
           <DetailRow v-if="service.user" icon="fa-calendar-plus" label="Fecha de Reserva" :value="new Date(service.created_at).toLocaleDateString('es-CO')" />
           <DetailRow v-if="service.conductor" icon="fa-car" label="Conductor" :value="service.conductor" />
           <DetailRow v-if="service.placa" icon="fa-id-card" label="Placa" :value="service.placa" />
