@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BookingService;
 
+use App\Exports\BookingServicesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingService\BookingClientService;
 use App\Http\Requests\BookingService\StoreBookingServiceRequest;
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookingServiceController extends Controller
 {
@@ -62,8 +64,9 @@ class BookingServiceController extends Controller
     public function create()
     {
         $users = User::where('rol', 'vendedor')->get();
+
         return Inertia::render('BookingServices/Create', [
-            'users' => $users
+            'users' => $users,
         ]);
     }
 
@@ -128,7 +131,7 @@ class BookingServiceController extends Controller
             'bookingServiceProveedors' => $bookingService->proveedors->load('proveedor'),
             'bookingServiceExtras' => $bookingService->extras,
             'changes' => $bookingService->changes->load('user'),
-            'users' => $users, 
+            'users' => $users,
         ]);
     }
 
@@ -317,9 +320,9 @@ class BookingServiceController extends Controller
         $data['adults_nacionales'] = $data['adults'];
         $data['boys_nacionales'] = $data['boys'];
 
-        if($userId == 8){
+        if ($userId == 8) {
             $data['channel_id'] = Channel::where('name', 'Pagina Web')->first()?->id ?? null;
-        }else {
+        } else {
             $data['channel_id'] = Channel::where('name', 'Vendedor')->first()?->id ?? null;
         }
         $data['date'] = Carbon::parse($data['date'])->format('Y-m-d');
@@ -331,7 +334,7 @@ class BookingServiceController extends Controller
         }
         $data['total'] = $data['total_real'];
         unset($data['cliente_email'], $data['cliente_last_name'], $data['time'], $data['payment_method'], $data['soporte']);
-        
+
         $service = Service::findOrFail($data['service_id']);
         $data['boys_tarifa'] = $service->boy_tarifa;
         $data['boys_price'] = $service->boys_price;
@@ -395,11 +398,12 @@ class BookingServiceController extends Controller
 
     private function getPaymentMethodId($method)
     {
-        if($method == 1){
+        if ($method == 1) {
             return PaymentMethod::where('name', 'EFECTIVO')->first()->id;
-        }elseif($method == 2){
+        } elseif ($method == 2) {
             return PaymentMethod::where('name', 'REDEBAN')->first()->id;
         }
+
         return PaymentMethod::where('name', 'TRANSFERENCIA')->first()->id;
     }
 
@@ -444,5 +448,28 @@ class BookingServiceController extends Controller
         $activities = $this->bookingServiceRepository->getPendingActivitiesCount();
 
         return response()->json(['activities' => $activities], 200);
+    }
+
+    public function export(Request $request)
+    {
+        $validated = $request->validate([
+            'type' => 'nullable|string|in:TOUR,EMBARCACION,TRANSFER',
+            'dates' => 'nullable|array',
+            'dates.0' => 'nullable|date',
+            'dates.1' => 'nullable|date',
+            'search' => 'nullable|string',
+            'column_filters' => 'nullable|array',
+            'status' => 'nullable|string',
+        ]);
+
+        $fileName = 'reservas_'.now()->format('Y-m-d_H-i-s').'.xlsx';
+
+        return Excel::download(new BookingServicesExport(
+            type: $validated['type'] ?? null,
+            dates: $validated['dates'] ?? null,
+            search: $validated['search'] ?? null,
+            columnFilters: $validated['column_filters'] ?? [],
+            status: $validated['status'] ?? null,
+        ), $fileName);
     }
 }

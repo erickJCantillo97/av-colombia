@@ -5,7 +5,6 @@ use App\Http\Controllers\BookingService\BookingServiceController;
 use App\Http\Controllers\BookingService\BookingServiceProveedorController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -27,6 +26,7 @@ Route::middleware([
         Route::post('completarReserva', 'completarReserva')->name('completar.reserva');
         Route::post('BookingServices/setStatus', 'setStatus')->name('set.states.booking');
         Route::get('getPendingActivities', 'getPendingActivities')->name('get.pending.activities');
+        Route::get('exportBookingServices', 'export')->name('booking.services.export');
     });
 });
 Route::post('BookingServices/reservarweb/{userId?}', [BookingServiceController::class, 'reservarByApi'])->name('booking.reservar.by.api');

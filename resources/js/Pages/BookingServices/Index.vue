@@ -92,6 +92,14 @@
                                 <i class="fa-solid fa-plus mr-2"></i>
                                 Nueva Reserva
                             </button>
+                            <button
+                                @click="downloadExcel"
+                                class="inline-flex items-center px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
+                                title="Descargar Excel con los filtros activos"
+                            >
+                                <i class="fa-solid fa-file-excel mr-2"></i>
+                                Exportar Excel
+                            </button>
                             <select 
                                 v-model="perPage" 
                                 class="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-all duration-200"
@@ -537,6 +545,29 @@ const goToPage = (page) => {
 
 const filteringByStatus = (status) => {
     statusFilter.value = status;
+};
+
+const downloadExcel = () => {
+    const activeColumnFilters = Object.entries(columnFilters.value)
+        .filter(([_, value]) => value && value.trim() !== '')
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+    const params = new URLSearchParams();
+
+    if (props.serviceType) params.append('type', props.serviceType);
+    if (searchQuery.value) params.append('search', searchQuery.value);
+    if (statusFilter.value) params.append('status', statusFilter.value);
+
+    if (selectDate.value && selectDate.value.length === 2) {
+        params.append('dates[0]', selectDate.value[0]);
+        params.append('dates[1]', selectDate.value[1]);
+    }
+
+    Object.entries(activeColumnFilters).forEach(([key, value]) => {
+        params.append(`column_filters[${key}]`, value);
+    });
+
+    window.location.href = `${route('booking.services.export')}?${params.toString()}`;
 };
 
 const buttons = [
