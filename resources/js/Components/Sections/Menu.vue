@@ -327,7 +327,7 @@ const contabilidadItems = [
     label: "Vendedores",
     href: route('vendedor.report.index'),
     icon: "fa-solid fa-users",
-    permission: "ver pagos"
+    permission: null
   },
 ];
 </script>
