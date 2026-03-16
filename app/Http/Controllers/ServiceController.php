@@ -242,6 +242,7 @@ class ServiceController extends Controller
     {
         return Inertia::render('Home/CheckOut/Index', [
             'service' => $service,
+            'availabilities' => Availability::where('service_id', $service->id)->with('horarios', 'precies')->get(),
         ]);
     }
 
