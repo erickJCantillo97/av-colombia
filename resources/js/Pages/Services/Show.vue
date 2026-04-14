@@ -17,7 +17,7 @@ import { Head, Link, router } from "@inertiajs/vue3";
 import ServicesMain from "./Components/ServicesMain.vue";
 import ItineraryView from "./Components/ItineraryView.vue";
 import Service from "@/Models/Services/Service";
-import  state  from "@/store/searchStore";
+import state from "@/store/searchStore";
 
 const props = defineProps({
     service: Object,
@@ -272,23 +272,16 @@ const product = {
     ],
 };
 
-// Hero image para el header (usa la primera imagen disponible)
-const heroImage = computed(() => {
-    try {
-        return props.service.images && props.service.images.length ? props.service.images[0].filepath : '/images/cartagena.webp';
-    } catch (e) {
-        return '/images/cartagena.webp';
-    }
-});
 
-function getPrice(){
-     const precios = props.availabilities.find(av => {
-            return serviceModel.formatDate(av.start_date) <= serviceModel.formatDate(state.checkin.value) && serviceModel.formatDate(av.end_date) >= serviceModel.formatDate(state.checkout.value)
-        })?.precies ?? [];
 
-        if (!precios.length) return 0;
+function getPrice() {
+    const precios = props.availabilities.find(av => {
+        return serviceModel.formatDate(av.start_date) <= serviceModel.formatDate(state.checkin.value) && serviceModel.formatDate(av.end_date) >= serviceModel.formatDate(state.checkout.value)
+    })?.precies ?? [];
 
-        return precios.reduce((max, obj) => obj.value > max.value ? obj : max, precios[0]).value;
+    if (!precios.length) return 0;
+
+    return precios.reduce((max, obj) => obj.value > max.value ? obj : max, precios[0]).value;
 }
 
 
@@ -320,7 +313,7 @@ const goToCheckout = () => {
 // Hero background slideshow con imágenes del servicio
 const currentImageIndex = ref(0);
 const galleryImages = computed(() => {
-    return props.service.images && props.service.images.length > 0 
+    return props.service.images && props.service.images.length > 0
         ? props.service.images.map(img => img.filepath)
         : ['/images/cartagena.webp'];
 });
@@ -332,7 +325,7 @@ onMounted(() => {
             currentImageIndex.value = (currentImageIndex.value + 1) % galleryImages.value.length;
         }, 5000);
     }
-    
+
     // WhatsApp tooltip: Mostrar por 5 segundos al cargar, luego solo con hover
     setTimeout(() => {
         showWhatsappTooltip.value = false;
@@ -344,29 +337,22 @@ const showWhatsappTooltip = ref(true);
 </script>
 
 <template>
+
     <Head :title="`Av Colombia -  ${product.name}`" />
-    
+
     <!-- Header transparente integrado sobre el Hero -->
     <Header :isWelcomePage="true" />
-    
+
     <!-- Botón flotante de WhatsApp -->
     <Transition name="fade-scale">
-        <a 
-            href="https://wa.me/573046790115?text=Hola%2C%20necesito%20información%20sobre%20sus%20servicios"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="fixed bottom-28 right-8 z-50 group whatsapp-button"
-            aria-label="Contactar por WhatsApp"
-            @mouseenter="showWhatsappTooltip = true"
-        >
+        <a href="https://wa.me/573046790115?text=Hola%2C%20necesito%20información%20sobre%20sus%20servicios"
+            target="_blank" rel="noopener noreferrer" class="fixed bottom-28 right-8 z-50 group whatsapp-button"
+            aria-label="Contactar por WhatsApp" @mouseenter="showWhatsappTooltip = true">
             <div class="whatsapp-float">
                 <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
             </div>
             <Transition name="slide-fade-right">
-                <div 
-                    v-if="showWhatsappTooltip" 
-                    class="whatsapp-tooltip"
-                >
+                <div v-if="showWhatsappTooltip" class="whatsapp-tooltip">
                     <span class="tooltip-text">¿Necesitas ayuda?</span>
                     <div class="tooltip-subtext">Haz clic para chatear</div>
                 </div>
@@ -378,22 +364,19 @@ const showWhatsappTooltip = ref(true);
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <!-- Fondos con crossfade (múltiples imágenes de la galería) -->
         <div class="absolute inset-0">
-            <div 
-                v-for="(image, index) in galleryImages" 
-                :key="index"
-                class="absolute inset-0 hero-background-layer"
-                :class="{ 'active': index === currentImageIndex }"
-                :style="{ backgroundImage: `url('${image}')` }"
-            ></div>
+            <div v-for="(image, index) in galleryImages" :key="index" class="absolute inset-0 hero-background-layer"
+                :class="{ 'active': index === currentImageIndex }" :style="{ backgroundImage: `url('${image}')` }">
+            </div>
         </div>
         <div class="absolute inset-0 bg-gradient-to-br from-black/75 via-black/60 to-black/40"></div>
-        
+
         <!-- Contenido Hero (ajustado para el Header transparente) -->
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-20">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Izquierda: Info del servicio -->
                 <div class="space-y-8 text-white animate-fade-in">
-                    <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                    <div
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
                         <i class="fa-solid fa-star text-yellow-400"></i>
                         <span class="text-sm font-medium">Experiencia Premium</span>
                     </div>
@@ -403,7 +386,7 @@ const showWhatsappTooltip = ref(true);
                     </h1>
 
                     <p class="text-lg md:text-xl text-gray-200 leading-relaxed">
-                        {{ product.description ? product.description.replace(/<[^>]*>/g, '').slice(0,200) : 'Vive una experiencia inolvidable' }}
+                        {{ product.description ? product.description.replace(/<[^>]*>/g, '').slice(0, 200) : 'Vive una experiencia inolvidable' }}
                     </p>
 
                     <!-- Badges rápidos -->
@@ -422,7 +405,8 @@ const showWhatsappTooltip = ref(true);
                 <div class="animate-fade-in-up">
                     <div class="booking-card-hero">
                         <div class="text-center mb-6">
-                            <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500">
+                            <div
+                                class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500">
                                 {{ USDollar.format(getPrice()) }}
                             </div>
                             <div class="text-white text-sm mt-2">{{ props.service.type == 'TOUR' ? 'por persona' : 'por embarcación' }}</div>
@@ -431,53 +415,75 @@ const showWhatsappTooltip = ref(true);
                         <form class="space-y-4">
                             <!-- Fecha -->
                             <div>
-                                <label class="block text-xs font-bold text-white mb-2 uppercase tracking-wide">Fecha</label>
+                                <label
+                                    class="block text-xs font-bold text-white mb-2 uppercase tracking-wide">Fecha</label>
                                 <button type="button" @click="op?.toggle($event)"
                                     class="w-full text-left flex items-center justify-between px-4 py-4 rounded-xl bg-white/95 hover:bg-white transition-all duration-300 shadow-lg">
                                     <div class="text-sm text-gray-900 font-medium">
-                                        {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: service.type == 'HOSPEDAJE' ? undefined : 'numeric' }) : 'Selecciona una fecha' }}
+                                        {{ checkIn ? new Date(checkIn).toLocaleDateString('es-ES', {
+                                            day: 'numeric',
+                                            month: 'long', year: service.type == 'HOSPEDAJE' ? undefined : 'numeric' }) :
+                                        'Selecciona una fecha' }}
                                     </div>
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
                                 </button>
                             </div>
 
                             <OverlayPanel ref="op" appendTo="body" class="!w-auto">
                                 <div class="p-0 h-[330px]" v-if="service.type == 'HOSPEDAJE'">
-                                    <VueDatePicker v-model="dateRange" range :min-date="new Date()" inline auto-apply :teleport="false" locale="es" :format="'dd/MM/yyyy'" :preview-format="'dd/MM/yyyy'" placeholder="Selecciona fechas" @update:model-value="handleCalendarChange" />
+                                    <VueDatePicker v-model="dateRange" range :min-date="new Date()" inline auto-apply
+                                        :teleport="false" locale="es" :format="'dd/MM/yyyy'"
+                                        :preview-format="'dd/MM/yyyy'" placeholder="Selecciona fechas"
+                                        @update:model-value="handleCalendarChange" />
                                 </div>
                                 <div v-else class="p-0 h-[330px]">
-                                    <VueDatePicker v-model="dateSingle" :min-date="new Date()" inline auto-apply :teleport="false" locale="es" :format="'dd/MM/yyyy'" :preview-format="'dd/MM/yyyy'" placeholder="Selecciona fechas" @update:model-value="handleCalendarChange" />
+                                    <VueDatePicker v-model="dateSingle" :min-date="new Date()" inline auto-apply
+                                        :teleport="false" locale="es" :format="'dd/MM/yyyy'"
+                                        :preview-format="'dd/MM/yyyy'" placeholder="Selecciona fechas"
+                                        @update:model-value="handleCalendarChange" />
                                 </div>
                             </OverlayPanel>
 
                             <!-- Viajeros -->
                             <div>
-                                <label class="block text-xs font-bold text-white mb-2 uppercase tracking-wide">Viajeros</label>
-                                <button type="button" @click="guestsOp?.toggle($event)" 
+                                <label
+                                    class="block text-xs font-bold text-white mb-2 uppercase tracking-wide">Viajeros</label>
+                                <button type="button" @click="guestsOp?.toggle($event)"
                                     class="w-full text-left px-4 py-4 rounded-xl bg-white/95 hover:bg-white transition-all duration-300 shadow-lg flex items-center justify-between">
-                                    <div class="text-sm text-gray-900 font-medium">{{ guests }} viajero{{ guests > 1 ? 's' : '' }}</div>
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    <div class="text-sm text-gray-900 font-medium">{{ guests }} viajero{{ guests > 1 ?
+                                        's' : '' }}</div>
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
                                 </button>
 
                                 <OverlayPanel ref="guestsOp" appendTo="body" class="!w-auto">
                                     <div class="p-4 min-w-[300px]">
                                         <h3 class="text-lg font-semibold text-gray-900 mb-4">¿Quién viene?</h3>
-                                        <GuestSelector :guests="searchStore.guests.value || { adults: 1, children: 0, infants: 0 }" @increment="incrementGuests" @decrement="decrementGuests" />
+                                        <GuestSelector
+                                            :guests="searchStore.guests.value || { adults: 1, children: 0, infants: 0 }"
+                                            @increment="incrementGuests" @decrement="decrementGuests" />
                                     </div>
                                 </OverlayPanel>
                             </div>
 
                             <!-- CTA PRINCIPAL DESTACADO -->
                             <div class="pt-2">
-                                <button v-if="!checkIn || !checkOut" type="button" @click="op?.toggle($event)" 
+                                <button v-if="!checkIn || !checkOut" type="button" @click="op?.toggle($event)"
                                     class="w-full btn-hero">
                                     <span class="flex items-center justify-center gap-2">
                                         <i class="fa-solid fa-calendar-days"></i>
                                         Selecciona fechas
                                     </span>
                                 </button>
-                                <button v-else @click="goToCheckout" type="button" 
-                                    class="w-full btn-hero-action">
+                                <button v-else @click="goToCheckout" type="button" class="w-full btn-hero-action">
                                     <span class="flex items-center justify-center gap-2">
                                         <i class="fa-solid fa-rocket"></i>
                                         Reservar Ahora
@@ -498,7 +504,8 @@ const showWhatsappTooltip = ref(true);
                             </div>
                         </div>
 
-                        <p class="mt-4 text-xs text-white/60 text-center">🔒 Pago seguro · Cancelación gratuita 24h antes</p>
+                        <p class="mt-4 text-xs text-white/60 text-center">🔒 Pago seguro · Cancelación gratuita 24h
+                            antes</p>
                     </div>
                 </div>
             </div>
@@ -514,20 +521,24 @@ const showWhatsappTooltip = ref(true);
     <section v-if="service.type != 'TRANSFER'" class="relative py-24 overflow-hidden">
         <!-- Fondo con gradiente dinámico -->
         <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-black to-gray-900"></div>
-        
+
         <!-- Patrón decorativo -->
         <div class="absolute inset-0 opacity-5">
-            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+            <div class="absolute inset-0"
+                style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;">
+            </div>
         </div>
 
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header de sección mejorado -->
             <div class="text-center mb-12 space-y-4">
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
                     <i class="fa-solid fa-images text-yellow-400"></i>
                     <span class="text-white/80 text-sm font-medium">Galería Visual</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-white">
+                <h2
+                    class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-white">
                     Explora Cada Detalle
                 </h2>
                 <p class="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -538,14 +549,18 @@ const showWhatsappTooltip = ref(true);
             <!-- Gallery con diseño premium -->
             <div class="relative group">
                 <!-- Efecto glow alrededor -->
-                <div class="absolute -inset-1 bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-                
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500">
+                </div>
+
                 <!-- Contenedor de galería -->
-                <div class="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl rounded-3xl p-4 md:p-6 border border-white/10 shadow-2xl">
+                <div
+                    class="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl rounded-3xl p-4 md:p-6 border border-white/10 shadow-2xl">
                     <Gallery :images="product.images" class="rounded-2xl overflow-hidden" />
-                    
+
                     <!-- Contador de imágenes -->
-                    <div class="absolute top-8 right-8 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/20 text-white text-sm font-semibold flex items-center gap-2">
+                    <div
+                        class="absolute top-8 right-8 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/20 text-white text-sm font-semibold flex items-center gap-2">
                         <i class="fa-solid fa-camera"></i>
                         <span>{{ product.images.length }} fotos</span>
                     </div>
@@ -572,7 +587,8 @@ const showWhatsappTooltip = ref(true);
                 <!-- Equipamiento (embarcaciones) en card moderno -->
                 <section v-if="service.type == 'EMBARCACION'" class="content-card">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-black to-gray-800 flex items-center justify-center">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-black to-gray-800 flex items-center justify-center">
                             <i class="fa-solid fa-ship text-white text-xl"></i>
                         </div>
                         <h2 class="text-3xl font-bold text-gray-900">Equipamiento</h2>
@@ -585,16 +601,20 @@ const showWhatsappTooltip = ref(true);
                     <!-- Header con diseño premium -->
                     <div class="relative mb-8">
                         <!-- Línea decorativa -->
-                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-16 bg-gradient-to-b from-yellow-400 via-orange-500 to-red-500 rounded-full"></div>
-                        
+                        <div
+                            class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-16 bg-gradient-to-b from-yellow-400 via-orange-500 to-red-500 rounded-full">
+                        </div>
+
                         <div class="pl-8">
                             <div class="flex items-center gap-3 mb-2">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
                                     <i class="fa-solid fa-file-lines text-white text-2xl"></i>
                                 </div>
                                 <div>
                                     <h2 class="text-4xl font-black text-gray-900 tracking-tight">Descripción</h2>
-                                    <p class="text-sm text-gray-500 font-medium">Conoce todos los detalles de esta experiencia</p>
+                                    <p class="text-sm text-gray-500 font-medium">Conoce todos los detalles de esta
+                                        experiencia</p>
                                 </div>
                             </div>
                         </div>
@@ -603,25 +623,23 @@ const showWhatsappTooltip = ref(true);
                     <!-- Contenido con diseño mejorado -->
                     <div class="relative">
                         <!-- Decoración de fondo -->
-                        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-full blur-3xl opacity-30 -z-10"></div>
-                        
+                        <div
+                            class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-full blur-3xl opacity-30 -z-10">
+                        </div>
+
                         <div class="prose prose-lg max-w-none">
                             <!-- Contenido con transición -->
                             <transition name="expand">
-                                <div v-if="showFullDescription || product.description.length <= 500" 
-                                    key="full" 
-                                    class="text-gray-700 leading-relaxed"
-                                    v-html="product.description">
+                                <div v-if="showFullDescription || product.description.length <= 500" key="full"
+                                    class="text-gray-700 leading-relaxed" v-html="product.description">
                                 </div>
-                                <div v-else 
-                                    key="short" 
-                                    class="text-gray-700 leading-relaxed relative"
+                                <div v-else key="short" class="text-gray-700 leading-relaxed relative"
                                     v-html="product.description.slice(0, 500) + '...'">
                                 </div>
                             </transition>
-                            
+
                             <!-- Gradiente fade cuando está colapsado -->
-                            <div v-if="!showFullDescription && product.description.length > 500" 
+                            <div v-if="!showFullDescription && product.description.length > 500"
                                 class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none">
                             </div>
                         </div>
@@ -631,10 +649,13 @@ const showWhatsappTooltip = ref(true);
                             <button @click="showFullDescription = !showFullDescription"
                                 class="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-900 to-black text-white rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden">
                                 <!-- Efecto de brillo animado -->
-                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                                
-                                <span class="relative z-10">{{ showFullDescription ? 'Mostrar menos' : 'Leer más' }}</span>
-                                <i class="relative z-10 fa-solid transition-transform duration-300" 
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700">
+                                </div>
+
+                                <span class="relative z-10">{{ showFullDescription ? 'Mostrar menos' : 'Leer más'
+                                    }}</span>
+                                <i class="relative z-10 fa-solid transition-transform duration-300"
                                     :class="showFullDescription ? 'fa-chevron-up' : 'fa-chevron-down'">
                                 </i>
                             </button>
@@ -643,22 +664,26 @@ const showWhatsappTooltip = ref(true);
 
                     <!-- Stats o features destacados (opcional) -->
                     <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
+                        <div
+                            class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
                             <i class="fa-solid fa-star text-yellow-500 text-2xl mb-2"></i>
                             <p class="text-xs text-gray-500 font-medium">Experiencia</p>
                             <p class="text-lg font-bold text-gray-900">Premium</p>
                         </div>
-                        <div class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
+                        <div
+                            class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
                             <i class="fa-solid fa-shield-halved text-green-500 text-2xl mb-2"></i>
                             <p class="text-xs text-gray-500 font-medium">Garantía</p>
                             <p class="text-lg font-bold text-gray-900">100%</p>
                         </div>
-                        <div class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
+                        <div
+                            class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
                             <i class="fa-solid fa-clock text-blue-500 text-2xl mb-2"></i>
                             <p class="text-xs text-gray-500 font-medium">Disponible</p>
                             <p class="text-lg font-bold text-gray-900">24/7</p>
                         </div>
-                        <div class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
+                        <div
+                            class="text-center p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-orange-200 transition-colors duration-300">
                             <i class="fa-solid fa-heart text-red-500 text-2xl mb-2"></i>
                             <p class="text-xs text-gray-500 font-medium">Satisfacción</p>
                             <p class="text-lg font-bold text-gray-900">5.0</p>
@@ -672,14 +697,17 @@ const showWhatsappTooltip = ref(true);
                     <div class="relative mb-10">
                         <!-- Línea decorativa con puntos -->
                         <div class="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 animate-pulse"></div>
+                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 animate-pulse">
+                            </div>
                             <div class="w-1 h-12 bg-gradient-to-b from-blue-400 via-cyan-500 to-teal-500"></div>
-                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 animate-pulse" style="animation-delay: 0.5s;"></div>
+                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 animate-pulse"
+                                style="animation-delay: 0.5s;"></div>
                         </div>
-                        
+
                         <div class="pl-10">
                             <div class="flex items-center gap-3 mb-2">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
                                     <i class="fa-solid fa-route text-white text-2xl"></i>
                                 </div>
                                 <div>
@@ -691,8 +719,12 @@ const showWhatsappTooltip = ref(true);
                     </div>
 
                     <!-- Decoración de fondo -->
-                    <div class="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-full blur-3xl opacity-30 -z-10"></div>
-                    <div class="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-teal-50 to-green-50 rounded-full blur-3xl opacity-30 -z-10"></div>
+                    <div
+                        class="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-full blur-3xl opacity-30 -z-10">
+                    </div>
+                    <div
+                        class="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-teal-50 to-green-50 rounded-full blur-3xl opacity-30 -z-10">
+                    </div>
 
                     <!-- Contenido del itinerario -->
                     <div class="relative">
@@ -700,9 +732,11 @@ const showWhatsappTooltip = ref(true);
                     </div>
 
                     <!-- Info adicional -->
-                    <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 via-cyan-50 to-teal-50 rounded-2xl border border-blue-100">
+                    <div
+                        class="mt-8 p-6 bg-gradient-to-r from-blue-50 via-cyan-50 to-teal-50 rounded-2xl border border-blue-100">
                         <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
+                            <div
+                                class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
                                 <i class="fa-solid fa-info-circle text-white text-xl"></i>
                             </div>
                             <div class="flex-1">
@@ -729,7 +763,8 @@ const showWhatsappTooltip = ref(true);
                 <!-- Servicios en card moderno -->
                 <section class="content-card">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-black to-gray-800 flex items-center justify-center">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-black to-gray-800 flex items-center justify-center">
                             <i class="fa-solid fa-star text-white text-xl"></i>
                         </div>
                         <h2 class="text-3xl font-bold text-gray-900">Servicios Incluidos</h2>
@@ -743,27 +778,36 @@ const showWhatsappTooltip = ref(true);
                     <div class="relative mb-10">
                         <!-- Línea decorativa con checkmarks -->
                         <div class="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-green-400 to-green-600 animate-pulse"></div>
+                            <div
+                                class="w-2 h-2 rounded-full bg-gradient-to-br from-green-400 to-green-600 animate-pulse">
+                            </div>
                             <div class="w-1 h-12 bg-gradient-to-b from-green-400 via-emerald-500 to-teal-500"></div>
-                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 animate-pulse" style="animation-delay: 0.5s;"></div>
+                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 animate-pulse"
+                                style="animation-delay: 0.5s;"></div>
                         </div>
-                        
+
                         <div class="pl-10">
                             <div class="flex items-center gap-3 mb-2">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-green-500/30">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-green-500/30">
                                     <i class="fa-solid fa-check-double text-white text-2xl"></i>
                                 </div>
                                 <div>
                                     <h2 class="text-4xl font-black text-gray-900 tracking-tight">Qué Incluye</h2>
-                                    <p class="text-sm text-gray-500 font-medium">Todo lo que necesitas para tu experiencia</p>
+                                    <p class="text-sm text-gray-500 font-medium">Todo lo que necesitas para tu
+                                        experiencia</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Decoración de fondo -->
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-green-50 to-emerald-50 rounded-full blur-3xl opacity-30 -z-10"></div>
-                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-full blur-3xl opacity-30 -z-10"></div>
+                    <div
+                        class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-green-50 to-emerald-50 rounded-full blur-3xl opacity-30 -z-10">
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-full blur-3xl opacity-30 -z-10">
+                    </div>
 
                     <!-- Contenido -->
                     <div class="relative">
@@ -771,19 +815,23 @@ const showWhatsappTooltip = ref(true);
                     </div>
 
                     <!-- Info adicional con badge -->
-                    <div class="mt-8 p-6 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-2xl border border-green-100">
+                    <div
+                        class="mt-8 p-6 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-2xl border border-green-100">
                         <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                            <div
+                                class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                                 <i class="fa-solid fa-shield-check text-white text-xl"></i>
                             </div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-bold text-gray-900 mb-2">Garantía de Calidad</h3>
                                 <p class="text-sm text-gray-700 leading-relaxed">
-                                    Todos los servicios incluidos están garantizados y cumplen con los más altos estándares de calidad. Tu satisfacción es nuestra prioridad.
+                                    Todos los servicios incluidos están garantizados y cumplen con los más altos
+                                    estándares de calidad. Tu satisfacción es nuestra prioridad.
                                 </p>
                             </div>
                             <div class="flex-shrink-0">
-                                <div class="px-4 py-2 bg-white rounded-full border-2 border-green-500 text-green-600 font-bold text-sm whitespace-nowrap">
+                                <div
+                                    class="px-4 py-2 bg-white rounded-full border-2 border-green-500 text-green-600 font-bold text-sm whitespace-nowrap">
                                     ✓ Verificado
                                 </div>
                             </div>
@@ -797,14 +845,18 @@ const showWhatsappTooltip = ref(true);
                     <div class="relative mb-10">
                         <!-- Línea decorativa con marcadores de ubicación -->
                         <div class="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 animate-pulse"></div>
+                            <div
+                                class="w-2 h-2 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 animate-pulse">
+                            </div>
                             <div class="w-1 h-12 bg-gradient-to-b from-blue-400 via-indigo-500 to-purple-500"></div>
-                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 animate-pulse" style="animation-delay: 0.5s;"></div>
+                            <div class="w-2 h-2 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 animate-pulse"
+                                style="animation-delay: 0.5s;"></div>
                         </div>
-                        
+
                         <div class="pl-10">
                             <div class="flex items-center gap-3 mb-2">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
                                     <i class="fa-solid fa-map-location-dot text-white text-2xl"></i>
                                 </div>
                                 <div>
@@ -816,8 +868,12 @@ const showWhatsappTooltip = ref(true);
                     </div>
 
                     <!-- Decoración de fondo -->
-                    <div class="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full blur-3xl opacity-30 -z-10"></div>
-                    <div class="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-50 to-pink-50 rounded-full blur-3xl opacity-30 -z-10"></div>
+                    <div
+                        class="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full blur-3xl opacity-30 -z-10">
+                    </div>
+                    <div
+                        class="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-50 to-pink-50 rounded-full blur-3xl opacity-30 -z-10">
+                    </div>
 
                     <!-- Contenido -->
                     <div class="relative">
@@ -825,9 +881,11 @@ const showWhatsappTooltip = ref(true);
                     </div>
 
                     <!-- Info adicional con mapa -->
-                    <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-indigo-100">
+                    <div
+                        class="mt-8 p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-indigo-100">
                         <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                            <div
+                                class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
                                 <i class="fa-solid fa-circle-info text-white text-xl"></i>
                             </div>
                             <div class="flex-1">
@@ -874,10 +932,10 @@ const showWhatsappTooltip = ref(true);
             </div>
         </Link>
 
-        
+
     </div>
 
-      
+
 </template>
 <style scoped>
 /* ===== ANIMACIONES GENERALES ===== */
@@ -886,6 +944,7 @@ const showWhatsappTooltip = ref(true);
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -897,6 +956,7 @@ const showWhatsappTooltip = ref(true);
         opacity: 0;
         transform: translateY(40px) scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -960,8 +1020,14 @@ const showWhatsappTooltip = ref(true);
     opacity: 1;
 }
 
-.mobile-modal-enter-to .mobile-booking-content,analiza esta pagina de show aqui se muestran los detalles de los servicios que ofrece la agencia, verifica la pagina de welcome y dale a este show un estilo acorde a la de welcome, pero sin perder las funciones que ya tiene esta pagina ni sus componentes, haz este cambio visual, elegante, inovador y que se note que es muy moderno, ademas haz algo minimalista que el formulario de reserva sea lo mas importante
-.mobile-modal-leave-from .mobile-booking-content {
+.mobile-modal-enter-to .mobile-booking-content,
+analiza esta pagina de show aqui se muestran los detalles de los servicios que ofrece la agencia,
+verifica la pagina de welcome y dale a este show un estilo acorde a la de welcome,
+pero sin perder las funciones que ya tiene esta pagina ni sus componentes,
+haz este cambio visual,
+elegante,
+inovador y que se note que es muy moderno,
+ademas haz algo minimalista que el formulario de reserva sea lo mas importante .mobile-modal-leave-from .mobile-booking-content {
     transform: translateY(0);
 }
 
@@ -1022,11 +1088,11 @@ const showWhatsappTooltip = ref(true);
 
 /* ===== TARJETA DE RESERVA HERO (formulario destacado) ===== */
 .booking-card-hero {
-    background: linear-gradient(135deg, rgba(17,24,39,0.95) 0%, rgba(31,41,55,0.92) 100%);
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.92) 100%);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 1px rgba(255,255,255,0.1) inset;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.1) inset;
     padding: 2rem;
     border-radius: 1.5rem;
     position: relative;
@@ -1052,7 +1118,7 @@ const showWhatsappTooltip = ref(true);
     border-radius: 0.85rem;
     font-weight: 800;
     font-size: 1rem;
-    box-shadow: 0 10px 30px rgba(251,191,36,0.3);
+    box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     cursor: pointer;
@@ -1060,7 +1126,7 @@ const showWhatsappTooltip = ref(true);
 
 .btn-hero:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 15px 40px rgba(251,191,36,0.4);
+    box-shadow: 0 15px 40px rgba(251, 191, 36, 0.4);
 }
 
 .btn-hero-action {
@@ -1070,7 +1136,7 @@ const showWhatsappTooltip = ref(true);
     border-radius: 0.85rem;
     font-weight: 800;
     font-size: 1rem;
-    box-shadow: 0 10px 30px rgba(239,68,68,0.35);
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.35);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     cursor: pointer;
@@ -1078,7 +1144,7 @@ const showWhatsappTooltip = ref(true);
 
 .btn-hero-action:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 15px 40px rgba(239,68,68,0.5);
+    box-shadow: 0 15px 40px rgba(239, 68, 68, 0.5);
 }
 
 /* ===== CONTENT CARDS (secciones de contenido) ===== */
@@ -1087,13 +1153,13 @@ const showWhatsappTooltip = ref(true);
     border: 2px solid #e5e7eb;
     border-radius: 1.5rem;
     padding: 2.5rem;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
 }
 
 .content-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
     border-color: #000;
 }
 
@@ -1103,7 +1169,7 @@ const showWhatsappTooltip = ref(true);
     border: 2px solid #e5e7eb;
     border-radius: 2rem;
     padding: 3rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1123,7 +1189,7 @@ const showWhatsappTooltip = ref(true);
 
 .description-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 30px 80px rgba(0,0,0,0.15);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
     border-color: #fbbf24;
 }
 
@@ -1172,6 +1238,7 @@ const showWhatsappTooltip = ref(true);
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -1183,7 +1250,7 @@ const showWhatsappTooltip = ref(true);
     border: 2px solid #e2e8f0;
     border-radius: 2rem;
     padding: 3rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1203,7 +1270,7 @@ const showWhatsappTooltip = ref(true);
 
 .itinerary-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 30px 80px rgba(59,130,246,0.15);
+    box-shadow: 0 30px 80px rgba(59, 130, 246, 0.15);
     border-color: #3b82f6;
 }
 
@@ -1213,10 +1280,13 @@ const showWhatsappTooltip = ref(true);
 
 /* Animación de pulse para los puntos decorativos */
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
         transform: scale(1);
     }
+
     50% {
         opacity: 0.6;
         transform: scale(1.2);
@@ -1229,7 +1299,7 @@ const showWhatsappTooltip = ref(true);
 
 /* ===== MODAL MOBILE ===== */
 .modal-header-gradient {
-    background: linear-gradient(135deg, rgba(17,24,39,0.97), rgba(31,41,55,0.95));
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.97), rgba(31, 41, 55, 0.95));
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
 }
@@ -1241,7 +1311,7 @@ const showWhatsappTooltip = ref(true);
     padding: 0.75rem;
     border-radius: 0.75rem;
     font-weight: 700;
-    box-shadow: 0 6px 18px rgba(251,191,36,0.25);
+    box-shadow: 0 6px 18px rgba(251, 191, 36, 0.25);
     transition: transform 0.2s;
 }
 
@@ -1251,17 +1321,19 @@ const showWhatsappTooltip = ref(true);
 
 /* ===== GLASS CARD (mobile bar) ===== */
 .glass-card {
-    background: rgba(255,255,255,0.85);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(8px) saturate(140%);
     -webkit-backdrop-filter: blur(8px) saturate(140%);
-    border: 1px solid rgba(16,24,40,0.08);
-    box-shadow: 0 12px 40px rgba(2,6,23,0.12);
+    border: 1px solid rgba(16, 24, 40, 0.08);
+    box-shadow: 0 12px 40px rgba(2, 6, 23, 0.12);
     padding: 1.25rem;
     border-radius: 1rem;
 }
 
 @media (min-width: 1024px) {
-    .glass-card { padding: 1.5rem; }
+    .glass-card {
+        padding: 1.5rem;
+    }
 }
 
 /* ===== INCLUDES CARD (sección de incluye premium) ===== */
@@ -1270,7 +1342,7 @@ const showWhatsappTooltip = ref(true);
     border: 2px solid #d1fae5;
     border-radius: 2rem;
     padding: 3rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1290,7 +1362,7 @@ const showWhatsappTooltip = ref(true);
 
 .includes-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 30px 80px rgba(16,185,129,0.15);
+    box-shadow: 0 30px 80px rgba(16, 185, 129, 0.15);
     border-color: #10b981;
 }
 
@@ -1304,7 +1376,7 @@ const showWhatsappTooltip = ref(true);
     border: 2px solid #e0e7ff;
     border-radius: 2rem;
     padding: 3rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1324,7 +1396,7 @@ const showWhatsappTooltip = ref(true);
 
 .includes-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 30px 80px rgba(16,185,129,0.15);
+    box-shadow: 0 30px 80px rgba(16, 185, 129, 0.15);
     border-color: #10b981;
 }
 
@@ -1346,7 +1418,7 @@ const showWhatsappTooltip = ref(true);
 
 .collection-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 30px 80px rgba(99,102,241,0.15);
+    box-shadow: 0 30px 80px rgba(99, 102, 241, 0.15);
     border-color: #6366f1;
 }
 
@@ -1466,8 +1538,8 @@ const showWhatsappTooltip = ref(true);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5), 
-                0 0 0 0 rgba(37, 211, 102, 0.7);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5),
+        0 0 0 0 rgba(37, 211, 102, 0.7);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
@@ -1498,8 +1570,8 @@ const showWhatsappTooltip = ref(true);
 .whatsapp-button:hover .whatsapp-float {
     transform: translateY(-6px) scale(1.1);
     box-shadow: 0 12px 40px rgba(37, 211, 102, 0.7),
-                0 0 0 8px rgba(37, 211, 102, 0.15),
-                0 0 0 16px rgba(37, 211, 102, 0.08);
+        0 0 0 8px rgba(37, 211, 102, 0.15),
+        0 0 0 16px rgba(37, 211, 102, 0.08);
     animation: none;
 }
 
@@ -1533,7 +1605,7 @@ const showWhatsappTooltip = ref(true);
     padding: 1rem 1.5rem;
     border-radius: 1rem;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15),
-                0 0 0 1px rgba(37, 211, 102, 0.1);
+        0 0 0 1px rgba(37, 211, 102, 0.1);
     pointer-events: none;
     z-index: 10;
     min-width: 200px;
@@ -1590,26 +1662,34 @@ const showWhatsappTooltip = ref(true);
 
 /* Animación de pulso mejorada */
 @keyframes whatsappPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5),
-                    0 0 0 0 rgba(37, 211, 102, 0.7);
+            0 0 0 0 rgba(37, 211, 102, 0.7);
     }
+
     50% {
         box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5),
-                    0 0 0 12px rgba(37, 211, 102, 0);
+            0 0 0 12px rgba(37, 211, 102, 0);
     }
 }
 
 @keyframes bounceRight {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(-50%) translateX(0);
     }
+
     25% {
         transform: translateY(-50%) translateX(-8px);
     }
+
     50% {
         transform: translateY(-50%) translateX(0);
     }
+
     75% {
         transform: translateY(-50%) translateX(-4px);
     }
@@ -1668,26 +1748,26 @@ const showWhatsappTooltip = ref(true);
         bottom: 108px;
         right: 20px;
     }
-    
+
     .whatsapp-float {
         width: 60px;
         height: 60px;
     }
-    
+
     .whatsapp-float i {
         font-size: 1.75rem;
     }
-    
+
     .whatsapp-tooltip {
         right: 75px;
         min-width: 160px;
         padding: 0.75rem 1rem;
     }
-    
+
     .tooltip-text {
         font-size: 0.875rem;
     }
-    
+
     .tooltip-subtext {
         font-size: 0.7rem;
     }
