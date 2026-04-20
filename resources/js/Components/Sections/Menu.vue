@@ -66,8 +66,8 @@
       </nav>
 
     </div>
-    <Tickets v-if="!isCollapsed"></Tickets>
-    <PendingActivitiesAlert v-if="!isCollapsed"></PendingActivitiesAlert>
+    <Tickets v-if="!isCollapsed && $page.props.auth.user.rol !== 'vendedor'"></Tickets>
+    <PendingActivitiesAlert v-if="!isCollapsed && $page.props.auth.user.rol !== 'vendedor'"></PendingActivitiesAlert>
 
     <MenuUserPanelModern :is-collapsed="isCollapsed" />
   </div>
