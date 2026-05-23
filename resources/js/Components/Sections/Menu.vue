@@ -46,8 +46,6 @@
         <MenuItemModern label="Reservas" v-tooltip="`Reservas`" icon="pi pi-calendar" :submenu-items="reservasItems"
           :is-collapsed="isCollapsed" @submenu-toggle="handleSubmenuToggle" />
 
-       
-
         <!-- Contabilidad -->
         <MenuItemModern label="Contabilidad" v-tooltip="`Contabilidad`" icon="pi pi-dollar"
           :submenu-items="contabilidadItems" :is-collapsed="isCollapsed" @submenu-toggle="handleSubmenuToggle" />
