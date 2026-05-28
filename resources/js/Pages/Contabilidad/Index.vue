@@ -1,25 +1,21 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import TotalCard from "./TotalCard.vue";
-import BarSeries from "./BarSeries.vue";
 import StatCard from "./StatCard.vue";
 import CompactCard from "./CompactCard.vue";
 import PieChart from "./PieChart.vue";
 import ColumnChart from "./ColumnChart.vue";
-import LineChart from "./LineChart.vue";
 import BarChart from "./BarChart.vue";
 import ComparisonBarChart from "./ComparisonBarChart.vue";
 import GroupedBarChart from "./GroupedBarChart.vue";
 import SimpleTable from "./SimpleTable.vue";
 import axios from "axios";
-import Datatable from "@/Components/Customs/Datatable.vue";
 
 const props = defineProps({
   bookings: Array,
 });
-const seriesData = ref();
 
+const seriesData = ref();
 const today = new Date();
 const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 const selectDate = ref([firstOfMonth, today]);
@@ -37,156 +33,66 @@ const reservasAdelantadas = ref(0);
 const reservasPorCanal = ref([]);
 
 const getVentas = () => {
-  axios
-    .get(route("get.ventas"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      ventas.value = response.data;
-    });
+  axios.get(route("get.ventas"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { ventas.value = r.data; });
 };
 
 const costosProveedores = () => {
-  axios
-    .get(route("get.costos.proveedores"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      let data = Object.values(response.data);
+  axios.get(route("get.costos.proveedores"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => {
+      const data = Object.values(r.data);
       proveedores.value = data;
-      costos.value = data.reduce((total, current) => total + current.costos, 0);
+      costos.value = data.reduce((total, cur) => total + cur.costos, 0);
     });
 };
 
 const getTotalReservas = () => {
-  axios
-    .get(route("get.total.reservas"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      seriesData.value = Object.values(response.data);
-    });
+  axios.get(route("get.total.reservas"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { seriesData.value = Object.values(r.data); });
 };
 
 const getPagosProveedoresData = () => {
-  axios
-    .get(route("get.pagos.proveedores"))
-    .then((response) => {
-      pagosProveedores.value = response.data;
-    });
+  axios.get(route("get.pagos.proveedores")).then((r) => { pagosProveedores.value = r.data; });
 };
 
 const getReservasPorTipoData = () => {
-  axios
-    .get(route("get.reservas.tipo.servicio"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      reservasPorTipo.value = response.data;
-    });
+  axios.get(route("get.reservas.tipo.servicio"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { reservasPorTipo.value = r.data; });
 };
 
 const getTopServiciosData = () => {
-  axios
-    .get(route("get.top.servicios"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      topServicios.value = response.data;
-    });
+  axios.get(route("get.top.servicios"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { topServicios.value = r.data; });
 };
 
 const getProveedorTopData = () => {
-  axios
-    .get(route("get.proveedor.top.reservas"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      topProveedor.value = response.data;
-    });
+  axios.get(route("get.proveedor.top.reservas"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { topProveedor.value = r.data; });
 };
 
 const getVendedorTopData = () => {
-  axios
-    .get(route("get.vendedor.top.reservas"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      topVendedor.value = response.data;
-    });
+  axios.get(route("get.vendedor.top.reservas"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { topVendedor.value = r.data; });
 };
 
 const getEstadisticasEstadosData = () => {
-  axios
-    .get(route("get.estadisticas.estados"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      estadisticasEstados.value = response.data;
-    });
+  axios.get(route("get.estadisticas.estados"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { estadisticasEstados.value = r.data; });
 };
 
 const getReservasAdelantadasData = () => {
-  axios
-    .get(route("get.reservas.adelantadas"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      reservasAdelantadas.value = response.data;
-    });
+  axios.get(route("get.reservas.adelantadas"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { reservasAdelantadas.value = r.data; });
 };
 
 const getProveedorMasPagadoData = () => {
-  axios
-    .get(route("get.proveedor.mas.pagado"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      topProveedorPagado.value = response.data;
-    });
+  axios.get(route("get.proveedor.mas.pagado"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { topProveedorPagado.value = r.data; });
 };
 
 const getReservasPorCanalData = () => {
-  axios
-    .get(route("get.reservas.por.canal"), {
-      params: {
-        startDate: selectDate.value[0],
-        endDate: selectDate.value[1],
-      },
-    })
-    .then((response) => {
-      reservasPorCanal.value = response.data;
-    });
+  axios.get(route("get.reservas.por.canal"), { params: { startDate: selectDate.value[0], endDate: selectDate.value[1] } })
+    .then((r) => { reservasPorCanal.value = r.data; });
 };
 
 function getData() {
@@ -204,312 +110,243 @@ function getData() {
   getReservasPorCanalData();
 }
 
-onMounted(() => {
-  getData();
-});
+onMounted(() => { getData(); });
 
 const columns = [
-  {
-    header: "Proveedor",
-    field: "proveedor",
-    filter: true,
-  },
-  {
-    header: "Ventas",
-    field: "ventas",
-    type: "currency",
-    filter: true,
-  },
-  {
-    header: "Costos",
-    field: "costos",
-    type: "currency",
-    filter: true,
-  },
-];
-
-const columnsServicios = [
-  {
-    header: "Servicio",
-    field: "service",
-    filter: true,
-  },
-  {
-    header: "Cantidad",
-    field: "cantidad",
-    filter: true,
-  },
-  {
-    header: "Ventas",
-    field: "ventas",
-    type: "currency",
-    filter: true,
-  },
+  { header: "Proveedor", field: "proveedor", filter: true },
+  { header: "Ventas", field: "ventas", type: "currency", filter: true },
+  { header: "Costos", field: "costos", type: "currency", filter: true },
 ];
 
 const columnsTopServicios = [
-  {
-    header: "Servicio",
-    field: "service_name",
-    filter: true,
-  },
-  {
-    header: "Cantidad",
-    field: "cantidad",
-    filter: true,
-  },
-  {
-    header: "Ventas",
-    field: "ventas",
-    type: "currency",
-    filter: true,
-  },
+  { header: "Servicio", field: "service_name", filter: true },
+  { header: "Cantidad", field: "cantidad", filter: true },
+  { header: "Ventas", field: "ventas", type: "currency", filter: true },
 ];
 
-const columnsCanales = [
-  {
-    header: "Canal",
-    field: "channel",
-    filter: true,
-  },
-  {
-    header: "Cantidad",
-    field: "cantidad",
-    filter: true,
-  },
-  {
-    header: "Ventas",
-    field: "ventas",
-    type: "currency",
-    filter: true,
-  },
-];
 
-const estadosChartData = computed(() => {
-  return [
-    { 
-      x: 'Reservado', 
-      y: estadisticasEstados.value.reservado?.cantidad || 0,
-      porcentaje: estadisticasEstados.value.reservado?.porcentaje || 0,
-      recaudado: estadisticasEstados.value.reservado?.recaudado || 0,
-      pagado: estadisticasEstados.value.reservado?.pagado || 0
-    },
-    { 
-      x: 'Cancelado', 
-      y: estadisticasEstados.value.cancelado?.cantidad || 0,
-      porcentaje: estadisticasEstados.value.cancelado?.porcentaje || 0,
-      recaudado: estadisticasEstados.value.cancelado?.recaudado || 0,
-      pagado: estadisticasEstados.value.cancelado?.pagado || 0
-    },
-    { 
-      x: 'No Show', 
-      y: estadisticasEstados.value.no_show?.cantidad || 0,
-      porcentaje: estadisticasEstados.value.no_show?.porcentaje || 0,
-      recaudado: estadisticasEstados.value.no_show?.recaudado || 0,
-      pagado: estadisticasEstados.value.no_show?.pagado || 0
-    },
-  ];
-});
+const estadosChartData = computed(() => [
+  {
+    x: "Reservado",
+    y: estadisticasEstados.value.reservado?.cantidad || 0,
+    porcentaje: estadisticasEstados.value.reservado?.porcentaje || 0,
+    recaudado: estadisticasEstados.value.reservado?.recaudado || 0,
+    pagado: estadisticasEstados.value.reservado?.pagado || 0,
+  },
+  {
+    x: "Cancelado",
+    y: estadisticasEstados.value.cancelado?.cantidad || 0,
+    porcentaje: estadisticasEstados.value.cancelado?.porcentaje || 0,
+    recaudado: estadisticasEstados.value.cancelado?.recaudado || 0,
+    pagado: estadisticasEstados.value.cancelado?.pagado || 0,
+  },
+  {
+    x: "No Show",
+    y: estadisticasEstados.value.no_show?.cantidad || 0,
+    porcentaje: estadisticasEstados.value.no_show?.porcentaje || 0,
+    recaudado: estadisticasEstados.value.no_show?.recaudado || 0,
+    pagado: estadisticasEstados.value.no_show?.pagado || 0,
+  },
+]);
 
-const reservasPorTipoChartData = computed(() => {
-  return reservasPorTipo.value.map(item => ({
-    x: item.service,
-    y: item.cantidad
-  }));
-});
+const reservasPorTipoChartData = computed(() =>
+  reservasPorTipo.value.map((item) => ({ x: item.service, y: item.cantidad }))
+);
+
+const formatCOP = (val) =>
+  new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(val);
 </script>
 
 <template>
-  <AppLayout title="Services">
-    <!-- Hidden classes para cargar los colores de Tailwind -->
-    <div class="hidden bg-amber-100 text-amber-800 bg-blue-100 text-blue-800 bg-green-100 text-green-800 bg-purple-100 text-purple-800 bg-red-100 text-red-800 bg-indigo-100 text-indigo-800"></div>
-    
-    <div class="p-4 gap-y-4 shadow-lg">
-      <div class="my-10 w-full justify-between flex">
-        <h1 class="text-2xl">
-          Contabilidad <span class="text-3xl font-bold">AV COLOMBIA</span>
-        </h1>
-        <DatePicker
-          variant="filled"
-          v-model="selectDate"
-          selectionMode="range"
-          dateFormat="dd/mm/yy"
-          :manualInput="false"
-          @value-change="getData"
-        />
+  <AppLayout title="Contabilidad">
+    <div class="min-h-screen bg-gray-50">
+      <div class="max-w-screen-2xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Panel de control</p>
+            <h1 class="text-2xl font-bold text-gray-900">Contabilidad <span class="text-gray-400 font-normal">— AV Colombia</span></h1>
+          </div>
+          <DatePicker
+            variant="filled"
+            v-model="selectDate"
+            selectionMode="range"
+            dateFormat="dd/mm/yy"
+            :manualInput="false"
+            @value-change="getData"
+            class="text-sm"
+          />
+        </div>
+
+        <!-- KPIs financieros -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Resumen financiero</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <CompactCard title="Ventas" :value="ventas" :isCurrency="true" color="blue" />
+            <CompactCard title="Costos" :value="costos" :isCurrency="true" color="amber" />
+            <CompactCard title="Utilidad" :value="ventas - costos" :isCurrency="true" color="emerald" />
+          </div>
+        </section>
+
+        <!-- Destacados -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Destacados</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
+              title="Proveedor top"
+              :value="topProveedor?.proveedor || 'N/A'"
+              :subtitle="`${topProveedor?.cantidad || 0} reservas`"
+              color="purple"
+            />
+            <StatCard
+              title="Vendedor top"
+              :value="topVendedor?.vendedor || 'N/A'"
+              :subtitle="`${topVendedor?.cantidad || 0} reservas`"
+              color="green"
+            />
+            <StatCard
+              v-if="topProveedorPagado?.[0]"
+              title="Más pagado"
+              :value="topProveedorPagado[0].proveedor || 'N/A'"
+              :subtitle="`${formatCOP(topProveedorPagado[0].total_pagado)} · ${topProveedorPagado[0].cantidad_pagos} pagos`"
+              color="indigo"
+            />
+            <StatCard
+              v-if="topProveedorPagado?.[1]"
+              title="2° más pagado"
+              :value="topProveedorPagado[1].proveedor || 'N/A'"
+              :subtitle="`${formatCOP(topProveedorPagado[1].total_pagado)} · ${topProveedorPagado[1].cantidad_pagos} pagos`"
+              color="blue"
+            />
+          </div>
+        </section>
+
+        <!-- Estados de reservas -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Estados de reservas</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <StatCard
+              title="Reservadas"
+              :value="estadisticasEstados.reservado?.cantidad || 0"
+              subtitle="Estado activo"
+              color="blue"
+            />
+            <StatCard
+              title="Canceladas"
+              :value="estadisticasEstados.cancelado?.cantidad || 0"
+              subtitle="Estado cancelado"
+              color="red"
+            />
+            <StatCard
+              title="No show"
+              :value="estadisticasEstados.no_show?.cantidad || 0"
+              subtitle="No presentados"
+              color="amber"
+            />
+            <StatCard
+              title="Adelantadas"
+              :value="reservasAdelantadas"
+              subtitle="Fecha futura"
+              color="indigo"
+            />
+          </div>
+        </section>
+
+        <!-- Gráficos principales -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Tendencias</p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <ColumnChart
+                v-if="seriesData && seriesData.length > 0"
+                :data="seriesData"
+                title="Reservas por día"
+                labelKey="date"
+                valueKey="cant"
+              />
+              <div v-else class="h-48 flex items-center justify-center text-sm text-gray-400">Sin datos</div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <ComparisonBarChart
+                v-if="pagosProveedores && pagosProveedores.length > 0"
+                :data="pagosProveedores"
+                title="Comparación anual: pagos vs recaudado"
+              />
+              <div v-else class="h-48 flex items-center justify-center text-sm text-gray-400">Sin datos</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Distribución -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Distribución</p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <PieChart
+                v-if="estadosChartData && estadosChartData.length > 0"
+                :data="estadosChartData"
+                title="Estados de reservas"
+              />
+              <div v-else class="h-48 flex items-center justify-center text-sm text-gray-400">Sin datos</div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <BarChart
+                v-if="reservasPorTipoChartData && reservasPorTipoChartData.length > 0"
+                :data="reservasPorTipoChartData"
+                title="Por tipo de servicio"
+                labelKey="x"
+                valueKey="y"
+              />
+              <div v-else class="h-48 flex items-center justify-center text-sm text-gray-400">Sin datos</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Canal de venta -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Canal de venta</p>
+          <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <GroupedBarChart
+              v-if="reservasPorCanal && reservasPorCanal.length > 0"
+              :data="reservasPorCanal"
+              title="Reservas y ventas por canal"
+            />
+            <div v-else class="h-48 flex items-center justify-center text-sm text-gray-400">Sin datos</div>
+          </div>
+        </section>
+
+        <!-- Tablas de servicios -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Top servicios</p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <SimpleTable
+              v-if="topServicios.top5 && topServicios.top5.length > 0"
+              :data="topServicios.top5"
+              :columns="columnsTopServicios"
+              title="Más vendidos"
+            />
+            <SimpleTable
+              v-if="topServicios.bottom5 && topServicios.bottom5.length > 0"
+              :data="topServicios.bottom5"
+              :columns="columnsTopServicios"
+              title="Menos vendidos"
+            />
+          </div>
+        </section>
+
+        <!-- Costos por proveedor -->
+        <section>
+          <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Proveedores</p>
+          <SimpleTable
+            v-if="proveedores && proveedores.length > 0"
+            :data="proveedores"
+            :columns="columns"
+            title="Costos por proveedor"
+          />
+        </section>
+
       </div>
-
-      <!-- Cards de resumen principal -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-5 mb-6">
-        <CompactCard
-          title="Ventas"
-          :value="ventas"
-          :isCurrency="true"
-          icon="💰"
-          color="blue"
-        />
-        
-        <CompactCard
-          title="Costos"
-          :value="costos"
-          :isCurrency="true"
-          icon="💸"
-          color="amber"
-        />
-        
-        <CompactCard
-          title="Utilidad"
-          :value="ventas - costos"
-          :isCurrency="true"
-          icon="📈"
-          color="emerald"
-        />
-        
-        <StatCard
-          title="Proveedor Top"
-          :value="topProveedor?.proveedor || 'N/A'"
-          :subtitle="`${topProveedor?.cantidad || 0} reservas`"
-          icon="🏆"
-          color="purple"
-        />
-        
-        <StatCard
-          title="Vendedor Top"
-          :value="topVendedor?.vendedor || 'N/A'"
-          :subtitle="`${topVendedor?.cantidad || 0} reservas`"
-          icon="⭐"
-          color="green"
-        />
-      </div>
-
-      <!-- Tarjetas de proveedores más pagados -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 mb-6">
-        <StatCard
-          v-if="topProveedorPagado && topProveedorPagado[0]"
-          title="Proveedor Más Pagado"
-          :value="topProveedorPagado[0].proveedor || 'N/A'"
-          :subtitle="`Total: ${new Intl.NumberFormat('es-CO', {style: 'currency', currency: 'COP', minimumFractionDigits: 0}).format(topProveedorPagado[0].total_pagado)} (${topProveedorPagado[0].cantidad_pagos} pagos)`"
-          icon="💳"
-          color="indigo"
-        />
-        
-        <StatCard
-          v-if="topProveedorPagado && topProveedorPagado[1]"
-          title="Segundo Proveedor Más Pagado"
-          :value="topProveedorPagado[1].proveedor || 'N/A'"
-          :subtitle="`Total: ${new Intl.NumberFormat('es-CO', {style: 'currency', currency: 'COP', minimumFractionDigits: 0}).format(topProveedorPagado[1].total_pagado)} (${topProveedorPagado[1].cantidad_pagos} pagos)`"
-          icon="💳"
-          color="purple"
-        />
-      </div>
-
-      <!-- Estadísticas de Estados y Reservas Adelantadas -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-4 mb-6">
-        <StatCard
-          title="Reservas"
-          :value="estadisticasEstados.reservado?.cantidad || 0"
-          subtitle="Estado: Reservado"
-          icon="✅"
-          color="blue"
-        />
-        
-        <StatCard
-          title="Canceladas"
-          :value="estadisticasEstados.cancelado?.cantidad || 0"
-          subtitle="Estado: Cancelado"
-          icon="❌"
-          color="red"
-        />
-        
-        <StatCard
-          title="No Show"
-          :value="estadisticasEstados.no_show?.cantidad || 0"
-          subtitle="No presentados"
-          icon="⚠️"
-          color="amber"
-        />
-        
-        <StatCard
-          title="Reservas Adelantadas"
-          :value="reservasAdelantadas"
-          subtitle="Fecha futura"
-          icon="📅"
-          color="indigo"
-        />
-      </div>
-
-      <!-- Gráficos principales -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 mb-6">
-        <ColumnChart
-          v-if="seriesData && seriesData.length > 0"
-          :data="seriesData"
-          title="Reservas por Día"
-          labelKey="date"
-          valueKey="cant"
-        />
-
-        <ComparisonBarChart
-          v-if="pagosProveedores && pagosProveedores.length > 0"
-          :data="pagosProveedores"
-          title="Comparación Anual: Pagos vs Recaudado"
-        />
-      </div>
-
-      <!-- Gráfico de estados y reservas por tipo de servicio -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 mb-6">
-        <PieChart
-          v-if="estadosChartData && estadosChartData.length > 0"
-          :data="estadosChartData"
-          title="Distribución de Estados de Reservas"
-        />
-
-        <BarChart
-          v-if="reservasPorTipoChartData && reservasPorTipoChartData.length > 0"
-          :data="reservasPorTipoChartData"
-          title="Reservas por Tipo de Servicio"
-          labelKey="x"
-          valueKey="y"
-        />
-      </div>
-
-      <!-- Gráfico de reservas y ventas por canal -->
-      <div class="mb-6">
-        <GroupedBarChart
-          v-if="reservasPorCanal && reservasPorCanal.length > 0"
-          :data="reservasPorCanal"
-          title="Reservas y Ventas por Canal de Venta"
-        />
-      </div>
-
-      <!-- Gráfico de barras de costos por proveedor -->
-      
-
-      <!-- Top 5 Servicios más vendidos y menos vendidos -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 mb-6">
-        <SimpleTable
-          v-if="topServicios.top5 && topServicios.top5.length > 0"
-          :data="topServicios.top5"
-          :columns="columnsTopServicios"
-          title="Top 5 Servicios Más Vendidos"
-        />
-        
-        <SimpleTable
-          v-if="topServicios.bottom5 && topServicios.bottom5.length > 0"
-          :data="topServicios.bottom5"
-          :columns="columnsTopServicios"
-          title="Top 5 Servicios Menos Vendidos"
-        />
-      </div>
-
-      <!-- Tabla de servicios por tipo -->
-      
-        
-        <SimpleTable
-          v-if="proveedores && proveedores.length > 0"
-          :data="proveedores"
-          :columns="columns"
-          title="Costos por Proveedor"
-        />
     </div>
   </AppLayout>
 </template>
