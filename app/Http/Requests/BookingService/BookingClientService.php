@@ -37,6 +37,7 @@ class BookingClientService extends FormRequest
             'adult_tarifa' => 'nullable|numeric',
             'payment_method' => 'required|in:0,1,2,3',
             'soporte' => 'nullable|file|max:2048',
+            'abono_porcentaje' => 'nullable|integer|in:10,20,30,100',
         ];
     }
 }

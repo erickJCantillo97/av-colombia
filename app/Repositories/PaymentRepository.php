@@ -57,7 +57,7 @@ class PaymentRepository extends BaseRepository implements PaymentRepositoryInter
             'order' => [
                 'dev_reference' => $bookingId,
                 'description' => $service->title,
-                'amount' => $data['total_real'],
+                'amount' => $data['abono'] ?? $data['total_real'],
                 'installments_type' => 0,
                 'currency' => 'COP',
             ],

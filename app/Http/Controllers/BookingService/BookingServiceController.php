@@ -333,6 +333,8 @@ class BookingServiceController extends Controller
             $data['file'] = $data['soporte']->store('public/soportes');
         }
         $data['total'] = $data['total_real'];
+        $abonoPorcentaje = $data['abono_porcentaje'] ?? null;
+        $data['abono'] = $abonoPorcentaje ? round($data['total_real'] * $abonoPorcentaje / 100, 2) : null;
         unset($data['cliente_email'], $data['cliente_last_name'], $data['time'], $data['payment_method'], $data['soporte']);
 
         $service = Service::findOrFail($data['service_id']);

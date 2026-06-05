@@ -1,11 +1,13 @@
 <template>
     <div class="w-full">
-        <FsLightbox
-            :toggler="toggler"
-            :sources="imageSources"
-            :sourceIndex="activeIndex"
-            :disableBackgroundClose="false"
-        />
+        <Teleport to="body">
+            <FsLightbox
+                :toggler="toggler"
+                :sources="imageSources"
+                :sourceIndex="activeIndex"
+                :disableBackgroundClose="false"
+            />
+        </Teleport>
 
         <!-- Grid de imágenes moderno -->
         <div class="grid grid-cols-4 gap-3 md:gap-4">
