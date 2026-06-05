@@ -21,42 +21,58 @@
                     <!-- Formulario compacto -->
                     <div class="bg-gray-900/30 border border-gray-800 rounded-xl p-6">
                         <h3 class="text-xl font-bold text-white mb-4">Envíanos un mensaje</h3>
-                        <form action="#" method="POST" class="space-y-4">
+                        <form @submit.prevent="submit" class="space-y-4">
                             <div class="grid grid-cols-2 gap-3">
-                                <input 
-                                    type="text" 
-                                    name="first-name" 
-                                    placeholder="Nombre"
-                                    class="bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
-                                <input 
-                                    type="text" 
-                                    name="last-name" 
-                                    placeholder="Apellido"
-                                    class="bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
+                                <div>
+                                    <input
+                                        type="text"
+                                        v-model="form.first_name"
+                                        placeholder="Nombre"
+                                        class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
+                                    <p v-if="errors.first_name" class="text-rose-400 text-xs mt-1">{{ errors.first_name[0] }}</p>
+                                </div>
+                                <div>
+                                    <input
+                                        type="text"
+                                        v-model="form.last_name"
+                                        placeholder="Apellido"
+                                        class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
+                                    <p v-if="errors.last_name" class="text-rose-400 text-xs mt-1">{{ errors.last_name[0] }}</p>
+                                </div>
                             </div>
 
-                            <input 
-                                type="email" 
-                                name="email" 
-                                placeholder="Correo electrónico"
-                                class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
+                            <div>
+                                <input
+                                    type="email"
+                                    v-model="form.email"
+                                    placeholder="Correo electrónico"
+                                    class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
+                                <p v-if="errors.email" class="text-rose-400 text-xs mt-1">{{ errors.email[0] }}</p>
+                            </div>
 
-                            <input 
-                                type="tel" 
-                                name="phone" 
-                                placeholder="Teléfono"
-                                class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
+                            <div>
+                                <input
+                                    type="tel"
+                                    v-model="form.phone"
+                                    placeholder="Teléfono"
+                                    class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors" />
+                                <p v-if="errors.phone" class="text-rose-400 text-xs mt-1">{{ errors.phone[0] }}</p>
+                            </div>
 
-                            <textarea 
-                                name="message" 
-                                rows="4"
-                                placeholder="Tu mensaje..."
-                                class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors resize-none"></textarea>
+                            <div>
+                                <textarea
+                                    v-model="form.message"
+                                    rows="4"
+                                    placeholder="Tu mensaje..."
+                                    class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/20 transition-colors resize-none"></textarea>
+                                <p v-if="errors.message" class="text-rose-400 text-xs mt-1">{{ errors.message[0] }}</p>
+                            </div>
 
-                            <button 
+                            <button
                                 type="submit"
-                                class="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-semibold px-6 py-3 rounded-lg hover:from-rose-600 hover:to-pink-700 transition-all duration-300 shadow-lg shadow-rose-500/30">
-                                Enviar Mensaje
+                                :disabled="isLoading"
+                                class="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-semibold px-6 py-3 rounded-lg hover:from-rose-600 hover:to-pink-700 transition-all duration-300 shadow-lg shadow-rose-500/30 disabled:opacity-60 disabled:cursor-not-allowed">
+                                {{ isLoading ? 'Enviando...' : 'Enviar Mensaje' }}
                             </button>
                         </form>
                     </div>
@@ -117,5 +133,60 @@
 </template>
 
 <script setup>
+import { reactive, ref } from 'vue'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 import { BuildingOffice2Icon, PhoneIcon } from '@heroicons/vue/24/outline'
+
+const form = reactive({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    message: '',
+})
+
+const errors = ref({})
+const isLoading = ref(false)
+
+const resetForm = () => {
+    form.first_name = ''
+    form.last_name = ''
+    form.email = ''
+    form.phone = ''
+    form.message = ''
+}
+
+const submit = () => {
+    isLoading.value = true
+    errors.value = {}
+
+    axios.post(route('contact.store'), form)
+        .then((response) => {
+            resetForm()
+            Swal.fire({
+                title: '¡Mensaje enviado!',
+                text: response.data.message,
+                icon: 'success',
+                confirmButtonColor: '#f43f5e',
+                confirmButtonText: 'Entendido',
+            })
+        })
+        .catch((error) => {
+            if (error.response && error.response.status === 422) {
+                errors.value = error.response.data.errors
+                return
+            }
+            Swal.fire({
+                title: 'Error',
+                text: error.response?.data?.message || 'Ocurrió un error al enviar tu mensaje. Inténtalo de nuevo.',
+                icon: 'error',
+                confirmButtonColor: '#f43f5e',
+                confirmButtonText: 'Cerrar',
+            })
+        })
+        .finally(() => {
+            isLoading.value = false
+        })
+}
 </script>

@@ -1,13 +1,13 @@
 <template>
     <Transition name="panel">
         <div v-if="isPanelOpen"
-            class="absolute z-50 mt-3 lg:mt-4 w-full origin-top rounded-2xl lg:rounded-xl border border-gray-100 bg-white shadow-2xl max-h-[70vh] lg:max-h-[80vh] overflow-y-auto">
+            class="absolute z-50 mt-3 max-h-[70vh] w-full origin-top overflow-y-auto rounded-3xl border border-stone-200 bg-white shadow-2xl lg:mt-4 lg:max-h-[80vh]">
             <!-- Panel Dónde -->
-            <div v-if="activeTab === 'donde'" class="p-5 lg:p-8 panel-content">
-                <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-5 lg:mb-6">¿A dónde quieres ir?</h3>
+            <div v-if="activeTab === 'donde'" class="p-5 lg:p-8">
+                <h3 class="mb-5 text-lg font-bold text-stone-900 lg:mb-6 lg:text-xl">¿A dónde quieres ir?</h3>
                 <div class="relative mb-6">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <svg class="h-5 w-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -15,45 +15,45 @@
                     <input :value="locationQuery"
                         @input="$emit('update:locationQuery', $event.target.value); $emit('searchLocations')"
                         type="text" placeholder="Buscar destinos..."
-                        class="w-full pl-11 pr-4 py-3.5 text-base border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 placeholder-gray-400">
+                        class="w-full rounded-xl border border-stone-200 bg-stone-50 py-3.5 pl-11 pr-4 text-base text-stone-900 placeholder-stone-400 transition-all duration-200 focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-400/40">
                 </div>
                 <div>
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Destinos populares</h4>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                        <div v-for="(destination, index) in popularDestinations" :key="destination.name"
+                    <h4 class="mb-4 text-xs font-semibold uppercase tracking-wide text-stone-500">Destinos populares</h4>
+                    <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                        <button v-for="destination in popularDestinations" :key="destination.name"
                             @click="$emit('selectLocation', destination.name)"
-                            class="group flex items-center space-x-4 p-4 rounded-xl border border-gray-200 hover:border-rose-500 hover:shadow-md cursor-pointer transition-all duration-200">
-                            <div
-                                class="w-14 h-14 bg-gradient-to-br from-rose-50 to-pink-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
-                                <span class="text-2xl">{{ destination.emoji }}</span>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="font-semibold text-gray-900 truncate group-hover:text-rose-600 transition-colors">{{ destination.name }}</p>
-                                <p class="text-sm text-gray-500 truncate">{{ destination.description }}</p>
-                            </div>
-                        </div>
+                            class="group flex items-center gap-4 rounded-2xl border border-stone-200 p-4 text-left transition-all duration-200 hover:border-rose-400 hover:bg-rose-50/40 hover:shadow-sm">
+                            <span
+                                class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-50 to-pink-100 text-2xl transition-transform duration-200 group-hover:scale-105">{{
+                                    destination.emoji }}</span>
+                            <span class="min-w-0 flex-1">
+                                <span
+                                    class="block truncate font-semibold text-stone-900 transition-colors group-hover:text-rose-600">{{
+                                        destination.name }}</span>
+                                <span class="block truncate text-sm text-stone-500">{{ destination.description }}</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
-            <!----- Panel de origen y destino ----->
-            <div v-if="activeTab === 'origin'" class="p-5 lg:p-8 panel-content">
-                <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-6">¿Dónde te recogemos y dónde te llevamos?</h3>
+
+            <!-- Panel Origen y Destino -->
+            <div v-if="activeTab === 'origin'" class="p-5 lg:p-8">
+                <h3 class="mb-6 text-lg font-bold text-stone-900 lg:text-xl">¿Dónde te recogemos y dónde te llevamos?</h3>
                 <div class="space-y-6">
                     <!-- Origen -->
                     <div>
-                        <div class="flex items-center gap-2 mb-3">
+                        <div class="mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-circle-dot text-rose-500"></i>
-                            <p class="font-semibold text-gray-900">Punto de origen</p>
+                            <p class="font-semibold text-stone-900">Punto de origen</p>
                         </div>
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                            <button v-for="origen in origenes" :key="origen" 
-                                @click="selectOrigen(origen)"
-                                :class="[
-                                    'px-4 py-3 text-sm font-medium rounded-xl border-2 transition-all duration-200 text-center',
-                                    searchStore.origen.value === origen 
-                                        ? 'bg-rose-500 border-rose-500 text-white shadow-md' 
-                                        : 'bg-white border-gray-200 text-gray-700 hover:border-rose-500 hover:bg-rose-50'
-                                ]">
+                        <div class="grid grid-cols-2 gap-2 lg:grid-cols-4">
+                            <button v-for="origen in origenes" :key="origen" @click="selectOrigen(origen)" :class="[
+                                'rounded-xl border px-4 py-3 text-center text-sm font-medium transition-all duration-200',
+                                searchStore.origen.value === origen
+                                    ? 'border-rose-500 bg-rose-500 text-white shadow-sm'
+                                    : 'border-stone-200 bg-white text-stone-700 hover:border-rose-400 hover:bg-rose-50/40'
+                            ]">
                                 {{ origen }}
                             </button>
                         </div>
@@ -61,18 +61,17 @@
 
                     <!-- Destino -->
                     <div v-if="searchStore.origen.value">
-                        <div class="flex items-center gap-2 mb-3">
-                            <i class="fa-solid fa-location-dot text-blue-500"></i>
-                            <p class="font-semibold text-gray-900">Punto de destino</p>
+                        <div class="mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-sky-500"></i>
+                            <p class="font-semibold text-stone-900">Punto de destino</p>
                         </div>
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                            <button v-for="destino in destinosFinales" :key="destino" 
-                                @click="selectDestino(destino)"
+                        <div class="grid grid-cols-2 gap-2 lg:grid-cols-4">
+                            <button v-for="destino in destinosFinales" :key="destino" @click="selectDestino(destino)"
                                 :class="[
-                                    'px-4 py-3 text-sm font-medium rounded-xl border-2 transition-all duration-200 text-center',
-                                    searchStore.destino.value === destino 
-                                        ? 'bg-blue-500 border-blue-500 text-white shadow-md' 
-                                        : 'bg-white border-gray-200 text-gray-700 hover:border-blue-500 hover:bg-blue-50'
+                                    'rounded-xl border px-4 py-3 text-center text-sm font-medium transition-all duration-200',
+                                    searchStore.destino.value === destino
+                                        ? 'border-sky-500 bg-sky-500 text-white shadow-sm'
+                                        : 'border-stone-200 bg-white text-stone-700 hover:border-sky-400 hover:bg-sky-50/40'
                                 ]">
                                 {{ destino }}
                             </button>
@@ -81,10 +80,10 @@
                 </div>
             </div>
 
-            <!-- Panel Check-in -->
-            <div v-if="activeTab === 'checkin'" class="p-1 panel-content">
-                <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-6 p-6">{{ mensajePrincipal }}</h3>
-                <div class="bg-gray-50 rounded-xl">
+            <!-- Panel Fechas -->
+            <div v-if="activeTab === 'checkin'" class="p-1">
+                <h3 class="p-6 pb-4 text-lg font-bold text-stone-900 lg:text-xl">{{ mensajePrincipal }}</h3>
+                <div class="rounded-2xl">
                     <CalendarSelector class="w-full" :value="dates" :min-date="new Date().toISOString().split('T')[0]"
                         :placeholder="'Selecciona rango de fechas'" @update:value="val => valueDateChange(val)"
                         @update:checkin="val => searchStore.checkin.value = val"
@@ -92,30 +91,30 @@
                         :range="type == 'Hospedaje' ? true : false" />
                 </div>
             </div>
+
             <!-- Panel Check-out -->
-            <div v-if="activeTab === 'checkout'" class="p-5 lg:p-8 panel-content">
-                <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-6">¿Cuándo termina tu viaje?</h3>
+            <div v-if="activeTab === 'checkout'" class="p-5 lg:p-8">
+                <h3 class="mb-6 text-lg font-bold text-stone-900 lg:text-xl">¿Cuándo termina tu viaje?</h3>
                 <button @click="$emit('openDatePicker', 'checkout')"
-                    class="w-full border-2 border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-rose-500 hover:bg-rose-50 transition-all duration-200 text-center group">
-                    <div v-if="selectedCheckout" class="text-gray-900 font-semibold text-lg group-hover:text-rose-600">{{
-                        formatDate(selectedCheckout) }}</div>
-                    <div v-else class="text-gray-500 group-hover:text-rose-600">Selecciona fecha de salida</div>
+                    class="group w-full rounded-2xl border border-stone-200 p-6 text-center transition-all duration-200 hover:border-rose-400 hover:bg-rose-50/40">
+                    <div v-if="selectedCheckout" class="text-lg font-semibold text-stone-900 group-hover:text-rose-600">
+                        {{ formatDate(selectedCheckout) }}</div>
+                    <div v-else class="text-stone-500 group-hover:text-rose-600">Selecciona fecha de salida</div>
                 </button>
             </div>
 
             <!-- Panel Quién -->
-            <div v-if="activeTab === 'quien'" class="p-5 lg:p-8 panel-content">
-                <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-6">¿Quién viene?</h3>
-                <div class="bg-gray-50 rounded-2xl p-5">
+            <div v-if="activeTab === 'quien'" class="p-5 lg:p-8">
+                <h3 class="mb-6 text-lg font-bold text-stone-900 lg:text-xl">¿Quién viene?</h3>
+                <div class="rounded-2xl bg-stone-50 p-5">
                     <GuestSelector :guests="guests" @increment="$emit('incrementGuests', $event)"
                         @decrement="$emit('decrementGuests', $event)" />
                 </div>
             </div>
-            <!-- Panel IA -->
-
         </div>
     </Transition>
 </template>
+
 <script setup>
 import GuestSelector from './GuestSelector.vue';
 import CalendarSelector from './CalendarSelector.vue';
@@ -180,7 +179,6 @@ function valueDateChange(val) {
         searchStore.checkin.value = val;
         searchStore.checkout.value = val;
     }
-    console.log(dates.value)
 }
 
 const selectOrigen = (origen) => {
@@ -204,3 +202,16 @@ const getDestinos = async () => {
 getDestinos();
 
 </script>
+
+<style scoped>
+.panel-enter-active,
+.panel-leave-active {
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.panel-enter-from,
+.panel-leave-to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+}
+</style>

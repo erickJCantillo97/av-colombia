@@ -4,6 +4,7 @@ use App\Http\Controllers\AmenityController;
 use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ContabilidadController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomProductControlle;
 use App\Http\Controllers\ItineraryController;
 use App\Http\Controllers\NoteController;
@@ -152,6 +153,8 @@ Route::middleware([
     Route::get('booking-accommodations/{booking}/voucher', [BookingAccommodationController::class, 'voucher'])
         ->name('booking-accommodations.voucher');
 });
+
+Route::post('contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('getAllServices', [ServiceController::class, 'getServices'])->name('get.all.services');
 Route::post('get-service', [ServiceController::class, 'getServiceRecommendation']);

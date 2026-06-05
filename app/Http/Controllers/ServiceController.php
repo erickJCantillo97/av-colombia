@@ -12,6 +12,7 @@ use App\Models\Horario;
 use App\Models\Image;
 use App\Models\Included;
 use App\Models\Service;
+use App\Models\ServiceCategory;
 use Exception;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Http\Request;
@@ -79,13 +80,16 @@ class ServiceController extends Controller
         }
 
         // Búsqueda normal de servicios
-        $query = Service::with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies');
+        $query = Service::with('images', 'features', 'availabilities', 'availabilities.horarios', 'availabilities.precies', 'serviceCategory');
 
         if ($request->filled('location')) {
             $query->where('city', 'LIKE', "%{$request->location}%");
         }
         if ($request->filled('type')) {
             $query->where('type', $request->type);
+        }
+        if ($request->filled('service_category_id')) {
+            $query->where('service_category_id', $request->service_category_id);
         }
         if ($request->filled('search')) {
             $search = $request->search;
@@ -126,6 +130,7 @@ class ServiceController extends Controller
             'search' => $request->search,
             'date' => $request->date,
             'type' => $request->type,
+            'categories' => ServiceCategory::orderBy('title')->get(),
         ]);
     }
 

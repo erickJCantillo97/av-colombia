@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TicketTypeController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::middleware([
     'auth:sanctum',
@@ -12,8 +12,10 @@ Route::middleware([
 ])->group(function () {
     Route::resource('services', ServiceController::class);
     Route::resource('ticketTypes', TicketTypeController::class);
+    Route::resource('serviceCategories', ServiceCategoryController::class)
+        ->only(['index', 'store', 'update', 'destroy']);
     Route::get('getTicketTypes', [TicketTypeController::class, 'getTicketTypes'])->name('get.ticket.types');
-    
+
     Route::controller(ServiceController::class)->group(function () {
         Route::post('services/{service}/lock', 'lock')->name('services.lock');
         Route::put('updateServiceStart/{service}', 'updateStart')->name('update.start');
@@ -26,5 +28,3 @@ Route::middleware([
     });
 });
 // Route::post('reservar', 'reservar')->name('reservar');
-
-

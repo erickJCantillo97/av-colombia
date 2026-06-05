@@ -20,6 +20,8 @@ const changeType = (newType) => {
     router.visit(route('services.home'));
 };
 
+const isTransporte = computed(() => searchStore.type.value.label === 'Transporte');
+
 // Configuración para el fondo dinámico del Hero
 const cartagenaImages = ref(['/images/cartagena.webp']);
 const currentImageIndex = ref(0);
@@ -90,14 +92,14 @@ const services = ref([
         label: 'Alojamiento Premium',
         description: 'Hoteles y hospedajes seleccionados en las mejores ubicaciones',
         color: 'amber',
-        value:  'EMBARCACION'
+        value:  'HOSPEDAJE'
     },
     {
         icon: 'fa-ship',
         label: 'Experiencias Náuticas',
         description: 'Navega por las aguas cristalinas del Caribe colombiano',
         color: 'cyan',
-        value:  'HOSPEDAJE'
+        value:  'EMBARCACION'
     },
     {
         icon: 'fa-van-shuttle',
@@ -218,7 +220,7 @@ const scrollToSection = (sectionId) => {
                     </div>
                     
                     <!-- Buscador de Experiencias Integrado -->
-                    <div class="max-w-4xl mx-auto mt-12">
+                    <div class="mx-auto mt-12" :class="isTransporte ? 'max-w-6xl' : 'max-w-4xl'">
                         <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/20">
                             <Experiencias />
                         </div>

@@ -8,7 +8,8 @@
       </div>
       
       <!-- Motor de búsqueda centrado: se muestra cuando se hace scroll en Welcome o siempre en otras páginas -->
-      <div v-if="showSearch" class="flex-1 max-w-2xl mx-8 transition-all duration-500" :class="showSearch ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'">
+      <div v-if="showSearch" class="flex-1 mx-8 transition duration-500"
+        :class="[showSearch ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4', isTransporte ? 'max-w-5xl' : 'max-w-2xl']">
         <Experiencias />
       </div>
       
@@ -27,6 +28,7 @@
 
 <script setup>
 import Experiencias from "@/Components/SearchEngines/Search.vue";
+import searchStore from "@/store/searchStore";
 import { onBeforeUnmount, onMounted, ref, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import Logo from "../logo.vue";
@@ -60,6 +62,9 @@ const showSearch = computed(() => {
   // En otras páginas, mostrar siempre
   return true;
 });
+
+// El motor de Transporte necesita más ancho para mostrar la ruta completa
+const isTransporte = computed(() => searchStore.type.value.label === 'Transporte');
 
 const handleScroll = () => {
   if (window.scrollY > 300) {

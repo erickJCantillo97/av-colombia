@@ -9,6 +9,7 @@
                 'Santa Marta',
                 'Medellin',
             ]" />
+        <CategorySelect v-model="form.service_category_id" />
         <Input label="Origen" class="w-full" v-model="form.origen" :error-message="form.errors.origen" />
         <Input label="Destino" class="w-full" v-model="form.destino" :error-message="form.errors.destino" />
         <Input label="Duración aproximada en minutos" type="number" class="w-full" v-model="form.duration"
@@ -38,6 +39,7 @@
 
 <script setup>
 import Input from "@/Components/Customs/Input.vue";
+import CategorySelect from "@/Pages/Services/Components/CategorySelect.vue";
 import { onMounted, ref } from "vue";
 import Service from '@/Models/Services/Service';
 import { Button } from "primevue";

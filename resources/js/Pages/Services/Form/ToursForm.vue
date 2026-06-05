@@ -11,6 +11,7 @@
                     'Santa Marta',
                     'Medellin',
                 ]" />
+            <CategorySelect v-model="form.service_category_id" />
             <Input label="Duración o Validez" class="w-full" v-model="form.duration_type"
                 :error-message="form.errors.duration_type" type="dropdown" :options="[
                     'Duración Fija',
@@ -91,6 +92,7 @@
 
 <script setup>
 import Input from "@/Components/Customs/Input.vue";
+import CategorySelect from "@/Pages/Services/Components/CategorySelect.vue";
 import {  useForm } from "@inertiajs/vue3";
 import AutoComplete from "primevue/autocomplete";
 import { onMounted, ref } from "vue";

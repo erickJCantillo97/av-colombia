@@ -18,6 +18,7 @@ export default class Service extends GeneralService {
         notIncludes: [],
         type: "TOUR",
         city: "Cartagena",
+        service_category_id: null,
         problematic: 0,
         duration_type: "",
         destinations: "",
@@ -64,16 +65,17 @@ export default class Service extends GeneralService {
         return data
     }
 
-    async getServicePagination(page = 1, perPage = 10, search = "") {
-        const params = { 
-            page: page, 
-            location: state.location.value, 
-            type: state.type.value.value, 
-            checkin: state.checkin.value, 
-            checkout: state.checkout.value, 
-            guests: state.guests.value, 
+    async getServicePagination(page = 1, perPage = 10, search = "", serviceCategoryId = null) {
+        const params = {
+            page: page,
+            location: state.location.value,
+            type: state.type.value.value,
+            checkin: state.checkin.value,
+            checkout: state.checkout.value,
+            guests: state.guests.value,
             perPage: perPage,
-            search: search
+            search: search,
+            service_category_id: serviceCategoryId
         };
 
         const { data } = await axios.get(route("services.get.paginated"), { params });

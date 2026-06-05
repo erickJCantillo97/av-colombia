@@ -16,21 +16,63 @@
             </div>
           </div>
 
-          <!-- Barra de búsqueda elegante -->
-          <div class="flex-1 max-w-md">
-            <div class="relative">
+          <!-- Barra de búsqueda destacada -->
+          <div class="w-full md:flex-1 md:max-w-xl">
+            <label for="services-search" class="sr-only">Buscar</label>
+            <div class="relative group">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <i class="fas fa-search text-gray-500"></i>
+                <i class="fas fa-search text-lg text-gray-400 group-focus-within:text-black transition-colors duration-200"></i>
               </div>
               <input
+                id="services-search"
                 v-model="search"
                 @input="debouncedSearch"
+                @keydown.escape="clearSearch"
                 type="text"
-                placeholder="Buscar experiencias..."
-                class="w-full pl-12 pr-4 py-3 bg-white/5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-black focus:ring-2 focus:ring-gray-800/40 transition-all duration-200 backdrop-blur-sm"
+                :placeholder="isHotel ? 'Buscar alojamientos por nombre o ciudad...' : 'Buscar experiencias por nombre o destino...'"
+                class="w-full pl-12 pr-12 py-4 bg-white border-2 border-white rounded-2xl text-gray-900 text-base font-medium placeholder-gray-400 shadow-xl focus:border-black focus:ring-4 focus:ring-white/30 focus:outline-none transition-all duration-200"
               />
+              <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                <i v-if="isSearchPending" class="fas fa-spinner fa-spin text-gray-400 text-lg"></i>
+                <button
+                  v-else-if="search"
+                  type="button"
+                  @click="clearSearch"
+                  aria-label="Limpiar búsqueda"
+                  class="text-gray-400 hover:text-black transition-colors duration-200"
+                >
+                  <i class="fas fa-times-circle text-xl"></i>
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+
+        <!-- Filtro por categoría -->
+        <div v-if="!isHotel && categories.length" class="mt-4 flex items-center gap-2 overflow-x-auto pb-1">
+          <button
+            type="button"
+            @click="selectCategory(null)"
+            :class="[chipBase, selectedCategory === null ? 'bg-white text-gray-900 border-white shadow-md' : chipIdle]"
+          >
+            Todas
+          </button>
+          <button
+            v-for="cat in categories"
+            :key="cat.id"
+            type="button"
+            @click="selectCategory(cat.id)"
+            :class="[chipBase, selectedCategory === cat.id ? chipActive : chipIdle]"
+            :style="selectedCategory === cat.id ? { backgroundColor: cat.color || '#6b7280' } : null"
+          >
+            <span
+              v-if="selectedCategory !== cat.id"
+              class="w-2.5 h-2.5 rounded-full shrink-0"
+              :style="{ backgroundColor: cat.color || '#9ca3af' }"
+            ></span>
+            <i v-if="cat.icon" :class="cat.icon" class="text-xs"></i>
+            <span>{{ cat.title }}</span>
+          </button>
         </div>
       </div>
     </div>
@@ -79,8 +121,22 @@ import Service from "@/Models/Services/Service";
 import Accommodation from "@/Models/Accommodation/Accommodation";
 import state from "@/store/searchStore";
 
+defineProps({
+  categories: {
+    type: Array,
+    default: () => [],
+  },
+});
+
 const search = ref("");
+const isSearchPending = ref(false);
+const selectedCategory = ref(null);
 const items = ref([]);
+
+const chipBase =
+  "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap border transition-all duration-200";
+const chipActive = "text-white border-transparent shadow-md";
+const chipIdle = "bg-white/5 text-gray-300 border-gray-700 hover:bg-white/10 hover:text-white";
 const page = ref(1);
 const hasMore = ref(true);
 const searching = ref(false);
@@ -112,7 +168,7 @@ async function fetchItems(reset = false) {
     } else {
       // Buscar servicios
       const serviceModel = new Service();
-      result = await serviceModel.getServicePagination(page.value, 10, searchTerm);
+      result = await serviceModel.getServicePagination(page.value, 10, searchTerm, selectedCategory.value);
     }
     
     console.log(result);
@@ -151,11 +207,27 @@ function onScroll() {
 // Watch para cuando cambie el valor de búsqueda
 let searchTimeout = null;
 const debouncedSearch = () => {
+  isSearchPending.value = true;
   if (searchTimeout) clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    fetchItems(true);
+  searchTimeout = setTimeout(async () => {
+    await fetchItems(true);
+    isSearchPending.value = false;
   }, 500);
 };
+
+function clearSearch() {
+  if (!search.value && !isSearchPending.value) return;
+  search.value = "";
+  if (searchTimeout) clearTimeout(searchTimeout);
+  isSearchPending.value = false;
+  fetchItems(true);
+}
+
+function selectCategory(id) {
+  if (selectedCategory.value === id) return;
+  selectedCategory.value = id;
+  fetchItems(true);
+}
 
 // Simplemente retornamos los items ya que el filtro se hace en el backend
 const itemsFilter = computed(() => {

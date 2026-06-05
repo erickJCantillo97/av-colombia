@@ -24,6 +24,7 @@ class UpdateServiceRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'code' => 'required|string',
+            'service_category_id' => 'nullable|exists:service_categories,id',
             'destinos' => 'nullable|string',
             'title_en' => 'nullable|string|max:255|unique:services',
             'description' => 'required|string|max:4000',
@@ -51,7 +52,7 @@ class UpdateServiceRequest extends FormRequest
             'tarifa_vehiculo' => 'nullable|numeric',
             'size' => 'nullable|numeric',
             'motor' => 'nullable|string',
-            'potencia'=>'nullable|string',
+            'potencia' => 'nullable|string',
         ];
     }
 }

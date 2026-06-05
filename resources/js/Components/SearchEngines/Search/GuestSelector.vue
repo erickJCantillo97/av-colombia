@@ -1,63 +1,22 @@
 <template>
-  <div class="space-y-6">
-    <div class="flex items-center justify-between">
+  <div class="divide-y divide-stone-200">
+    <div v-for="row in rows" :key="row.key" class="flex items-center justify-between py-4 first:pt-0 last:pb-0">
       <div>
-        <h4 class="font-medium text-gray-900">Adultos</h4>
-        <p class="text-sm text-gray-500">13 años o más</p>
+        <h4 class="font-semibold text-stone-900">{{ row.label }}</h4>
+        <p class="text-sm text-stone-500">{{ row.hint }}</p>
       </div>
-      <div class="flex items-center space-x-3">
-        <button @click="$emit('decrement', 'adults')" :disabled="guests.adults <= 0"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50 guest-counter btn-ripple hover:border-gray-400 transition-all duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex items-center gap-3">
+        <button type="button" @click="$emit('decrement', row.key)" :disabled="guests[row.key] <= 0"
+          :aria-label="`Quitar ${row.label}`"
+          class="flex h-9 w-9 items-center justify-center rounded-full border border-stone-300 text-stone-600 transition-all duration-150 hover:border-rose-400 hover:text-rose-500 active:scale-90 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-stone-300 disabled:hover:text-stone-600">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
           </svg>
         </button>
-        <span class="w-8 text-center font-medium">{{ guests.adults }}</span>
-        <button @click="$emit('increment', 'adults')"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center guest-counter btn-ripple hover:border-gray-400 transition-all duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div class="flex items-center justify-between">
-      <div>
-        <h4 class="font-medium text-gray-900">Niños</h4>
-        <p class="text-sm text-gray-500">De 2 a 12 años</p>
-      </div>
-      <div class="flex items-center space-x-3">
-        <button @click="$emit('decrement', 'children')" :disabled="guests.children <= 0"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50 guest-counter btn-ripple hover:border-gray-400 transition-all duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-          </svg>
-        </button>
-        <span class="w-8 text-center font-medium">{{ guests.children }}</span>
-        <button @click="$emit('increment', 'children')"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center guest-counter btn-ripple hover:border-gray-400 transition-all duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div class="flex items-center justify-between">
-      <div>
-        <h4 class="font-medium text-gray-900">Bebés</h4>
-        <p class="text-sm text-gray-500">Menos de 2 años</p>
-      </div>
-      <div class="flex items-center space-x-3">
-        <button @click="$emit('decrement', 'infants')" :disabled="guests.infants <= 0"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50 guest-counter btn-ripple hover:border-gray-400 transition-all duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-          </svg>
-        </button>
-        <span class="w-8 text-center font-medium">{{ guests.infants }}</span>
-        <button @click="$emit('increment', 'infants')"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center guest-counter btn-ripple hover:border-gray-400 transition-all duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <span class="w-6 text-center font-semibold text-stone-900 tabular-nums">{{ guests[row.key] }}</span>
+        <button type="button" @click="$emit('increment', row.key)" :aria-label="`Agregar ${row.label}`"
+          class="flex h-9 w-9 items-center justify-center rounded-full border border-stone-300 text-stone-600 transition-all duration-150 hover:border-rose-400 hover:text-rose-500 active:scale-90">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
         </button>
@@ -65,7 +24,14 @@
     </div>
   </div>
 </template>
+
 <script setup>
 defineProps({ guests: Object });
 defineEmits(['increment', 'decrement']);
+
+const rows = [
+  { key: 'adults', label: 'Adultos', hint: '13 años o más' },
+  { key: 'children', label: 'Niños', hint: 'De 2 a 12 años' },
+  { key: 'infants', label: 'Bebés', hint: 'Menos de 2 años' },
+];
 </script>

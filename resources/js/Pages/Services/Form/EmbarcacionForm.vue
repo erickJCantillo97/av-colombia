@@ -7,6 +7,7 @@
             <Input label="Potencia" v-model="serviceModel.form.potencia" />
             <Input label="Tamaño de la lancha" type="number" suffix=" pies" v-model="serviceModel.form.size" />
             <Input label="Motores" v-model="serviceModel.form.motor" />
+            <CategorySelect v-model="serviceModel.form.service_category_id" />
 
         </div>
         <Input label="Descripción" type="textarea" :rowsTextarea="3" v-model="serviceModel.form.description" required />
@@ -44,6 +45,7 @@
 
 <script setup>
 import Input from '@/Components/Customs/Input.vue';
+import CategorySelect from '@/Pages/Services/Components/CategorySelect.vue';
 import { caracteristicas } from '@/composable/CommonData'
 import { onMounted, ref } from 'vue';
 

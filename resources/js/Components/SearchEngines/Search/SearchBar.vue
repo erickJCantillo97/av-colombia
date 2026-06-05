@@ -1,152 +1,149 @@
 <template>
-    <!-- Desktop: Barra compacta tipo Airbnb -->
-    <div class="hidden lg:flex items-center bg-white rounded-full shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300">
-        <!-- Dónde -->
+    <!-- Escritorio: barra de segmentos estilo Airbnb -->
+    <div
+        class="hidden items-center gap-1 rounded-full border border-stone-200 bg-stone-50 p-2 shadow-lg transition-shadow duration-200 hover:shadow-xl lg:flex">
+        <!-- Destino -->
         <button @click="setActiveTab('donde')" :class="[
-            'flex-1 px-7 py-4 text-left transition-all duration-200 relative group',
-            activeTab === 'donde' ? 'bg-gray-50' : 'hover:bg-gray-50'
+            'group flex-1 rounded-full px-6 py-2.5 text-left transition-all duration-200',
+            activeTab === 'donde' ? 'bg-white shadow-sm ring-1 ring-stone-200/70' : 'hover:bg-white/60'
         ]">
-            <div class="text-xs font-bold text-gray-700 mb-1">Destino</div>
-            <div class="text-sm text-gray-900 truncate font-medium">{{ selectedLocation || 'A dónde vas?' }}</div>
-            <div v-if="activeTab === 'donde'" class="absolute inset-0 bg-white rounded-full shadow-lg -z-10"></div>
+            <div class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">Ciudad</div>
+            <div class="truncate text-sm font-medium" :class="selectedLocation ? 'text-stone-900' : 'text-stone-400'">
+                {{ selectedLocation || '¿A dónde vas?' }}
+            </div>
         </button>
 
-        <div class="w-px h-8 bg-gray-200"></div>
-
-        <!-- Origen/Destino (solo Transporte) -->
+        <!-- Origen / Destino (solo Transporte) -->
         <template v-if="type === 'Transporte'">
+            <div v-show="activeTab !== 'donde' && activeTab !== 'origin'" class="h-8 w-px shrink-0 bg-stone-200"></div>
             <button @click="setActiveTab('origin')" :class="[
-                'flex-1 px-7 py-4 text-left transition-all duration-200 relative group min-w-0',
-                activeTab === 'origin' ? 'bg-gray-50' : 'hover:bg-gray-50'
+                'group min-w-0 flex-[1.8] rounded-full px-6 py-2.5 text-left transition-all duration-200',
+                activeTab === 'origin' ? 'bg-white shadow-sm ring-1 ring-stone-200/70' : 'hover:bg-white/60'
             ]">
-                <div class="text-xs font-bold text-gray-700 mb-1">Ruta</div>
-                <div class="text-sm text-gray-900 font-medium overflow-hidden">
-                    <div class="flex items-center gap-1 min-w-0">
-                        <span class="truncate max-w-[120px]" :title="searchStore.origen.value">{{ searchStore.origen.value || 'Origen' }}</span>
-                        <span class="flex-shrink-0">→</span>
-                        <span class="truncate max-w-[120px]" :title="searchStore.destino.value">{{ searchStore.destino.value || 'Destino' }}</span>
-                    </div>
+                <div class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">Ruta</div>
+                <div class="flex min-w-0 items-center gap-1.5 text-sm font-medium text-stone-900">
+                    <span class="truncate" :class="!searchStore.origen.value && 'text-stone-400'"
+                        :title="searchStore.origen.value">{{ searchStore.origen.value || 'Origen' }}</span>
+                    <span class="shrink-0 text-stone-400">→</span>
+                    <span class="truncate" :class="!searchStore.destino.value && 'text-stone-400'"
+                        :title="searchStore.destino.value">{{ searchStore.destino.value || 'Destino' }}</span>
                 </div>
-                <div v-if="activeTab === 'origin'" class="absolute inset-0 bg-white rounded-full shadow-lg -z-10"></div>
             </button>
-            <div class="w-px h-8 bg-gray-200"></div>
+            <div v-show="activeTab !== 'origin' && activeTab !== 'checkin'" class="h-8 w-px shrink-0 bg-stone-200">
+            </div>
+        </template>
+        <template v-else>
+            <div v-show="activeTab !== 'donde' && activeTab !== 'checkin'" class="h-8 w-px shrink-0 bg-stone-200"></div>
         </template>
 
         <!-- Fechas -->
         <button @click="setActiveTab('checkin')" :class="[
-            'flex-1 px-7 py-4 text-left transition-all duration-200 relative group',
-            activeTab === 'checkin' ? 'bg-gray-50' : 'hover:bg-gray-50'
+            'group flex-1 rounded-full px-6 py-2.5 text-left transition-all duration-200',
+            activeTab === 'checkin' ? 'bg-white shadow-sm ring-1 ring-stone-200/70' : 'hover:bg-white/60'
         ]">
-            <div class="text-xs font-bold text-gray-700 mb-1">
+            <div class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">
                 {{ type == "Hospedaje" ? "Fechas" : "Cuándo" }}
             </div>
-            <div class="text-sm text-gray-900 truncate font-medium">{{ dateRange || 'Agrega fechas' }}</div>
-            <div v-if="activeTab === 'checkin'" class="absolute inset-0 bg-white rounded-full shadow-lg -z-10"></div>
+            <div class="truncate text-sm font-medium" :class="dateRange ? 'text-stone-900' : 'text-stone-400'">
+                {{ dateRange || 'Agrega fechas' }}
+            </div>
         </button>
 
-        <div class="w-px h-8 bg-gray-200"></div>
+        <div v-show="activeTab !== 'checkin' && activeTab !== 'quien'" class="h-8 w-px shrink-0 bg-stone-200"></div>
 
-        <!-- Huéspedes -->
+        <!-- Huéspedes / Pasajeros -->
         <button @click="setActiveTab('quien')" :class="[
-            'flex-1 px-7 py-4 text-left transition-all duration-200 relative group',
-            activeTab === 'quien' ? 'bg-gray-50' : 'hover:bg-gray-50'
+            'group flex-1 rounded-full px-6 py-2.5 text-left transition-all duration-200',
+            activeTab === 'quien' ? 'bg-white shadow-sm ring-1 ring-stone-200/70' : 'hover:bg-white/60'
         ]">
-            <div class="text-xs font-bold text-gray-700 mb-1">
+            <div class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">
                 {{ type == "Hospedaje" ? 'Quién' : 'Pasajeros' }}
             </div>
-            <div class="text-sm text-gray-900 truncate font-medium">{{ guestSummary || 'Agrega huéspedes' }}</div>
-            <div v-if="activeTab === 'quien'" class="absolute inset-0 bg-white rounded-full shadow-lg -z-10"></div>
+            <div class="truncate text-sm font-medium" :class="guestSummary ? 'text-stone-900' : 'text-stone-400'">
+                {{ guestSummary || (type == 'Hospedaje' ? 'Agrega huéspedes' : 'Agrega pasajeros') }}
+            </div>
         </button>
 
         <!-- Botón Buscar -->
-        <div class="pr-2 pl-4">
-            <Link v-if="type == 'Transporte'" :href="route('services.home', { type: 'TRANSFER', origen: searchStore.origen.value, destino: searchStore.destino.value, date: searchStore.checkin.value })">
-                <button class="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-6 py-4 rounded-full transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 font-semibold">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <span>Buscar</span>
-                </button>
-            </Link>
-            <Link v-else :href="route('services.home')">
-                <button class="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-6 py-4 rounded-full transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 font-semibold">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <span>Buscar</span>
-                </button>
-            </Link>
-        </div>
+        <Link :href="searchLink" class="ml-1 shrink-0">
+        <button
+            class="flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3.5 font-semibold text-white shadow-md transition-all duration-200 hover:from-rose-600 hover:to-pink-700 hover:shadow-lg active:scale-95">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span>Buscar</span>
+        </button>
+        </Link>
     </div>
 
-    <!-- Tablet: Versión compacta -->
-    <div class="hidden md:flex lg:hidden items-center bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+    <!-- Tablet: versión compacta -->
+    <div
+        class="hidden items-center gap-1 rounded-full border border-stone-200 bg-stone-50 p-2 shadow-lg transition-shadow duration-200 hover:shadow-xl md:flex lg:hidden">
         <button @click="setActiveTab('donde')" :class="[
-            'flex-1 px-5 py-3 text-left transition-all',
-            activeTab === 'donde' ? 'bg-gray-50' : 'hover:bg-gray-50'
+            'flex-1 rounded-full px-5 py-2.5 text-left transition-all duration-200',
+            activeTab === 'donde' ? 'bg-white shadow-sm ring-1 ring-stone-200/70' : 'hover:bg-white/60'
         ]">
-            <div class="text-xs font-bold text-gray-700">Destino</div>
-            <div class="text-sm text-gray-900 truncate">{{ selectedLocation || 'A dónde?' }}</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">Ciudad</div>
+            <div class="truncate text-sm font-medium" :class="selectedLocation ? 'text-stone-900' : 'text-stone-400'">
+                {{ selectedLocation || '¿A dónde?' }}
+            </div>
         </button>
-        
-        <div class="w-px h-8 bg-gray-200"></div>
-        
+
+        <div v-show="activeTab !== 'donde' && activeTab !== 'checkin'" class="h-8 w-px shrink-0 bg-stone-200"></div>
+
         <button @click="setActiveTab('checkin')" :class="[
-            'flex-1 px-5 py-3 text-left transition-all',
-            activeTab === 'checkin' ? 'bg-gray-50' : 'hover:bg-gray-50'
+            'flex-1 rounded-full px-5 py-2.5 text-left transition-all duration-200',
+            activeTab === 'checkin' ? 'bg-white shadow-sm ring-1 ring-stone-200/70' : 'hover:bg-white/60'
         ]">
-            <div class="text-xs font-bold text-gray-700">Cuándo</div>
-            <div class="text-sm text-gray-900 truncate">{{ dateRange || 'Fechas' }}</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">Cuándo</div>
+            <div class="truncate text-sm font-medium" :class="dateRange ? 'text-stone-900' : 'text-stone-400'">
+                {{ dateRange || 'Fechas' }}
+            </div>
         </button>
-        
-        <div class="w-px h-8 bg-gray-200"></div>
-        
+
+        <div v-show="activeTab !== 'checkin' && activeTab !== 'quien'" class="h-8 w-px shrink-0 bg-stone-200"></div>
+
         <button @click="setActiveTab('quien')" :class="[
-            'flex-1 px-5 py-3 text-left transition-all',
-            activeTab === 'quien' ? 'bg-gray-50' : 'hover:bg-gray-50'
+            'flex-1 rounded-full px-5 py-2.5 text-left transition-all duration-200',
+            activeTab === 'quien' ? 'bg-white shadow-sm ring-1 ring-stone-200/70' : 'hover:bg-white/60'
         ]">
-            <div class="text-xs font-bold text-gray-700">Quién</div>
-            <div class="text-sm text-gray-900 truncate">{{ guestSummary || 'Huéspedes' }}</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">Quién</div>
+            <div class="truncate text-sm font-medium" :class="guestSummary ? 'text-stone-900' : 'text-stone-400'">
+                {{ guestSummary || 'Huéspedes' }}
+            </div>
         </button>
-        
-        <div class="pr-2 pl-2">
-            <Link v-if="type == 'Transporte'" :href="route('services.home', { type: 'TRANSFER', origen: searchStore.origen.value, destino: searchStore.destino.value, date: searchStore.checkin.value })">
-                <button class="bg-gradient-to-r from-rose-500 to-pink-600 text-white p-4 rounded-full hover:shadow-lg transition-all">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-            </Link>
-            <Link v-else :href="route('services.home')">
-                <button class="bg-gradient-to-r from-rose-500 to-pink-600 text-white p-4 rounded-full hover:shadow-lg transition-all">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-            </Link>
-        </div>
+
+        <Link :href="searchLink" class="shrink-0">
+        <button
+            class="rounded-full bg-gradient-to-r from-rose-500 to-pink-600 p-4 text-white shadow-md transition-all duration-200 hover:from-rose-600 hover:to-pink-700 hover:shadow-lg active:scale-95">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </button>
+        </Link>
     </div>
 
-    <!-- Mobile: Barra compacta que abre modal -->
+    <!-- Móvil: barra compacta que abre el modal -->
     <div class="md:hidden">
-        <!-- Barra de búsqueda compacta -->
-        <button @click="openMobileModal" class="w-full bg-white rounded-full shadow-lg border border-gray-200 p-4 flex items-center gap-3 hover:shadow-xl transition-all duration-300">
-            <div class="flex-shrink-0 bg-gradient-to-r from-rose-500 to-pink-600 p-2.5 rounded-full">
-                <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <button @click="openMobileModal"
+            class="flex w-full items-center gap-3 rounded-full border border-stone-200 bg-white p-2 pl-3 shadow-lg transition-shadow duration-200 hover:shadow-xl">
+            <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-            </div>
-            <div class="flex-1 text-left">
-                <div class="text-sm font-semibold text-gray-900 truncate">
-                    {{ selectedLocation || 'A dónde vas?' }}
-                </div>
-                <div class="text-xs text-gray-500 truncate">
-                    {{ dateRange || 'Cualquier fecha' }} • {{ guestSummary || 'Agrega huéspedes' }}
-                </div>
-            </div>
-            <div class="flex-shrink-0">
-                <i class="fa-solid fa-sliders text-gray-400"></i>
-            </div>
+            </span>
+            <span class="min-w-0 flex-1 text-left">
+                <span class="block truncate text-sm font-semibold text-stone-900">
+                    {{ selectedLocation || '¿A dónde vas?' }}
+                </span>
+                <span class="block truncate text-xs text-stone-500">
+                    {{ type }} · {{ dateRange || 'Cualquier fecha' }} · {{ guestSummary || 'Pasajeros' }}
+                </span>
+            </span>
         </button>
 
         <!-- Modal de búsqueda completo -->
@@ -154,135 +151,172 @@
             <Transition name="modal">
                 <div v-if="showMobileModal" class="fixed inset-0 z-[9999] flex items-end md:hidden">
                     <!-- Overlay -->
-                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="closeMobileModal"></div>
-                    
+                    <div class="absolute inset-0 bg-stone-900/50 backdrop-blur-sm" @click="closeMobileModal"></div>
+
                     <!-- Contenido del modal -->
-                    <div class="relative w-full bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
+                    <div
+                        class="animate-slide-up relative max-h-[92vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl">
                         <!-- Header del modal -->
-                        <div class="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between z-10">
-                            <h3 class="text-lg font-bold text-gray-900">¿A dónde vas?</h3>
-                            <button @click="closeMobileModal" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                                <i class="fa-solid fa-xmark text-xl text-gray-600"></i>
+                        <div
+                            class="sticky top-0 z-10 flex items-center justify-between border-b border-stone-100 bg-white px-4 py-4">
+                            <h3 class="text-lg font-bold text-stone-900">¿A dónde vas?</h3>
+                            <button @click="closeMobileModal"
+                                class="flex h-9 w-9 items-center justify-center rounded-full text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900">
+                                <i class="fa-solid fa-xmark text-lg"></i>
                             </button>
                         </div>
 
                         <!-- Tabs de tipos de servicio en el modal -->
-                        <div class="sticky top-[57px] bg-white border-b border-gray-200 px-4 py-3 z-10">
-                            <ServiceTypeTabs :servicesType="servicesType" v-model:modelValue="searchStore.type" />
+                        <div class="sticky top-[57px] z-10 border-b border-stone-100 bg-white px-4 py-3">
+                            <ServiceTypeTabs v-model:modelValue="searchStore.type" />
                         </div>
 
                         <!-- Contenido scrolleable -->
-                        <div class="pb-24">
+                        <div class="pb-28">
                             <!-- Vista principal del modal -->
-                            <div v-if="!activeModalTab" class="p-4 space-y-4">
+                            <div v-if="!activeModalTab" class="space-y-4 p-4">
                                 <!-- Destino -->
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <label class="flex items-center gap-2 text-sm font-semibold text-stone-700">
                                         <i class="fa-solid fa-location-dot text-rose-500"></i>
-                                        Destino
+                                        Ciudad
                                     </label>
-                                    <button @click="handleModalTabClick('donde')" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-left hover:border-rose-300 transition-colors">
-                                        <span class="text-gray-900 font-medium">{{ selectedLocation || 'Selecciona un destino' }}</span>
+                                    <button @click="handleModalTabClick('donde')"
+                                        class="w-full rounded-2xl border border-stone-200 bg-stone-50 p-4 text-left transition-colors hover:border-rose-300 hover:bg-rose-50/40">
+                                        <span class="font-medium"
+                                            :class="selectedLocation ? 'text-stone-900' : 'text-stone-400'">{{
+                                                selectedLocation || 'Selecciona un destino' }}</span>
                                     </button>
                                 </div>
 
                                 <!-- Ruta (solo Transporte) -->
                                 <div v-if="type === 'Transporte'" class="space-y-2">
-                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <label class="flex items-center gap-2 text-sm font-semibold text-stone-700">
                                         <i class="fa-solid fa-route text-rose-500"></i>
                                         Ruta
                                     </label>
-                                    <button @click="handleModalTabClick('origin')" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-left hover:border-rose-300 transition-colors">
-                                        <div class="flex items-center gap-2 text-gray-900 font-medium">
-                                            <span class="truncate">{{ searchStore.origen.value || 'Origen' }}</span>
-                                            <span>→</span>
-                                            <span class="truncate">{{ searchStore.destino.value || 'Destino' }}</span>
+                                    <button @click="handleModalTabClick('origin')"
+                                        class="w-full rounded-2xl border border-stone-200 bg-stone-50 p-4 text-left transition-colors hover:border-rose-300 hover:bg-rose-50/40">
+                                        <div class="flex items-center gap-2 font-medium text-stone-900">
+                                            <span class="truncate"
+                                                :class="!searchStore.origen.value && 'text-stone-400'">{{
+                                                    searchStore.origen.value || 'Origen' }}</span>
+                                            <span class="text-stone-400">→</span>
+                                            <span class="truncate"
+                                                :class="!searchStore.destino.value && 'text-stone-400'">{{
+                                                    searchStore.destino.value || 'Destino' }}</span>
                                         </div>
                                     </button>
                                 </div>
 
                                 <!-- Fechas -->
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <label class="flex items-center gap-2 text-sm font-semibold text-stone-700">
                                         <i class="fa-solid fa-calendar-days text-rose-500"></i>
                                         {{ type == "Hospedaje" ? "Fechas" : "Cuándo" }}
                                     </label>
-                                    <button @click="handleModalTabClick('checkin')" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-left hover:border-rose-300 transition-colors">
-                                        <span class="text-gray-900 font-medium">{{ dateRange || 'Agrega fechas' }}</span>
+                                    <button @click="handleModalTabClick('checkin')"
+                                        class="w-full rounded-2xl border border-stone-200 bg-stone-50 p-4 text-left transition-colors hover:border-rose-300 hover:bg-rose-50/40">
+                                        <span class="font-medium" :class="dateRange ? 'text-stone-900' : 'text-stone-400'">{{
+                                            dateRange || 'Agrega fechas' }}</span>
                                     </button>
                                 </div>
 
                                 <!-- Pasajeros -->
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <label class="flex items-center gap-2 text-sm font-semibold text-stone-700">
                                         <i class="fa-solid fa-user-group text-rose-500"></i>
                                         {{ type == "Hospedaje" ? 'Quién' : 'Pasajeros' }}
                                     </label>
-                                    <button @click="handleModalTabClick('quien')" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-left hover:border-rose-300 transition-colors">
-                                        <span class="text-gray-900 font-medium">{{ guestSummary || 'Agrega huéspedes' }}</span>
+                                    <button @click="handleModalTabClick('quien')"
+                                        class="w-full rounded-2xl border border-stone-200 bg-stone-50 p-4 text-left transition-colors hover:border-rose-300 hover:bg-rose-50/40">
+                                        <span class="font-medium" :class="guestSummary ? 'text-stone-900' : 'text-stone-400'">{{
+                                            guestSummary || 'Agrega huéspedes' }}</span>
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Panel Dónde -->
                             <div v-else-if="activeModalTab === 'donde'" class="p-4">
-                                <button @click="backToMainModal" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4">
+                                <button @click="backToMainModal"
+                                    class="mb-4 flex items-center gap-2 text-stone-600 transition-colors hover:text-stone-900">
                                     <i class="fa-solid fa-arrow-left"></i>
                                     <span class="font-medium">Volver</span>
                                 </button>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">¿A dónde quieres ir?</h3>
+                                <h3 class="mb-4 text-xl font-bold text-stone-900">¿A dónde quieres ir?</h3>
                                 <div class="relative mb-4">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <svg class="h-5 w-5 text-stone-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                         </svg>
                                     </div>
-                                    <input v-model="locationQuery" type="text" placeholder="Buscar destinos..." class="w-full pl-10 pr-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+                                    <input v-model="locationQuery" type="text" placeholder="Buscar destinos..."
+                                        class="w-full rounded-xl border border-stone-200 bg-stone-50 py-3 pl-10 pr-4 text-base text-stone-900 placeholder-stone-400 transition-all focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-400/40">
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Destinos populares</h4>
+                                    <h4 class="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-500">
+                                        Destinos populares</h4>
                                     <div class="space-y-2">
-                                        <div v-for="destination in popularDestinations" :key="destination.name" @click="selectLocation(destination.name)" class="flex items-center space-x-3 p-3 rounded-xl border border-gray-200 hover:border-rose-500 hover:shadow-md cursor-pointer transition-all">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-rose-50 to-pink-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                                <span class="text-xl">{{ destination.emoji }}</span>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <p class="font-semibold text-gray-900 truncate">{{ destination.name }}</p>
-                                                <p class="text-sm text-gray-500 truncate">{{ destination.description }}</p>
-                                            </div>
-                                        </div>
+                                        <button v-for="destination in popularDestinations" :key="destination.name"
+                                            @click="selectLocation(destination.name)"
+                                            class="flex w-full items-center gap-3 rounded-2xl border border-stone-200 p-3 text-left transition-all hover:border-rose-400 hover:bg-rose-50/40">
+                                            <span
+                                                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-50 to-pink-100 text-xl">{{
+                                                    destination.emoji }}</span>
+                                            <span class="min-w-0 flex-1">
+                                                <span class="block truncate font-semibold text-stone-900">{{
+                                                    destination.name }}</span>
+                                                <span class="block truncate text-sm text-stone-500">{{
+                                                    destination.description }}</span>
+                                            </span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Panel Ruta (Origen y Destino) -->
                             <div v-else-if="activeModalTab === 'origin'" class="p-4">
-                                <button @click="backToMainModal" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4">
+                                <button @click="backToMainModal"
+                                    class="mb-4 flex items-center gap-2 text-stone-600 transition-colors hover:text-stone-900">
                                     <i class="fa-solid fa-arrow-left"></i>
                                     <span class="font-medium">Volver</span>
                                 </button>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">¿Dónde te recogemos y te llevamos?</h3>
-                                <div class="space-y-4">
+                                <h3 class="mb-4 text-xl font-bold text-stone-900">¿Dónde te recogemos y te llevamos?</h3>
+                                <div class="space-y-5">
                                     <!-- Origen -->
                                     <div>
-                                        <div class="flex items-center gap-2 mb-2">
+                                        <div class="mb-2 flex items-center gap-2">
                                             <i class="fa-solid fa-circle-dot text-rose-500"></i>
-                                            <p class="font-semibold text-gray-900">Punto de origen</p>
+                                            <p class="font-semibold text-stone-900">Punto de origen</p>
                                         </div>
                                         <div class="grid grid-cols-2 gap-2">
-                                            <button v-for="origen in props.origenes" :key="origen" @click="selectOrigen(origen)" :class="['px-3 py-2.5 text-sm font-medium rounded-xl border-2 transition-all', searchStore.origen.value === origen ? 'bg-rose-500 border-rose-500 text-white' : 'bg-white border-gray-200 text-gray-700 hover:border-rose-500']">
+                                            <button v-for="origen in props.origenes" :key="origen"
+                                                @click="selectOrigen(origen)" :class="[
+                                                    'rounded-xl border px-3 py-2.5 text-sm font-medium transition-all',
+                                                    searchStore.origen.value === origen
+                                                        ? 'border-rose-500 bg-rose-500 text-white shadow-sm'
+                                                        : 'border-stone-200 bg-white text-stone-700 hover:border-rose-400 hover:bg-rose-50/40'
+                                                ]">
                                                 {{ origen }}
                                             </button>
                                         </div>
                                     </div>
                                     <!-- Destino -->
                                     <div v-if="searchStore.origen.value">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <i class="fa-solid fa-location-dot text-blue-500"></i>
-                                            <p class="font-semibold text-gray-900">Punto de destino</p>
+                                        <div class="mb-2 flex items-center gap-2">
+                                            <i class="fa-solid fa-location-dot text-sky-500"></i>
+                                            <p class="font-semibold text-stone-900">Punto de destino</p>
                                         </div>
                                         <div class="grid grid-cols-2 gap-2">
-                                            <button v-for="destino in destinosFinales" :key="destino" @click="selectDestino(destino)" :class="['px-3 py-2.5 text-sm font-medium rounded-xl border-2 transition-all', searchStore.destino.value === destino ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-200 text-gray-700 hover:border-blue-500']">
+                                            <button v-for="destino in destinosFinales" :key="destino"
+                                                @click="selectDestino(destino)" :class="[
+                                                    'rounded-xl border px-3 py-2.5 text-sm font-medium transition-all',
+                                                    searchStore.destino.value === destino
+                                                        ? 'border-sky-500 bg-sky-500 text-white shadow-sm'
+                                                        : 'border-stone-200 bg-white text-stone-700 hover:border-sky-400 hover:bg-sky-50/40'
+                                                ]">
                                                 {{ destino }}
                                             </button>
                                         </div>
@@ -292,46 +326,49 @@
 
                             <!-- Panel Fechas -->
                             <div v-else-if="activeModalTab === 'checkin'" class="p-4">
-                                <button @click="backToMainModal" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4">
+                                <button @click="backToMainModal"
+                                    class="mb-4 flex items-center gap-2 text-stone-600 transition-colors hover:text-stone-900">
                                     <i class="fa-solid fa-arrow-left"></i>
                                     <span class="font-medium">Volver</span>
                                 </button>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">{{ mensajePrincipal }}</h3>
-                                <div class="bg-gray-50 rounded-xl p-4">
-                                    <CalendarSelector class="w-full" :value="dates" :min-date="new Date().toISOString().split('T')[0]" :placeholder="'Selecciona rango de fechas'" @update:value="val => valueDateChange(val)" @update:checkin="val => searchStore.checkin.value = val" @update:checkout="val => searchStore.checkout.value = val" :range="type == 'Hospedaje' ? true : false" />
+                                <h3 class="mb-4 text-xl font-bold text-stone-900">{{ mensajePrincipal }}</h3>
+                                <div class="rounded-2xl bg-stone-50 p-3">
+                                    <CalendarSelector class="w-full" :value="dates"
+                                        :min-date="new Date().toISOString().split('T')[0]"
+                                        :placeholder="'Selecciona rango de fechas'"
+                                        @update:value="val => valueDateChange(val)"
+                                        @update:checkin="val => searchStore.checkin.value = val"
+                                        @update:checkout="val => searchStore.checkout.value = val"
+                                        :range="type == 'Hospedaje' ? true : false" />
                                 </div>
                             </div>
 
                             <!-- Panel Pasajeros -->
                             <div v-else-if="activeModalTab === 'quien'" class="p-4">
-                                <button @click="backToMainModal" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4">
+                                <button @click="backToMainModal"
+                                    class="mb-4 flex items-center gap-2 text-stone-600 transition-colors hover:text-stone-900">
                                     <i class="fa-solid fa-arrow-left"></i>
                                     <span class="font-medium">Volver</span>
                                 </button>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">¿Quién viene?</h3>
-                                <div class="bg-gray-50 rounded-xl p-4">
-                                    <GuestSelector :guests="searchStore.guests.value" @increment="incrementGuests" @decrement="decrementGuests" />
+                                <h3 class="mb-4 text-xl font-bold text-stone-900">¿Quién viene?</h3>
+                                <div class="rounded-2xl bg-stone-50 p-5">
+                                    <GuestSelector :guests="searchStore.guests.value" @increment="incrementGuests"
+                                        @decrement="decrementGuests" />
                                 </div>
                             </div>
                         </div>
 
                         <!-- Footer sticky con botón de búsqueda -->
-                        <div class="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-                            <Link v-if="type == 'Transporte'" :href="route('services.home', { type: 'TRANSFER', origen: searchStore.origen.value, destino: searchStore.destino.value, date: searchStore.checkin.value })">
-                                <button class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white py-4 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                    <span>Buscar</span>
-                                </button>
-                            </Link>
-                            <Link v-else :href="route('services.home')">
-                                <button class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white py-4 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                    <span>Buscar</span>
-                                </button>
+                        <div class="sticky bottom-0 border-t border-stone-100 bg-white p-4">
+                            <Link :href="searchLink">
+                            <button
+                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 py-4 text-base font-bold text-white shadow-lg transition-all duration-200 hover:from-rose-600 hover:to-pink-700 hover:shadow-xl active:scale-[0.99]">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <span>Buscar</span>
+                            </button>
                             </Link>
                         </div>
                     </div>
@@ -340,14 +377,27 @@
         </Teleport>
     </div>
 </template>
+
 <script setup>
 import { formatDate } from '@/composable/useCommonUtilities';
 import searchStore from '@/store/searchStore';
 import { Link } from '@inertiajs/vue3';
-import { inject, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import ServiceTypeTabs from './ServiceTypeTabs.vue';
 import GuestSelector from './GuestSelector.vue';
 import CalendarSelector from './CalendarSelector.vue';
+
+const props = defineProps([
+    'isPanelOpen',
+    'activeTab',
+    'selectedLocation',
+    'guestSummary',
+    'setActiveTab',
+    'selectedOrigin',
+    'formatDate',
+    'type',
+    'origenes'
+]);
 
 // Estado del modal móvil
 const showMobileModal = ref(false);
@@ -365,7 +415,6 @@ const closeMobileModal = () => {
 };
 
 const handleModalTabClick = (tab) => {
-    // Activar el tab en el modal (no cerrar)
     activeModalTab.value = tab;
 };
 
@@ -378,28 +427,11 @@ const locationQuery = ref('');
 const dates = ref([]);
 const destinosFinales = ref([]);
 
-// Destinos populares
 const popularDestinations = [
-    {
-        name: 'Cartagena',
-        description: 'Ciudad amurallada',
-        emoji: '🏰'
-    },
-    {
-        name: 'San Andrés',
-        description: 'Isla caribeña',
-        emoji: '🏝️'
-    },
-    {
-        name: 'Medellín',
-        description: 'Ciudad de la eterna primavera',
-        emoji: '🌸'
-    },
-    {
-        name: 'Bogotá',
-        description: 'Capital cultural',
-        emoji: '🏙️'
-    },
+    { name: 'Cartagena', description: 'Ciudad amurallada', emoji: '🏰' },
+    { name: 'San Andrés', description: 'Isla caribeña', emoji: '🏝️' },
+    { name: 'Medellín', description: 'Ciudad de la eterna primavera', emoji: '🌸' },
+    { name: 'Bogotá', description: 'Capital cultural', emoji: '🏙️' },
 ];
 
 const selectLocation = (location) => {
@@ -410,7 +442,6 @@ const selectLocation = (location) => {
 const selectOrigen = async (origen) => {
     searchStore.origen.value = origen;
     searchStore.destino.value = null;
-    // Cargar destinos
     const response = await axios.get(`/getAllDestinations?origen=${origen}`);
     destinosFinales.value = response.data.filter(destino => destino !== origen);
 };
@@ -459,46 +490,6 @@ const mensajePrincipal = computed(() => {
     return '¿Qué día necesitas tu transporte?';
 });
 
-const props = defineProps([
-    'isPanelOpen',
-    'activeTab',
-    'selectedLocation',
-    'guestSummary',
-    'setActiveTab',
-    'selectedOrigin',
-    'formatDate',
-    'type',
-    'origenes'
-]);
-
-// Tipos de servicio para los tabs
-const servicesType = [
-  {
-    label: 'Tours',
-    value: 'TOUR',
-    description: 'Experiencias guiadas',
-    icon: `<img src="/images/beach.png" alt="Beach Icon" />`
-  },
-  {
-    label: 'Embarcaciones',
-    value: 'EMBARCACION',
-    description: 'Yates y lanchas',
-    icon: `<img src="/assets/svgs/motor-boat.svg" alt="Motor Boat Icon" />`
-  },
-  {
-    label: 'Hospedaje',
-    value: 'HOSPEDAJE',
-    description: 'Hoteles y cabañas',
-    icon: `<img src="/assets/svgs/house.svg" alt="House Icon" />`
-  },
-  {
-    label: 'Transporte',
-    value: 'TRANSFER',
-    description: 'Traslados y vehículos',
-    icon: `<img src="/images/car.png" alt="Automobile Icon" />`
-  },
-];
-
 const dateRange = computed(() => {
     const checkin = searchStore.checkin.value;
     const checkout = searchStore.checkout.value;
@@ -512,20 +503,20 @@ const dateRange = computed(() => {
     return '';
 });
 
-const showInputTitles = inject('showInputTitles', true);
+const searchLink = computed(() => {
+    if (props.type === 'Transporte') {
+        return route('services.home', {
+            type: 'TRANSFER',
+            origen: searchStore.origen.value,
+            destino: searchStore.destino.value,
+            date: searchStore.checkin.value,
+        });
+    }
+    return route('services.home');
+});
 </script>
 
 <style scoped>
-/* Ocultar scrollbar en móvil */
-.hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
 /* Animaciones del modal */
 .modal-enter-active,
 .modal-leave-active {
@@ -538,17 +529,18 @@ const showInputTitles = inject('showInputTitles', true);
 }
 
 .modal-enter-active .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
+    animation: slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .modal-leave-active .animate-slide-up {
-    animation: slideDown 0.3s ease-in;
+    animation: slideDown 0.25s ease-in;
 }
 
 @keyframes slideUp {
     from {
         transform: translateY(100%);
     }
+
     to {
         transform: translateY(0);
     }
@@ -558,6 +550,7 @@ const showInputTitles = inject('showInputTitles', true);
     from {
         transform: translateY(0);
     }
+
     to {
         transform: translateY(100%);
     }

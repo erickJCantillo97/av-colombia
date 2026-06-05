@@ -7,6 +7,7 @@
       <slot />
     </div>
   </div>
+  <AgencyCTA></AgencyCTA>
   <FooterSection></FooterSection>
 
   <!-- Botón flotante de WhatsApp -->
@@ -56,6 +57,7 @@ import Experiencias from "@/Components/SearchEngines/Search.vue";
 import Header from "@/Components/Sections/Header.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import FooterSection from "@/Pages/Welcome/FooterSection.vue";
+import AgencyCTA from "@/Pages/Welcome/AgencyCTA.vue";
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import Logo from "@/Components/logo.vue";
 

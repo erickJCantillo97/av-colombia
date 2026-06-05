@@ -6,18 +6,20 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-    use Sluggable;
     use HasFactory;
     use HasUuids;
+    use Sluggable;
 
     protected $guarded = [];
+
     protected $appends = ['adult_tarifa', 'boy_tarifa', 'is_locked'];
 
     public function getRouteKeyName(): string
@@ -29,8 +31,8 @@ class Service extends Model
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 
@@ -49,6 +51,11 @@ class Service extends Model
         return $this->belongsToMany(Feature::class);
     }
 
+    public function serviceCategory(): BelongsTo
+    {
+        return $this->belongsTo(ServiceCategory::class);
+    }
+
     public function bookingServices(): HasMany
     {
         return $this->hasMany(BookingService::class);
@@ -58,7 +65,7 @@ class Service extends Model
     {
         if (auth()->user() == null) {
             return $this->adults_price;
-        } else if (auth()->user()->role == 'admin') {
+        } elseif (auth()->user()->role == 'admin') {
             return $this->adults_price;
         }
         // dd(auth()->user()->id, $this->id);
@@ -71,9 +78,10 @@ class Service extends Model
     {
         if (auth()->user() == null) {
             return $this->boys_price;
-        } else if (auth()->user()->role == 'admin') {
+        } elseif (auth()->user()->role == 'admin') {
             return $this->boys_price;
         }
+
         return CustomProductUser::where('user_id', auth()->user()->id)->where('service_id', $this->id)->first()->boys_tarifa ?? $this->boys_price;
     }
 
@@ -118,8 +126,8 @@ class Service extends Model
     protected function portada(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => '/laravel/public/' . str_replace('//', '/', $value),
-            set: fn($value) => $value,
+            get: fn ($value) => '/laravel/public/'.str_replace('//', '/', $value),
+            set: fn ($value) => $value,
         );
     }
 
