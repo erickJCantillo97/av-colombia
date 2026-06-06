@@ -38,7 +38,7 @@ class VendedorReportController extends Controller
         $vendedor = User::findOrFail($vendedorId);
 
         $query = BookingService::with(['service:id,title', 'payments.metohdPayment'])
-            ->where('user_id', $vendedorId);
+            ->where('vendedor_id', $vendedorId);
 
         if ($request->fecha_inicio) {
             $query->where('date', '>=', $request->fecha_inicio);
@@ -63,7 +63,8 @@ class VendedorReportController extends Controller
             // Recaudo (precio - tarifa)
             $recaudoAdultos = $booking->adults * ($booking->adults_price - $booking->adult_tarifa);
             $recaudoBoys = $booking->boys * ($booking->boys_price - $booking->boys_tarifa);
-            $recaudo = $recaudoAdultos + $recaudoBoys;
+            $recaudo = $booking->total - $booking->saldo ?? 0;
+            // dd($booking);
 
             // Pagos realizados al vendedor
             $pagado = PagoSaldos::whereHas('bookingService', function ($query) use ($booking) {
@@ -81,10 +82,11 @@ class VendedorReportController extends Controller
                 'cliente' => $booking->cliente_name,
                 'adultos' => $booking->adults,
                 'ninos' => $booking->boys,
-                'precio_total' => $precioTotal,
-                'recaudo' => $recaudo,
-                'pagado' => $pagado,
-                'saldo_pendiente' => $recaudo - $pagado,
+                'precio_comercial' => $precioTotal,
+                'utilidad_vendedor' => $booking->total - $precioTotal,
+                'neto_vendedor' => $booking->total,
+                'abonado' => $recaudo,
+                'saldo_pendiente' => $booking->saldo,
                 'status' => $booking->status,
             ];
         });

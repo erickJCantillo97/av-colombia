@@ -85,7 +85,7 @@ const getStatusConfig = (status) =>
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Reportes</p>
                     <h1 class="text-2xl font-bold text-gray-900">
-                        Informe de Vendedores
+                        Informe de Vendedores 
                         <span v-if="reportData" class="text-gray-400 font-normal text-xl">
                             — {{ reportData.vendedor.name }}
                         </span>
@@ -184,10 +184,11 @@ const getStatusConfig = (status) =>
                                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-gray-400">Servicio</th>
                                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-gray-400">Cliente</th>
                                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-gray-400">Pax</th>
-                                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Precio</th>
-                                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Recaudo</th>
-                                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Pagado</th>
+                                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Precio Comercial</th>
+                                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Neto Vendedor</th>
+                                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Abonado</th>
                                             <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Saldo</th>
+                                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-widest text-gray-400">Utilidad Vendedor</th>
                                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-widest text-gray-400">Estado</th>
                                         </tr>
                                     </thead>
@@ -201,13 +202,18 @@ const getStatusConfig = (status) =>
                                             <td class="px-5 py-3.5 text-sm text-gray-800">{{ detalle.servicio }}</td>
                                             <td class="px-5 py-3.5 text-sm text-gray-800">{{ detalle.cliente }}</td>
                                             <td class="px-5 py-3.5 text-sm text-gray-500 whitespace-nowrap">{{ detalle.adultos }}A / {{ detalle.ninos }}N</td>
-                                            <td class="px-5 py-3.5 text-sm text-right text-gray-800 font-medium whitespace-nowrap">{{ formatCOP(detalle.precio_total) }}</td>
-                                            <td class="px-5 py-3.5 text-sm text-right text-green-600 font-semibold whitespace-nowrap">{{ formatCOP(detalle.recaudo) }}</td>
-                                            <td class="px-5 py-3.5 text-sm text-right text-purple-600 font-semibold whitespace-nowrap">{{ formatCOP(detalle.pagado) }}</td>
+                                            <td class="px-5 py-3.5 text-sm text-right text-gray-800 font-medium whitespace-nowrap">{{ formatCOP(detalle.precio_comercial) }}</td>
+                                            <td class="px-5 py-3.5 text-sm text-right text-green-600 font-semibold whitespace-nowrap">{{ formatCOP(detalle.neto_vendedor    ) }}</td>
+                                            <td class="px-5 py-3.5 text-sm text-right text-purple-600 font-semibold whitespace-nowrap">{{ formatCOP(detalle.abonado) }}</td>
                                             <td class="px-5 py-3.5 text-sm text-right font-semibold whitespace-nowrap"
                                                 :class="detalle.saldo_pendiente > 0 ? 'text-amber-600' : 'text-gray-400'"
                                             >
                                                 {{ formatCOP(detalle.saldo_pendiente) }}
+                                            </td>
+                                            <td class="px-5 py-3.5 text-sm text-right font-semibold whitespace-nowrap"
+                                                :class="detalle.utilidad_vendedor > 0 ? 'text-green-600' : (detalle.utilidad_vendedor < 0 ? 'text-red-600' : 'text-gray-400')"
+                                            >
+                                                {{ formatCOP(detalle.utilidad_vendedor) }}
                                             </td>
                                             <td class="px-5 py-3.5 whitespace-nowrap">
                                                 <span
