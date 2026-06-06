@@ -54,8 +54,9 @@ class VendedorReportController extends Controller
         $totalVendido = 0;
         $totalRecaudo = 0;
         $totalPagado = 0;
+        $saldo_total = 0;
 
-        $detalles = $bookingServices->map(function ($booking) use (&$totalVendido, &$totalRecaudo, &$totalPagado) {
+        $detalles = $bookingServices->map(function ($booking) use (&$totalVendido, &$totalRecaudo, &$saldo_total) {
             // Total vendido (precio total)
             $precioTotal = ($booking->adults * $booking->adults_price) +
                           ($booking->boys * $booking->boys_price);
@@ -64,16 +65,14 @@ class VendedorReportController extends Controller
             $recaudoAdultos = $booking->adults * ($booking->adults_price - $booking->adult_tarifa);
             $recaudoBoys = $booking->boys * ($booking->boys_price - $booking->boys_tarifa);
             $recaudo = $booking->total - $booking->saldo ?? 0;
-            // dd($booking);
-
-            // Pagos realizados al vendedor
+            
             $pagado = PagoSaldos::whereHas('bookingService', function ($query) use ($booking) {
                 $query->where('id', $booking->id);
             })->sum('amount');
 
-            $totalVendido += $precioTotal;
+            $totalVendido += $booking->total;
             $totalRecaudo += $recaudo;
-            $totalPagado += $pagado;
+            $saldo_total += $booking->saldo;
 
             return [
                 'id' => $booking->id,
@@ -100,8 +99,7 @@ class VendedorReportController extends Controller
             'totales' => [
                 'total_vendido' => round($totalVendido, 2),
                 'total_recaudo' => round($totalRecaudo, 2),
-                'total_pagado' => round($totalPagado, 2),
-                'saldo_pendiente' => round($totalRecaudo - $totalPagado, 2),
+                'saldo_pendiente' => round($saldo_total, 2),
             ],
             'detalles' => $detalles,
         ]);

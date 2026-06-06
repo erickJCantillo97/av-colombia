@@ -74,6 +74,25 @@ const statusConfig = {
 
 const getStatusConfig = (status) =>
     statusConfig[status?.toUpperCase()] ?? { label: status, classes: 'bg-gray-100 text-gray-600' };
+
+const totalReservaciones = computed(() => reportData.value?.detalles?.length ?? 0);
+
+const totalPax = computed(() =>
+    reportData.value?.detalles?.reduce((sum, d) => sum + (d.adultos || 0) + (d.ninos || 0), 0) ?? 0
+);
+
+const totalUtilidad = computed(() =>
+    reportData.value?.detalles?.reduce((sum, d) => sum + (d.utilidad_vendedor || 0), 0) ?? 0
+);
+
+const statusCounts = computed(() => {
+    const counts = {};
+    reportData.value?.detalles?.forEach(d => {
+        const key = d.status?.toUpperCase();
+        if (key) counts[key] = (counts[key] ?? 0) + 1;
+    });
+    return counts;
+});
 </script>
 
 <template>
@@ -152,23 +171,29 @@ const getStatusConfig = (status) =>
                     <!-- KPIs -->
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Resumen</p>
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                             <div class="bg-white rounded-xl border border-gray-100 border-l-4 border-l-blue-500 shadow-sm p-5">
                                 <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Total vendido</p>
                                 <p class="text-xl font-bold text-blue-600">{{ formatCOP(reportData.totales.total_vendido) }}</p>
-                            </div>
-                            <div class="bg-white rounded-xl border border-gray-100 border-l-4 border-l-green-500 shadow-sm p-5">
-                                <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Total recaudo</p>
-                                <p class="text-xl font-bold text-green-600">{{ formatCOP(reportData.totales.total_recaudo) }}</p>
-                            </div>
-                            <div class="bg-white rounded-xl border border-gray-100 border-l-4 border-l-purple-500 shadow-sm p-5">
-                                <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Total pagado</p>
-                                <p class="text-xl font-bold text-purple-600">{{ formatCOP(reportData.totales.total_pagado) }}</p>
                             </div>
                             <div class="bg-white rounded-xl border border-gray-100 border-l-4 border-l-amber-500 shadow-sm p-5">
                                 <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Saldo pendiente</p>
                                 <p class="text-xl font-bold text-amber-600">{{ formatCOP(reportData.totales.saldo_pendiente) }}</p>
                             </div>
+                            <div class="bg-white rounded-xl border border-gray-100 border-l-4 border-l-sky-500 shadow-sm p-5">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Reservaciones</p>
+                                <p class="text-xl font-bold text-sky-600">{{ totalReservaciones }}</p>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl border border-gray-100 border-l-4 shadow-sm p-5"
+                                :class="totalUtilidad >= 0 ? 'border-l-emerald-500' : 'border-l-red-500'"
+                            >
+                                <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Utilidad vendedor</p>
+                                <p class="text-xl font-bold" :class="totalUtilidad >= 0 ? 'text-emerald-600' : 'text-red-600'">
+                                    {{ formatCOP(totalUtilidad) }}
+                                </p>
+                            </div>
+                           
                         </div>
                     </div>
 
